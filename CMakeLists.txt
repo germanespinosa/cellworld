@@ -36,7 +36,6 @@ target_link_libraries(cellworld
         PUBLIC
         ge211 )
 
-
 set_target_properties( cellworld
         PROPERTIES
         CXX_STANDARD 14
@@ -50,7 +49,6 @@ else(MSVC)
     target_compile_options(cellworld PRIVATE -Wall -Wextra -pedantic)
 endif(MSVC)
 
-message("here:${SDL2_INCLUDE_DIRS}")
 target_include_directories(cellworld
         SYSTEM INTERFACE
         $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
@@ -58,7 +56,8 @@ target_include_directories(cellworld
         ${SDL2_INCLUDE_DIRS})
 
 target_link_libraries(cellworld
-        PUBLIC
+        PRIVATE
+        include
         ${SDL2_LIBRARIES}
         ${SDL2_IMAGE_LIBRARIES}
         ${SDL2_MIXER_LIBRARIES}
