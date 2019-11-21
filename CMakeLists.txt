@@ -7,8 +7,6 @@ project(cellworld
 ###
 ### DEPENDENCIES
 ###
-
-#add_subdirectory(3rdparty/utf8-cpp)
 find_package(Ge211 CONFIG)
 
 ###
@@ -41,7 +39,7 @@ set_target_properties( cellworld
         CXX_STANDARD 14
         CXX_STANDARD_REQUIRED On
         CXX_EXTENSIONS Off
-        VERSION ${PROJECT_VERSION} )
+        VERSION ${PROJECT_VERSION})
 
 if(MSVC)
     target_compile_options(cellworld PRIVATE /W4)
@@ -93,4 +91,8 @@ install(EXPORT CellworldConfig
 export(TARGETS cellworld FILE CellworldConfig.cmake)
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Ge211   REQUIRED)\n\") ")
 
-include(CMakeTests.txt)
+###
+### TESTS CONFIGURATION
+###
+
+find_package(CatchTests CONFIG QUIET)
