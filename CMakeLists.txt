@@ -24,7 +24,6 @@ add_library(cellworld
         include/visibility.h
         src/core.cpp
         src/world.cpp
-        src/agent.cpp
         src/model.cpp
         src/view.cpp
         src/controller.cpp
