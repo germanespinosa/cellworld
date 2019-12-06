@@ -3,8 +3,7 @@
 using namespace std;
 
 namespace cellworld {
- 
- 
+
      enum Visible{
         Not_checked,
         Visible,

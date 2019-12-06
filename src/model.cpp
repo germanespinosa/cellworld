@@ -6,9 +6,9 @@ using namespace cellworld;
 
 
 void Model::_epoch( std::vector<Action> actions = {} ){
-        _iteration++;
+        iteration++;
         State state;
-        state.iteration =_iteration;
+        state.iteration = iteration;
         for (unsigned int i=0;i<actions.size();i++) {
             if (!world[_agents[i]->data.coordinates + actions[i].action].occluded)
                 _agents[i]->data.coordinates += actions[i].action;
@@ -30,7 +30,7 @@ bool Model::update() // if all agents made their moves, it triggers an new poch
     }
     if (new_data){ 
         for (unsigned int i=0;i<_agents.size();i++){// if any new moves I need to check if the iteration is over
-            if (_agents[i]->action.iteration != _iteration){ // iteration is not over
+            if (_agents[i]->action.iteration != iteration){ // iteration is not over
                 return false; 
             }
         }
@@ -55,5 +55,5 @@ Model::Model( World &world, std::vector<Agent*> &agents ) :
     world (world), 
     _agents (agents)
 {
-   _iteration = 0;//triggers the first iteration
+   iteration = 0;//triggers the first iteration
 }

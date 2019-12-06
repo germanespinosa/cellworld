@@ -7,15 +7,28 @@ using namespace ge211;
 using namespace std;
 using namespace cellworld;
 
-Controller::Controller (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions ) : 
-    _model(world, agents),
-    _scene_dimensions(scene_dimensions), 
-    _view(world, scene_dimensions)
-    {}
+
+
+Controller::Controller (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations ) :
+        _model(world, agents),
+        _scene_dimensions(scene_dimensions),
+        _view(world, scene_dimensions),
+        _iterations(iterations)
+{}
+
+Controller::Controller (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions ) :
+        Controller (world, agents, scene_dimensions,0)
+{}
 
 void Controller::on_frame(double dt)
 {
     _model.update();
+    cout << _model.iteration << " of " << _iterations << " iterations" << endl;
+    if (_iterations) {
+        if (_model.iteration >= _iterations) {
+            quit();
+        }
+    }
 }
 
 void Controller::on_key(Key key)

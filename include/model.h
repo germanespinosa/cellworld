@@ -11,8 +11,8 @@ namespace cellworld{
         World &world;
         bool update();
         std::vector<Agent_data> get_agents_data();
+        uint32_t iteration;
         private:
-        uint32_t _iteration;
         std::vector<Agent*> &_agents;
         void _epoch (std::vector<Action>);
     };
