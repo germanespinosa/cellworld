@@ -6,3 +6,4 @@
 #include<agent.h>
 #include<world.h>
 #include<visibility.h>
+#include<connection.h>

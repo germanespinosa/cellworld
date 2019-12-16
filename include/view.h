@@ -13,7 +13,6 @@ namespace cellworld{
         ge211::Basic_position<int> _screen_location (const ge211::Basic_position<double> & );
         World &_world;
         std::vector<ge211::Circle_sprite> _cell_sprites;
-        std::vector<ge211::Circle_sprite> _value_sprites;
         ge211::Font sans{"sans.ttf", 30};
         ge211::Text_sprite fps;
         const ge211::Dimensions _scene_dimensions ;

@@ -8,12 +8,15 @@ namespace cellworld{
     struct Model
     {
         Model( World &world, std::vector<Agent*>&);
-        World &world;
         bool update();
         std::vector<Agent_data> get_agents_data();
-        uint32_t iteration;
-        private:
+        void start_episode();
+        void end_episode();
+        protected:
+        State state;
+        World &_world;
         std::vector<Agent*> &_agents;
-        void _epoch (std::vector<Action>);
+        void _epoch ();
+        friend class Controller;
     };
 } 

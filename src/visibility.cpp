@@ -1,5 +1,5 @@
 #include<visibility.h>
-
+#include<iostream>
 using namespace std;
 
 namespace cellworld {
@@ -30,10 +30,14 @@ namespace cellworld {
         return l;
     }
     bool Visibility::is_visible(const Cell& c0, const Cell& c1) const{
-        return _visibility[_visibility_index(c0.id,c1.id)] == Visible::Visible;
+        return is_visible(c0.id,c1.id);
     }
 
-    uint32_t Visibility::_visibility_index(const uint32_t s, const uint32_t  d) const{
+    bool Visibility::is_visible(const uint32_t s, const uint32_t d) const{
+        return _visibility[_visibility_index(s,d)] == Visible::Visible;
+    }
+
+    uint32_t Visibility::_visibility_index(const uint32_t s, const uint32_t d) const{
         return s * _world.size() + d;
     }
 

@@ -40,12 +40,6 @@ View::View(World &world, Dimensions scene_dimensions):
     _cell_sprites.emplace_back(_cell_size, ge211::Color{128,0,128}); //13
     _cell_sprites.emplace_back(_cell_size, ge211::Color{0,128,128}); //14
     _cell_sprites.emplace_back(_cell_size, ge211::Color{0,0,128}); //15
-    for (uint16_t i=0; i<256 ; i++ ) {
-        _value_sprites.emplace_back(_cell_size, ge211::Color{(uint8_t) i, (uint8_t) i, 255});
-    }
-    for (uint16_t i=0; i<256 ; i++ ) {
-        _value_sprites.emplace_back(_cell_size, ge211::Color{255, (uint8_t) (255 - i), (uint8_t) (255 - i)});
-    }
 }
 
 Basic_position<int> View::_screen_location (const Basic_position<double> &location)
@@ -60,25 +54,15 @@ void View::draw(Sprite_set& sprites, vector<Agent_data> agents, string text)
 {
     fps.reconfigure(Text_sprite::Builder(sans) << text);
     sprites.add_sprite(fps, {10, 10});
-    double min_value, max_value;
-    min_value = max_value = _world[0].value;
     for (unsigned int i =0 ; i< _world.size(); i++) {
-        if (_world[i].value<min_value) min_value=_world[i].value;
-        if (_world[i].value>max_value) max_value=_world[i].value;
-    }
-    double range = max_value;
-    if (range<-min_value) range = -min_value;
-    for (unsigned int i =0 ; i< _world.size(); i++) {
-        Cell &cell = _world[i];
+        const Cell &cell = _world[i];
         if (cell.occluded){
             sprites.add_sprite(_cell_sprites[9], _screen_location(cell.location),0);
         } else{
-            uint32_t vi = (uint32_t )(255 + (_world[i].value / range) * 255);
-            //cout << vi << endl;
-            sprites.add_sprite(_value_sprites[vi], _screen_location(cell.location),0);
+            sprites.add_sprite(_cell_sprites[1], _screen_location(cell.location),0);
         }
     }
     for (unsigned int i =0 ; i< agents.size(); i++) {
-        sprites.add_sprite(_cell_sprites[agents[i].color], _screen_location(_world[agents[i].coordinates].location),1);
+        sprites.add_sprite(_cell_sprites[agents[i].color], _screen_location(_world[agents[i].cell_id].location),1);
     }
 }

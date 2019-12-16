@@ -22,12 +22,14 @@ add_library(cellworld
         include/view.h
         include/controller.h
         include/visibility.h
+        include/connection.h
         src/core.cpp
         src/world.cpp
         src/model.cpp
         src/view.cpp
         src/controller.cpp
-        src/visibility.cpp)
+        src/visibility.cpp
+        src/connection.cpp)
 
 target_link_libraries(cellworld
         PUBLIC

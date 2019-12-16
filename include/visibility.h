@@ -7,6 +7,7 @@ namespace cellworld{
         std::vector<Cell> line (const Cell&, const Cell&) const;
         std::vector<Cell> visible_cells (const Cell&) const;
         bool is_visible(const Cell&, const Cell&) const;
+        bool is_visible(const uint32_t, const uint32_t) const;
         private:
         bool _get_visibility(const uint32_t, const uint32_t);
         void _set_visibility(const uint32_t, const uint32_t, const uint8_t);
