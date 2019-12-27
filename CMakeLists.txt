@@ -20,16 +20,16 @@ add_library(cellworld
         include/agent.h
         include/model.h
         include/view.h
-        include/controller.h
+        include/simulation.h
         include/visibility.h
         include/connection.h
         src/core.cpp
         src/world.cpp
         src/model.cpp
         src/view.cpp
-        src/controller.cpp
+        src/simulation.cpp
         src/visibility.cpp
-        src/connection.cpp)
+        src/connection.cpp src/map_editor.cpp include/map_editor.h)
 
 target_link_libraries(cellworld
         PUBLIC

@@ -3,10 +3,10 @@
 #include <model.h>
 #include <view.h>
 namespace cellworld{
-    struct Controller : ge211::Abstract_game
+    struct Simulation : ge211::Abstract_game
     {
-        Controller (World &, std::vector<Agent*> &, const ge211::Dimensions);
-        Controller (World &, std::vector<Agent*> &, const ge211::Dimensions, uint16_t, uint32_t);
+        Simulation (World &, std::vector<Agent*> &, const ge211::Dimensions);
+        Simulation (World &, std::vector<Agent*> &, const ge211::Dimensions, uint16_t, uint32_t);
         ge211::Dimensions initial_window_dimensions() const override;
         void draw(ge211::Sprite_set&) override;
         bool is_paused = false;

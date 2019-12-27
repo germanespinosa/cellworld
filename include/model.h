@@ -17,6 +17,6 @@ namespace cellworld{
         World &_world;
         std::vector<Agent*> &_agents;
         void _epoch ();
-        friend class Controller;
+        friend class Simulation;
     };
 } 

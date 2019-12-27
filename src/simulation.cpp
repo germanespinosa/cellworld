@@ -1,4 +1,4 @@
-#include<controller.h>
+#include<simulation.h>
 #include <iomanip>
 #include <iostream>
 #include <string>     // std::string, std::to_string
@@ -9,7 +9,7 @@ using namespace cellworld;
 
 
 
-Controller::Controller (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
+Simulation::Simulation (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
         _model(world, agents),
         _scene_dimensions(scene_dimensions),
         _view(world, scene_dimensions),
@@ -19,10 +19,10 @@ Controller::Controller (World &world, std::vector<Agent*> &agents, const ge211::
     _model.start_episode();
 }
 
-Controller::Controller (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions ) :
-        Controller (world, agents, scene_dimensions,0,1){}
+Simulation::Simulation (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions ) :
+        Simulation (world, agents, scene_dimensions,0,1){}
 
-void Controller::on_frame(double dt)
+void Simulation::on_frame(double dt)
 {
     static double t=0;
     t+=dt;
@@ -40,7 +40,7 @@ void Controller::on_frame(double dt)
     }
 }
 
-void Controller::on_key(Key key)
+void Simulation::on_key(Key key)
 {
     if (key == Key::code('q')) {
         quit();
@@ -52,12 +52,12 @@ void Controller::on_key(Key key)
     }
 }
 
-Dimensions Controller::initial_window_dimensions() const
+Dimensions Simulation::initial_window_dimensions() const
 {
     return _scene_dimensions;
 }
 
-void Controller::draw(Sprite_set& sprites)
+void Simulation::draw(Sprite_set& sprites)
 {
-    _view.draw(sprites, _model.get_agents_data(), to_string(episode) + "-" + to_string(_model.state.iteration));
+    _view.draw_scene(sprites, _model.get_agents_data(), to_string(episode) + "-" + to_string(_model.state.iteration));
 }
