@@ -1,6 +1,4 @@
 #include<simulation.h>
-#include <iomanip>
-#include <iostream>
 #include <string>     // std::string, std::to_string
 
 using namespace ge211;

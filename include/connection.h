@@ -1,9 +1,4 @@
-//
-// Created by german on 12/14/19.
-//
-
-#ifndef CELLWORLD_CONNECTION_H
-#define CELLWORLD_CONNECTION_H
+#pragma once
 #include "world.h"
 namespace cellworld {
     struct World_connections {
@@ -17,4 +12,3 @@ namespace cellworld {
     };
 
 }
-#endif //CELLWORLD_CONNECTION_H

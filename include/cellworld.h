@@ -7,3 +7,4 @@
 #include<world.h>
 #include<visibility.h>
 #include<connection.h>
+#include<map_editor.h>

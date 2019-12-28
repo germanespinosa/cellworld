@@ -47,6 +47,7 @@ bool World::add(Cell cell){
 }
 
 bool World::load(const std::string filepath){
+    _file_name = filepath;
     cells.clear();
     std::ifstream ifile;
     ifile.open(filepath.c_str());
@@ -127,5 +128,14 @@ void World::set_occlusion(uint32_t id, bool occluded) {
 
 void World::set_value(uint32_t id, double value) {
     cells[id].value = value;
+}
+
+bool World::save() const {
+    return save(_file_name);
+}
+
+bool World::load() {
+    if (_file_name.empty()) return false;
+    return load(_file_name);
 }
 

@@ -63,10 +63,22 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, string tex
     }
 }
 
-void View::draw_editor(ge211::Sprite_set &sprites, ge211::Position mouse_position) {
+void View::draw_editor(ge211::Sprite_set &sprites, ge211::Position mouse_position, std::vector<uint32_t> selected_cells, std::string text) {
+    if (!text.empty()) {
+        fps.reconfigure(Text_sprite::Builder(sans) << text);
+        sprites.add_sprite(fps, {10, 10});
+    }
     _draw_world(sprites);
     int32_t index = get_cell(mouse_position);
-    if (index>=0) sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),1);
+    for (unsigned int i =0 ; i< selected_cells.size(); i++) {
+        sprites.add_sprite(_cell_sprites[5], _screen_location(_world[selected_cells[i]].location),1);
+    }
+    if (index>=0) {
+        if (_world[index].occluded)
+            sprites.add_sprite(_cell_sprites[12], _screen_location(_world[index].location),2);
+        else
+            sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),2);
+    }
 }
 
 void View::_draw_world(ge211::Sprite_set &sprites) {
@@ -84,7 +96,8 @@ int32_t View::get_cell(ge211::Position mouse_position) {
     for (unsigned int i =0 ; i< _world.size(); i++) {
         const Cell &cell = _world[i];
         ge211::Position cell_pos = _screen_location(cell.location);
-        cell_pos.down_right_by({_cell_size/2,_cell_size/2});
+        cell_pos.x += _cell_size;
+        cell_pos.y += _cell_size;
         double distance = sqrt(pow(mouse_position.y-cell_pos.y,2) + pow(mouse_position.x-cell_pos.x,2));
         if (distance<=_cell_size){
             return i;

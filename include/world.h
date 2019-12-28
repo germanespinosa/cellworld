@@ -17,6 +17,8 @@ namespace cellworld{
     struct World{
         bool add(Cell);
         bool load(const std::string);
+        bool load();
+        bool save() const ;
         bool save(const std::string) const ;
         double distance(const uint32_t, const uint32_t)  const;
         double distance(const Cell&, const Cell&)  const;
@@ -30,5 +32,6 @@ namespace cellworld{
     private:
         std::vector<Cell> cells;
         std::vector<std::vector<double>> _distances;
+        std::string _file_name;
     };
 }  

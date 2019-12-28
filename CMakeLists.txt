@@ -23,13 +23,15 @@ add_library(cellworld
         include/simulation.h
         include/visibility.h
         include/connection.h
+        include/map_editor.h
         src/core.cpp
         src/world.cpp
         src/model.cpp
         src/view.cpp
         src/simulation.cpp
         src/visibility.cpp
-        src/connection.cpp src/map_editor.cpp include/map_editor.h)
+        src/connection.cpp
+        src/map_editor.cpp )
 
 target_link_libraries(cellworld
         PUBLIC
