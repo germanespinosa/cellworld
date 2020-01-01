@@ -63,21 +63,23 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, string tex
     }
 }
 
-void View::draw_editor(ge211::Sprite_set &sprites, ge211::Position mouse_position, std::vector<uint32_t> selected_cells, std::string text) {
+void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, Cell_group& selected_cells, Cell_group& visible_cells, std::string text) {
     if (!text.empty()) {
         fps.reconfigure(Text_sprite::Builder(sans) << text);
         sprites.add_sprite(fps, {10, 10});
     }
     _draw_world(sprites);
-    int32_t index = get_cell(mouse_position);
     for (unsigned int i =0 ; i< selected_cells.size(); i++) {
-        sprites.add_sprite(_cell_sprites[5], _screen_location(_world[selected_cells[i]].location),1);
+        sprites.add_sprite(_cell_sprites[4], _screen_location(selected_cells[i].location),2);
+    }
+    for (unsigned int i =0 ; i< visible_cells.size(); i++) {
+        sprites.add_sprite(_cell_sprites[5], _screen_location(visible_cells[i].location),1);
     }
     if (index>=0) {
         if (_world[index].occluded)
-            sprites.add_sprite(_cell_sprites[12], _screen_location(_world[index].location),2);
+            sprites.add_sprite(_cell_sprites[12], _screen_location(_world[index].location),3);
         else
-            sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),2);
+            sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),3);
     }
 }
 

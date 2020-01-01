@@ -14,7 +14,7 @@ namespace cellworld {
         vector<Cell> l;
         double dist = _world.distance(source,destination);
         for (unsigned int i = 0; i < _world.size() ; i++){
-            if (_world.distance(_world[i],source,destination) <= 1.2 ){ 
+            if (_world.distance(_world[i],source,destination) <= .5001 ){
                 if ( (_world.distance(_world[i],source) < dist) &&
                      (_world.distance(_world[i],destination) < dist) ) {
                     l.push_back(_world[i]);
@@ -73,11 +73,19 @@ namespace cellworld {
      
     Visibility::Visibility( World &world) : _world(world){
         _visibility = (uint8_t*) malloc(world.size()*world.size());
-        for(unsigned int i=0;i<world.size()*world.size();i++) _visibility[i]=Visible::Not_checked;
-        for (unsigned int s = 0; s < world.size() ; s++){
-            for (unsigned int d = 0; d < world.size() ; d++){
+        reset();
+    }
+
+    void Visibility::reset() {
+        for(unsigned int i=0;i<_world.size()*_world.size();i++) _visibility[i]=Visible::Not_checked;
+        for (unsigned int s = 0; s < _world.size() ; s++){
+            for (unsigned int d = 0; d < _world.size() ; d++){
                 if (s!=d) _get_visibility(s,d);
             }
         }
+    }
+
+    Visibility::~Visibility() {
+        free(_visibility);
     }
 }

@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <algorithm>
 
 using namespace std;
 using namespace cellworld;
@@ -29,7 +30,7 @@ Cell::Cell(){
     this->location = {0,0};
     this->coordinates = {0,0};
     this->occluded= false;
-   
+    this->value=0;
 }
 
 bool World::add(Cell cell){
@@ -103,11 +104,11 @@ int32_t World::find (const Coordinates& coordinates) const{
     return map[mi];
 }
 
-const Cell &World::operator[](const uint32_t& id){
+const Cell &World::operator[](const uint32_t& id) const{
     return cells[id];
 }
 
-const Cell &World::operator[](const Coordinates& coordinates){
+const Cell &World::operator[](const Coordinates& coordinates) const{
     return cells[find(coordinates)];
 }
 
@@ -131,11 +132,174 @@ void World::set_value(uint32_t id, double value) {
 }
 
 bool World::save() const {
-    return save(_file_name);
+    return save(name + ".map");
 }
 
 bool World::load() {
-    if (_file_name.empty()) return false;
+    return load(name + ".map");
+}
+
+void World::get_connections(Connections & connections , const std::vector<Coordinates> &pattern) const {
+    connections.clear();
+    for (unsigned int source=0; source < cells.size(); source++){
+        if (!cells[source].occluded) {
+            for (unsigned int j = 0; j < pattern.size(); j++) {
+                Coordinates c = cells[source].coordinates + pattern[j];
+                int32_t destination = find(c);
+                if (destination >= 0 && !cells[destination].occluded) {
+                    connections.add(source,destination);
+                }
+            }
+        }
+    }
+}
+
+World::World(std::string name) : name (name){
+
+}
+
+Cell_group::Cell_group(const World &world):
+_world(world){
+
+}
+
+bool Cell_group::load( const std::string &file_path) {
+    _file_name = file_path;
+    _cell_ids.clear();
+    std::ifstream ifile;
+    ifile.open(file_path.c_str());
+    string line;
+    while (getline(ifile, line)){
+        istringstream ss(line);
+        int32_t cell_id;
+        Cell cell;
+        ss >> cell_id;
+        if (!add(cell_id)) return false;
+    }
+    return true;
+}
+
+bool Cell_group::add(uint32_t cell_id) {
+    if (cell_id >= _world.size()) return false;
+    if (std::find(_cell_ids.begin(),_cell_ids.end(),cell_id) == _cell_ids.end()){
+        _cell_ids.push_back(cell_id);
+        return true;
+    }
+    return false;
+}
+
+bool Cell_group::remove(uint32_t cell_id) {
+    std::vector<uint32_t>::iterator it;
+    if ((it = std::find(_cell_ids.begin(),_cell_ids.end(),cell_id)) != _cell_ids.end()){
+        _cell_ids.erase(it);
+        return true;
+    }
+    return false;
+}
+
+bool Cell_group::toggle(uint32_t cell_id) {
+    if (!add(cell_id)) return remove(cell_id);
+    return true;
+}
+
+uint32_t Cell_group::size() const {
+    return _cell_ids.size();
+}
+
+const Cell &Cell_group::operator[](uint32_t index) const {
+    return _get_cell(index);
+}
+
+bool Cell_group::save(const std::string &file_path) const {
+    std::ofstream ofile;
+    ofile.open(file_path.c_str());
+    for (unsigned int i = 0 ; i < _cell_ids.size() ; i++) {
+        ofile << _cell_ids[i];
+        ofile << std::endl;
+    }
+    return true;
+}
+
+bool Cell_group::load() {
     return load(_file_name);
 }
 
+bool Cell_group::save() const{
+    return save(_file_name);
+}
+
+void Cell_group::clear() {
+    _cell_ids.clear();
+}
+
+int32_t Cell_group::find(Coordinates coordinates) const {
+    int32_t  index = _world.find(coordinates);
+    if (index < 0) return index;
+    for (uint32_t i = 0; i < _cell_ids.size(); i++){
+        if (_cell_ids[i] == (uint32_t)index) return i;
+    }
+    return -1;
+}
+
+int32_t Cell_group::find(uint32_t id) const {
+    for (uint32_t i = 0; i < _cell_ids.size(); i++){
+        if (_world[_cell_ids[i]].id == id) return i;
+    }
+    return -1;
+}
+
+
+void Cell_group::get_connections(Connections &connections, const std::vector<Coordinates> pattern) const {
+    for (uint32_t source=0; source < _cell_ids.size(); source++){
+        const Cell & source_cell = _get_cell(_cell_ids[source]);
+        if (!source_cell.occluded) {
+            for (uint32_t  j = 0; j < pattern.size(); j++) {
+                Coordinates c = source_cell.coordinates + pattern[j];
+                int32_t destination = find(c);
+                if (destination >= 0) {
+                    const Cell &destination_cell = _get_cell(destination);
+                    if (!destination_cell.occluded) connections.add(source,destination);
+                }
+            }
+        }
+    }
+}
+
+const Cell &Cell_group::_get_cell(uint32_t index) const {
+    return _world[_cell_ids[index]];
+}
+
+bool Cell_group::contains(uint32_t id) const {
+    for (uint32_t i = 0; i<_cell_ids.size(); i++) if (_cell_ids[i]==id) return true;
+    return false;
+}
+
+Sub_worlds::Sub_worlds(const World &world, const Cell_group &bridges, const Connections &connections) {
+    Cell_group processed(world);
+    int32_t cell_id = -1;
+    for (uint32_t i = 0; i < world.size() ; i++) if (!processed.contains(i) && !bridges.contains(i)) cell_id = i;
+    while (cell_id != -1){
+        Cell_group sub_world(world);
+        while (cell_id != -1) {
+            processed.add(cell_id);
+            sub_world.add(cell_id);
+            cell_id = -1;
+            for (uint32_t j = 0; j < sub_world.size() && cell_id == -1; j++){
+                for(uint32_t k = 0; k < connections[sub_world[j].id].size() && cell_id == -1; k++){
+                    if (!processed.contains(connections[sub_world[j].id][k]) && !bridges.contains(connections[sub_world[j].id][k])) cell_id = connections[sub_world[j].id][k];
+                }
+            }
+        }
+        _sub_worlds.push_back(sub_world);
+        cell_id = -1;
+        for (uint32_t i = 0; i < world.size() ; i++) if (!processed.contains(i) && !bridges.contains(i)) cell_id = i;
+    }
+}
+
+uint32_t Sub_worlds::size() {
+    return _sub_worlds.size();
+}
+
+Cell_group &Sub_worlds::operator[](const uint32_t index) {
+    return _sub_worlds[index];
+}

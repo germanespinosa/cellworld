@@ -31,7 +31,7 @@ add_library(cellworld
         src/simulation.cpp
         src/visibility.cpp
         src/connection.cpp
-        src/map_editor.cpp )
+        src/map_editor.cpp catchtests/connections.cpp catchtests/world.cpp)
 
 target_link_libraries(cellworld
         PUBLIC
