@@ -8,35 +8,31 @@
 using namespace std;
 
 namespace cellworld{
-    Map_editor::Map_editor(cellworld::World &world, ge211::Dimensions scene_dimensions, std::vector<Coordinates> connection_pattern) :
+    Map_editor::Map_editor(cellworld::World &world, Cell_group &selected, ge211::Dimensions scene_dimensions, std::vector<Coordinates> connection_pattern) :
     world(world),
     _scene_dimensions(scene_dimensions),
     _view(world, scene_dimensions),
     _visibility(world),
     _connection_pattern(connection_pattern),
-    _selected_cells(world),
-    _visible_cells(world)
+    _selected_cells(selected),
+    _visible_cells(world),
+    _sub_world_cells(world)
     {
-        cout << "Map_editor::Map_editor start" << endl;
+        Connections cnn;
+        world.get_connections(cnn, connection_pattern);
+        _sub_worlds.reset(world,selected,cnn);
+
         _current_cell_id = -1;
+        _current_sub_world = -1;
         _message_timer = 0;
+        _mode = 0;
         refresh_values();
-        cout << "Map_editor::Map_editor end" << endl;
     }
 
     void Map_editor::on_mouse_move(ge211::Position mouse_position) {
         _mouse_position = mouse_position;
         int32_t index = _view.get_cell(mouse_position);
-        if (index!=_current_cell_id){
-            _visible_cells.clear();
-            if (index>=0)
-                for (uint32_t i = 0; i<world.size(); i++){
-                    if (_visibility.is_visible(index,i)){
-                        _visible_cells.add(i);
-                    }
-                }
-            _current_cell_id = index;
-        }
+        _update_current_cell(index);
     }
 
     void Map_editor::on_mouse_up(ge211::Mouse_button mouse_button, ge211::Position mouse_position) {
@@ -44,11 +40,11 @@ namespace cellworld{
         if (index>=0) {
             if (mouse_button == ge211::Mouse_button::left) {
                 world.set_occlusion(index, !world[index].occluded);
-                refresh_values();
             }
             else {
                 _selected_cells.toggle(index);
             }
+            refresh_values();
         }
     }
 
@@ -57,7 +53,7 @@ namespace cellworld{
     }
 
     void Map_editor::draw(ge211::Sprite_set &sprites) {
-        _view.draw_editor(sprites,_current_cell_id, _selected_cells, _visible_cells, _message);
+        _view.draw_editor(sprites,_current_cell_id, _selected_cells, _mode == 0?_visible_cells:_sub_world_cells, _mode == 0?Yellow:Purple, _message);
     }
 
     void Map_editor::on_key_up(ge211::Key key) {
@@ -76,7 +72,16 @@ namespace cellworld{
                 _message = "Re-loaded from file";
                 _message_timer = 0;
                 break;
-
+            case '1':
+                _message = "Showing visibility";
+                _message_timer = 0;
+                _mode = 0;
+                break;
+            case '2':
+                _message = "Showing subworlds";
+                _message_timer = 0;
+                _mode = 1;
+                break;
         }
     }
 
@@ -88,10 +93,41 @@ namespace cellworld{
     void Map_editor::refresh_values() {
         _visibility.reset();
         world.get_connections(_world_connections,_connection_pattern);
+        _sub_worlds.reset(world,_selected_cells,_world_connections);
         _world_connections.process_eigen_centrality();
         double max = 0;
         for (uint32_t i = 0 ; i < _world_connections.size(); i++) if (max < _world_connections[i].eigen_centrality) max = _world_connections[i].eigen_centrality;
         for (uint32_t i = 0 ; i < _world_connections.size(); i++) world.set_value(i,_world_connections[i].eigen_centrality/max);
+        uint32_t index = _current_cell_id;
+        _update_current_cell(Not_found);
+        _update_current_cell(index);
     }
 
+    void Map_editor::_update_current_cell(int32_t index) {
+        if (index != Not_found) {
+            if (index != _current_cell_id){
+                _current_cell_id = index;
+                if (world[index].occluded) {
+                    _visible_cells.clear();
+                    _sub_world_cells.clear();
+                } else {
+                    _visibility.get_visible_cells(_visible_cells, _current_cell_id);
+                    int32_t sub_world_index = _sub_worlds.get_sub_world_index(_current_cell_id);
+                    if (sub_world_index != _current_sub_world) {
+                        _current_sub_world = sub_world_index;
+                        if (sub_world_index == Not_found) {
+                            _sub_world_cells.clear();
+                        }else {
+                            _sub_worlds.get_cells(_sub_world_cells, _current_sub_world);
+                        }
+                    }
+                }
+            }
+        } else {
+            _current_cell_id = Not_found;
+            _current_sub_world = Not_found;
+            _visible_cells.clear();
+            _sub_world_cells.clear();
+        }
+    }
 }

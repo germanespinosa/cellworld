@@ -2,6 +2,8 @@
 #include <ge211.h>
 
 namespace cellworld{
+    const int16_t Not_found = -1;
+
     enum Color{
         Black,
         White,

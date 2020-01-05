@@ -22,14 +22,14 @@ TEST_CASE("World")
 TEST_CASE("World connections")
 {
     World w("test");
-    Cell c1(0,{0,1},{1,1},0,false);
-    Cell c2(1,{1,1},{1,1},0,false);
-    Cell c3(2,{2,1},{1,1},0,false);
-    Cell c4(3,{3,1},{1,1},0,false);
+    Cell c0(0,{0,1},{1,1},0,false);
+    Cell c1(1,{1,1},{1,1},0,false);
+    Cell c2(2,{2,1},{1,1},0,false);
+    Cell c3(3,{3,1},{1,1},0,false);
+    w.add(c0);
     w.add(c1);
     w.add(c2);
     w.add(c3);
-    w.add(c4);
     Connections wc;
     w.get_connections(wc,{{-1,0},{1,0}});
     CHECK(w.size()==4);

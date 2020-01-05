@@ -63,7 +63,7 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, string tex
     }
 }
 
-void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, Cell_group& selected_cells, Cell_group& visible_cells, std::string text) {
+void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, Cell_group& selected_cells, Cell_group& highlighted_cells, Color highlighted_color, std::string text) {
     if (!text.empty()) {
         fps.reconfigure(Text_sprite::Builder(sans) << text);
         sprites.add_sprite(fps, {10, 10});
@@ -72,8 +72,8 @@ void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, Cell_group& se
     for (unsigned int i =0 ; i< selected_cells.size(); i++) {
         sprites.add_sprite(_cell_sprites[4], _screen_location(selected_cells[i].location),2);
     }
-    for (unsigned int i =0 ; i< visible_cells.size(); i++) {
-        sprites.add_sprite(_cell_sprites[5], _screen_location(visible_cells[i].location),1);
+    for (unsigned int i =0 ; i< highlighted_cells.size(); i++) {
+        sprites.add_sprite(_cell_sprites[highlighted_color], _screen_location(highlighted_cells[i].location),1);
     }
     if (index>=0) {
         if (_world[index].occluded)

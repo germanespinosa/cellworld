@@ -9,7 +9,7 @@ namespace cellworld{
     {
         View(World &world, const ge211::Dimensions);
         void draw_scene (ge211::Sprite_set& , std::vector<Agent_data>, std::string);
-        void draw_editor (ge211::Sprite_set&, int32_t , Cell_group&, Cell_group&, std::string);
+        void draw_editor (ge211::Sprite_set&, int32_t , Cell_group&, Cell_group&, Color, std::string);
         int32_t get_cell(ge211::Position);
         private:
         void _draw_world(ge211::Sprite_set& sprites);

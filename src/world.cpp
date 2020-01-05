@@ -44,6 +44,9 @@ bool World::add(Cell cell){
     distances.push_back(0);
     _distances.push_back(distances);
     cells.push_back(cell);
+    uint32_t i = ( cell.coordinates.x + 128 );
+    uint32_t j = ( cell.coordinates.y + 128 );
+    _map[i][j] = cell.id;
     return true;
 }
 
@@ -91,17 +94,9 @@ uint32_t World::size() const{
 }
 
 int32_t World::find (const Coordinates& coordinates) const{
-    static int32_t *map=NULL;
-    if (map == NULL){
-        map = (int32_t *) malloc(256*256* sizeof(int32_t));
-        for (unsigned int i=0; i<256*256; i++) map[i] = -1;
-        for (unsigned int i=0; i<cells.size(); i++) {
-            int m=(cells[i].coordinates.x+128)*256 + (cells[i].coordinates.y+128);
-            map[m] = i;
-        }
-    }
-    int mi=(coordinates.x+128)*256 + (coordinates.y+128);
-    return map[mi];
+    uint32_t i = ( coordinates.x + 128 );
+    uint32_t j = ( coordinates.y + 128 );
+    return _map[i][j];
 }
 
 const Cell &World::operator[](const uint32_t& id) const{
@@ -141,11 +136,12 @@ bool World::load() {
 
 void World::get_connections(Connections & connections , const std::vector<Coordinates> &pattern) const {
     connections.clear();
-    for (unsigned int source=0; source < cells.size(); source++){
-        if (!cells[source].occluded) {
-            for (unsigned int j = 0; j < pattern.size(); j++) {
+    cout << endl;
+    for (unsigned int source = 0; source < cells.size(); source++){
+        if ( !cells[source].occluded ) {
+            for ( unsigned int j = 0; j < pattern.size(); j++ ) {
                 Coordinates c = cells[source].coordinates + pattern[j];
-                int32_t destination = find(c);
+                int32_t destination = this->find(c);
                 if (destination >= 0 && !cells[destination].occluded) {
                     connections.add(source,destination);
                 }
@@ -155,7 +151,7 @@ void World::get_connections(Connections & connections , const std::vector<Coordi
 }
 
 World::World(std::string name) : name (name){
-
+    for (unsigned int i = 0; i < 256; i++) for (unsigned int j = 0; j < 256; j++)  _map[i][j] = -1;
 }
 
 Cell_group::Cell_group(const World &world):
@@ -274,32 +270,81 @@ bool Cell_group::contains(uint32_t id) const {
     return false;
 }
 
-Sub_worlds::Sub_worlds(const World &world, const Cell_group &bridges, const Connections &connections) {
-    Cell_group processed(world);
-    int32_t cell_id = -1;
-    for (uint32_t i = 0; i < world.size() ; i++) if (!processed.contains(i) && !bridges.contains(i)) cell_id = i;
-    while (cell_id != -1){
+Cell_group &Cell_group::operator = (Cell_group &cg) {
+    cg.clear();
+    for (uint32_t i = 0; i < cg.size() ; i++) add(cg[i].id);
+    return cg;
+}
+
+Sub_worlds::Sub_worlds()
+{
+    _size=0;
+}
+
+uint32_t Sub_worlds::size() {
+    return _size;
+}
+
+void Sub_worlds::reset(const World &world, const Cell_group &bridges, const Connections &connections) {
+    std::vector<Cell_group> _sub_worlds;
+    _index.clear();
+    for (uint32_t i = 0 ; i < world.size(); i++ ) _index.push_back(world[i].occluded? occluded :Not_found);
+    for (uint32_t i = 0; i < bridges.size() ; i++) _index[bridges[i].id]=is_gate;
+
+    int32_t cell_id = Not_found;
+    uint32_t last_checked = 0;
+    for (; last_checked < world.size() && cell_id == Not_found ; last_checked++) if (_index[last_checked]==Not_found) cell_id = last_checked;
+    while ( cell_id != Not_found ){
         Cell_group sub_world(world);
-        while (cell_id != -1) {
-            processed.add(cell_id);
+        while ( cell_id != Not_found ) {
             sub_world.add(cell_id);
-            cell_id = -1;
-            for (uint32_t j = 0; j < sub_world.size() && cell_id == -1; j++){
-                for(uint32_t k = 0; k < connections[sub_world[j].id].size() && cell_id == -1; k++){
-                    if (!processed.contains(connections[sub_world[j].id][k]) && !bridges.contains(connections[sub_world[j].id][k])) cell_id = connections[sub_world[j].id][k];
+            _index[cell_id] =_sub_worlds.size();
+            cell_id = Not_found;
+            for ( uint32_t j = 0; j < sub_world.size() && cell_id == Not_found; j++){
+                for( uint32_t k = 0; k < connections[sub_world[j].id].size() && cell_id == Not_found; k++ ){
+                    if (_index[connections[sub_world[j].id][k]] == Not_found ) {
+                        cell_id = connections[sub_world[j].id][k];
+                    }
                 }
             }
         }
         _sub_worlds.push_back(sub_world);
-        cell_id = -1;
-        for (uint32_t i = 0; i < world.size() ; i++) if (!processed.contains(i) && !bridges.contains(i)) cell_id = i;
+        cell_id = Not_found;
+        for (; last_checked < world.size() && cell_id == Not_found ; last_checked++) if (_index[last_checked]==Not_found) cell_id = last_checked;
     }
+    for (uint32_t i = 0; i < bridges.size() ; i++){
+        Gate g;
+        g._cell_id = bridges[i].id;
+        for (uint32_t j = 0; j < connections[g._cell_id].size() ; j++) {
+            int32_t sub_world_index = _index[connections[g._cell_id][j]];
+            if (sub_world_index >= 0) g._sub_world_ids.push_back(sub_world_index);
+        }
+    }
+    _size= _sub_worlds.size();
 }
 
-uint32_t Sub_worlds::size() {
-    return _sub_worlds.size();
+int32_t Sub_worlds::get_sub_world_index(uint32_t cell_id) const {
+    return _index[cell_id];
 }
 
-Cell_group &Sub_worlds::operator[](const uint32_t index) {
-    return _sub_worlds[index];
+bool Sub_worlds::get_cells(Cell_group &cg, uint32_t sub_world_id) const {
+    cg.clear();
+    if (sub_world_id>=_size) return false;
+    for (uint32_t i=0;i<_index.size();i++) if (_index[i] == (int32_t)sub_world_id) cg.add(i);
+    return true;
 }
+
+Cell_group Sub_worlds::find_bridges(const World &world, const Connections &connections) {
+    Cell_group candidates(world);
+    // step 1 add all cells with at least 2 connections and less than 5
+    for (uint32_t i = 0 ; i < world.size(); i++ ) if (connections[i].size()>=2 && connections[i].size() <=4) candidates.add(i);
+    reset(world, candidates, connections);
+    // step 2 remove all the candidates not connecting to any world
+    for (uint32_t i = 0; i < _gates.size(); i++) if (_gates[i]._sub_world_ids.size()==0) candidates.remove(_gates[i]._cell_id);
+    reset(world, candidates, connections);
+    // step 3 remove all the candidates connecting to only one world
+    for (uint32_t i = 0; i < _gates.size(); i++) if (_gates[i]._sub_world_ids.size()<=1) candidates.remove(_gates[i]._cell_id);
+    reset(world, candidates, connections);
+    return candidates;
+}
+

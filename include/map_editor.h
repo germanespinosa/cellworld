@@ -6,7 +6,7 @@
 #include <visibility.h>
 namespace cellworld {
     struct Map_editor  : ge211::Abstract_game {
-        Map_editor(World &, ge211::Dimensions, std::vector<Coordinates> );
+        Map_editor(World &, Cell_group &, ge211::Dimensions, std::vector<Coordinates> );
         ge211::Dimensions initial_window_dimensions() const override;
         void draw(ge211::Sprite_set&) override;
         World &world;
@@ -16,6 +16,7 @@ namespace cellworld {
         void on_frame(double) override;
         void refresh_values();
     private:
+        void _update_current_cell(int32_t);
         ge211::Position _mouse_position{0,0};
         ge211::Dimensions _scene_dimensions;
         std::string _message;
@@ -25,7 +26,11 @@ namespace cellworld {
         Visibility _visibility;
         std::vector<Coordinates> _connection_pattern;
         int32_t _current_cell_id;
-        Cell_group _selected_cells;
+        int32_t _current_sub_world;
+        Cell_group &_selected_cells;
         Cell_group _visible_cells;
+        Cell_group _sub_world_cells;
+        Sub_worlds _sub_worlds;
+        int _mode;
     };
 }

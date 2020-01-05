@@ -106,3 +106,7 @@ uint32_t Connection::size() const {
 uint32_t Connection::operator[](uint32_t index) const{
     return _connections[index];
 }
+
+const std::vector<uint32_t> &Connection::get_all() const{
+    return _connections;
+}

@@ -12,6 +12,7 @@ namespace cellworld {
         double eigen_centrality;
         uint32_t size() const;
         uint32_t operator [](uint32_t) const;
+        const std::vector<uint32_t> &get_all() const;
     private:
         std::vector<uint32_t> _connections;
     };

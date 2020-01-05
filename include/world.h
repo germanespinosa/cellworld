@@ -38,6 +38,7 @@ namespace cellworld{
         std::vector<Cell> cells;
         std::vector<std::vector<double>> _distances;
         std::string _file_name;
+        int32_t _map[256][256];
     };
 
     struct Cell_group{
@@ -56,6 +57,7 @@ namespace cellworld{
         int32_t find(uint32_t) const;
         int32_t find(Coordinates) const;
         void get_connections(Connections &, const std::vector<Coordinates>) const;
+        Cell_group &operator = (Cell_group &);
         private:
         std::vector<uint32_t> _cell_ids;
         const World &_world;
@@ -63,11 +65,23 @@ namespace cellworld{
         const Cell & _get_cell(uint32_t) const;
     };
 
+    struct Gate{
+        uint32_t _cell_id;
+        std::vector<uint32_t> _sub_world_ids;
+    };
+
     struct Sub_worlds{
-        Sub_worlds(const World &, const Cell_group &, const Connections &);
+        const int32_t is_gate = -2;
+        const int32_t occluded = -3;
+        Sub_worlds();
         uint32_t size();
-        Cell_group &operator[] (uint32_t);
+        void reset (const World &, const Cell_group &, const Connections &);
+        int32_t get_sub_world_index(uint32_t) const;
+        bool get_cells(Cell_group&, uint32_t) const;
+        Cell_group find_bridges(const World &, const Connections &);
     private:
-        std::vector<Cell_group> _sub_worlds;
+        std::vector<int32_t> _index;
+        std::vector<Gate> _gates;
+        uint32_t _size;
     };
 }

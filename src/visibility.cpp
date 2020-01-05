@@ -46,11 +46,17 @@ namespace cellworld {
         _visibility[_visibility_index(d,s)] = is_visible;
     }
 
-    vector<Cell> Visibility::visible_cells (const Cell& c) const{
-        vector<Cell> r;
+    bool Visibility::get_visible_cells (Cell_group & r, uint32_t cell_id) const{
+        cout << "Visibility::get_visible_cells start" << endl;
+        r.clear();
+        cout << "Visibility::get_visible_cells 1" << endl;
+        cout << "Visibility::get_visible_cells id:" << cell_id << endl;
+        if (_world[cell_id].occluded) return false;
+        cout << "Visibility::get_visible_cells 2" << endl;
         for (unsigned int i=0;i<_world.size();i++)
-            if ((c.id!=i) && (_visibility[_visibility_index(c.id,i)] == Visible::Visible)) r.push_back(_world[i]);
-        return r;
+            if ((cell_id!=i) && (_visibility[_visibility_index(cell_id,i)] == Visible::Visible)) r.add(i);
+        cout << "Visibility::get_visible_cells end" << endl;
+        return true;
     }
 
     bool Visibility::_get_visibility(const uint32_t s, const uint32_t d){
