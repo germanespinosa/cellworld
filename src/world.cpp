@@ -299,10 +299,10 @@ void Sub_worlds::reset(const World &world, const Cell_group &bridges, const Conn
     }
     int32_t cell_id = Not_found;
     uint32_t last_checked = 0;
-    uint32_t last_completed = 0;
     for (; last_checked < world.size() && cell_id == Not_found ; last_checked++) if (_cell_sub_world_index[last_checked]==Not_found) cell_id = last_checked;
     while ( cell_id != Not_found ){
         Sub_world sub_world(world);
+        uint32_t last_completed = 0;
         while ( cell_id != Not_found ) {
             sub_world.cells.add(cell_id);
             _cell_sub_world_index[cell_id] =_sub_worlds.size();
@@ -313,7 +313,7 @@ void Sub_worlds::reset(const World &world, const Cell_group &bridges, const Conn
                         cell_id = connections[sub_world.cells[j].id][k];
                     }
                 }
-                //if (cell_id == Not_found) last_completed = j;
+                if (cell_id == Not_found) last_completed = j + 1;
             }
         }
         _sub_worlds.push_back(sub_world);
@@ -388,9 +388,7 @@ void Sub_worlds::reset_connections() {
 }
 
 Gate::Gate(uint32_t cell_id) :
-_cell_id (cell_id){
-
-}
+_cell_id (cell_id){}
 
 bool Gate::connect(uint32_t world_id) {
     if (is_connected(world_id)) return false;
