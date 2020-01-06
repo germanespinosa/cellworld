@@ -82,6 +82,12 @@ namespace cellworld{
                 _message_timer = 0;
                 _mode = 1;
                 break;
+            case 'r':
+                _message = "Finding bridges";
+                _message_timer = 0;
+                Cell_group ns = _sub_worlds.find_bridges(world, _world_connections);
+                _selected_cells = ns;
+                break;
         }
     }
 
@@ -92,8 +98,8 @@ namespace cellworld{
 
     void Map_editor::refresh_values() {
         _visibility.reset();
-        world.get_connections(_world_connections,_connection_pattern);
-        _sub_worlds.reset(world,_selected_cells,_world_connections);
+        world.get_connections(_world_connections, _connection_pattern);
+        _sub_worlds.reset(world,_selected_cells, _world_connections);
         _world_connections.process_eigen_centrality();
         double max = 0;
         for (uint32_t i = 0 ; i < _world_connections.size(); i++) if (max < _world_connections[i].eigen_centrality) max = _world_connections[i].eigen_centrality;
@@ -117,7 +123,10 @@ namespace cellworld{
                         _current_sub_world = sub_world_index;
                         if (sub_world_index == Not_found) {
                             _sub_world_cells.clear();
-                        }else {
+                        }else if (sub_world_index == Sub_worlds::is_gate){
+                            //Gate &gate = _sub_worlds.gate(_current_cell_id);
+                            //cout << "gate: connected to " <<  gate._sub_world_ids.size() << endl;
+                        } else {
                             _sub_worlds.get_cells(_sub_world_cells, _current_sub_world);
                         }
                     }
