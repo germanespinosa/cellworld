@@ -4,6 +4,7 @@
 #include <view.h>
 #include <connection.h>
 #include <visibility.h>
+#include <sub_world.h>
 namespace cellworld {
     struct Map_editor  : ge211::Abstract_game {
         Map_editor(World &, Cell_group &, ge211::Dimensions, std::vector<Coordinates> );
