@@ -15,9 +15,8 @@ namespace cellworld{
         bool connect(uint32_t);
         bool is_connected(uint32_t);
         std::vector<Gate_connection> gate_connections;
-    private:
-        uint32_t _cell_id;
-        std::vector<uint32_t> _sub_world_ids;
+        uint32_t cell_id;
+        std::vector<uint32_t> sub_world_ids;
         friend class Sub_worlds;
     };
 
@@ -30,9 +29,10 @@ namespace cellworld{
     };
 
     struct Sub_worlds{
-        const static int32_t is_gate = -2;
-        const static int32_t occluded = -3;
+        const static int32_t Is_gate = -2;
+        const static int32_t Occluded = -3;
         Sub_worlds();
+        Sub_worlds(const World &world, const Cell_group &bridges, const Connections &connections);
         uint32_t size();
         void reset (const World &, const Cell_group &, const Connections &);
         void reset_connections();

@@ -17,8 +17,12 @@ namespace cellworld {
         void on_frame(double) override;
         void refresh_values();
     private:
+        static const uint32_t gates = 0;
+        static const uint32_t visible = 1;
+        static const uint32_t sub_world = 2;
+        static const uint32_t connected_gates = 3;
+
         void _update_current_cell(int32_t);
-        ge211::Position _mouse_position{0,0};
         ge211::Dimensions _scene_dimensions;
         std::string _message;
         double _message_timer;
@@ -28,10 +32,8 @@ namespace cellworld {
         std::vector<Coordinates> _connection_pattern;
         int32_t _current_cell_id;
         int32_t _current_sub_world;
-        Cell_group &_selected_cells;
-        Cell_group _visible_cells;
-        Cell_group _sub_world_cells;
         Sub_worlds _sub_worlds;
+        std::vector<Cell_group_view> cells_view;
         int _mode;
     };
 }

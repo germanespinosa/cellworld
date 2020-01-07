@@ -5,11 +5,16 @@
 #include <agent.h>
 
 namespace cellworld{
-     struct View
+    struct Cell_group_view{
+        Cell_group cells;
+        Color color;
+        bool show;
+    };
+    struct View
     {
         View(World &world, const ge211::Dimensions);
         void draw_scene (ge211::Sprite_set& , std::vector<Agent_data>, std::string);
-        void draw_editor (ge211::Sprite_set&, int32_t , Cell_group&, Cell_group&, Color, std::string);
+        void draw_editor (ge211::Sprite_set&, int32_t , std::vector<Cell_group_view>, std::string);
         int32_t get_cell(ge211::Position);
         private:
         void _draw_world(ge211::Sprite_set& sprites);

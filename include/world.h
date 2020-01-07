@@ -58,6 +58,7 @@ namespace cellworld{
         int32_t find(Coordinates) const;
         void get_connections(Connections &, const std::vector<Coordinates>) const;
         Cell_group &operator = (Cell_group &);
+        Cell_group &operator += (Cell_group &);
         private:
         std::vector<uint32_t> _cell_ids;
         const World &_world;

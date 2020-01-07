@@ -63,23 +63,26 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, string tex
     }
 }
 
-void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, Cell_group& selected_cells, Cell_group& highlighted_cells, Color highlighted_color, std::string text) {
+void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Cell_group_view> groups, std::string text) {
     if (!text.empty()) {
         fps.reconfigure(Text_sprite::Builder(sans) << text);
         sprites.add_sprite(fps, {10, 10});
     }
     _draw_world(sprites);
-    for (unsigned int i =0 ; i< selected_cells.size(); i++) {
-        sprites.add_sprite(_cell_sprites[4], _screen_location(selected_cells[i].location),2);
-    }
-    for (unsigned int i =0 ; i< highlighted_cells.size(); i++) {
-        sprites.add_sprite(_cell_sprites[highlighted_color], _screen_location(highlighted_cells[i].location),1);
+    for (uint32_t group_index = 0; group_index < groups.size() ; group_index ++) {
+        Cell_group_view &gv = groups[group_index];
+        if (gv.show) {
+            Cell_group &cells = gv.cells;
+            for (unsigned int i = 0; i < cells.size(); i++) {
+                sprites.add_sprite(_cell_sprites[gv.color], _screen_location(cells[i].location), 2 + group_index);
+            }
+        }
     }
     if (index>=0) {
         if (_world[index].occluded)
-            sprites.add_sprite(_cell_sprites[12], _screen_location(_world[index].location),3);
+            sprites.add_sprite(_cell_sprites[12], _screen_location(_world[index].location),255);
         else
-            sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),3);
+            sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),255);
     }
 }
 

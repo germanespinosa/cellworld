@@ -274,3 +274,8 @@ Cell_group &Cell_group::operator = (Cell_group &cg) {
     for (uint32_t i = 0; i < cg.size() ; i++) _cell_ids.push_back(cg[i].id);
     return cg;
 }
+
+Cell_group &Cell_group::operator += (Cell_group &cg) {
+    for (uint32_t i = 0; i < cg.size() ; i++) add(cg[i].id);
+    return cg;
+}
