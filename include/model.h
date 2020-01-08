@@ -4,7 +4,7 @@
 #include <world.h>
 #include <agent.h>
 
-namespace cellworld{
+namespace cell_world{
     struct Model
     {
         Model( World &world, std::vector<Agent*>&);

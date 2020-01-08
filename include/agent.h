@@ -1,7 +1,7 @@
 #pragma once
 #include <core.h>
 
-namespace cellworld{
+namespace cell_world{
      struct Agent_data{
         uint32_t type;
         uint32_t id;
@@ -20,7 +20,7 @@ namespace cellworld{
         virtual uint32_t action_ready() = 0;
         virtual uint32_t get_destination() = 0;
         virtual void end_episode(const State &) = 0;
-        Agent_data data;
+        Agent_data data{};
         bool active = true;
     };
 }  

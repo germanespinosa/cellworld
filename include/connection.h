@@ -3,12 +3,11 @@
 #include <map>
 #include <vector>
 
-namespace cellworld {
+namespace cell_world {
 
     struct Connection {
         bool is_connected(uint32_t) const;
         bool add(uint32_t);
-        bool remove(uint32_t);
         double eigen_centrality;
         uint32_t size() const;
         uint32_t operator [](uint32_t) const;
@@ -20,9 +19,6 @@ namespace cellworld {
     struct Connections {
         Connections();
         bool add(uint32_t, uint32_t );
-        bool remove(uint32_t, uint32_t );
-        /*bool load(const std::string &);
-        bool load();*/
         bool save(const std::string &) const;
         //bool save();
         const Connection &operator [](uint32_t) const;

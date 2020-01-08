@@ -1,7 +1,7 @@
 #pragma once
 #include <ge211.h>
 
-namespace cellworld{
+namespace cell_world{
     const int16_t Not_found = -1;
 
     enum Color{
@@ -25,11 +25,11 @@ namespace cellworld{
     struct Coordinates{
         int8_t x,y;
         
-        bool operator ==(const Coordinates) const;
-        bool operator !=(const Coordinates) const;
-        Coordinates operator +=(const Coordinates);
-        Coordinates operator +(const Coordinates) const;
-        Coordinates operator -(const Coordinates) const;
+        bool operator ==(Coordinates) const;
+        bool operator !=(Coordinates) const;
+        Coordinates operator +=(Coordinates);
+        Coordinates operator +(Coordinates) const;
+        Coordinates operator -(Coordinates) const;
         Coordinates operator -() const;
     };
 } 

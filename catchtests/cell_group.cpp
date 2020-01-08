@@ -1,7 +1,7 @@
 #include<catch.h>
 #include<cellworld.h>
 
-using namespace cellworld;
+using namespace cell_world;
 
 TEST_CASE("cell_group")
 {

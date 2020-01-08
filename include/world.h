@@ -3,7 +3,7 @@
 #include <ge211.h>
 #include "connection.h"
 
-namespace cellworld{
+namespace cell_world{
 
     struct Cell{
         Cell();
@@ -17,12 +17,12 @@ namespace cellworld{
     };
 
     struct World{
-        explicit World(std::string);
+        explicit World(std::string );
         bool add(Cell);
-        bool load(std::string);
+        bool load(const std::string&);
         bool load();
         bool save() const;
-        bool save(std::string) const;
+        bool save(const std::string&) const;
         double distance(uint32_t, uint32_t) const;
         double distance(const Cell&, const Cell&) const;
         double distance(const Cell&, const Cell&, const Cell&) const;
@@ -38,6 +38,6 @@ namespace cellworld{
         std::vector<Cell> cells;
         std::vector<std::vector<double>> _distances;
         std::string _file_name;
-        int32_t _map[256][256];
+        int32_t _map[256][256]{};
     };
 }

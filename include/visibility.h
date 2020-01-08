@@ -2,19 +2,24 @@
 #include <world.h>
 #include <cell_group.h>
 
-namespace cellworld{
+namespace cell_world{
     struct Visibility{
-        Visibility( World& );
+        explicit Visibility( World& );
         ~Visibility();
         std::vector<Cell> line (const Cell&, const Cell&) const;
         bool get_visible_cells (Cell_group &, uint32_t) const;
         bool is_visible(const Cell&, const Cell&) const;
-        bool is_visible(const uint32_t, const uint32_t) const;
+        bool is_visible(uint32_t, uint32_t) const;
         void reset();
         private:
-        bool _get_visibility(const uint32_t, const uint32_t);
-        void _set_visibility(const uint32_t, const uint32_t, const uint8_t);
-        uint32_t _visibility_index(const uint32_t, const uint32_t) const;
+        enum Visible{
+            Not_checked,
+            Visible,
+            Not_visible
+        };
+        bool _get_visibility(uint32_t, uint32_t);
+        void _set_visibility(uint32_t, uint32_t, uint8_t);
+        uint32_t _visibility_index(uint32_t, uint32_t) const;
         World &_world;
         uint8_t *_visibility;
     };

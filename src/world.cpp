@@ -3,9 +3,10 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <utility>
 
 using namespace std;
-using namespace cellworld;
+using namespace cell_world;
 using namespace ge211;
 
 bool Cell::operator == (const Cell& c) const {
@@ -50,13 +51,13 @@ bool World::add(Cell cell){
     return true;
 }
 
-bool World::load(const std::string filepath){
-    _file_name = filepath;
+bool World::load(const std::string& file_path){
+    _file_name = file_path;
     cells.clear();
-    std::ifstream ifile;
-    ifile.open(filepath.c_str());
+    std::ifstream file;
+    file.open(file_path.c_str());
     string line;
-    while (getline(ifile, line)){
+    while (getline(file, line)){
         istringstream ss(line);
         int16_t cx,cy;
         Cell cell;
@@ -73,18 +74,18 @@ bool World::load(const std::string filepath){
     return true;
 }
 
-bool World::save(const std::string filepath) const{
-    std::ofstream  ofile;
-    ofile.open(filepath.c_str());
-    for (unsigned int i=0;i<cells.size();i++){
-        ofile
-                << (int16_t)cells[i].coordinates.x << " "
-                << (int16_t)cells[i].coordinates.y << " "
-                << cells[i].location.x << " "
-                << cells[i].location.y << " "
-                << cells[i].value << " "
-                << cells[i].occluded ;
-        ofile << std::endl;
+bool World::save(const std::string& file_path) const{
+    std::ofstream file;
+    file.open(file_path.c_str());
+    for (const auto & cell : cells){
+        file
+            << (int16_t)cell.coordinates.x << " "
+            << (int16_t)cell.coordinates.y << " "
+            << cell.location.x << " "
+            << cell.location.y << " "
+            << cell.value << " "
+            << cell.occluded ;
+        file << std::endl;
     }
     return true;
 }
@@ -138,10 +139,10 @@ void World::get_connections(Connections & connections , const std::vector<Coordi
     connections.clear();
     for (unsigned int source = 0; source < cells.size(); source++){
         if ( !cells[source].occluded ) {
-            for ( unsigned int j = 0; j < pattern.size(); j++ ) {
-                Coordinates c = cells[source].coordinates + pattern[j];
+            for (auto j : pattern) {
+                Coordinates c = cells[source].coordinates + j;
                 int32_t destination = this->find(c);
-                if (destination >= 0 && !cells[destination].occluded) {
+                if (destination != Not_found && !cells[destination].occluded) {
                     connections.add(source,destination);
                 }
             }
@@ -149,8 +150,8 @@ void World::get_connections(Connections & connections , const std::vector<Coordi
     }
 }
 
-World::World(std::string name) : name (name){
-    for (unsigned int i = 0; i < 256; i++) for (unsigned int j = 0; j < 256; j++)  _map[i][j] = -1;
+World::World(std::string name) : name (std::move(name)){
+    for (auto & i : _map) for (int & j : i) j = Not_found;
 }
 
 

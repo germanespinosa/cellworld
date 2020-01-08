@@ -3,7 +3,7 @@
 
 using namespace ge211;
 using namespace std;
-using namespace cellworld;
+using namespace cell_world;
 
 Simulation::Simulation (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
         _model(world, agents),

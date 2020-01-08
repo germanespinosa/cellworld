@@ -2,8 +2,7 @@
 #include <ge211.h>
 
 using namespace std;
-using namespace cellworld;
-
+using namespace cell_world;
 
 bool Coordinates::operator ==(const Coordinates c) const {
     return c.x==x && c.y == y;

@@ -4,8 +4,7 @@
 #include "world.h"
 #include "connection.h"
 
-
-namespace cellworld{
+namespace cell_world{
     struct Cell_group{
         explicit Cell_group(const World &);
         bool load(const std::string &);
@@ -18,12 +17,12 @@ namespace cellworld{
         bool contains(uint32_t) const;
         void clear();
         uint32_t size() const;
-        const Cell &operator [](const uint32_t) const;
+        const Cell &operator [](uint32_t) const;
         int32_t find(uint32_t) const;
         int32_t find(Coordinates) const;
-        void get_connections(Connections &, const std::vector<Coordinates>) const;
-        Cell_group &operator = (Cell_group &);
-        Cell_group &operator += (Cell_group &);
+        void get_connections(Connections &, const std::vector<Coordinates>&) const;
+        Cell_group &operator = (const Cell_group &);
+        Cell_group &operator += (const Cell_group &);
     private:
         std::vector<uint32_t> _cell_ids;
         std::vector<int32_t> _index;

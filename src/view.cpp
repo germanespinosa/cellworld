@@ -3,7 +3,7 @@
 
 using namespace ge211;
 using namespace std;
-using namespace cellworld;
+using namespace cell_world;
 
 View::View(World &world, Dimensions scene_dimensions):
     _world(world) , 
@@ -48,12 +48,12 @@ View::View(World &world, Dimensions scene_dimensions):
 Basic_position<int> View::_screen_location (const Basic_position<double> &location)
 {
     return {
-        (int)(_scene_dimensions.width / 2 + location.x * _ratio - _ratio  / 2), 
-        (int)(_scene_dimensions.height / 2 + location.y * _ratio - _ratio  / 2)
+        (int)((double)_scene_dimensions.width / 2 + location.x * _ratio - _ratio  / 2),
+        (int)((double)_scene_dimensions.height / 2 + location.y * _ratio - _ratio  / 2)
     };
 }
 
-void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, string text)
+void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, const string& text)
 {
     fps.reconfigure(Text_sprite::Builder(sans) << text);
     sprites.add_sprite(fps, {10, 10});
@@ -63,7 +63,7 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, string tex
     }
 }
 
-void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Cell_group_view> groups, std::string text) {
+void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Cell_group_view> groups, const std::string& text) {
     if (!text.empty()) {
         fps.reconfigure(Text_sprite::Builder(sans) << text);
         sprites.add_sprite(fps, {10, 10});
@@ -74,7 +74,7 @@ void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Ce
         if (gv.show) {
             Cell_group &cells = gv.cells;
             for (unsigned int i = 0; i < cells.size(); i++) {
-                sprites.add_sprite(_cell_sprites[gv.color], _screen_location(cells[i].location), 2 + group_index);
+                sprites.add_sprite(_cell_sprites[gv.color], _screen_location(cells[i].location), 2 + (int)group_index);
             }
         }
     }
@@ -87,7 +87,7 @@ void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Ce
 }
 
 void View::_draw_world(ge211::Sprite_set &sprites) {
-    for (unsigned int i =0 ; i< _world.size(); i++) {
+    for (unsigned int i = 0 ; i< _world.size(); i++) {
         const Cell &cell = _world[i];
         if (cell.occluded){
             sprites.add_sprite(_cell_sprites[9], _screen_location(cell.location),0);
@@ -98,7 +98,7 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
 }
 
 int32_t View::get_cell(ge211::Position mouse_position) {
-    for (unsigned int i =0 ; i< _world.size(); i++) {
+    for (unsigned int i = 0 ; i< _world.size(); i++) {
         const Cell &cell = _world[i];
         ge211::Position cell_pos = _screen_location(cell.location);
         cell_pos.x += _cell_size;
@@ -108,5 +108,5 @@ int32_t View::get_cell(ge211::Position mouse_position) {
             return i;
         }
     }
-    return -1;
+    return Not_found;
 }

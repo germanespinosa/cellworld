@@ -5,9 +5,11 @@
 #include <connection.h>
 #include <visibility.h>
 #include <sub_world.h>
-namespace cellworld {
-    struct Map_editor  : ge211::Abstract_game {
-        Map_editor(World &, Cell_group &, ge211::Dimensions, std::vector<Coordinates> );
+
+namespace cell_world {
+    class Map_editor  : public ge211::Abstract_game {
+        public:
+        Map_editor(World &, Cell_group &, ge211::Dimensions, const std::vector<Coordinates> &);
         ge211::Dimensions initial_window_dimensions() const override;
         void draw(ge211::Sprite_set&) override;
         World &world;
@@ -16,13 +18,15 @@ namespace cellworld {
         void on_key_up(ge211::Key) override;
         void on_frame(double) override;
         void refresh_values();
-    private:
-        static const uint32_t gates = 0;
-        static const uint32_t visible = 1;
-        static const uint32_t sub_world = 2;
-        static const uint32_t connected_gates = 3;
+
+        private:
+        const uint32_t gates = 0;
+        const uint32_t visible = 1;
+        const uint32_t sub_world = 2;
+        const uint32_t connected_gates = 3;
 
         void _update_current_cell(int32_t);
+
         ge211::Dimensions _scene_dimensions;
         std::string _message;
         double _message_timer;

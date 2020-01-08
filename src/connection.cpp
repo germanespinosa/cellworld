@@ -5,17 +5,17 @@
 #include <cmath>
 
 using namespace std;
-using namespace cellworld;
+using namespace cell_world;
 
 bool Connections::process_eigen_centrality() {
     return process_eigen_centrality(100, 0.000001);
 }
 
 bool Connections::process_eigen_centrality(uint32_t max_iterations, double tolerance) {
-    double nnodes = (double)_connections.size();
+    auto nnodes = (double)_connections.size();
     vector<double> last(_connections.size());
     double err = nnodes * 100;
-    for (uint32_t index = 0; index < _connections.size(); index++) _connections[index].eigen_centrality = 1.0/nnodes;
+    for (auto & _connection : _connections) _connection.eigen_centrality = 1.0/nnodes;
     for (uint32_t iteration = 0; iteration < max_iterations && err > nnodes * tolerance; iteration++){
         for (uint32_t index = 0; index < _connections.size(); index++)
             last[index] = _connections[index].eigen_centrality;
@@ -23,11 +23,10 @@ bool Connections::process_eigen_centrality(uint32_t max_iterations, double toler
             for (uint32_t nbr = 0; nbr < _connections[n].size(); nbr++)
                 _connections[_connections[n][nbr]].eigen_centrality += last[n];
         double d=0;
-        for (uint32_t index = 0; index < _connections.size(); index++)
-            d += pow(_connections[index].eigen_centrality,2);
+        for (auto & _connection : _connections) d += pow(_connection.eigen_centrality,2);
         d = pow(d,.5);
         double s = d==0?1:1.0/d;
-        for (uint32_t index = 0; index < _connections.size(); index++) _connections[index].eigen_centrality *= s;
+        for (auto & _connection : _connections) _connection.eigen_centrality *= s;
         err=0;
         for (uint32_t index = 0; index < _connections.size(); index++)
             err += abs(_connections[index].eigen_centrality - last[index]);
@@ -36,36 +35,29 @@ bool Connections::process_eigen_centrality(uint32_t max_iterations, double toler
 }
 
 bool Connections::save(const std::string &filepath) const{
-    std::ofstream ofile;
-    ofile.open(filepath.c_str());
+    std::ofstream file;
+    file.open(filepath.c_str());
     for (unsigned int i=0;i<_connections.size();i++){
         if (_connections[i].size()!=0) {
-            ofile << i;
+            file << i;
             for (unsigned int j = 0; j < _connections[i].size(); j++) {
-                ofile << " " << _connections[i][j];
+                file << " " << _connections[i][j];
             }
-            ofile << std::endl;
+            file << std::endl;
         }
     }
     return true;
 }
 
 
-Connections::Connections() {
-
-}
+Connections::Connections() = default;
 
 bool Connections::add(uint32_t source, uint32_t destination) {
     while (source >=_connections.size()) _connections.emplace_back();
     return _connections[source].add(destination);
 }
 
-bool Connections::remove(uint32_t source, uint32_t destination) {
-    return _connections[source].remove(destination);
-}
-
 const Connection &Connections::operator[](uint32_t source) const{
-//    while (source >=_connections.size()) _connections.emplace_back();
     return _connections[source];
 }
 
@@ -78,21 +70,13 @@ void Connections::clear() {
 }
 
 bool Connection::is_connected(uint32_t destination) const{
-    for (uint32_t i = 0; i<_connections.size(); i++)
-        if (_connections[i]==destination) return true;
+    for (unsigned int _connection : _connections) if (_connection==destination) return true;
     return false;
 }
 
 bool Connection::add(uint32_t destination) {
     if (is_connected(destination)) return false;
     _connections.push_back(destination);
-    return true;
-}
-
-bool Connection::remove(uint32_t destination) {
-    std::vector<uint32_t>::iterator it = find(_connections.begin(),_connections.end(),destination);
-    if (it == _connections.end()) return false;
-    _connections.erase(it);
     return true;
 }
 

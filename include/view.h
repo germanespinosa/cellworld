@@ -5,7 +5,7 @@
 #include <cell_group.h>
 #include <agent.h>
 
-namespace cellworld{
+namespace cell_world{
     struct Cell_group_view{
         Cell_group cells;
         Color color;
@@ -13,9 +13,9 @@ namespace cellworld{
     };
     struct View
     {
-        View(World &world, const ge211::Dimensions);
-        void draw_scene (ge211::Sprite_set& , std::vector<Agent_data>, std::string);
-        void draw_editor (ge211::Sprite_set&, int32_t , std::vector<Cell_group_view>, std::string);
+        View(World &world, ge211::Dimensions);
+        void draw_scene (ge211::Sprite_set& , std::vector<Agent_data>, const std::string&);
+        void draw_editor (ge211::Sprite_set&, int32_t , std::vector<Cell_group_view>, const std::string&);
         int32_t get_cell(ge211::Position);
         private:
         void _draw_world(ge211::Sprite_set& sprites);

@@ -3,7 +3,7 @@
 #include <algorithm>
 
 using namespace std;
-using namespace cellworld;
+using namespace cell_world;
 using namespace ge211;
 
 Sub_worlds::Sub_worlds()
@@ -86,7 +86,7 @@ Cell_group Sub_worlds::find_bridges(const World &world, const Connections &conne
     Cell_group candidates2(world);
     for (uint32_t i = 0; i < candidates.size(); i++) {
         uint32_t cell_id = candidates[i].id;
-        if (gate_by_cell_id(cell_id).sub_world_ids.size()>0) candidates2.add(cell_id);
+        if (!gate_by_cell_id(cell_id).sub_world_ids.empty()) candidates2.add(cell_id);
     }
     reset(world, candidates2, connections);
     // step 3 remove all the redundant candidates
@@ -133,7 +133,7 @@ bool Gate::connect(uint32_t world_id) {
 }
 
 bool Gate::is_connected(uint32_t world_id) {
-    for(uint32_t i = 0; i<sub_world_ids.size(); i++) if (sub_world_ids[i]==world_id) return true;
+    for(unsigned int sub_world_id : sub_world_ids) if (sub_world_id==world_id) return true;
     return false;
 }
 
@@ -141,7 +141,7 @@ Sub_world::Sub_world(const World &world):
         cells(world){}
 
 bool Sub_world::is_connected(uint32_t gate_id) {
-    for(uint32_t i = 0; i<_gate_ids.size(); i++) if (_gate_ids[i]==gate_id) return true;
+    for(unsigned int _gate_id : _gate_ids) if (_gate_id==gate_id) return true;
     return false;
 }
 

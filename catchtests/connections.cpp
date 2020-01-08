@@ -1,18 +1,15 @@
 #include<catch.h>
 #include<cellworld.h>
 
-using namespace cellworld;
+using namespace cell_world;
 
 TEST_CASE("Connection")
 {
     Connection c;
-    CHECK(c.remove(0) == false);
     CHECK(c.is_connected(0) == false);
     CHECK(c.add(0) == true);
     CHECK(c.add(0) == false);
     CHECK(c.is_connected(0) == true);
-    CHECK(c.remove(0) == true);
-    CHECK(c.is_connected(0) == false);
 }
 
 TEST_CASE("Connections")
