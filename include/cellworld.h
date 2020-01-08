@@ -5,6 +5,7 @@
 #include<simulation.h>
 #include<agent.h>
 #include<world.h>
+#include<cell_group.h>
 #include<sub_world.h>
 #include<visibility.h>
 #include<connection.h>

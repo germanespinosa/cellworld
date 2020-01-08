@@ -2,6 +2,7 @@
 #include <ge211.h>
 #include <core.h>
 #include <world.h>
+#include <cell_group.h>
 #include <agent.h>
 
 namespace cellworld{

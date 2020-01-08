@@ -1,6 +1,3 @@
-//
-// Created by german on 12/14/19.
-//
 #include <connection.h>
 #include <iostream>
 #include <fstream>

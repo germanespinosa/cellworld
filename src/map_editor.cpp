@@ -1,8 +1,4 @@
-//
-// Created by german on 12/26/19.
-//
-
-#include "map_editor.h"
+#include <map_editor.h>
 #include <iostream>
 #include <algorithm>
 using namespace std;

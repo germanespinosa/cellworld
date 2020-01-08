@@ -1,5 +1,6 @@
 #pragma once
-#include<world.h>
+#include <world.h>
+#include <cell_group.h>
 
 namespace cellworld{
     struct Visibility{

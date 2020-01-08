@@ -1,11 +1,9 @@
-#include<simulation.h>
-#include <string>     // std::string, std::to_string
+#include <simulation.h>
+#include <string>
 
 using namespace ge211;
 using namespace std;
 using namespace cellworld;
-
-
 
 Simulation::Simulation (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
         _model(world, agents),

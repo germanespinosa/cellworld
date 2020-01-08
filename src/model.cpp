@@ -1,9 +1,9 @@
 #include <model.h>
 #include <ge211.h>
 #include <iostream>
+
 using namespace std;
 using namespace cellworld;
-
 
 void Model::_epoch(){
     state.iteration++;
