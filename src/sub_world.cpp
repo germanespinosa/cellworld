@@ -137,17 +137,16 @@ bool Gate::is_connected(uint32_t world_id) {
     return false;
 }
 
-Sub_world::Sub_world(const World &world):
-        cells(world){}
+Sub_world::Sub_world(const World &world)
+    :cells(world)
+    ,gates(world){}
 
 bool Sub_world::is_connected(uint32_t gate_id) {
-    for(unsigned int _gate_id : _gate_ids) if (_gate_id==gate_id) return true;
-    return false;
+    return gates.contains(gate_id);
 }
 
 bool Sub_world::add_gate(uint32_t gate_id) {
-    if (is_connected(gate_id)) return false;
-    _gate_ids.push_back(gate_id);
+    gates.add(gate_id);
     return true;
 }
 

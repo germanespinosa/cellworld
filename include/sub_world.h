@@ -25,7 +25,7 @@ namespace cell_world{
         explicit Sub_world(const World &);
         bool add_gate(uint32_t);
         Cell_group cells;
-        std::vector<uint32_t>  _gate_ids;
+        Cell_group gates;
         bool is_connected (uint32_t);
     };
 
