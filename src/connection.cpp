@@ -12,11 +12,11 @@ bool Connections::process_eigen_centrality() {
 }
 
 bool Connections::process_eigen_centrality(uint32_t max_iterations, double tolerance) {
-    auto nnodes = (double)_connections.size();
+    auto nodes = (double)_connections.size();
     vector<double> last(_connections.size());
-    double err = nnodes * 100;
-    for (auto & _connection : _connections) _connection.eigen_centrality = 1.0/nnodes;
-    for (uint32_t iteration = 0; iteration < max_iterations && err > nnodes * tolerance; iteration++){
+    double err = nodes * 100;
+    for (auto & _connection : _connections) _connection.eigen_centrality = 1.0/nodes;
+    for (uint32_t iteration = 0; iteration < max_iterations && err > nodes * tolerance; iteration++){
         for (uint32_t index = 0; index < _connections.size(); index++)
             last[index] = _connections[index].eigen_centrality;
         for (uint32_t n = 0; n < _connections.size(); n++)
@@ -31,7 +31,7 @@ bool Connections::process_eigen_centrality(uint32_t max_iterations, double toler
         for (uint32_t index = 0; index < _connections.size(); index++)
             err += abs(_connections[index].eigen_centrality - last[index]);
     }
-    return err < nnodes * tolerance;
+    return err < nodes * tolerance;
 }
 
 bool Connections::save(const std::string &filepath) const{
