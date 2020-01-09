@@ -8,36 +8,8 @@ using namespace std;
 using namespace cell_world;
 using namespace ge211;
 
-Cell_group::Cell_group(const World &world)
-        : _world(world){}
-
-bool Cell_group::load( const std::string &file_path) {
-    _file_name = file_path;
-    _cell_ids.clear();
-    std::ifstream file;
-    file.open(file_path.c_str());
-    string line;
-    while (getline(file, line)){
-        istringstream ss(line);
-        int32_t cell_id;
-        Cell cell;
-        ss >> cell_id;
-        if (!add(cell_id)) return false;
-    }
-    return true;
-}
-
-bool Cell_group::add(uint32_t cell_id) {
-    if (cell_id >= _world.size()) return false;
-    if (contains(cell_id)) return false;
-    while(_index.size() <= cell_id) _index.push_back(Not_found);
-    _index[cell_id] = _cell_ids.size();
-    _cell_ids.push_back(cell_id);
-    return true;
-}
-
 uint32_t Cell_group::size() const {
-    return _cell_ids.size();
+    return _cells.size();
 }
 
 const Cell &Cell_group::operator[](uint32_t index) const {
@@ -47,15 +19,11 @@ const Cell &Cell_group::operator[](uint32_t index) const {
 bool Cell_group::save(const std::string &file_path) const {
     std::ofstream file;
     file.open(file_path.c_str());
-    for (unsigned int _cell_id : _cell_ids) {
-        file << _cell_id;
+    for (auto _cell : _cells) {
+        file << _cell->id;
         file << std::endl;
     }
     return true;
-}
-
-bool Cell_group::load() {
-    return load(_file_name);
 }
 
 bool Cell_group::save() const{
@@ -63,14 +31,14 @@ bool Cell_group::save() const{
 }
 
 void Cell_group::clear() {
-    _cell_ids.clear();
+    _cells.clear();
     _index.clear();
 }
 
 int32_t Cell_group::find(Coordinates coordinates) const {
-    int32_t  index = _world.find(coordinates);
-    if (index == Not_found ) return Not_found;
-    return find(index);
+    uint32_t i = ( coordinates.x + 128 );
+    uint32_t j = ( coordinates.y + 128 );
+    return _map[i][j];
 }
 
 int32_t Cell_group::find(uint32_t cell_id) const {
@@ -79,15 +47,14 @@ int32_t Cell_group::find(uint32_t cell_id) const {
 }
 
 void Cell_group::get_connections(Connections &connections, const std::vector<Coordinates>& pattern) const {
-    for (uint32_t source=0; source < _cell_ids.size(); source++){
-        const Cell & source_cell = _get_cell(_cell_ids[source]);
-        if (!source_cell.occluded) {
+    connections.clear();
+    for (unsigned int source = 0; source < _cells.size(); source++){
+        if ( !_cells[source]->occluded ) {
             for (auto j : pattern) {
-                Coordinates c = source_cell.coordinates + j;
-                int32_t destination = find(c);
-                if (destination >= 0) {
-                    const Cell &destination_cell = _get_cell(destination);
-                    if (!destination_cell.occluded) connections.add(source,destination);
+                Coordinates c = _cells[source]->coordinates + j;
+                int32_t destination = this->find(c);
+                if (destination != Not_found && !_cells[destination]->occluded) {
+                    connections.add(source,destination);
                 }
             }
         }
@@ -95,7 +62,7 @@ void Cell_group::get_connections(Connections &connections, const std::vector<Coo
 }
 
 const Cell &Cell_group::_get_cell(uint32_t index) const {
-    return _world[_cell_ids[index]];
+    return *_cells[index];
 }
 
 bool Cell_group::contains(uint32_t cell_id) const {
@@ -105,24 +72,39 @@ bool Cell_group::contains(uint32_t cell_id) const {
 Cell_group &Cell_group::operator = (const Cell_group &cg) {
     if (this != &cg){ //prevent self assigment object ruin (cg = cg)
         clear();
-        for (uint32_t i = 0; i < cg.size() ; i++) _cell_ids.push_back(cg[i].id);
+        for (uint32_t i = 0; i < cg.size() ; i++) _cells.push_back(&cg[i]);
     }
     return *this;
 }
 
 Cell_group &Cell_group::operator += (const Cell_group &cg) {
-    for (uint32_t i = 0; i < cg.size() ; i++) add(cg[i].id);
+    for (uint32_t i = 0; i < cg.size() ; i++) add(cg[i]);
     return *this;
 }
 
-bool Cell_group::remove(uint32_t cell_id) {
-    if (find(cell_id) == Not_found) return false;
+bool Cell_group::remove(const Cell &cell) {
+    if (find(cell.id) == Not_found) return false;
     Cell_group cg = *this;
     this->clear();
-    for (uint32_t i = 0; i < cg.size(); i++) if (cg[i].id != cell_id) this->add(cg[i].id);
+    for (uint32_t i = 0; i < cg.size(); i++) if (cg[i].id != cell.id) this->add(cg[i]);
     return true;
 }
 
-bool Cell_group::toggle(uint32_t cell_id) {
-    return remove(cell_id)?true:add(cell_id);
+bool Cell_group::toggle(const Cell &cell) {
+    return remove(cell)?true:add(cell);
+}
+
+bool Cell_group::add(const Cell &cell) {
+    if (contains(cell.id)) return false;
+    while(_index.size() <= cell.id) _index.push_back(Not_found);
+    _index[cell.id] = _cells.size();
+    _cells.push_back(&cell);
+    uint32_t i = ( cell.coordinates.x + 128 );
+    uint32_t j = ( cell.coordinates.y + 128 );
+    _map[i][j] = cell.id;
+    return true;
+}
+
+Cell_group::Cell_group() {
+    for (auto & i : _map) for (int & j : i) j = Not_found;
 }

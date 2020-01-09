@@ -1,20 +1,11 @@
 #pragma once
 #include <core.h>
 #include <ge211.h>
+#include "cell_group.h"
 #include "connection.h"
 
-namespace cell_world{
 
-    struct Cell{
-        Cell();
-        Cell(uint32_t, Coordinates, ge211::Basic_position<double>, double , bool);
-        uint32_t id;
-        Coordinates coordinates{};
-        ge211::Basic_position<double> location{0,0};
-        double value{};
-        bool occluded;
-        bool operator == (const Cell&) const;
-    };
+namespace cell_world{
 
     struct World{
         explicit World(std::string );
@@ -27,17 +18,16 @@ namespace cell_world{
         double distance(const Cell&, const Cell&) const;
         double distance(const Cell&, const Cell&, const Cell&) const;
         uint32_t size() const;
-        int32_t find(const Coordinates&) const;
         const Cell &operator[](const uint32_t& ) const;
-        const Cell &operator[](const Coordinates&) const;
         void set_occlusion(uint32_t, bool);
         void set_value(uint32_t, double);
-        void get_connections(Connections &, const std::vector<Coordinates> &) const;
+        Cell_group create_cell_group() const;
+        Cell_group create_cell_group(const std::vector<uint32_t>&) const;
+        Cell_group create_cell_group(std::string) const;
         std::string name;
     private:
-        std::vector<Cell> cells;
+        std::vector<Cell> _cells;
         std::vector<std::vector<double>> _distances;
         std::string _file_name;
-        int32_t _map[256][256]{};
     };
 }

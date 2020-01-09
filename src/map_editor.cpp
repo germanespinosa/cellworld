@@ -13,19 +13,19 @@ _visibility(world),
 _connection_pattern(connection_pattern)
 {
     Connections cnn;
-    world.get_connections(cnn, connection_pattern);
+    world.create_cell_group().get_connections(cnn, connection_pattern);
     _sub_worlds.reset(world,selected,cnn);
 
     Cell_group_view bridges {selected,Blue,true};
     cells_view.emplace_back(bridges);
 
-    Cell_group_view visible_cells {Cell_group(world), Yellow, true};
+    Cell_group_view visible_cells {{}, Yellow, true};
     cells_view.emplace_back(visible_cells);
 
-    Cell_group_view sub_world_cells {Cell_group(world), Purple, true};
+    Cell_group_view sub_world_cells {{}, Purple, true};
     cells_view.emplace_back(sub_world_cells);
 
-    Cell_group_view connected_gates_cells {Cell_group(world), Green, true};
+    Cell_group_view connected_gates_cells {{}, Green, true};
     cells_view.emplace_back(connected_gates_cells);
 
     _current_cell_id = Not_found;
@@ -47,7 +47,7 @@ void Map_editor::on_mouse_up(ge211::Mouse_button mouse_button, ge211::Position m
             world.set_occlusion(index, !world[index].occluded);
         }
         else {
-            cells_view[gates].cells.toggle(index);
+            cells_view[gates].cells.toggle(world[index]);
         }
         refresh_values();
     }
@@ -119,7 +119,7 @@ void Map_editor::on_frame(double dt) {
 
 void Map_editor::refresh_values() {
     _visibility.reset();
-    world.get_connections(_world_connections, _connection_pattern);
+    world.create_cell_group().get_connections(_world_connections, _connection_pattern);
     _sub_worlds.reset(world,cells_view[gates].cells, _world_connections);
     _sub_worlds.reset_connections();
     _world_connections.process_eigen_centrality();
@@ -148,11 +148,11 @@ void Map_editor::_update_current_cell(int32_t index) {
                     } else if (sub_world_index == Sub_worlds::Is_gate) {
                         cells_view[connected_gates].cells.clear();
                         for (auto & gc : _sub_worlds.gate_by_cell_id(_current_cell_id).gate_connections) {
-                            cells_view[connected_gates].cells.add(gc.gate_id);
+                            cells_view[connected_gates].cells.add(world[gc.gate_id]);
                         }
                         cells_view[sub_world].cells.clear();
                         for (unsigned int sw_id : _sub_worlds.gate_by_cell_id(_current_cell_id).sub_world_ids) {
-                            Cell_group msw(world);
+                            Cell_group msw;
                             _sub_worlds.get_cells(msw, sw_id);
                             cells_view[sub_world].cells += msw;
                         }

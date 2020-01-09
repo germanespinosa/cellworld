@@ -1,7 +1,6 @@
 #include <connection.h>
 #include <iostream>
 #include <fstream>
-#include <algorithm>
 #include <cmath>
 
 using namespace std;
@@ -90,4 +89,9 @@ uint32_t Connection::operator[](uint32_t index) const{
 
 const std::vector<uint32_t> &Connection::get_all() const{
     return _connections;
+}
+
+bool Connection::add_occluded(uint32_t index) {
+    _occluded.push_back(index);
+    return true;
 }

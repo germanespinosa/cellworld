@@ -15,7 +15,7 @@ void Model::_epoch(){
     for (auto & _agent : _agents) _agent->update_state(state);
 }
 
-bool Model::update() // if all agents made their moves, it triggers an new poch
+bool Model::update() // if all agents made their moves, it triggers an new epoch
 {
     bool finish = true;
     bool epoch_ready = true; // assumes no new actions

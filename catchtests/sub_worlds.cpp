@@ -17,12 +17,12 @@ TEST_CASE("Sub Worlds")
     w.add(c3);
     w.add(c4);
     Connections wc;
-    w.get_connections(wc,{{-1,0},{1,0}});
+    w.create_cell_group().get_connections(wc,{{-1,0},{1,0}});
     Sub_worlds sw;
-    Cell_group cg(w);
-    cg.add(0);
-    cg.add(2);
-    cg.add(4);
+    Cell_group cg;
+    cg.add(w[0]);
+    cg.add(w[2]);
+    cg.add(w[4]);
     sw.reset(w,cg,wc);
     sw.reset_connections();
     CHECK(wc.size()==5);

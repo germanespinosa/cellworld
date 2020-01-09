@@ -22,8 +22,7 @@ namespace cell_world{
     };
 
     struct Sub_world{
-        explicit Sub_world(const World &);
-        bool add_gate(uint32_t);
+        bool add_gate(const Cell &);
         Cell_group cells;
         Cell_group gates;
         bool is_connected (uint32_t);

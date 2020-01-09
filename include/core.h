@@ -32,4 +32,16 @@ namespace cell_world{
         Coordinates operator -(Coordinates) const;
         Coordinates operator -() const;
     };
+
+    struct Cell{
+        Cell();
+        Cell(uint32_t, Coordinates, ge211::Basic_position<double>, double , bool);
+        uint32_t id;
+        Coordinates coordinates{};
+        ge211::Basic_position<double> location{0,0};
+        double value{};
+        bool occluded;
+        bool operator == (const Cell&) const;
+    };
+
 } 

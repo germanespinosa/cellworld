@@ -44,7 +44,7 @@ bool Visibility::get_visible_cells (Cell_group & r, uint32_t cell_id) const{
     r.clear();
     if (_world[cell_id].occluded) return false;
     for (unsigned int i=0;i<_world.size();i++)
-        if ((cell_id!=i) && (_visibility[_visibility_index(cell_id,i)] == Visible::Visible)) r.add(i);
+        if ((cell_id!=i) && (_visibility[_visibility_index(cell_id,i)] == Visible::Visible)) r.add(_world[i]);
     return true;
 }
 

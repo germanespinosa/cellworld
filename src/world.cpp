@@ -9,51 +9,23 @@ using namespace std;
 using namespace cell_world;
 using namespace ge211;
 
-bool Cell::operator == (const Cell& c) const {
-    return (id == c.id &&
-            coordinates == c.coordinates &&
-            location == c.location &&
-            occluded == c.occluded);
-}
-
-
-Cell::Cell (uint32_t id, Coordinates coordinates, Basic_position<double> location, double value, bool occluded)
-{
-    this->id = id;
-    this->location = location;
-    this->coordinates = coordinates;
-    this->value = value;
-    this->occluded=occluded;
-}
-
-Cell::Cell(){
-    this->id = 0;
-    this->location = {0,0};
-    this->coordinates = {0,0};
-    this->occluded= false;
-    this->value=0;
-}
-
 bool World::add(Cell cell){
-    cell.id = cells.size();
+    cell.id = _cells.size();
     vector<double> distances;
-    for (unsigned i=0; i<cells.size() ; i ++){
-        double dist = distance(cell,cells[i]);
+    for (unsigned i=0; i<_cells.size() ; i ++){
+        double dist = distance(cell,_cells[i]);
         distances.push_back(dist);
         _distances[i].push_back(dist);
     }
     distances.push_back(0);
     _distances.push_back(distances);
-    cells.push_back(cell);
-    uint32_t i = ( cell.coordinates.x + 128 );
-    uint32_t j = ( cell.coordinates.y + 128 );
-    _map[i][j] = cell.id;
+    _cells.emplace_back(cell);
     return true;
 }
 
 bool World::load(const std::string& file_path){
     _file_name = file_path;
-    cells.clear();
+    _cells.clear();
     std::ifstream file;
     file.open(file_path.c_str());
     string line;
@@ -77,7 +49,7 @@ bool World::load(const std::string& file_path){
 bool World::save(const std::string& file_path) const{
     std::ofstream file;
     file.open(file_path.c_str());
-    for (const auto & cell : cells){
+    for (const auto & cell : _cells){
         file
             << (int16_t)cell.coordinates.x << " "
             << (int16_t)cell.coordinates.y << " "
@@ -91,21 +63,11 @@ bool World::save(const std::string& file_path) const{
 }
 
 uint32_t World::size() const{
-    return cells.size();
-}
-
-int32_t World::find (const Coordinates& coordinates) const{
-    uint32_t i = ( coordinates.x + 128 );
-    uint32_t j = ( coordinates.y + 128 );
-    return _map[i][j];
+    return _cells.size();
 }
 
 const Cell &World::operator[](const uint32_t& id) const{
-    return cells[id];
-}
-
-const Cell &World::operator[](const Coordinates& coordinates) const{
-    return cells[find(coordinates)];
+    return _cells[id];
 }
 
 double World::distance(const Cell &c0, const Cell &c1) const {
@@ -120,11 +82,11 @@ double World::distance(const uint32_t s, const uint32_t d) const {
 }
 
 void World::set_occlusion(uint32_t id, bool occluded) {
-    cells[id].occluded = occluded;
+    _cells[id].occluded = occluded;
 }
 
 void World::set_value(uint32_t id, double value) {
-    cells[id].value = value;
+    _cells[id].value = value;
 }
 
 bool World::save() const {
@@ -135,23 +97,32 @@ bool World::load() {
     return load(name + ".map");
 }
 
-void World::get_connections(Connections & connections , const std::vector<Coordinates> &pattern) const {
-    connections.clear();
-    for (unsigned int source = 0; source < cells.size(); source++){
-        if ( !cells[source].occluded ) {
-            for (auto j : pattern) {
-                Coordinates c = cells[source].coordinates + j;
-                int32_t destination = this->find(c);
-                if (destination != Not_found && !cells[destination].occluded) {
-                    connections.add(source,destination);
-                }
-            }
-        }
-    }
-}
-
 World::World(std::string name) : name (std::move(name)){
-    for (auto & i : _map) for (int & j : i) j = Not_found;
 }
 
+Cell_group World::create_cell_group() const{
+    Cell_group cg;
+    for (uint32_t i = 0; i < _cells.size(); i++) cg.add(_cells[i]);
+    return cg;
+}
 
+Cell_group World::create_cell_group(const std::vector<uint32_t>& cell_ids) const{
+    Cell_group cg;
+    for (auto id : cell_ids) cg.add(_cells[id]);
+    return cg;
+}
+
+Cell_group World::create_cell_group(std::string file_path) const{
+    Cell_group cg;
+    std::ifstream file;
+    file.open(file_path.c_str());
+    string line;
+    while (getline(file, line)){
+        istringstream ss(line);
+        int32_t cell_id;
+        Cell cell;
+        ss >> cell_id;
+        cg.add(_cells[cell_id]);
+    }
+    return cg;
+}
