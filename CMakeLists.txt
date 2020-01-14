@@ -23,7 +23,7 @@ add_library(cellworld
         src/visibility.cpp
         src/connection.cpp
         src/map_editor.cpp
-        src/sub_world.cpp include/cell_group.h src/cell_group.cpp)
+        src/sub_world.cpp include/cell_group.h src/cell_group.cpp catchtests/visibility.cpp)
 
 target_link_libraries(cellworld
         PUBLIC

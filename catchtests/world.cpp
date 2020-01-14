@@ -14,8 +14,7 @@ TEST_CASE("World")
     w.add(c2);
     w.add(c3);
     w.add(c4);
-    Connections wc;
-    w.create_cell_group().get_connections(wc,{{-1,0},{1,0}});
+    Connections wc( w.create_cell_group(),{{{-1,0},{1,0}}});
     CHECK(w.size()==4);
 }
 
@@ -30,18 +29,17 @@ TEST_CASE("World connections")
     w.add(c1);
     w.add(c2);
     w.add(c3);
-    Connections wc;
-    w.create_cell_group().get_connections(wc,{{-1,0},{1,0}});
+    Connections wc(w.create_cell_group(),{{{-1,0},{1,0}}});
     CHECK(w.size()==4);
-    CHECK(wc[0].size()==1);
-    CHECK(wc[0][0]==1);
-    CHECK(wc[1].size()==2);
-    CHECK(wc[1][0]==0);
-    CHECK(wc[1][1]==2);
-    CHECK(wc[2].size()==2);
-    CHECK(wc[2][0]==1);
-    CHECK(wc[2][1]==3);
-    CHECK(wc[3].size()==1);
-    CHECK(wc[3][0]==2);
+    CHECK(wc[0].connections.size()==1);
+    CHECK(wc[0].connections[0].id==1);
+    CHECK(wc[1].connections.size()==2);
+    CHECK(wc[1].connections[0].id==0);
+    CHECK(wc[1].connections[1].id==2);
+    CHECK(wc[2].connections.size()==2);
+    CHECK(wc[2].connections[0].id==1);
+    CHECK(wc[2].connections[1].id==3);
+    CHECK(wc[3].connections.size()==1);
+    CHECK(wc[3].connections[0].id==2);
     wc.save("worldtest");
 }

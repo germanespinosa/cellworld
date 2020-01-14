@@ -1,8 +1,8 @@
 #include<catch.h>
 #include<cellworld.h>
-
+#include <iostream>
 using namespace cell_world;
-
+using namespace std;
 TEST_CASE("Sub Worlds")
 {
     World w("test");
@@ -16,29 +16,47 @@ TEST_CASE("Sub Worlds")
     w.add(c2);
     w.add(c3);
     w.add(c4);
-    Connections wc;
-    w.create_cell_group().get_connections(wc,{{-1,0},{1,0}});
-    Sub_worlds sw;
+    Cell_group cg1= w.create_cell_group();
+    Connections wc (cg1,{{{-1,0},{1,0},{0,-1},{0,1}}});
     Cell_group cg;
     cg.add(w[0]);
     cg.add(w[2]);
     cg.add(w[4]);
-    sw.reset(w,cg,wc);
-    sw.reset_connections();
     CHECK(wc.size()==5);
-    CHECK(wc[0].size()==1);
-    CHECK(wc[1].size()==2);
-    CHECK(wc[2].size()==2);
-    CHECK(wc[3].size()==2);
-    CHECK(wc[4].size()==1);
+    CHECK(wc[0].connections.size()==1);
+    CHECK(wc[1].connections.size()==2);
+    CHECK(wc[2].connections.size()==2);
+    CHECK(wc[3].connections.size()==2);
+    CHECK(wc[4].connections.size()==1);
+
+    Sub_worlds sw;
+    sw.reset(w.create_cell_group(),cg,wc);
     CHECK(sw.size() == 2);
-    CHECK(sw.gate_by_cell_id(0).is_connected(0));
-    CHECK_FALSE(sw.gate_by_cell_id(0).is_connected(1));
-    CHECK(sw.gate_by_cell_id(2).is_connected(0));
-    CHECK(sw.gate_by_cell_id(2).is_connected(1));
-    CHECK_FALSE(sw.gate_by_cell_id(4).is_connected(0));
-    CHECK(sw.gate_by_cell_id(4).is_connected(1));
-    CHECK(sw.gate_by_cell_id(2).gate_connections.size()==2);
-    CHECK(sw.gate_by_cell_id(2).gate_connections[0].gate_id==0);
-    CHECK(sw.gate_by_cell_id(2).gate_connections[1].gate_id==4);
+    CHECK(sw[0].gate_cells.size() == 2);
+    CHECK(sw[0].gate_cells[0].id == 0);
+    CHECK(sw[0].gate_cells[1].id == 2);
+    CHECK(sw[1].gate_cells.size() == 2);
+    CHECK(sw[1].gate_cells[0].id == 2);
+    CHECK(sw[1].gate_cells[1].id == 4);
+
+    CHECK(sw.gates[0].gate_connections.size() == 1);
+    CHECK(sw.gates[1].gate_connections.size() == 2);
+    CHECK(sw.gates[0].gate_connections.size() == 1);
+
+}
+
+TEST_CASE("Sub Worlds big") {
+    World w("test");
+    for (int8_t i = 0; i <=100; i++){
+        Cell c0(0, {i, i}, {1, 1}, 0, false);
+        w.add(c0);
+    }
+    Cell_group cg1 = w.create_cell_group();
+    Connections wc(cg1, {{{-1, 0},{1,  0}}});
+    Sub_worlds sw;
+    Cell_group cg;
+    cg.add(w[0]);
+    cg.add(w[50]);
+    cg.add(w[100]);
+    sw.reset(w.create_cell_group(), cg, wc);
 }

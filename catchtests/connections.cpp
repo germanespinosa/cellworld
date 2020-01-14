@@ -3,28 +3,26 @@
 
 using namespace cell_world;
 
-TEST_CASE("Connection")
-{
-    Connection c;
-    CHECK(c.is_connected(0) == false);
-    CHECK(c.add(0) == true);
-    CHECK(c.add(0) == false);
-    CHECK(c.is_connected(0) == true);
-}
-
 TEST_CASE("Connections")
 {
-    Connections c;
-    CHECK(c.add(0,1) == true);
-    CHECK(c.add(0,1) == false);
-    CHECK(c.add(0,2) == true);
-    CHECK(c.add(0,2) == false);
-    CHECK(c.add(100,200) == true);
-    CHECK(c.add(100,200) == false);
-    CHECK(c[0].is_connected(1) == true);
-    CHECK(c[1].is_connected(0) == false);
-    CHECK(c[0].size() == 2);
-    CHECK(c[100].is_connected(200) == true);
-    CHECK(c[100].size() == 1);
+    World w("test");
+    Cell c0(0,{0,1},{1,1},0,false);
+    Cell c1(1,{1,1},{1,1},0,false);
+    Cell c2(2,{2,1},{1,1},0,false);
+    Cell c3(3,{3,1},{1,1},0,false);
+    w.add(c0);
+    w.add(c1);
+    w.add(c2);
+    w.add(c3);
+    Connections c(w.create_cell_group());
+    CHECK(c.add(c0,c1) == true);
+    CHECK(c[c0].connections.contains(c1) == true);
+    CHECK(c.add(c0,c1) == false);
+    CHECK(c.add(c0,c2) == true);
+    CHECK(c[c0].connections.contains(c2) == true);
+    CHECK(c.add(c0,c2) == false);
+    CHECK(c.add(c1,c2) == true);
+    CHECK(c[c1].connections.contains(c2) == true);
+    CHECK(c.add(c1,c2) == false);
     c.save("test");
 }

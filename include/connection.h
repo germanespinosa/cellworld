@@ -3,32 +3,36 @@
 #include <cinttypes>
 #include <string>
 #include <vector>
-
+#include <cell_group.h>
 namespace cell_world {
 
+    struct Connection_pattern{
+        std::vector<Coordinates> pattern;
+        std::vector<Coordinates> get_candidates(Coordinates) const;
+    };
+
     struct Connection {
-        bool is_connected(uint32_t) const;
-        bool add(uint32_t);
-        bool add_occluded(uint32_t);
-        double eigen_centrality;
-        uint32_t size() const;
-        uint32_t operator [](uint32_t) const;
-        const std::vector<uint32_t> &get_all() const;
-    private:
-        std::vector<uint32_t> _connections;
-        std::vector<uint32_t> _occluded;
+        explicit Connection (const Cell &);
+        const Cell &cell;
+        double eigen_centrality{};
+        Cell_group connections;
     };
 
     struct Connections {
-        Connections();
-        bool add(uint32_t, uint32_t );
+        explicit Connections(const Cell_group &);
+        explicit Connections(const Cell_group &, const Connection_pattern &);
+        void reset(const Connection_pattern &);
+        bool add(const Cell &, const Cell &);
         bool save(const std::string &) const;
         const Connection &operator [](uint32_t) const;
+        const Connection &operator [](const Cell &) const;
         bool process_eigen_centrality();
         bool process_eigen_centrality(uint32_t, double);
         void clear();
         uint32_t size() const;
     private:
+        Cell_group _cells;
         std::vector<Connection> _connections;
+        std::vector<int32_t> _id_index;
     };
 }

@@ -19,8 +19,8 @@ bool Connections::process_eigen_centrality(uint32_t max_iterations, double toler
         for (uint32_t index = 0; index < _connections.size(); index++)
             last[index] = _connections[index].eigen_centrality;
         for (uint32_t n = 0; n < _connections.size(); n++)
-            for (uint32_t nbr = 0; nbr < _connections[n].size(); nbr++)
-                _connections[_connections[n][nbr]].eigen_centrality += last[n];
+            for (uint32_t nbr = 0; nbr < _connections[n].connections.size(); nbr++)
+                _connections[_id_index[_connections[n].connections[nbr].id]].eigen_centrality += last[n];
         double d=0;
         for (auto & _connection : _connections) d += pow(_connection.eigen_centrality,2);
         d = pow(d,.5);
@@ -33,31 +33,29 @@ bool Connections::process_eigen_centrality(uint32_t max_iterations, double toler
     return err < nodes * tolerance;
 }
 
-bool Connections::save(const std::string &filepath) const{
+bool Connections::save(const std::string &file_path) const{
     std::ofstream file;
-    file.open(filepath.c_str());
-    for (unsigned int i=0;i<_connections.size();i++){
-        if (_connections[i].size()!=0) {
-            file << i;
-            for (unsigned int j = 0; j < _connections[i].size(); j++) {
-                file << " " << _connections[i][j];
-            }
-            file << std::endl;
-        }
+    file.open(file_path.c_str());
+    for (const auto & _connection : _connections){
+        file << _connection.cell.id;
+        for (uint32_t j = 0; j < _connection.connections.size(); j++) file << " " << _connection.connections[j].id;
+        file << std::endl;
     }
     return true;
 }
 
 
-Connections::Connections() = default;
-
-bool Connections::add(uint32_t source, uint32_t destination) {
-    while (source >=_connections.size()) _connections.emplace_back();
-    return _connections[source].add(destination);
-}
-
-const Connection &Connections::operator[](uint32_t source) const{
-    return _connections[source];
+bool Connections::add(const Cell &source, const Cell &destination) {
+    while (source.id >=_id_index.size()) _id_index.push_back(Not_found);
+    if (_id_index[source.id]==Not_found) {
+        _id_index[source.id] = _connections.size();
+        Connection c(source);
+        _connections.push_back(c);
+    }
+    if (_connections[_id_index[source.id]].connections.contains(destination))
+        return false;
+    _connections[_id_index[source.id]].connections.add(destination);
+    return true;
 }
 
 uint32_t Connections::size() const {
@@ -66,32 +64,53 @@ uint32_t Connections::size() const {
 
 void Connections::clear() {
     _connections.clear();
+    _id_index.clear();
 }
 
-bool Connection::is_connected(uint32_t destination) const{
-    for (unsigned int _connection : _connections) if (_connection==destination) return true;
-    return false;
+Connections::Connections(const Cell_group &cell_group):
+    _cells(cell_group){
+
 }
 
-bool Connection::add(uint32_t destination) {
-    if (is_connected(destination)) return false;
-    _connections.push_back(destination);
-    return true;
+Connections::Connections(const Cell_group &cell_group, const Connection_pattern &pattern) :
+        _cells(cell_group){
+    reset(pattern);
 }
 
-uint32_t Connection::size() const {
-    return _connections.size();
+void Connections::reset(const Connection_pattern &pattern) {
+    clear();
+    for (uint32_t i = 0 ; i<_cells.size(); i++) {
+        Connection c(_cells[i]);
+        _connections.push_back(c);
+        while (_cells[i].id >=_id_index.size()) _id_index.push_back(Not_found);
+        _id_index[_cells[i].id]=i;
+    }
+    for (uint32_t source = 0; source < _cells.size(); source++){
+        if ( !_cells[source].occluded ) {
+            for (auto c : pattern.get_candidates(_cells[source].coordinates)) {
+                int32_t destination = _cells.find(c);
+                if (destination != Not_found && !_cells[destination].occluded) {
+                    add(_cells[source],_cells[destination]);
+                }
+            }
+        }
+    }
 }
 
-uint32_t Connection::operator[](uint32_t index) const{
-    return _connections[index];
+const Connection &Connections::operator[](const Cell &cell) const {
+    return _connections[_id_index[cell.id]];
 }
 
-const std::vector<uint32_t> &Connection::get_all() const{
-    return _connections;
+const Connection &Connections::operator[](uint32_t source) const{
+    return _connections[source];
 }
 
-bool Connection::add_occluded(uint32_t index) {
-    _occluded.push_back(index);
-    return true;
+
+Connection::Connection(const Cell &cell )
+    :cell(cell){}
+
+std::vector<Coordinates> Connection_pattern::get_candidates(Coordinates coordinate) const {
+    std::vector<Coordinates> c;
+    for (auto &p:pattern) c.push_back(coordinate+p);
+    return c;
 }

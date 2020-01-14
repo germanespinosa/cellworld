@@ -44,4 +44,20 @@ namespace cell_world{
         bool operator == (const Cell&) const;
     };
 
+    struct Probabilities {
+        explicit Probabilities(const std::vector<uint32_t>&);
+        explicit Probabilities(const std::vector<double>&);
+        uint32_t size();
+        double probability(uint32_t);
+        uint32_t operator [](uint32_t);
+        uint32_t pick (std::vector<double>, uint32_t);
+        double compute(std::vector<double>);
+    private:
+        std::vector<uint32_t> _chances;
+        uint32_t _max();
+    };
+
+    std::vector<int> histogram(std::vector<int>);
+    double entropy(std::vector<int>);
+
 } 

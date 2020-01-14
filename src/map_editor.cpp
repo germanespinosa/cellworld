@@ -5,16 +5,16 @@
 using namespace std;
 using namespace cell_world;
 
-Map_editor::Map_editor(World &world, Cell_group &selected, ge211::Dimensions scene_dimensions, const std::vector<Coordinates> &connection_pattern) :
+Map_editor::Map_editor(World &world, Cell_group &selected, ge211::Dimensions scene_dimensions, const Connection_pattern &connection_pattern) :
 world(world),
 _scene_dimensions(scene_dimensions),
 _view(world, scene_dimensions),
 _visibility(world),
-_connection_pattern(connection_pattern)
+_connection_pattern(connection_pattern),
+_world_connections(world.create_cell_group(),connection_pattern)
 {
-    Connections cnn;
-    world.create_cell_group().get_connections(cnn, connection_pattern);
-    _sub_worlds.reset(world,selected,cnn);
+    Cell_group cg = world.create_cell_group();
+    _sub_worlds.reset(cg,selected,_world_connections);
 
     Cell_group_view bridges {selected,Blue,true};
     cells_view.emplace_back(bridges);
@@ -31,8 +31,8 @@ _connection_pattern(connection_pattern)
     _current_cell_id = Not_found;
     _current_sub_world = Not_found;
     _message_timer = 0;
-    _mode = 0;
     refresh_values();
+    cout << "environment complexity: " << _visibility.get_entropy() << endl;
 }
 
 void Map_editor::on_mouse_move(ge211::Position mouse_position) {
@@ -99,11 +99,12 @@ void Map_editor::on_key_up(ge211::Key key) {
             break;
         case 'r':
             _message = "Finding bridges";
-            _message_timer = 0;
             {
-                Cell_group ns = _sub_worlds.find_bridges(world, _world_connections);
+                Cell_group ns = _sub_worlds.find_bridges(world.create_cell_group(), _world_connections);
                 cells_view[gates].cells = ns;
             }
+            refresh_values();
+            _message_timer = 0;
             break;
         default:
             _message = "Invalid command";
@@ -119,9 +120,9 @@ void Map_editor::on_frame(double dt) {
 
 void Map_editor::refresh_values() {
     _visibility.reset();
-    world.create_cell_group().get_connections(_world_connections, _connection_pattern);
-    _sub_worlds.reset(world,cells_view[gates].cells, _world_connections);
-    _sub_worlds.reset_connections();
+    Cell_group cg = world.create_cell_group();
+    _world_connections.reset(_connection_pattern);
+    _sub_worlds.reset(cg,cells_view[gates].cells, _world_connections);
     _world_connections.process_eigen_centrality();
     double max = 0;
     for (uint32_t i = 0 ; i < _world_connections.size(); i++) if (max < _world_connections[i].eigen_centrality) max = _world_connections[i].eigen_centrality;
@@ -140,7 +141,7 @@ void Map_editor::_update_current_cell(int32_t index) {
                 cells_view[sub_world].cells.clear();
                 cells_view[connected_gates].cells.clear();
             } else {
-                _visibility.get_visible_cells(cells_view[visible].cells, _current_cell_id);
+                cells_view[visible].cells = _visibility[world[_current_cell_id]];
                 int32_t sub_world_index = _sub_worlds.get_sub_world_index(_current_cell_id);
                 if (sub_world_index != _current_sub_world) {
                     _current_sub_world = sub_world_index;
@@ -148,17 +149,15 @@ void Map_editor::_update_current_cell(int32_t index) {
                     } else if (sub_world_index == Sub_worlds::Is_gate) {
                         cells_view[connected_gates].cells.clear();
                         for (auto & gc : _sub_worlds.gate_by_cell_id(_current_cell_id).gate_connections) {
-                            cells_view[connected_gates].cells.add(world[gc.gate_id]);
+                            cells_view[connected_gates].cells.add(gc.destination);
                         }
                         cells_view[sub_world].cells.clear();
-                        for (unsigned int sw_id : _sub_worlds.gate_by_cell_id(_current_cell_id).sub_world_ids) {
-                            Cell_group msw;
-                            _sub_worlds.get_cells(msw, sw_id);
-                            cells_view[sub_world].cells += msw;
+                        for (auto & gc : _sub_worlds.gate_by_cell_id(_current_cell_id).gate_connections) {
+                            cells_view[sub_world].cells += gc.sub_world.cells;
                         }
                     } else {
                         cells_view[connected_gates].cells.clear();
-                        _sub_worlds.get_cells(cells_view[sub_world].cells, _current_sub_world);
+                        cells_view[sub_world].cells = _sub_worlds[_current_sub_world].cells;
                     }
                 }
             }

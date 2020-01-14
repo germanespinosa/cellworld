@@ -9,7 +9,7 @@
 namespace cell_world {
     class Map_editor  : public ge211::Abstract_game {
         public:
-        Map_editor(World &, Cell_group &, ge211::Dimensions, const std::vector<Coordinates> &);
+        Map_editor(World &, Cell_group &, ge211::Dimensions, const Connection_pattern &);
         ge211::Dimensions initial_window_dimensions() const override;
         void draw(ge211::Sprite_set&) override;
         World &world;
@@ -31,13 +31,12 @@ namespace cell_world {
         std::string _message;
         double _message_timer;
         View _view;
-        Connections _world_connections;
         Visibility _visibility;
-        std::vector<Coordinates> _connection_pattern;
+        Connection_pattern _connection_pattern;
+        Connections _world_connections;
         int32_t _current_cell_id;
         int32_t _current_sub_world;
         Sub_worlds _sub_worlds;
         std::vector<Cell_group_view> cells_view;
-        int _mode;
     };
 }
