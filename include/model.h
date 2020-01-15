@@ -12,11 +12,11 @@ namespace cell_world{
         std::vector<Agent_data> get_agents_data();
         void start_episode();
         void end_episode();
-        protected:
         State state;
+        protected:
         World &_world;
         std::vector<Agent*> &_agents;
+        Cell_group _cell_group;
         void _epoch ();
-        friend class Simulation;
     };
 } 

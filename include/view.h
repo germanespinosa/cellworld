@@ -19,7 +19,7 @@ namespace cell_world{
         int32_t get_cell(ge211::Position);
         private:
         void _draw_world(ge211::Sprite_set& sprites);
-        ge211::Basic_position<int> _screen_location (const ge211::Basic_position<double> & );
+        ge211::Basic_position<int> _screen_location (const Location & );
         World &_world;
         std::vector<ge211::Circle_sprite> _cell_sprites;
         std::vector<ge211::Circle_sprite> _value_sprites;

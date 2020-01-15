@@ -114,3 +114,11 @@ std::vector<Coordinates> Connection_pattern::get_candidates(Coordinates coordina
     for (auto &p:pattern) c.push_back(coordinate+p);
     return c;
 }
+
+const Coordinates &Connection_pattern::operator[](uint32_t index) {
+    return pattern[index];
+}
+
+uint32_t Connection_pattern::size() {
+    return pattern.size();
+}

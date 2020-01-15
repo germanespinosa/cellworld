@@ -100,3 +100,11 @@ Cell_group::Cell_group() {
 bool Cell_group::contains(const Cell &cell) const {
     return contains(cell.id);
 }
+
+double Cell_group::distance(const Cell &c0, const Cell &c1) const {
+    return sqrt(pow(c1.location.y-c0.location.y,2) + pow(c1.location.x-c0.location.x,2));
+}
+
+double Cell_group::distance(const uint32_t s, const uint32_t d) const {
+    return distance(*_cells[s],*_cells[d]);
+}

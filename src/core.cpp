@@ -6,23 +6,23 @@ using namespace std;
 using namespace cell_world;
 using namespace ge211;
 
-bool Coordinates::operator ==(const Coordinates c) const {
+bool Coordinates::operator ==(const Coordinates &c) const {
     return c.x==x && c.y == y;
 }
 
-bool Coordinates::operator !=(const Coordinates c) const {
-    return c.x!=x || c.y != y;
+bool Coordinates::operator !=(const Coordinates &c) const {
+    return !(*this==c);
 }
 
-Coordinates Coordinates::operator +=(const Coordinates c) {
+Coordinates Coordinates::operator +=(const Coordinates &c) {
     return { (int8_t)(x += c.x), (int8_t)(y += c.y) };
 }
 
-Coordinates Coordinates::operator +(const Coordinates c) const{
+Coordinates Coordinates::operator +(const Coordinates &c) const{
     return { (int8_t)(c.x + x), (int8_t)(c.y + y) };
 }
 
-Coordinates Coordinates::operator -(const Coordinates c) const{
+Coordinates Coordinates::operator -(const Coordinates &c) const{
     return { (int8_t)(x - c.x), (int8_t)(y - c.y) };
 }
 
@@ -38,7 +38,7 @@ bool Cell::operator == (const Cell& c) const {
 }
 
 
-Cell::Cell (uint32_t id, Coordinates coordinates, Basic_position<double> location, double value, bool occluded)
+Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double value, bool occluded)
 {
     this->id = id;
     this->location = location;
@@ -79,66 +79,40 @@ vector<int> cell_world::histogram(vector<int> values) {
     }
 }
 
-uint32_t Probabilities::size() {
-    return _chances.size();
+bool Location::operator==(const Location &l) const {
+    return l.x == x && l.y == y;
 }
 
-double Probabilities::probability(uint32_t index) {
-    uint32_t chances = (*this)[index];
-    return (double)chances / (double)_max();
+bool Location::operator!=(const Location &l) const {
+    return !(*this == l);
 }
 
-uint32_t Probabilities::operator[](uint32_t index) {
-    if (index==0) return _chances[index];
-    return _chances[index] - _chances[index-1];
+Location Location::operator+=(const Location &l) {
+    x+=l.x;
+    y+=l.y;
+    return *this;
 }
 
-Probabilities::Probabilities(const std::vector<uint32_t>& individual_chances) {
-    uint32_t accumulated = 0;
-    for ( uint32_t ic:individual_chances ){
-        _chances.push_back(ic + accumulated );
-        accumulated += ic;
-    }
+Location Location::operator+(const Location &l) const {
+    return {x+l.x,y+l.y};
 }
 
-Probabilities::Probabilities(const std::vector<double>&individual_probabilities) {
-    double accumulated = 0;
-    for ( double ic:individual_probabilities ){
-        _chances.push_back( ( ic + accumulated ) * 100 );
-        accumulated += ic;
-    }
+Location Location::operator-(const Location &l) const {
+    return {x-l.x,y-l.y};
 }
 
-uint32_t Probabilities::pick(std::vector<double> values, uint32_t dice) {
-    vector<uint32_t> indexes(values.size()); // creates an index vector for the options
-    for (uint32_t i = 0;i < values.size();i++) {
-        indexes[i] = i;
-    }
-    for (uint32_t i = 1; i < values.size(); i++) // sort the indexes of the options by expected reward descending
-        for (uint32_t j = i; j > 0 && values[indexes[j - 1]] < values[indexes[j]]; j--)
-            swap(indexes[j - 1], indexes[j]);
-
-    uint32_t action;
-    uint32_t chance_dice = (dice % _max()) + 1;
-    for (action = 0 ; chance_dice > _chances[action] && action < values.size()-1; action++);
-    double reward = values[indexes[action]]; // this is the expected value of the state-action pair
-
-    uint32_t repetitions = 0;
-    for (uint32_t i = 0; i < values.size(); i++) if (values[i] == reward) repetitions ++; //find how many times the same value appears
-
-    uint32_t selection = dice % repetitions; //use the dice to determine which repetition to use
-    uint32_t pick;
-    for (pick = 0; values[pick] != reward || selection--; pick++); // find the correct repetition
-
-    return pick; //pick the correct one
+Location Location::operator-() const {
+    return {-x,-y};
 }
 
-uint32_t Probabilities::_max() {
-    return _chances[_chances.size()-1];
+Location Location::operator*(double m) const {
+    return {x*m, y*m};
 }
 
-double Probabilities::compute(std::vector<double>values) {
-    double r = 0;
-    for (uint32_t i = 0; i < values.size() && i < _chances.size();i++ ) r+=values[i] * probability(i);
-    return r;
+double Location::mod() {
+    return sqrt(y*y + x*x);
+}
+
+double Location::dist(const Location &l) const {
+    return (*this - l).mod();
 }

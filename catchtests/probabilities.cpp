@@ -4,7 +4,7 @@
 using namespace cell_world;
 using namespace std;
 
-TEST_CASE("Probabilities Pick")
+TEST_CASE("Probabilities Pick value")
 {
     Probabilities p((vector<uint32_t>){10,10,10,10});
     CHECK(p.pick({1,2,3,4},0)==3);
@@ -15,6 +15,31 @@ TEST_CASE("Probabilities Pick")
     CHECK(p.pick({1,2,2,2},1)==2);
     CHECK(p.pick({1,2,2,2},2)==3);
 }
+
+TEST_CASE("Probabilities Pick index")
+{
+    Probabilities p((vector<uint32_t>){10,10,10,10});
+    CHECK(p.pick(0)==0);
+    CHECK(p.pick(10)==1);
+    CHECK(p.pick(20)==2);
+    CHECK(p.pick(30)==3);
+}
+
+TEST_CASE("Probabilities Dice")
+{
+    Probabilities p((vector<uint32_t>){10,10,10,10});
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+    CHECK(p.dice()<=40);
+}
+
+
 
 TEST_CASE("Probabilities Compute")
 {

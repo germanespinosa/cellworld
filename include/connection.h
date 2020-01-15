@@ -9,6 +9,8 @@ namespace cell_world {
     struct Connection_pattern{
         std::vector<Coordinates> pattern;
         std::vector<Coordinates> get_candidates(Coordinates) const;
+        const Coordinates &operator [](uint32_t);
+        uint32_t size();
     };
 
     struct Connection {
@@ -31,7 +33,7 @@ namespace cell_world {
         void clear();
         uint32_t size() const;
     private:
-        Cell_group _cells;
+        const Cell_group &_cells;
         std::vector<Connection> _connections;
         std::vector<int32_t> _id_index;
     };

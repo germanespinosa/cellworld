@@ -17,6 +17,8 @@ namespace cell_world{
         const Cell &operator [](uint32_t) const;
         int32_t find(uint32_t) const;
         int32_t find(Coordinates) const;
+        double distance(uint32_t, uint32_t) const;
+        double distance(const Cell&, const Cell&) const;
         Cell_group &operator = (const Cell_group &);
         Cell_group &operator += (const Cell_group &);
     private:

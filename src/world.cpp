@@ -73,6 +73,7 @@ const Cell &World::operator[](const uint32_t& id) const{
 double World::distance(const Cell &c0, const Cell &c1) const {
     return sqrt(pow(c1.location.y-c0.location.y,2) + pow(c1.location.x-c0.location.x,2));
 }
+
 double World::distance(const Cell  &c0, const Cell &c1, const Cell &c2) const {
     return abs((c2.location.y-c1.location.y) * c0.location.x-(c2.location.x-c1.location.x) *c0.location.y+c2.location.x*c1.location.y-c2.location.y * c1.location.x) / sqrt(pow(c2.location.y-c1.location.y,2)+pow(c2.location.x-c1.location.x,2));
 }

@@ -45,7 +45,7 @@ View::View(World &world, Dimensions scene_dimensions):
     }
 }
 
-Basic_position<int> View::_screen_location (const Basic_position<double> &location)
+Basic_position<int> View::_screen_location (const Location &location)
 {
     return {
         (int)((double)_scene_dimensions.width / 2 + location.x * _ratio - _ratio  / 2),
@@ -59,7 +59,7 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, const stri
     sprites.add_sprite(fps, {10, 10});
     _draw_world(sprites);
     for (unsigned int i =0 ; i< agents.size(); i++) {
-        sprites.add_sprite(_cell_sprites[agents[i].color], _screen_location(_world[agents[i].cell_id].location),1);
+        sprites.add_sprite(_cell_sprites[agents[i].color], _screen_location(agents[i].cell.location),1);
     }
 }
 
