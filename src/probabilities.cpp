@@ -1,4 +1,7 @@
 #include <probabilities.h>
+#include <core.h>
+#include <fstream>
+
 using namespace cell_world;
 using namespace std;
 
@@ -32,11 +35,9 @@ Probabilities::Probabilities(const std::vector<double>&individual_probabilities)
 }
 
 uint32_t Probabilities::pick(std::vector<double> values, uint32_t dice) {
-    vector<uint32_t> indexes(values.size()); // creates an index vector for the options
-    for (uint32_t i = 0;i < values.size();i++) {
-        indexes[i] = i;
-    }
-    for (uint32_t i = 1; i < values.size(); i++) // sort the indexes of the options by expected reward descending
+    auto indexes = new_index(values.size()); // creates an index vector for the options
+
+    for (uint32_t i = 1; i < indexes.size(); i++) // sort the indexes of the options by expected reward descending
         for (uint32_t j = i; j > 0 && values[indexes[j - 1]] < values[indexes[j]]; j--)
             swap(indexes[j - 1], indexes[j]);
 
@@ -87,4 +88,40 @@ uint32_t Probabilities::pick(std::vector<double> values) {
 
 uint32_t Probabilities::pick() {
     return pick(dice());
+}
+
+bool Probabilities::load(const std::string &name) {
+    string file_path =  name + _extension;
+    std::ifstream file;
+    file.open(file_path.c_str());
+    if (!file.good()) return false;
+    string line;
+    while (getline(file, line)){
+        istringstream ss(line);
+        uint32_t p;
+        ss >> p;
+        _chances.push_back(p);
+    }
+    return true;
+}
+
+bool Probabilities::save(const std::string &name) const {
+    string file_path = name + _extension;
+    std::ofstream file;
+    file.open(file_path.c_str());
+    if (!file.good()) return false;
+    for (auto p : _chances){
+        file
+                << p ;
+        file << std::endl;
+    }
+    return true;
+}
+
+Probabilities &Probabilities::operator=(const Probabilities &p) {
+    if (this != &p){
+        _chances.clear();
+        for (auto c:p._chances) _chances.push_back(c);
+    }
+    return *this;
 }

@@ -23,8 +23,8 @@ bool World::add(Cell cell){
     return true;
 }
 
-bool World::load(const std::string& file_path){
-    _file_name = file_path;
+bool World::load(const std::string& world_name){
+    string file_path = world_name + _extension;
     _cells.clear();
     std::ifstream file;
     file.open(file_path.c_str());
@@ -46,9 +46,11 @@ bool World::load(const std::string& file_path){
     return true;
 }
 
-bool World::save(const std::string& file_path) const{
+bool World::save(const std::string& world_name) const{
+    string file_path = world_name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
+    if (!file.good()) return false;
     for (const auto & cell : _cells){
         file
             << (int16_t)cell.coordinates.x << " "
@@ -91,11 +93,11 @@ void World::set_value(uint32_t id, double value) {
 }
 
 bool World::save() const {
-    return save(name + ".map");
+    return save(name );
 }
 
 bool World::load() {
-    return load(name + ".map");
+    return load(name);
 }
 
 World::World(std::string name) : name (std::move(name)){
@@ -113,10 +115,12 @@ Cell_group World::create_cell_group(const std::vector<uint32_t>& cell_ids) const
     return cg;
 }
 
-Cell_group World::create_cell_group(std::string file_path) const{
+Cell_group World::create_cell_group(std::string group_name) const{
     Cell_group cg;
+    string file_path =  group_name + cg._extension;
     std::ifstream file;
     file.open(file_path.c_str());
+    if (!file.good()) return cg;
     string line;
     while (getline(file, line)){
         istringstream ss(line);

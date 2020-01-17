@@ -7,9 +7,9 @@
 #include <sub_world.h>
 
 namespace cell_world {
-    class Map_editor  : public ge211::Abstract_game {
+    class Map_editor : public ge211::Abstract_game {
         public:
-        Map_editor(World &, Cell_group &, ge211::Dimensions, const Connection_pattern &);
+        Map_editor(World &, ge211::Dimensions, const Connection_pattern &);
         ge211::Dimensions initial_window_dimensions() const override;
         void draw(ge211::Sprite_set&) override;
         World &world;
@@ -20,19 +20,18 @@ namespace cell_world {
         void refresh_values();
 
         private:
-        const uint32_t gates = 0;
-        const uint32_t visible = 1;
-        const uint32_t sub_world = 2;
-        const uint32_t connected_gates = 3;
-
+        const uint32_t _Gates = 0;
+        const uint32_t _Visible = 1;
+        const uint32_t _Sub_world = 2;
+        const uint32_t _Connected_gates = 3;
         void _update_current_cell(int32_t);
-
         ge211::Dimensions _scene_dimensions;
         std::string _message;
         double _message_timer;
         View _view;
         Visibility _visibility;
         Connection_pattern _connection_pattern;
+        Cell_group _cell_group;
         Connections _world_connections;
         int32_t _current_cell_id;
         int32_t _current_sub_world;

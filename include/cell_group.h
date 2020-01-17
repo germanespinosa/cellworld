@@ -14,18 +14,29 @@ namespace cell_world{
         bool contains(const Cell &) const;
         void clear();
         uint32_t size() const;
-        const Cell &operator [](uint32_t) const;
         int32_t find(uint32_t) const;
-        int32_t find(Coordinates) const;
+        int32_t find(const Cell &) const;
         double distance(uint32_t, uint32_t) const;
         double distance(const Cell&, const Cell&) const;
         Cell_group &operator = (const Cell_group &);
         Cell_group &operator += (const Cell_group &);
+        const Cell &operator [](uint32_t) const;
     private:
         std::vector<const Cell*> _cells;
         std::vector<int32_t> _id_index;
         std::string _file_name;
-        int32_t _coordinate_index[256][256]{};
         const Cell & _get_cell(uint32_t) const;
+        const std::string _extension = ".group";
+        friend class World;
+    };
+
+    struct Map{
+        explicit Map(const Cell_group &);
+        const Cell& operator [](const Coordinates &) const;
+        int32_t find (const Coordinates &) const;
+
+    private:
+        int32_t _coordinate_index[256][256]{};
+        const Cell_group &_group;
     };
 }

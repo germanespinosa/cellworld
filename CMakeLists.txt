@@ -14,7 +14,7 @@ find_package(Ge211 CONFIG)
 ###
 
 add_library(cellworld
-        include/cellworld.h
+        include/cell_world.h
         src/core.cpp
         src/world.cpp
         src/model.cpp
@@ -23,7 +23,7 @@ add_library(cellworld
         src/visibility.cpp
         src/connection.cpp
         src/map_editor.cpp
-        src/sub_world.cpp include/cell_group.h src/cell_group.cpp catchtests/visibility.cpp include/probabilities.h src/probabilities.cpp)
+        src/sub_world.cpp include/cell_group.h src/cell_group.cpp catchtests/visibility.cpp include/probabilities.h src/probabilities.cpp catchtests/location.cpp src/agent.cpp)
 
 target_link_libraries(cellworld
         PUBLIC

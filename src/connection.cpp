@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <utility>
 
 using namespace std;
 using namespace cell_world;
@@ -33,7 +34,8 @@ bool Connections::process_eigen_centrality(uint32_t max_iterations, double toler
     return err < nodes * tolerance;
 }
 
-bool Connections::save(const std::string &file_path) const{
+bool Connections::save(const std::string &name) const{
+    string file_path = name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
     for (const auto & _connection : _connections){
@@ -68,29 +70,30 @@ void Connections::clear() {
 }
 
 Connections::Connections(const Cell_group &cell_group):
-    _cells(cell_group){
+    cells(cell_group){
 
 }
 
 Connections::Connections(const Cell_group &cell_group, const Connection_pattern &pattern) :
-        _cells(cell_group){
+        cells(cell_group){
     reset(pattern);
 }
 
 void Connections::reset(const Connection_pattern &pattern) {
     clear();
-    for (uint32_t i = 0 ; i<_cells.size(); i++) {
-        Connection c(_cells[i]);
+    Map map(cells);
+    for (uint32_t i = 0 ; i<cells.size(); i++) {
+        Connection c(cells[i]);
         _connections.push_back(c);
-        while (_cells[i].id >=_id_index.size()) _id_index.push_back(Not_found);
-        _id_index[_cells[i].id]=i;
+        while (cells[i].id >=_id_index.size()) _id_index.push_back(Not_found);
+        _id_index[cells[i].id]=i;
     }
-    for (uint32_t source = 0; source < _cells.size(); source++){
-        if ( !_cells[source].occluded ) {
-            for (auto c : pattern.get_candidates(_cells[source].coordinates)) {
-                int32_t destination = _cells.find(c);
-                if (destination != Not_found && !_cells[destination].occluded) {
-                    add(_cells[source],_cells[destination]);
+    for (uint32_t source = 0; source < cells.size(); source++){
+        if ( !cells[source].occluded ) {
+            for (auto c : pattern.get_candidates(cells[source].coordinates)) {
+                int32_t destination = map.find(c);
+                if (destination != Not_found && !cells[destination].occluded) {
+                    add(cells[source],cells[destination]);
                 }
             }
         }
@@ -121,4 +124,41 @@ const Coordinates &Connection_pattern::operator[](uint32_t index) {
 
 uint32_t Connection_pattern::size() {
     return pattern.size();
+}
+
+bool Connection_pattern::load(const std::string& name) {
+    string file_name = name + _extension;
+    pattern.clear();
+    std::ifstream file;
+    file.open(file_name.c_str());
+    if (!file.good()) return false;
+    string line;
+    while (getline(file, line)){
+        istringstream ss(line);
+        int16_t cx,cy;
+        ss >> cx;
+        ss >> cy;
+        pattern.push_back({(int8_t)cx,(int8_t)cy});
+    }
+    return true;
+}
+
+bool Connection_pattern::save(const std::string& name) const {
+    string file_name = name + _extension;
+    std::ofstream file;
+    file.open(file_name.c_str());
+    if (!file.good()) return false;
+    for (const auto c : pattern){
+        file
+                << (int16_t)c.x << " "
+                << (int16_t)c.y << std::endl;
+    }
+    return true;
+}
+
+Connection_pattern::Connection_pattern() = default;
+
+Connection_pattern::Connection_pattern(std::vector<Coordinates>pattern)
+:pattern(std::move(pattern)){
+
 }

@@ -1,5 +1,5 @@
 #include<catch.h>
-#include<cellworld.h>
+#include<cell_world.h>
 #include <iostream>
 using namespace cell_world;
 using namespace std;
@@ -16,8 +16,8 @@ TEST_CASE("Sub Worlds")
     w.add(c2);
     w.add(c3);
     w.add(c4);
-    Cell_group cg1= w.create_cell_group();
-    Connections wc (cg1,{{{-1,0},{1,0},{0,-1},{0,1}}});
+    Cell_group cg1 = w.create_cell_group();
+    Connections wc (cg1,Connection_pattern({{-1,0},{1,0},{0,-1},{0,1}}));
     Cell_group cg;
     cg.add(w[0]);
     cg.add(w[2]);
@@ -28,9 +28,9 @@ TEST_CASE("Sub Worlds")
     CHECK(wc[2].connections.size()==2);
     CHECK(wc[3].connections.size()==2);
     CHECK(wc[4].connections.size()==1);
+    Sub_worlds sw(cg1);
+    sw.reset(cg,wc);
 
-    Sub_worlds sw;
-    sw.reset(w.create_cell_group(),cg,wc);
     CHECK(sw.size() == 2);
     CHECK(sw[0].gate_cells.size() == 2);
     CHECK(sw[0].gate_cells[0].id == 0);
@@ -48,15 +48,15 @@ TEST_CASE("Sub Worlds")
 TEST_CASE("Sub Worlds big") {
     World w("test");
     for (int8_t i = 0; i <=100; i++){
-        Cell c0(0, {i, i}, {1, 1}, 0, false);
+        Cell c0(0, {i, i}, {(double)i, (double)i}, 0, false);
         w.add(c0);
     }
     Cell_group cg1 = w.create_cell_group();
-    Connections wc(cg1, {{{-1, 0},{1,  0}}});
-    Sub_worlds sw;
+    Connections wc(cg1, Connection_pattern({{-1, 0},{1,  0}}));
+    Sub_worlds sw(cg1);
     Cell_group cg;
     cg.add(w[0]);
     cg.add(w[50]);
     cg.add(w[100]);
-    sw.reset(w.create_cell_group(), cg, wc);
+    sw.reset(cg, wc);
 }

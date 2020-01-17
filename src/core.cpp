@@ -30,11 +30,14 @@ Coordinates Coordinates::operator -() const{
     return { (int8_t)(-x), (int8_t)(-y) };
 }
 
+std::string Coordinates::operator!() const {
+    std::stringstream fmt;
+    fmt <<"(" << (int32_t)x << "," << (int32_t)y <<")";
+    return fmt.str();
+}
+
 bool Cell::operator == (const Cell& c) const {
-    return (id == c.id &&
-            coordinates == c.coordinates &&
-            location == c.location &&
-            occluded == c.occluded);
+    return id == c.id;
 }
 
 
@@ -48,14 +51,18 @@ Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double valu
 }
 
 Cell::Cell(){
-    this->id = 0;
-    this->location = {0,0};
-    this->coordinates = {0,0};
-    this->occluded= false;
-    this->value=0;
 }
 
-double cell_world::entropy(std::vector<int> histogram) {
+Cell &Cell::operator=(const Cell &c) {
+    id = c.id;
+    location = c.location;
+    coordinates = c.coordinates;
+    occluded = c.occluded;
+    value =c.value;
+    return *this;
+}
+
+double cell_world::entropy(const std::vector<int>& histogram) {
     vector<double> prob;
     int c = 0;
     for (int h:histogram) c+=h;
@@ -66,17 +73,23 @@ double cell_world::entropy(std::vector<int> histogram) {
 }
 
 vector<int> cell_world::histogram(vector<int> values) {
-    if (values.size() == 0) {
+    if (values.empty()) {
         vector<int> hist;
-        return move(hist);
+        return hist;
     } else {
         int min = values[0];
         int max = values[0];
         for (int v:values) if ( min > v ) min = v; else if ( max < v ) max = v;
         vector<int> hist(max - min + 1 );
         for (int v:values) hist[v-min]++;
-        return move(hist);
+        return hist;
     }
+}
+
+vector<uint32_t> cell_world::new_index(uint32_t n) {
+    std::vector<uint32_t> index(n);
+    for(uint32_t i=0;i<n;i++) index[i]=i;
+    return index;
 }
 
 bool Location::operator==(const Location &l) const {
@@ -115,4 +128,10 @@ double Location::mod() {
 
 double Location::dist(const Location &l) const {
     return (*this - l).mod();
+}
+
+std::string Location::operator!() const {
+    std::stringstream fmt;
+    fmt <<"(" << x << "," << y <<")";
+    return fmt.str();
 }

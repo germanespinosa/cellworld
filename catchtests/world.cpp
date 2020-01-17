@@ -1,5 +1,5 @@
 #include<catch.h>
-#include<cellworld.h>
+#include<cell_world.h>
 
 using namespace cell_world;
 
@@ -14,7 +14,7 @@ TEST_CASE("World")
     w.add(c2);
     w.add(c3);
     w.add(c4);
-    Connections wc( w.create_cell_group(),{{{-1,0},{1,0}}});
+    Connections wc( w.create_cell_group(),Connection_pattern({{-1,0},{1,0}}));
     CHECK(w.size()==4);
 }
 
@@ -29,7 +29,7 @@ TEST_CASE("World connections")
     w.add(c1);
     w.add(c2);
     w.add(c3);
-    Connections wc(w.create_cell_group(),{{{-1,0},{1,0}}});
+    Connections wc(w.create_cell_group(),Connection_pattern({{-1,0},{1,0}}));
     CHECK(w.size()==4);
     CHECK(wc[0].connections.size()==1);
     CHECK(wc[0].connections[0].id==1);

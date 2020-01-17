@@ -3,6 +3,7 @@
 
 namespace cell_world{
     struct Probabilities {
+        Probabilities() = default;
         explicit Probabilities(const std::vector<uint32_t>&);
         explicit Probabilities(const std::vector<double>&);
         uint32_t size();
@@ -15,12 +16,13 @@ namespace cell_world{
         double compute(std::vector<double>);
         uint32_t dice();
         uint32_t max();
-
+        bool load(const std::string&);
+        bool save(const std::string&) const;
+        Probabilities &operator =(const Probabilities &);
     private:
         std::vector<uint32_t> _chances;
+        const std::string _extension = ".pattern";
         double _get_probability(uint32_t, uint32_t);
     };
 
-    std::vector<int> histogram(std::vector<int>);
-    double entropy(std::vector<int>);
 }

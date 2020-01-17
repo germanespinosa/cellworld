@@ -16,7 +16,8 @@ const Cell &Cell_group::operator[](uint32_t index) const {
     return _get_cell(index);
 }
 
-bool Cell_group::save(const std::string &file_path) const {
+bool Cell_group::save(const std::string &name) const {
+    string file_path = name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
     for (auto _cell : _cells) {
@@ -33,18 +34,16 @@ bool Cell_group::save() const{
 void Cell_group::clear() {
     _cells.clear();
     _id_index.clear();
-    for (auto & i : _coordinate_index) for (int & j : i) j = Not_found;
-}
-
-int32_t Cell_group::find(Coordinates coordinates) const {
-    uint32_t i = ( coordinates.x + 128 );
-    uint32_t j = ( coordinates.y + 128 );
-    return _coordinate_index[i][j];
 }
 
 int32_t Cell_group::find(uint32_t cell_id) const {
     if (cell_id>=_id_index.size()) return Not_found;
     return _id_index[cell_id];
+}
+
+int32_t Cell_group::find(const Cell &cell) const {
+    if (cell.id>=_id_index.size()) return Not_found;
+    return _id_index[cell.id];
 }
 
 const Cell &Cell_group::_get_cell(uint32_t index) const {
@@ -87,9 +86,6 @@ bool Cell_group::add(const Cell &cell) {
     while(_id_index.size() <= cell.id) _id_index.push_back(Not_found);
     _id_index[cell.id] = _cells.size();
     _cells.push_back(&cell);
-    uint32_t i = ( cell.coordinates.x + 128 );
-    uint32_t j = ( cell.coordinates.y + 128 );
-    _coordinate_index[i][j] = cell.id;
     return true;
 }
 
@@ -107,4 +103,24 @@ double Cell_group::distance(const Cell &c0, const Cell &c1) const {
 
 double Cell_group::distance(const uint32_t s, const uint32_t d) const {
     return distance(*_cells[s],*_cells[d]);
+}
+
+Map::Map(const Cell_group &group)
+:_group(group){
+    for (auto & i : _coordinate_index) for (int & j : i) j = Not_found;
+    for ( uint32_t i = 0; i < group.size() ; i++){
+        int x = group[i].coordinates.x + 128;
+        int y = group[i].coordinates.y + 128;
+        _coordinate_index[x][y] = i;
+    }
+}
+
+int32_t Map::find(const Coordinates &c) const {
+    int x = c.x + 128;
+    int y = c.y + 128;
+    return _coordinate_index[x][y];
+}
+
+const Cell &Map::operator[](const Coordinates &c) const{
+    return _group[find(c)];
 }

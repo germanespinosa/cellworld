@@ -28,6 +28,6 @@ namespace cell_world{
     private:
         std::vector<Cell> _cells;
         std::vector<std::vector<double>> _distances;
-        std::string _file_name;
+        const std::string _extension = ".world";
     };
 }

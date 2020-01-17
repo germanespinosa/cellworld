@@ -24,13 +24,13 @@ namespace cell_world{
     };
     struct Coordinates{
         int8_t x,y;
-        
         bool operator ==(const Coordinates &) const;
         bool operator !=(const Coordinates &) const;
         Coordinates operator +=(const Coordinates &);
         Coordinates operator +(const Coordinates &) const;
         Coordinates operator -(const Coordinates &) const;
         Coordinates operator -() const;
+        std::string operator !() const;
     };
 
     struct Location{
@@ -42,6 +42,7 @@ namespace cell_world{
         Location operator -(const Location &) const;
         Location operator -() const;
         Location operator *(double)const;
+        std::string operator !() const;
         double mod();
         double dist(const Location &) const;
     };
@@ -50,14 +51,16 @@ namespace cell_world{
         Cell();
         Cell(uint32_t, Coordinates, Location, double , bool);
         uint32_t id;
-        Coordinates coordinates{};
-        Location location{0,0};
-        double value{};
+        Coordinates coordinates;
+        Location location;
+        double value;
         bool occluded;
         bool operator == (const Cell&) const;
+        Cell &operator = (const Cell&);
     };
 
     std::vector<int> histogram(std::vector<int>);
-    double entropy(std::vector<int>);
+    double entropy(const std::vector<int>&);
+    std::vector<uint32_t> new_index(uint32_t);
 
 } 

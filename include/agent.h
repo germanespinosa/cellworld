@@ -1,40 +1,58 @@
 #pragma once
 #include <core.h>
 #include <probabilities.h>
+#include <connection.h>
 namespace cell_world{
 
     enum Agent_status{
-        active,
-        waiting,
-        inactive,
-        finished
+        Active,
+        Waiting,
+        Inactive,
+        Finished
     };
 
     struct Agent_action{
-        Connection_pattern possible_actions;
+        Agent_action() = default;
+        Agent_action(Connection_pattern,Probabilities);
+        Connection_pattern destinations;
         Probabilities probabilities;
+        bool load(const std::string&);
+        bool save(const std::string&) const;
+    private:
+        const std::string _extension = ".action";
+    };
+
+    struct Agent_type{
+        std::string name;
+        uint32_t version;
     };
 
     struct Agent_data{
-        uint32_t type;
-        uint32_t id;
+        Agent_type type;
         Agent_status status;
         Color color;
-        Cell &cell;
+        Cell cell;
     };
 
     struct State{
         uint32_t iteration;
         std::vector<Agent_data> agents_data;
+        int32_t find(const std::string&) const;
     };
 
     struct Agent{
-        virtual void start_episode(const State &) = 0;
+        explicit Agent(Agent_type);
+        virtual const Cell &start_episode(const State &) = 0;
         virtual void update_state(const State &) = 0;
         virtual uint32_t action_ready() = 0;
         virtual Agent_action &get_action() = 0;
         virtual void end_episode(const State &) = 0;
+        const Cell &cell() const;
+        void set_status(Agent_status);
+        void set_color(Color);
+    private:
         Agent_data data;
-        bool active = true;
+        friend class Model;
     };
-}  
+
+}

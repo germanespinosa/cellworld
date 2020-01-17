@@ -25,7 +25,7 @@ void Simulation::on_frame(double dt)
     if (t>.05){
         t=0;
         if (!_model.update() ||
-            (_iterations && _model.state.iteration >= _iterations)) {
+            (_iterations && _model.iteration >= _iterations)) {
             _model.end_episode();
             episode++;
             if (episode == _episodes)
@@ -55,5 +55,5 @@ Dimensions Simulation::initial_window_dimensions() const
 
 void Simulation::draw(Sprite_set& sprites)
 {
-    _view.draw_scene(sprites, _model.get_agents_data(), to_string(episode) + "-" + to_string(_model.state.iteration));
+    _view.draw_scene(sprites, _model.get_agents_data(), to_string(episode) + "-" + to_string(_model.iteration));
 }
