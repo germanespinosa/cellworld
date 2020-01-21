@@ -20,10 +20,10 @@ void Model::_epoch(){
 
 bool Model::update() // if all agents made their moves, it triggers an new epoch
 {
-    bool finish = true;
+    bool finish = false;
     bool epoch_ready = true; // assumes no new actions
     for (auto & _agent : _agents){ // ask all agents to make their moves
-        finish = finish && _agent->data.status == Finished; // check if all agents are done
+        finish = finish || _agent->data.status == Finished; // check if all agents are done
         if ( _agent->action_ready() != iteration ) { //ask if the agents decided what to do
             epoch_ready = false; //one agent has not made its mind
         }

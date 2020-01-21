@@ -20,8 +20,8 @@ bool Cell_group::save(const std::string &name) const {
     string file_path = name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
-    for (auto _cell : _cells) {
-        file << _cell->id;
+    for (auto _cell_ref : _cells) {
+        file << _cell_ref.get().id;
         file << std::endl;
     }
     return true;
@@ -47,7 +47,7 @@ int32_t Cell_group::find(const Cell &cell) const {
 }
 
 const Cell &Cell_group::_get_cell(uint32_t index) const {
-    return *_cells[index];
+    return _cells[index].get();
 }
 
 bool Cell_group::contains(uint32_t cell_id) const {
@@ -85,7 +85,7 @@ bool Cell_group::add(const Cell &cell) {
     if (contains(cell.id)) return false;
     while(_id_index.size() <= cell.id) _id_index.push_back(Not_found);
     _id_index[cell.id] = _cells.size();
-    _cells.push_back(&cell);
+    _cells.push_back(cell);
     return true;
 }
 
@@ -102,7 +102,46 @@ double Cell_group::distance(const Cell &c0, const Cell &c1) const {
 }
 
 double Cell_group::distance(const uint32_t s, const uint32_t d) const {
-    return distance(*_cells[s],*_cells[d]);
+    return distance(_cells[s].get(),_cells[d].get());
+}
+
+Cell_group Cell_group::operator+(const Cell_group &cg) {
+    Cell_group ncg = *this;
+    ncg += cg;
+    return ncg;
+}
+
+Cell_group Cell_group::operator-(const Cell_group &cg) {
+    Cell_group ncg = *this;
+    for (uint32_t i=0; i<cg.size(); i++) ncg.remove(cg[i]);
+    return ncg;
+}
+
+Cell_group Cell_group::operator-(const Cell &cell) {
+    Cell_group ncg = *this;
+    ncg.remove(cell);
+    return ncg;
+}
+
+Cell_group &Cell_group::operator+=(const Cell &cell) {
+    add(cell);
+    return *this;
+}
+
+Cell_group &Cell_group::operator-=(const Cell &cell) {
+    remove(cell);
+    return *this;
+}
+
+Cell_group &Cell_group::operator-=(const Cell_group &cg) {
+    for (uint32_t i=0 ; i<cg.size(); i++) remove(cg[i]);
+    return *this;
+}
+
+Cell_group Cell_group::operator+(const Cell &cg) {
+    Cell_group ncg=*this;
+    ncg.add(cg);
+    return Cell_group();
 }
 
 Map::Map(const Cell_group &group)

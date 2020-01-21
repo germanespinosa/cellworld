@@ -66,12 +66,10 @@ uint32_t Connections::size() const {
 
 void Connections::clear() {
     _connections.clear();
-    _id_index.clear();
 }
 
 Connections::Connections(const Cell_group &cell_group):
     cells(cell_group){
-
 }
 
 Connections::Connections(const Cell_group &cell_group, const Connection_pattern &pattern) :
@@ -81,6 +79,7 @@ Connections::Connections(const Cell_group &cell_group, const Connection_pattern 
 
 void Connections::reset(const Connection_pattern &pattern) {
     clear();
+    _id_index.clear();
     Map map(cells);
     for (uint32_t i = 0 ; i<cells.size(); i++) {
         Connection c(cells[i]);

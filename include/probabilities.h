@@ -19,6 +19,7 @@ namespace cell_world{
         bool load(const std::string&);
         bool save(const std::string&) const;
         Probabilities &operator =(const Probabilities &);
+        static uint32_t dice(uint32_t);
     private:
         std::vector<uint32_t> _chances;
         const std::string _extension = ".pattern";

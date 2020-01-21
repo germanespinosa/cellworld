@@ -159,7 +159,7 @@ void Map_editor::_update_current_cell(int32_t index) {
                             cells_view[_Sub_world].cells += gc.sub_world.cells;
                         }
                     } else {
-                        cells_view[_Connected_gates].cells.clear();
+                        cells_view[_Connected_gates].cells = _sub_worlds[_current_sub_world].gate_cells;
                         cells_view[_Sub_world].cells = _sub_worlds[_current_sub_world].cells;
                     }
                 }

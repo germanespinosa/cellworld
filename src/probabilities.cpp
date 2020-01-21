@@ -1,6 +1,7 @@
 #include <probabilities.h>
 #include <core.h>
 #include <fstream>
+#include <iostream>
 
 using namespace cell_world;
 using namespace std;
@@ -21,8 +22,8 @@ uint32_t Probabilities::operator[](uint32_t index) {
 Probabilities::Probabilities(const std::vector<uint32_t>& individual_chances) {
     uint32_t accumulated = 0;
     for ( uint32_t ic:individual_chances ){
-        _chances.push_back(ic + accumulated );
         accumulated += ic;
+        _chances.push_back(accumulated);
     }
 }
 
@@ -42,7 +43,8 @@ uint32_t Probabilities::pick(std::vector<double> values, uint32_t dice) {
             swap(indexes[j - 1], indexes[j]);
 
     uint32_t action;
-    uint32_t chance_dice = (dice % max()) + 1;
+    uint32_t max = _chances[values.size()-1];
+    uint32_t chance_dice = (dice % max) + 1;
     for (action = 0 ; chance_dice > _chances[action] && action < values.size()-1; action++);
     double reward = values[indexes[action]]; // this is the expected value of the state-action pair
 
@@ -79,7 +81,7 @@ uint32_t Probabilities::pick(uint32_t dice) {
 }
 
 uint32_t Probabilities::dice() {
-    return (rand() % max()) +1;
+    return dice(max());
 }
 
 uint32_t Probabilities::pick(std::vector<double> values) {
@@ -124,4 +126,8 @@ Probabilities &Probabilities::operator=(const Probabilities &p) {
         for (auto c:p._chances) _chances.push_back(c);
     }
     return *this;
+}
+
+uint32_t Probabilities::dice(uint32_t max) {
+    return rand() % max;
 }

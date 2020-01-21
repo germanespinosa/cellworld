@@ -20,9 +20,16 @@ namespace cell_world{
         double distance(const Cell&, const Cell&) const;
         Cell_group &operator = (const Cell_group &);
         Cell_group &operator += (const Cell_group &);
+        Cell_group &operator += (const Cell &);
+        Cell_group &operator -= (const Cell_group &);
+        Cell_group &operator -= (const Cell &);
+        Cell_group operator + (const Cell_group &);
+        Cell_group operator + (const Cell &);
+        Cell_group operator - (const Cell_group &);
+        Cell_group operator - (const Cell &);
         const Cell &operator [](uint32_t) const;
     private:
-        std::vector<const Cell*> _cells;
+        std::vector<std::reference_wrapper<const Cell>> _cells;
         std::vector<int32_t> _id_index;
         std::string _file_name;
         const Cell & _get_cell(uint32_t) const;
