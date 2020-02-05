@@ -25,6 +25,7 @@ Probabilities::Probabilities(const std::vector<uint32_t>& individual_chances) {
         accumulated += ic;
         _chances.push_back(accumulated);
     }
+    if (accumulated==0) for (uint32_t i=0 ;i<_chances.size();i++) _chances[i]=i+1;
 }
 
 Probabilities::Probabilities(const std::vector<double>&individual_probabilities) {
@@ -130,4 +131,24 @@ Probabilities &Probabilities::operator=(const Probabilities &p) {
 
 uint32_t Probabilities::dice(uint32_t max) {
     return rand() % max;
+}
+
+Probabilities Probabilities::operator!() {
+    if (_chances.empty()) return Probabilities();
+    vector<uint32_t> individual_chances;
+    uint32_t acum = 0;
+    uint32_t min = _chances[_chances.size()-1];
+    uint32_t max = 0;
+    for(auto &c:_chances) {
+        uint32_t iv=c-acum;
+        if (iv < min) min = iv;
+        if (iv > max) max = iv;
+        individual_chances.push_back(iv);
+        acum = c;
+    }
+    uint32_t target = min + max;
+    for ( uint32_t &ic:individual_chances ){
+        ic = target - ic;
+    }
+    return Probabilities(individual_chances);
 }

@@ -12,19 +12,13 @@ using namespace ge211;
 bool World::add(Cell cell){
     cell.id = _cells.size();
     vector<double> distances;
-    for (unsigned i=0; i<_cells.size() ; i ++){
-        double dist = distance(cell,_cells[i]);
-        distances.push_back(dist);
-        _distances[i].push_back(dist);
-    }
-    distances.push_back(0);
-    _distances.push_back(distances);
     _cells.emplace_back(cell);
     return true;
 }
 
 bool World::load(const std::string& world_name){
     string file_path = world_name + _extension;
+    if (!connection_pattern.load(world_name)) return false;
     _cells.clear();
     std::ifstream file;
     file.open(file_path.c_str());
@@ -50,6 +44,7 @@ bool World::save(const std::string& world_name) const{
     string file_path = world_name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
+    if (!connection_pattern.save(world_name)) return false;
     if (!file.good()) return false;
     for (const auto & cell : _cells){
         file
@@ -70,18 +65,6 @@ uint32_t World::size() const{
 
 const Cell &World::operator[](const uint32_t& id) const{
     return _cells[id];
-}
-
-double World::distance(const Cell &c0, const Cell &c1) const {
-    return sqrt(pow(c1.location.y-c0.location.y,2) + pow(c1.location.x-c0.location.x,2));
-}
-
-double World::distance(const Cell  &c0, const Cell &c1, const Cell &c2) const {
-    return abs((c2.location.y-c1.location.y) * c0.location.x-(c2.location.x-c1.location.x) *c0.location.y+c2.location.x*c1.location.y-c2.location.y * c1.location.x) / sqrt(pow(c2.location.y-c1.location.y,2)+pow(c2.location.x-c1.location.x,2));
-}
-
-double World::distance(const uint32_t s, const uint32_t d) const {
-    return _distances[s][d];
 }
 
 void World::set_occlusion(uint32_t id, bool occluded) {
@@ -130,4 +113,8 @@ Cell_group World::create_cell_group(std::string group_name) const{
         cg.add(_cells[cell_id]);
     }
     return cg;
+}
+
+void World::set_direction(uint32_t index, const Coordinates &direction) {
+    _cells[index].direction = direction;
 }

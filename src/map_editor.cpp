@@ -5,14 +5,13 @@
 using namespace std;
 using namespace cell_world;
 
-Map_editor::Map_editor(World &world, ge211::Dimensions scene_dimensions, const Connection_pattern &connection_pattern) :
+Map_editor::Map_editor(World &world, ge211::Dimensions scene_dimensions) :
 world(world),
 _scene_dimensions(scene_dimensions),
 _view(world, scene_dimensions),
-_visibility(world),
-_connection_pattern(connection_pattern),
+_visibility(),
 _cell_group(world.create_cell_group()),
-_world_connections(_cell_group,connection_pattern),
+_world_connections(_cell_group,world.connection_pattern),
 _sub_worlds(_cell_group)
 {
     Cell_group selected = world.create_cell_group( world.name + "_gates");
@@ -123,13 +122,13 @@ void Map_editor::on_frame(double dt) {
 }
 
 void Map_editor::refresh_values() {
-    _visibility.reset();
-    _world_connections.reset(_connection_pattern);
+    _visibility.reset(world.create_cell_group());
+    _world_connections.reset(world.connection_pattern);
     _sub_worlds.reset(cells_view[_Gates].cells, _world_connections);
-    _world_connections.process_eigen_centrality();
+    _world_connections.process_betweenness_centrality();
     double max = 0;
-    for (uint32_t i = 0 ; i < _world_connections.size(); i++) if (max < _world_connections[i].eigen_centrality) max = _world_connections[i].eigen_centrality;
-    for (uint32_t i = 0 ; i < _world_connections.size(); i++) world.set_value(i,_world_connections[i].eigen_centrality/max);
+    for (uint32_t i = 0 ; i < _world_connections.size(); i++) if (max < _world_connections[i].betweenness_centrality) max = _world_connections[i].betweenness_centrality;
+    for (uint32_t i = 0 ; i < _world_connections.size(); i++) world.set_value(i,_world_connections[i].betweenness_centrality/max);
     uint32_t index = _current_cell_id;
     _update_current_cell(Not_found);
     _update_current_cell(index);

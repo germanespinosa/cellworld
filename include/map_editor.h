@@ -9,7 +9,7 @@
 namespace cell_world {
     class Map_editor : public ge211::Abstract_game {
         public:
-        Map_editor(World &, ge211::Dimensions, const Connection_pattern &);
+        Map_editor(World &, ge211::Dimensions);
         ge211::Dimensions initial_window_dimensions() const override;
         void draw(ge211::Sprite_set&) override;
         World &world;
@@ -30,7 +30,6 @@ namespace cell_world {
         double _message_timer;
         View _view;
         Visibility _visibility;
-        Connection_pattern _connection_pattern;
         Cell_group _cell_group;
         Connections _world_connections;
         int32_t _current_cell_id;

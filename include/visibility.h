@@ -1,12 +1,10 @@
 #pragma once
 #include <world.h>
 #include <cell_group.h>
-
 namespace cell_world{
     struct Visibility{
-        explicit Visibility( World& );
         const Cell_group &operator [](const Cell&) const;
-        void reset();
+        void reset(const Cell_group &);
         double get_entropy();
         private:
         enum Visible{
@@ -19,8 +17,8 @@ namespace cell_world{
         void _set_visibility(uint32_t, uint32_t, uint8_t);
         uint32_t _visibility_index(uint32_t, uint32_t) const;
         bool _get_visible_cells (Cell_group &, uint32_t) const;
-        World &_world;
         uint8_t *_visibility;
         std::vector<Cell_group> _visible_cells;
+        Cell_group _cell_group;
     };
 }

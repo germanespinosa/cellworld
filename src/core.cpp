@@ -36,10 +36,17 @@ std::string Coordinates::operator!() const {
     return fmt.str();
 }
 
+bool Coordinates::is_origin() const {
+    return x==0 && y==0;
+}
+
+int Coordinates::rotation() const {
+    return atan2(x,-y) / 6.28 * 360;
+}
+
 bool Cell::operator == (const Cell& c) const {
     return id == c.id;
 }
-
 
 Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double value, bool occluded)
 {
@@ -48,9 +55,16 @@ Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double valu
     this->coordinates = coordinates;
     this->value = value;
     this->occluded=occluded;
+    direction = {0,0};
 }
 
 Cell::Cell(){
+    id = 0;
+    location = {0,0};
+    coordinates = {0,0};
+    occluded = false;
+    value = 0;
+    direction = {0,0};
 }
 
 Cell &Cell::operator=(const Cell &c) {
@@ -134,4 +148,8 @@ std::string Location::operator!() const {
     std::stringstream fmt;
     fmt <<"(" << x << "," << y <<")";
     return fmt.str();
+}
+
+double Location::dist(const Location &l1, const Location &l2) const {
+    return abs((l2.y-l1.y) * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(pow(l2.y-l1.y,2)+pow(l2.x-l1.x,2));
 }

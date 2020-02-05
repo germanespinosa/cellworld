@@ -26,3 +26,22 @@ TEST_CASE("Connections")
     CHECK(c.add(c1,c2) == false);
     c.save("test");
 }
+
+TEST_CASE("Connections shortest path")
+{
+    World w("test");
+    Cell c0(0,{0,1},{1,1},0,false);
+    Cell c1(1,{1,1},{1,1},0,false);
+    Cell c2(2,{2,1},{1,1},0,false);
+    Cell c3(3,{3,1},{1,1},0,false);
+    w.add(c0);
+    w.add(c1);
+    w.add(c2);
+    w.add(c3);
+    Connections c(w.create_cell_group(), Connection_pattern({{1,0},{-1,0}}));
+    auto sp = c.shortest_path(c0,c3);
+    CHECK(sp.size()==2);
+    CHECK(sp[0]==c2);
+    CHECK(sp[1]==c1);
+    c.save("test");
+}

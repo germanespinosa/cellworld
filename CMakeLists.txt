@@ -14,16 +14,19 @@ find_package(Ge211 CONFIG)
 ###
 
 add_library(cellworld
-        include/cell_world.h
-        src/core.cpp
-        src/world.cpp
-        src/model.cpp
-        src/view.cpp
-        src/simulation.cpp
-        src/visibility.cpp
+        src/agent.cpp
+        src/cell_group.cpp
         src/connection.cpp
+        src/core.cpp
         src/map_editor.cpp
-        src/sub_world.cpp include/cell_group.h src/cell_group.cpp catchtests/visibility.cpp include/probabilities.h src/probabilities.cpp catchtests/location.cpp src/agent.cpp)
+        src/model.cpp
+        src/probabilities.cpp
+        src/simulation.cpp
+        src/sub_world.cpp
+        src/view.cpp
+        src/visibility.cpp
+        src/world.cpp
+        )
 
 target_link_libraries(cellworld
         PUBLIC
@@ -60,11 +63,7 @@ target_link_libraries(cellworld
         ${SDL2_TTF_LIBRARIES}
         utf8-cpp)
 
-SET(GE211_RESOURCE_PATH
-        "${CMAKE_INSTALL_FULL_DATADIR}/cellworld/")
 
-target_compile_definitions(cellworld PRIVATE
-        -DCELLWORLD_RESOURCES="$<JOIN:${CELLWORLD_RESOURCE_PATH},\"$<COMMA>\">")
 
 ###
 ### LIBRARY INSTALLATION
@@ -72,12 +71,19 @@ target_compile_definitions(cellworld PRIVATE
 
 include(GNUInstallDirs)
 
+SET(CELLWORLD_RESOURCES
+        "${CMAKE_INSTALL_FULL_DATADIR}/cellworld/resources")
+
+target_compile_definitions(cellworld PRIVATE
+        -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")
+
 install(TARGETS cellworld EXPORT CellworldConfig
         ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(DIRECTORY resources/ DESTINATION ${CELLWORLD_RESOURCES})
 
 install(EXPORT CellworldConfig
         DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld

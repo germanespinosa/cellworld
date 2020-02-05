@@ -5,9 +5,9 @@
 namespace cell_world{
 
     enum Agent_status{
-        Active,
-        Waiting,
-        Inactive,
+        Started,
+        Action_pending,
+        Action_ready,
         Finished
     };
 
@@ -44,7 +44,6 @@ namespace cell_world{
         explicit Agent(Agent_type);
         virtual const Cell &start_episode(const State &) = 0;
         virtual void update_state(const State &) = 0;
-        virtual uint32_t action_ready() = 0;
         virtual Agent_action &get_action() = 0;
         virtual void end_episode(const State &) = 0;
         const Cell &cell() const;

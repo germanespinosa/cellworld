@@ -6,7 +6,8 @@ using namespace std;
 using namespace cell_world;
 
 View::View(World &world, Dimensions scene_dimensions):
-    _world(world) , 
+    _world(world) ,
+    _direction_sprite(resource_file ("arrow.png")),
     _scene_dimensions(scene_dimensions)
 {
     double sx,sy,lx,ly;
@@ -93,6 +94,9 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
             sprites.add_sprite(_cell_sprites[9], _screen_location(cell.location),0);
         } else{
             sprites.add_sprite(_value_sprites[cell.value * 255], _screen_location(cell.location),0);
+            if (!cell.direction.is_origin()){
+                sprites.add_sprite(_direction_sprite, _screen_location(cell.location),100, Transform {}.scale((double)_cell_size/128.0).set_rotation(cell.direction.rotation()));
+            }
         }
     }
 }
@@ -109,4 +113,9 @@ int32_t View::get_cell(ge211::Position mouse_position) {
         }
     }
     return Not_found;
+}
+
+std::string View::resource_file(std::string res) {
+    string file_name(CELLWORLD_RESOURCES);
+    return file_name + "/" + res;
 }

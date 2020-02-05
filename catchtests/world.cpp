@@ -1,8 +1,8 @@
 #include<catch.h>
 #include<cell_world.h>
-
+#include<iostream>
 using namespace cell_world;
-
+using namespace std;
 TEST_CASE("World")
 {
     World w("test");
@@ -20,6 +20,7 @@ TEST_CASE("World")
 
 TEST_CASE("World connections")
 {
+    cout << View::resource_file("hola") << endl;
     World w("test");
     Cell c0(0,{0,1},{1,1},0,false);
     Cell c1(1,{1,1},{1,1},0,false);

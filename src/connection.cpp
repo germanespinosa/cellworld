@@ -107,6 +107,59 @@ const Connection &Connections::operator[](uint32_t source) const{
     return _connections[source];
 }
 
+bool Connections::process_betweenness_centrality(uint32_t precision) {
+    for (uint32_t i=0;i<_connections.size();i++) _connections[i].betweenness_centrality=0;
+    for (uint32_t i=0;i<cells.size();i+= (rand() % precision) + 1) {
+        if (!cells[i].occluded) {
+            for (uint32_t j = i+1; j < cells.size(); j+= (rand() % precision) + 1) {
+                if (!cells[j].occluded ) {
+                    auto path = shortest_path(cells[i], cells[j]);
+                    for (uint32_t c = 0; c < path.size(); c++) {
+                        _connections[cells.find(path[c])].betweenness_centrality++;
+                    }
+                }
+            }
+        }
+    }
+    return true;
+}
+
+Cell_group Connections::shortest_path(const Cell& s,const Cell & d) {
+    struct Node{
+        int32_t parent;
+        const Cell & cell;
+    };
+    vector<bool> visited (cells.size(), false);
+    vector<Node> nodes;
+    Cell_group path;
+    nodes.push_back({Not_found,s});
+    uint32_t i = 0;
+    uint32_t cell_index = cells.find(nodes[i].cell);
+    visited[cell_index] = true;
+    while (!_connections[cell_index].connections.contains(d)) {
+        auto conns = _connections[cell_index].connections.random_shuffle();
+        for (uint32_t c = 0;c < conns.size();c++) {
+            auto &candidate = conns[c];
+            uint32_t candidate_index = cells.find(candidate);
+            if (!visited[candidate_index]) {
+                nodes.push_back({(int32_t) i, candidate});
+                visited[candidate_index] = true;
+            }
+        }
+        if (++i == nodes.size()) return path;
+        cell_index = cells.find(nodes[i].cell);
+    }
+    while (nodes[i].parent != Not_found){
+        path.add(nodes[i].cell);
+        i=nodes[i].parent;
+    }
+    return path;
+}
+
+bool Connections::process_betweenness_centrality() {
+    return process_betweenness_centrality(10);
+}
+
 
 Connection::Connection(const Cell &cell )
     :cell(cell){}
@@ -146,6 +199,7 @@ bool Connection_pattern::save(const std::string& name) const {
     string file_name = name + _extension;
     std::ofstream file;
     file.open(file_name.c_str());
+    cout << "saving pattern" <<endl;
     if (!file.good()) return false;
     for (const auto c : pattern){
         file
@@ -160,4 +214,12 @@ Connection_pattern::Connection_pattern() = default;
 Connection_pattern::Connection_pattern(std::vector<Coordinates>pattern)
 :pattern(std::move(pattern)){
 
+}
+
+Connection_pattern &Connection_pattern::operator=(const Connection_pattern &cp) {
+    if (&cp != this) {
+        pattern.clear();
+        for (auto p:cp.pattern) pattern.push_back(p);
+    }
+    return *this;
 }

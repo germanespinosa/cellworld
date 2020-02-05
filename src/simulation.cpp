@@ -1,5 +1,6 @@
 #include <simulation.h>
 #include <string>
+#include <iostream>
 
 using namespace ge211;
 using namespace std;
@@ -56,4 +57,31 @@ Dimensions Simulation::initial_window_dimensions() const
 void Simulation::draw(Sprite_set& sprites)
 {
     _view.draw_scene(sprites, _model.get_agents_data(), to_string(episode) + "-" + to_string(_model.iteration));
+}
+
+void Simulation::run_silent() {
+    run_silent(false);
+}
+
+void Simulation::run_silent(bool show_progress) {
+    string bar ("|--------------------------------------------------|  ");
+    uint32_t step = _episodes / 50;
+    uint32_t step_count = 0;
+    uint32_t progress = 0;
+    for (uint32_t i = 0; i < _episodes; i++){
+        if (show_progress) {
+            step_count++;
+            if (step_count >= step){
+                step_count=0;
+                progress++;
+                bar[progress]='=';
+                bar[progress+1]='>';
+                cout << "\r" << bar << (progress<5?" ":"") << progress * 2 << "% (" << (i+1) << "/" << _episodes << ")" << flush;
+            }
+        }
+        _model.start_episode();
+        for (uint32_t s = 0; s < _iterations &&  _model.update(); s++);
+        _model.end_episode();
+    }
+    cout << "\r|==================================================| 100% (" << _episodes << "/" << _episodes << ")" << flush;
 }

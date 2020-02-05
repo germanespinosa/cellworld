@@ -18,6 +18,7 @@ namespace cell_world{
         int32_t find(const Cell &) const;
         double distance(uint32_t, uint32_t) const;
         double distance(const Cell&, const Cell&) const;
+        Cell_group random_shuffle() const;
         Cell_group &operator = (const Cell_group &);
         Cell_group &operator += (const Cell_group &);
         Cell_group &operator += (const Cell &);

@@ -9,6 +9,7 @@ const cell_world::Cell &cell_world::Agent::cell() const {
 cell_world::Agent::Agent(cell_world::Agent_type type)
 {
     data.type = type;
+    data.status = Started;
 }
 
 void cell_world::Agent::set_status(cell_world::Agent_status status) {

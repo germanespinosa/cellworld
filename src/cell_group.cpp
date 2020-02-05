@@ -144,6 +144,14 @@ Cell_group Cell_group::operator+(const Cell &cg) {
     return Cell_group();
 }
 
+Cell_group Cell_group::random_shuffle() const {
+    Cell_group cg;
+    auto index = new_index(size());
+    std::random_shuffle(index.begin(),index.end());
+    for(uint32_t i:index) cg.add((*this)[i]);
+    return cg;
+}
+
 Map::Map(const Cell_group &group)
 :_group(group){
     for (auto & i : _coordinate_index) for (int & j : i) j = Not_found;
