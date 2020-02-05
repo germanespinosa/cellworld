@@ -98,7 +98,7 @@ Cell_group World::create_cell_group(const std::vector<uint32_t>& cell_ids) const
     return cg;
 }
 
-Cell_group World::create_cell_group(std::string group_name) const{
+Cell_group World::create_cell_group(const std::string& group_name) const{
     Cell_group cg;
     string file_path =  group_name + cg._extension;
     std::ifstream file;

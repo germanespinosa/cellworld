@@ -20,7 +20,7 @@ namespace cell_world{
         void set_direction(uint32_t, const Coordinates &);
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const std::vector<uint32_t>&) const;
-        Cell_group create_cell_group(std::string) const;
+        Cell_group create_cell_group(const std::string&) const;
         std::string name;
         Connection_pattern connection_pattern;
     private:

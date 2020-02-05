@@ -20,7 +20,6 @@ TEST_CASE("World")
 
 TEST_CASE("World connections")
 {
-    cout << View::resource_file("hola") << endl;
     World w("test");
     Cell c0(0,{0,1},{1,1},0,false);
     Cell c1(1,{1,1},{1,1},0,false);
