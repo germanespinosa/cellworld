@@ -14,7 +14,7 @@ namespace cell_world{
         bool save() const;
         bool save(const std::string&) const;
         uint32_t size() const;
-        const Cell &operator[](const uint32_t& ) const;
+        Cell &operator[](const uint32_t& );
         void set_occlusion(uint32_t, bool);
         void set_value(uint32_t, double);
         void set_direction(uint32_t, const Coordinates &);

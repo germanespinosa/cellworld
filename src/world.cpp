@@ -63,7 +63,7 @@ uint32_t World::size() const{
     return _cells.size();
 }
 
-const Cell &World::operator[](const uint32_t& id) const{
+Cell &World::operator[](const uint32_t& id){
     return _cells[id];
 }
 

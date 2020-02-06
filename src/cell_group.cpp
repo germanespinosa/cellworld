@@ -3,6 +3,7 @@
 #include <fstream>
 #include <string>
 #include <algorithm>
+#include <random>
 
 using namespace std;
 using namespace cell_world;
@@ -85,7 +86,7 @@ bool Cell_group::add(const Cell &cell) {
     if (contains(cell.id)) return false;
     while(_id_index.size() <= cell.id) _id_index.push_back(Not_found);
     _id_index[cell.id] = _cells.size();
-    _cells.push_back(cell);
+    _cells.emplace_back(cell);
     return true;
 }
 
@@ -147,7 +148,8 @@ Cell_group Cell_group::operator+(const Cell &cg) {
 Cell_group Cell_group::random_shuffle() const {
     Cell_group cg;
     auto index = new_index(size());
-    std::random_shuffle(index.begin(),index.end());
+    uint32_t seed = rand();
+    std::shuffle(index.begin(),index.end(),std::default_random_engine(seed));
     for(uint32_t i:index) cg.add((*this)[i]);
     return cg;
 }

@@ -1,6 +1,6 @@
 #pragma once
 #include <core.h>
-#include <probabilities.h>
+#include <chance.h>
 #include <connection.h>
 namespace cell_world{
 
@@ -13,9 +13,9 @@ namespace cell_world{
 
     struct Agent_action{
         Agent_action() = default;
-        Agent_action(Connection_pattern,Probabilities);
+        Agent_action(const Connection_pattern&, Chance);
         Connection_pattern destinations;
-        Probabilities probabilities;
+        Chance probabilities;
         bool load(const std::string&);
         bool save(const std::string&) const;
     private:

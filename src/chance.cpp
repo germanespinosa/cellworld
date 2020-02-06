@@ -1,25 +1,26 @@
-#include <probabilities.h>
+#include <chance.h>
 #include <core.h>
 #include <fstream>
 #include <iostream>
+#include <utility>
 
 using namespace cell_world;
 using namespace std;
 
-uint32_t Probabilities::size() {
+uint32_t Chance::size() {
     return _chances.size();
 }
 
-double Probabilities::probability(uint32_t index) {
+double Chance::probability(uint32_t index) {
     return _get_probability(index,max());
 }
 
-uint32_t Probabilities::operator[](uint32_t index) {
+uint32_t Chance::operator[](uint32_t index) {
     if (index==0) return _chances[index];
     return _chances[index] - _chances[index-1];
 }
 
-Probabilities::Probabilities(const std::vector<uint32_t>& individual_chances) {
+Chance::Chance(const std::vector<uint32_t>& individual_chances) {
     uint32_t accumulated = 0;
     for ( uint32_t ic:individual_chances ){
         accumulated += ic;
@@ -28,7 +29,7 @@ Probabilities::Probabilities(const std::vector<uint32_t>& individual_chances) {
     if (accumulated==0) for (uint32_t i=0 ;i<_chances.size();i++) _chances[i]=i+1;
 }
 
-Probabilities::Probabilities(const std::vector<double>&individual_probabilities) {
+Chance::Chance(const std::vector<double>&individual_probabilities) {
     double accumulated = 0;
     for ( double ic:individual_probabilities ){
         _chances.push_back( ( ic + accumulated ) * 100 );
@@ -36,7 +37,7 @@ Probabilities::Probabilities(const std::vector<double>&individual_probabilities)
     }
 }
 
-uint32_t Probabilities::pick(std::vector<double> values, uint32_t dice) {
+uint32_t Chance::pick(std::vector<double> &values, uint32_t dice) {
     auto indexes = new_index(values.size()); // creates an index vector for the options
 
     for (uint32_t i = 1; i < indexes.size(); i++) // sort the indexes of the options by expected reward descending
@@ -59,41 +60,37 @@ uint32_t Probabilities::pick(std::vector<double> values, uint32_t dice) {
     return pick; //pick the correct one
 }
 
-uint32_t Probabilities::max() {
+uint32_t Chance::max() {
     return _chances[_chances.size()-1];
 }
 
-double Probabilities::compute(std::vector<double>values) {
+double Chance::compute(std::vector<double> &values) {
     double r = 0;
     for (uint32_t i = 0; i < values.size() && i < _chances.size();i++ ) r+=values[i] * _get_probability(i,_chances[values.size()-1]);
     return r;
 }
 
-double Probabilities::_get_probability(uint32_t index, uint32_t max) {
+double Chance::_get_probability(uint32_t index, uint32_t max) {
     uint32_t chances = (*this)[index];
     return (double)chances / (double)max;
 }
 
-uint32_t Probabilities::pick(uint32_t dice) {
+uint32_t Chance::pick(uint32_t dice) {
     uint32_t pick;
     uint32_t chance_dice = (dice % max()) + 1;
     for (pick = 0 ; chance_dice > _chances[pick] && pick < _chances.size()-1; pick++);
     return pick;
 }
 
-uint32_t Probabilities::dice() {
-    return dice(max());
-}
-
-uint32_t Probabilities::pick(std::vector<double> values) {
+uint32_t Chance::pick(std::vector<double> &values) {
     return pick(values, dice());
 }
 
-uint32_t Probabilities::pick() {
+uint32_t Chance::pick() {
     return pick(dice());
 }
 
-bool Probabilities::load(const std::string &name) {
+bool Chance::load(const std::string &name) {
     string file_path =  name + _extension;
     std::ifstream file;
     file.open(file_path.c_str());
@@ -108,7 +105,7 @@ bool Probabilities::load(const std::string &name) {
     return true;
 }
 
-bool Probabilities::save(const std::string &name) const {
+bool Chance::save(const std::string &name) const {
     string file_path = name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
@@ -121,7 +118,7 @@ bool Probabilities::save(const std::string &name) const {
     return true;
 }
 
-Probabilities &Probabilities::operator=(const Probabilities &p) {
+Chance &Chance::operator=(const Chance &p) {
     if (this != &p){
         _chances.clear();
         for (auto c:p._chances) _chances.push_back(c);
@@ -129,12 +126,12 @@ Probabilities &Probabilities::operator=(const Probabilities &p) {
     return *this;
 }
 
-uint32_t Probabilities::dice(uint32_t max) {
-    return rand() % max;
+uint32_t Chance::dice(uint32_t max) {
+    return dice() % (max + 1);
 }
 
-Probabilities Probabilities::operator!() {
-    if (_chances.empty()) return Probabilities();
+Chance Chance::operator!() {
+    if (_chances.empty()) return Chance();
     vector<uint32_t> individual_chances;
     uint32_t acum = 0;
     uint32_t min = _chances[_chances.size()-1];
@@ -150,5 +147,21 @@ Probabilities Probabilities::operator!() {
     for ( uint32_t &ic:individual_chances ){
         ic = target - ic;
     }
-    return Probabilities(individual_chances);
+    return Chance(individual_chances);
+}
+
+int32_t Chance::dice(int32_t min, int32_t max) {
+    return (dice() % (max-min+1)) + min;
+}
+
+uint32_t Chance::dice() {
+    return rand();
+}
+
+double Chance::dice_double(double max) {
+    return (double)dice() * max / RAND_MAX;
+}
+
+double Chance::dice_double(double min,double max) {
+    return (double)dice() * (max-min) / RAND_MAX + min;
 }

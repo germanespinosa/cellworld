@@ -54,7 +54,8 @@ Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double valu
     this->location = location;
     this->coordinates = coordinates;
     this->value = value;
-    this->occluded=occluded;
+    this->occluded = occluded;
+    icon = No_icon;
     direction = {0,0};
 }
 
@@ -64,6 +65,7 @@ Cell::Cell(){
     coordinates = {0,0};
     occluded = false;
     value = 0;
+    icon = No_icon;
     direction = {0,0};
 }
 

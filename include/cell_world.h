@@ -8,6 +8,6 @@
 #include<sub_world.h>
 #include<visibility.h>
 #include<connection.h>
-#include<probabilities.h>
+#include<chance.h>
 #include<map_editor.h>
 #include<simulation.h>

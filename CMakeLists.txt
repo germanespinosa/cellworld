@@ -20,7 +20,7 @@ add_library(cellworld
         src/core.cpp
         src/map_editor.cpp
         src/model.cpp
-        src/probabilities.cpp
+        src/chance.cpp
         src/simulation.cpp
         src/sub_world.cpp
         src/view.cpp

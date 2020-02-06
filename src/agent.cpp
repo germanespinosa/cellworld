@@ -8,7 +8,7 @@ const cell_world::Cell &cell_world::Agent::cell() const {
 
 cell_world::Agent::Agent(cell_world::Agent_type type)
 {
-    data.type = type;
+    data.type = std::move(type);
     data.status = Started;
 }
 
@@ -28,9 +28,9 @@ bool cell_world::Agent_action::save(const std::string &name) const {
     return destinations.save(name) && probabilities.save(name);
 }
 
-cell_world::Agent_action::Agent_action(cell_world::Connection_pattern destinations, cell_world::Probabilities probabilities)
-: destinations(std::move(destinations))
-, probabilities(std::move(probabilities)){
+cell_world::Agent_action::Agent_action(const cell_world::Connection_pattern& destinations, cell_world::Chance probabilities)
+: destinations(destinations)
+, probabilities(probabilities){
 }
 
 int32_t cell_world::State::find(const std::string& type_name) const {

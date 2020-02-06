@@ -1,5 +1,6 @@
 #include<view.h>
 #include<iostream>
+#include <fstream>
 
 using namespace ge211;
 using namespace std;
@@ -7,7 +8,6 @@ using namespace cell_world;
 
 View::View(World &world, Dimensions scene_dimensions):
     _world(world) ,
-    _direction_sprite(resource_file ("arrow.png")),
     _scene_dimensions(scene_dimensions)
 {
     double sx,sy,lx,ly;
@@ -43,6 +43,22 @@ View::View(World &world, Dimensions scene_dimensions):
     _cell_sprites.emplace_back(_cell_size, ge211::Color{0,0,128}); //15
     for (uint16_t i=0; i<256 ; i++ ) {
         _value_sprites.emplace_back(_cell_size, ge211::Color{255, (uint8_t) (255 - i), (uint8_t) (255 - i)});
+    }
+    int icon_counter = 0;
+    string file_name;
+    {
+        std::stringstream fmt;
+        fmt << "icon-" << icon_counter << ".png";
+        file_name = resource_file(fmt.str());
+    }
+    while (file_exists (file_name)) {
+        _icon_sprites.emplace_back(file_name);
+        {
+            std::stringstream fmt;
+            icon_counter++;
+            fmt << "icon-" << icon_counter << ".png";
+            file_name = resource_file(fmt.str());
+        }
     }
 }
 
@@ -94,8 +110,8 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
             sprites.add_sprite(_cell_sprites[9], _screen_location(cell.location),0);
         } else{
             sprites.add_sprite(_value_sprites[cell.value * 255], _screen_location(cell.location),0);
-            if (!cell.direction.is_origin()){
-                sprites.add_sprite(_direction_sprite, _screen_location(cell.location),100, Transform {}.scale((double)_cell_size/128.0).set_rotation(cell.direction.rotation()));
+            if (cell.icon){
+                sprites.add_sprite(_icon_sprites[cell.icon], _screen_location(cell.location),100, Transform {}.scale((double)_cell_size/128.0).set_rotation(cell.direction.rotation()));
             }
         }
     }
@@ -118,4 +134,9 @@ int32_t View::get_cell(ge211::Position mouse_position) {
 std::string View::resource_file(std::string res) {
     string file_name(CELLWORLD_RESOURCES);
     return file_name + "/" + res;
+}
+
+bool View::file_exists (const std::string& name) {
+    ifstream f(name.c_str());
+    return f.good();
 }
