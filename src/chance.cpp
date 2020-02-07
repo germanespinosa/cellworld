@@ -32,7 +32,7 @@ Chance::Chance(const std::vector<uint32_t>& individual_chances) {
 Chance::Chance(const std::vector<double>&individual_probabilities) {
     double accumulated = 0;
     for ( double ic:individual_probabilities ){
-        _chances.push_back( ( ic + accumulated ) * 100 );
+        _chances.push_back( ( ic + accumulated ) * 10000 );
         accumulated += ic;
     }
 }
@@ -127,7 +127,7 @@ Chance &Chance::operator=(const Chance &p) {
 }
 
 uint32_t Chance::dice(uint32_t max) {
-    return dice() % (max + 1);
+    return dice() % max;
 }
 
 Chance Chance::operator!() {
@@ -164,4 +164,18 @@ double Chance::dice_double(double max) {
 
 double Chance::dice_double(double min,double max) {
     return (double)dice() * (max-min) / RAND_MAX + min;
+}
+
+Chance::Chance(double first_option, uint32_t option_count){
+    double accumulated = first_option;
+    _chances.push_back( first_option * 10000 );
+    for (uint32_t i=1;i<option_count;i++){
+        double ic = (1-first_option)/(double)(option_count-1);
+        _chances.push_back( ( ic + accumulated ) * 10000 );
+        accumulated += ic;
+    }
+}
+
+Chance::Chance(uint32_t c){
+    for (uint32_t i=0;i<c;i++) _chances.push_back(i+1);
 }

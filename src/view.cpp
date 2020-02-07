@@ -60,6 +60,22 @@ View::View(World &world, Dimensions scene_dimensions):
             file_name = resource_file(fmt.str());
         }
     }
+    icon_counter = 0;
+    {
+        std::stringstream fmt;
+        fmt << "icons/custom-icon-" << icon_counter << ".png";
+        file_name = fmt.str();
+    }
+    while (file_exists (file_name)) {
+        _custom_icon_sprites.emplace_back(file_name);
+        {
+            std::stringstream fmt;
+            icon_counter++;
+            fmt << "icons/custom-icon-" << icon_counter << ".png";
+            file_name = fmt.str();
+        }
+    }
+
 }
 
 Basic_position<int> View::_screen_location (const Location &location)
@@ -111,7 +127,7 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
         } else{
             sprites.add_sprite(_value_sprites[cell.value * 255], _screen_location(cell.location),0);
             if (cell.icon){
-                sprites.add_sprite(_icon_sprites[cell.icon], _screen_location(cell.location),100, Transform {}.scale((double)_cell_size/128.0).set_rotation(cell.direction.rotation()));
+                sprites.add_sprite(cell.icon < 100 ?_icon_sprites[cell.icon]:_custom_icon_sprites[cell.icon], _screen_location(cell.location),100, Transform {}.scale((double)_cell_size/128.0).set_rotation(cell.direction.rotation()));
             }
         }
     }

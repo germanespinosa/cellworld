@@ -76,3 +76,18 @@ TEST_CASE("dice") {
     for (uint32_t i = 0;i<10000;i++)
         CHECK(Chance::dice_double(-100,100)<=100);
 }
+
+TEST_CASE("Probabilities complete")
+{
+    Chance p(.9,5);
+    CHECK(p.probability(0)==.9);
+    CHECK(p.probability(1)==.025);
+    CHECK(p.probability(2)==.025);
+    CHECK(p.probability(3)==.025);
+    CHECK(p.probability(4)==.025);
+    CHECK(p.size()==5);
+    Chance p1(5);
+    vector<uint32_t> c(5,0);
+    for (uint32_t i=0;i<10000;i++) c[p1.pick()]++;
+    for (uint32_t i=0;i<5;i++) CHECK(c[i]>0);
+}

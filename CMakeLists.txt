@@ -90,8 +90,10 @@ install(EXPORT CellworldConfig
         EXPORT_LINK_INTERFACE_LIBRARIES)
 
 export(TARGETS cellworld FILE CellworldConfig.cmake)
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Ge211   REQUIRED)\n\") ")
-
+install(FILES resources.cmake DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/)
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Ge211 REQUIRED)\n\") ")
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"SET(CELLWORLD_RESOURCES ${CELLWORLD_RESOURCES})\n\") ")
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"include(${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/resources.cmake)\n\") ")
 ###
 ### TESTS CONFIGURATION
 ###

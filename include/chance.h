@@ -6,6 +6,8 @@ namespace cell_world{
         Chance() = default;
         explicit Chance(const std::vector<uint32_t>&);
         explicit Chance(const std::vector<double>&);
+        explicit Chance(double, uint32_t);
+        explicit Chance(uint32_t);
         uint32_t size();
         double probability(uint32_t);
         uint32_t operator [](uint32_t);

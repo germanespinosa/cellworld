@@ -24,6 +24,7 @@ namespace cell_world{
         ge211::Basic_position<int> _screen_location (const Location & );
         World &_world;
         std::vector<ge211::Image_sprite> _icon_sprites;
+        std::vector<ge211::Image_sprite> _custom_icon_sprites;
         std::vector<ge211::Circle_sprite> _cell_sprites;
         std::vector<ge211::Circle_sprite> _value_sprites;
         ge211::Font sans{"sans.ttf", 30};

@@ -28,7 +28,7 @@ namespace cell_world{
         Green_arrow_icon,
         Prey_icon,
         Predator_icon,
-        Custom_0_icon,
+        Custom_0_icon = 100,
         Custom_1_icon,
         Custom_2_icon,
         Custom_3_icon,
@@ -43,7 +43,22 @@ namespace cell_world{
         Custom_12_icon,
         Custom_13_icon,
         Custom_14_icon,
-        Custom_15_icon
+        Custom_15_icon,
+        Custom_16_icon,
+        Custom_17_icon,
+        Custom_18_icon,
+        Custom_19_icon,
+        Custom_20_icon,
+        Custom_21_icon,
+        Custom_22_icon,
+        Custom_23_icon,
+        Custom_24_icon,
+        Custom_25_icon,
+        Custom_26_icon,
+        Custom_27_icon,
+        Custom_28_icon,
+        Custom_29_icon,
+        Custom_30_icon
     };
     struct Coordinates{
         int8_t x,y;
