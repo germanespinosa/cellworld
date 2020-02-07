@@ -1,8 +1,7 @@
 #pragma once
 #include <core.h>
-#include <ge211.h>
-#include "cell_group.h"
-#include "connection.h"
+#include <cell_group.h>
+#include <connection.h>
 
 namespace cell_world{
 

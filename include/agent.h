@@ -2,6 +2,7 @@
 #include <core.h>
 #include <chance.h>
 #include <connection.h>
+
 namespace cell_world{
 
     enum Agent_status{

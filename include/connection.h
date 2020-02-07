@@ -1,8 +1,5 @@
 #pragma once
-
-#include <cinttypes>
-#include <string>
-#include <vector>
+#include <core.h>
 #include <cell_group.h>
 namespace cell_world {
 

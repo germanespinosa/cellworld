@@ -1,5 +1,20 @@
 #pragma once
 #include <ge211.h>
+#include <iostream>
+#include <cinttypes>
+#include <string>
+#include <vector>
+
+
+#ifdef DEBUG
+    #define D(x) (x)
+    #define L(x) std::cout << x << std::endl;
+    #define E(x) std::cerr << x << std::endl;
+#else
+    #define D(x) ;
+    #define L(x) ;
+    #define E(x) ;
+#endif
 
 namespace cell_world{
     const int16_t Not_found = -1;

@@ -2,7 +2,6 @@
 #include <core.h>
 #include <world.h>
 #include <cell_group.h>
-#include <ge211.h>
 #include <connection.h>
 
 namespace cell_world{

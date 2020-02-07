@@ -10,6 +10,7 @@ View::View(World &world, Dimensions scene_dimensions):
     _world(world) ,
     _scene_dimensions(scene_dimensions)
 {
+    L("View::View(World &, Dimensions ) start");
     double sx,sy,lx,ly;
     lx = sx = _world[0].location.x;
     ly = sy = _world[0].location.y;
@@ -75,11 +76,13 @@ View::View(World &world, Dimensions scene_dimensions):
             file_name = fmt.str();
         }
     }
-
+    L("View::View(World &, Dimensions ) end");
 }
 
 Basic_position<int> View::_screen_location (const Location &location)
 {
+    L("View::_screen_location (const Location &) start");
+    L("View::_screen_location (const Location &) end");
     return {
         (int)((double)_scene_dimensions.width / 2 + location.x * _ratio - _ratio  / 2),
         (int)((double)_scene_dimensions.height / 2 + location.y * _ratio - _ratio  / 2)
@@ -88,15 +91,18 @@ Basic_position<int> View::_screen_location (const Location &location)
 
 void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, const string& text)
 {
+    L("View::draw_scene(Sprite_set& , vector<Agent_data> , const string& ) start");
     fps.reconfigure(Text_sprite::Builder(sans) << text);
     sprites.add_sprite(fps, {10, 10});
     _draw_world(sprites);
     for (unsigned int i =0 ; i< agents.size(); i++) {
         sprites.add_sprite(_cell_sprites[agents[i].color], _screen_location(agents[i].cell.location),1);
     }
+    L("View::draw_scene(Sprite_set& , vector<Agent_data> , const string& ) end");
 }
 
 void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Cell_group_view> groups, const std::string& text) {
+    L("View::draw_editor(ge211::Sprite_set &, int32_t , std::vector<Cell_group_view> , const std::string& ) start");
     if (!text.empty()) {
         fps.reconfigure(Text_sprite::Builder(sans) << text);
         sprites.add_sprite(fps, {10, 10});
@@ -117,9 +123,11 @@ void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Ce
         else
             sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),255);
     }
+    L("View::draw_editor(ge211::Sprite_set &, int32_t , std::vector<Cell_group_view> , const std::string& ) end");
 }
 
 void View::_draw_world(ge211::Sprite_set &sprites) {
+    L("View::_draw_world(ge211::Sprite_set &) start");
     for (unsigned int i = 0 ; i< _world.size(); i++) {
         const Cell &cell = _world[i];
         if (cell.occluded){
@@ -131,9 +139,11 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
             }
         }
     }
+    L("View::_draw_world(ge211::Sprite_set &) end");
 }
 
 int32_t View::get_cell(ge211::Position mouse_position) {
+    L("View::get_cell(ge211::Position ) start");
     for (unsigned int i = 0 ; i< _world.size(); i++) {
         const Cell &cell = _world[i];
         ge211::Position cell_pos = _screen_location(cell.location);
@@ -144,15 +154,20 @@ int32_t View::get_cell(ge211::Position mouse_position) {
             return i;
         }
     }
+    L("View::get_cell(ge211::Position ) end");
     return Not_found;
 }
 
 std::string View::resource_file(std::string res) {
+    L("View::resource_file(std::string ) start");
     string file_name(CELLWORLD_RESOURCES);
+    L("View::resource_file(std::string ) end");
     return file_name + "/" + res;
 }
 
 bool View::file_exists (const std::string& name) {
+    L("View::file_exists (const std::string& ) start");
     ifstream f(name.c_str());
+    L("View::file_exists (const std::string& ) end");
     return f.good();
 }

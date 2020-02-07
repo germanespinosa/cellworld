@@ -1,6 +1,5 @@
 #pragma once
 #include <core.h>
-#include <ge211.h>
 
 namespace cell_world{
     struct Cell_group{

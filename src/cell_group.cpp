@@ -1,5 +1,4 @@
 #include <cell_group.h>
-#include <iostream>
 #include <fstream>
 #include <string>
 #include <algorithm>
@@ -10,14 +9,19 @@ using namespace cell_world;
 using namespace ge211;
 
 uint32_t Cell_group::size() const {
+    L("Cell_group::size() start");
+    L("Cell_group::size() end");
     return _cells.size();
 }
 
 const Cell &Cell_group::operator[](uint32_t index) const {
+    L("Cell &Cell_group::operator[](uint32_t ) start");
+    L("Cell &Cell_group::operator[](uint32_t ) end");
     return _get_cell(index);
 }
 
 bool Cell_group::save(const std::string &name) const {
+    L("Cell_group::save(const std::string &) start");
     string file_path = name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
@@ -25,16 +29,22 @@ bool Cell_group::save(const std::string &name) const {
         file << _cell_ref.get().id;
         file << std::endl;
     }
+    L("Cell_group::save(const std::string &) end");
     return true;
 }
 
 bool Cell_group::save() const{
-    return save(_file_name);
+    L("Cell_group::save() start");
+    bool res = save(_file_name);
+    L("Cell_group::save() end");
+    return res;
 }
 
 void Cell_group::clear() {
+    L("Cell_group::clear() start");
     _cells.clear();
     _id_index.clear();
+    L("Cell_group::clear() end");
 }
 
 int32_t Cell_group::find(uint32_t cell_id) const {
