@@ -47,7 +47,7 @@ bool Connections::save(const std::string &name) const{
 }
 
 
-bool Connections::add(const Cell &source, const Cell &destination) {
+bool Connections::_add(const Cell &source, const Cell &destination) {
     while (source.id >=_id_index.size()) _id_index.push_back(Not_found);
     if (_id_index[source.id]==Not_found) {
         _id_index[source.id] = _connections.size();
@@ -64,7 +64,7 @@ uint32_t Connections::size() const {
     return _connections.size();
 }
 
-void Connections::clear() {
+void Connections::_clear() {
     _connections.clear();
 }
 
@@ -78,7 +78,7 @@ Connections::Connections(const Cell_group &cell_group, const Connection_pattern 
 }
 
 void Connections::reset(const Connection_pattern &pattern) {
-    clear();
+    _clear();
     _id_index.clear();
     Map map(cells);
     for (uint32_t i = 0 ; i<cells.size(); i++) {
@@ -92,7 +92,7 @@ void Connections::reset(const Connection_pattern &pattern) {
             for (auto c : pattern.get_candidates(cells[source].coordinates)) {
                 int32_t destination = map.find(c);
                 if (destination != Not_found && !cells[destination].occluded) {
-                    add(cells[source],cells[destination]);
+                    _add(cells[source],cells[destination]);
                 }
             }
         }
@@ -222,4 +222,28 @@ Connection_pattern &Connection_pattern::operator=(const Connection_pattern &cp) 
         for (auto p:cp.pattern) pattern.push_back(p);
     }
     return *this;
+}
+
+bool Connection_pattern::load_from_string(const std::string &line) {
+    L("Connection_pattern::load_from_string(const std::string &) start");
+    istringstream ss(line);
+    pattern.clear();
+    while (!ss.eof()) {
+        int16_t cx = -1000,cy = -1000;
+        ss >> cx;
+        ss >> cy;
+        if (cx==(int16_t)((int8_t)cx)) pattern.push_back({(int8_t) cx, (int8_t) cy});
+        else return false;
+    }
+    L("Connection_pattern::load_from_string(const std::string &) end");
+    return true;
+}
+
+std::string Connection_pattern::save_to_string() const {
+    L("Connection_pattern::save_to_string() start");
+    std::stringstream fmt;
+    for (auto &p:pattern)
+        fmt << (int16_t)p.x << " " << (int16_t)p.y << " ";
+    L("Connection_pattern::save_to_string() end");
+    return fmt.str();
 }

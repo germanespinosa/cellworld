@@ -18,7 +18,11 @@
 
 namespace cell_world{
     const int16_t Not_found = -1;
-
+    enum Cell_type {
+        Not_set,
+        Circle,
+        Square
+    };
     enum Color{
         Black,
         White,

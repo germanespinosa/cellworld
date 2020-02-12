@@ -8,9 +8,9 @@ using namespace cell_world;
 Map_editor::Map_editor(World &world, ge211::Dimensions scene_dimensions) :
 world(world),
 _scene_dimensions(scene_dimensions),
-_view(world, scene_dimensions),
-_visibility(),
 _cell_group(world.create_cell_group()),
+_visibility(_cell_group),
+_view(_cell_group, scene_dimensions),
 _world_connections(_cell_group,world.connection_pattern),
 _sub_worlds(_cell_group)
 {

@@ -17,7 +17,6 @@ namespace cell_world {
         void on_key_up(ge211::Key) override;
         void on_frame(double) override;
         void refresh_values();
-
         private:
         const uint32_t _Gates = 0;
         const uint32_t _Visible = 1;
@@ -27,9 +26,9 @@ namespace cell_world {
         ge211::Dimensions _scene_dimensions;
         std::string _message;
         double _message_timer;
-        View _view;
-        Visibility _visibility;
         Cell_group _cell_group;
+        Visibility _visibility;
+        View _view;
         Connections _world_connections;
         int32_t _current_cell_id;
         int32_t _current_sub_world;

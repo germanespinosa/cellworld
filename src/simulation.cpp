@@ -6,18 +6,19 @@ using namespace ge211;
 using namespace std;
 using namespace cell_world;
 
-Simulation::Simulation (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
-        _model(world, agents),
+Simulation::Simulation (Cell_group &cg, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
         _scene_dimensions(scene_dimensions),
-        _view(world, scene_dimensions),
+        _cell_group (cg),
+        _model(_cell_group, agents),
+        _view(_cell_group, scene_dimensions),
         _iterations(iterations),
         _episodes(episodes){
     episode = 0;
     _model.start_episode();
 }
 
-Simulation::Simulation (World &world, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions ) :
-        Simulation (world, agents, scene_dimensions,0,1){}
+Simulation::Simulation (Cell_group &cg, std::vector<Agent*> &agents, const ge211::Dimensions scene_dimensions ) :
+        Simulation (cg, agents, scene_dimensions,0,1){}
 
 void Simulation::on_frame(double dt)
 {

@@ -13,6 +13,8 @@ namespace cell_world {
         bool load(const std::string&);
         bool save(const std::string&) const;
         Connection_pattern &operator =(const Connection_pattern &);
+        bool load_from_string(const std::string&);
+        std::string save_to_string() const;
     private:
         const std::string _extension = ".pattern";
     };
@@ -32,7 +34,6 @@ namespace cell_world {
         explicit Connections(const Cell_group &);
         explicit Connections(const Cell_group &, const Connection_pattern &);
         void reset(const Connection_pattern &);
-        bool add(const Cell &, const Cell &);
         bool save(const std::string &) const;
         const Connection &operator [](uint32_t) const;
         const Connection &operator [](const Cell &) const;
@@ -40,11 +41,12 @@ namespace cell_world {
         bool process_betweenness_centrality(uint32_t);
         bool process_betweenness_centrality();
         bool process_eigen_centrality(uint32_t, double);
-        void clear();
         uint32_t size() const;
         Cell_group cells;
         Cell_group shortest_path(const Cell&,const Cell &);
     private:
+        bool _add(const Cell &, const Cell &);
+        void _clear();
         std::vector<Connection> _connections;
         std::vector<int32_t> _id_index;
         const std::string _extension = ".connections";

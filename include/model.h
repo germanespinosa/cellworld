@@ -7,7 +7,7 @@
 namespace cell_world{
     struct Model
     {
-        Model( World &world, std::vector<Agent*>&);
+        Model( Cell_group &, std::vector<Agent*>&);
         bool update();
         std::vector<Agent_data> get_agents_data();
         void start_episode();
@@ -17,10 +17,9 @@ namespace cell_world{
         void set_state(State);
         uint32_t iteration;
         protected:
-        World &_world;
         std::vector<Agent*> &_agents;
-        Visibility _visibility;
         Cell_group _cell_group;
+        Visibility _visibility;
         Map _map;
         void _epoch();
     };

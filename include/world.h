@@ -2,6 +2,7 @@
 #include <core.h>
 #include <cell_group.h>
 #include <connection.h>
+#include <visibility.h>
 
 namespace cell_world{
 
@@ -22,6 +23,7 @@ namespace cell_world{
         Cell_group create_cell_group(const std::string&) const;
         std::string name;
         Connection_pattern connection_pattern;
+        Cell_type cell_type;
     private:
         std::vector<Cell> _cells;
         const std::string _extension = ".world";

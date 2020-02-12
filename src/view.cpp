@@ -6,17 +6,17 @@ using namespace ge211;
 using namespace std;
 using namespace cell_world;
 
-View::View(World &world, Dimensions scene_dimensions):
-    _world(world) ,
+View::View(Cell_group &cg, Dimensions scene_dimensions):
+    _cell_group(cg) ,
     _scene_dimensions(scene_dimensions)
 {
     L("View::View(World &, Dimensions ) start");
     double sx,sy,lx,ly;
-    lx = sx = _world[0].location.x;
-    ly = sy = _world[0].location.y;
-    for (unsigned int i=0;i<_world.size();i++){
-        double x = _world[i].location.x;
-        double y = _world[i].location.y;
+    lx = sx = _cell_group[0].location.x;
+    ly = sy = _cell_group[0].location.y;
+    for (unsigned int i=0;i<_cell_group.size();i++){
+        double x = _cell_group[i].location.x;
+        double y = _cell_group[i].location.y;
         if (lx < x) lx = x;
         if (ly < y) ly = y;
         if (sx > x) sx = x;
@@ -118,18 +118,18 @@ void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Ce
         }
     }
     if (index>=0) {
-        if (_world[index].occluded)
-            sprites.add_sprite(_cell_sprites[12], _screen_location(_world[index].location),255);
+        if (_cell_group[index].occluded)
+            sprites.add_sprite(_cell_sprites[12], _screen_location(_cell_group[index].location),255);
         else
-            sprites.add_sprite(_cell_sprites[3], _screen_location(_world[index].location),255);
+            sprites.add_sprite(_cell_sprites[3], _screen_location(_cell_group[index].location),255);
     }
     L("View::draw_editor(ge211::Sprite_set &, int32_t , std::vector<Cell_group_view> , const std::string& ) end");
 }
 
 void View::_draw_world(ge211::Sprite_set &sprites) {
     L("View::_draw_world(ge211::Sprite_set &) start");
-    for (unsigned int i = 0 ; i< _world.size(); i++) {
-        const Cell &cell = _world[i];
+    for (unsigned int i = 0 ; i< _cell_group.size(); i++) {
+        const Cell &cell = _cell_group[i];
         if (cell.occluded){
             sprites.add_sprite(_cell_sprites[9], _screen_location(cell.location),0);
         } else{
@@ -144,8 +144,8 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
 
 int32_t View::get_cell(ge211::Position mouse_position) {
     L("View::get_cell(ge211::Position ) start");
-    for (unsigned int i = 0 ; i< _world.size(); i++) {
-        const Cell &cell = _world[i];
+    for (unsigned int i = 0 ; i< _cell_group.size(); i++) {
+        const Cell &cell = _cell_group[i];
         ge211::Position cell_pos = _screen_location(cell.location);
         cell_pos.x += _cell_size;
         cell_pos.y += _cell_size;

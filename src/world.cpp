@@ -17,12 +17,14 @@ bool World::add(Cell cell){
 }
 
 bool World::load(const std::string& world_name){
+    L("World::load(const std::string& ) start");
     string file_path = world_name + _extension;
-    if (!connection_pattern.load(world_name)) return false;
     _cells.clear();
     std::ifstream file;
     file.open(file_path.c_str());
     string line;
+    if (getline(file, line)) cell_type = (Cell_type)stoi(line);
+    if (getline(file, line)) connection_pattern.load_from_string(line);
     while (getline(file, line)){
         istringstream ss(line);
         int16_t cx,cy;
@@ -37,6 +39,7 @@ bool World::load(const std::string& world_name){
         cell.coordinates.y = cy;
         if (!add(cell)) return false;
     }
+    L("World::load(const std::string& ) end");
     return true;
 }
 
@@ -44,8 +47,9 @@ bool World::save(const std::string& world_name) const{
     string file_path = world_name + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
-    if (!connection_pattern.save(world_name)) return false;
     if (!file.good()) return false;
+    file << cell_type << endl;
+    file << connection_pattern.save_to_string() << endl;
     for (const auto & cell : _cells){
         file
             << (int16_t)cell.coordinates.x << " "
@@ -89,12 +93,14 @@ World::World(std::string name) : name (std::move(name)){
 Cell_group World::create_cell_group() const{
     Cell_group cg;
     for (uint32_t i = 0; i < _cells.size(); i++) cg.add(_cells[i]);
+    cg.cell_type = cell_type;
     return cg;
 }
 
 Cell_group World::create_cell_group(const std::vector<uint32_t>& cell_ids) const{
     Cell_group cg;
     for (auto id : cell_ids) cg.add(_cells[id]);
+    cg.cell_type = cell_type;
     return cg;
 }
 
@@ -112,6 +118,7 @@ Cell_group World::create_cell_group(const std::string& group_name) const{
         ss >> cell_id;
         cg.add(_cells[cell_id]);
     }
+    cg.cell_type = cell_type;
     return cg;
 }
 

@@ -8,16 +8,27 @@ using namespace cell_world;
 void Model::_epoch(){
     L("Model::_epoch() start");
     iteration++;
+    L("Model::_epoch() - for (Agent * _agent : _agents)");
     for (Agent * _agent : _agents) {
+        L("Model::_epoch() - auto action = _agent->get_action();");
         auto action = _agent->get_action(); // read the action from the agent
+        L("Model::_epoch() - auto _agent->data.status = Action_pending;");
         _agent->data.status = Action_pending; // set the state to pending again
+        L("Model::_epoch() - auto move = action.destinations[action.probabilities.pick()];");
         auto move = action.destinations[action.probabilities.pick()];
+        L("Model::_epoch() - int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );");
         int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );
-        if ( destination_index!= Not_found && !_world[destination_index].occluded )
-            _agent->data.cell=_cell_group[ destination_index ];
+        L("Model::_epoch() - if ( destination_index!= Not_found && !_world[destination_index].occluded )");
+        if ( destination_index!= Not_found && !_cell_group[destination_index].occluded ) {
+            L("Model::_epoch() - _agent->data.cell = _cell_group[destination_index];");
+            _agent->data.cell = _cell_group[destination_index];
+        }
     }
-    for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++)
-        _agents[agent_index]->update_state( get_state(agent_index) );
+    L("Model::_epoch() - for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++)");
+    for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
+        L("Model::_epoch() - _agents[agent_index]->update_state(get_state(agent_index));");
+        _agents[agent_index]->update_state(get_state(agent_index));
+    }
     L("Model::_epoch() end");
 }
 
@@ -48,11 +59,10 @@ vector<Agent_data> Model::get_agents_data(){
     return r;
 }
 
-Model::Model( World &world, std::vector<Agent*> &agents ) : 
-    _world (world),
+Model::Model( Cell_group &cg, std::vector<Agent*> &agents ) :
     _agents (agents),
-    _visibility(),
-    _cell_group(world.create_cell_group()),
+    _cell_group(cg),
+    _visibility(_cell_group),
     _map(_cell_group)
     {
         L("Model::Model( World &, std::vector<Agent*> &) start");
@@ -84,8 +94,13 @@ void Model::start_episode() {
 State Model::get_state() {
     L("Model::get_state() start");
     State state;
+    L("Model::get_state() - state.iteration = iteration");
     state.iteration = iteration;
-    for(auto & _agent : _agents) state.agents_data.push_back(_agent->data);
+    L("Model::get_state() - for(auto & _agent : _agents)");
+    for(auto & _agent : _agents) {
+        L("Model::get_state() - state.agents_data.push_back(_agent->data);");
+        state.agents_data.push_back(_agent->data);
+    }
     L("Model::get_state() end");
     return state;
 }
@@ -93,23 +108,39 @@ State Model::get_state() {
 void Model::set_state(State state) {
     L("Model::set_state(State) start");
     iteration = state.iteration;
+    L("Model::get_state() - for(auto & _agent : _agents)");
     for(auto & _agent : _agents) {
+        L("Model::get_state() - int32_t index = state.find(_agent->data.type.name);");
         int32_t index = state.find(_agent->data.type.name);
-        if (index!=Not_found)
+        L("Model::get_state() - if (index!=Not_found)");
+        if (index!=Not_found) {
+            L("Model::get_state() - _agent->data = state.agents_data[index];");
             _agent->data = state.agents_data[index];
-        else
+        } else {
+            L("Model::get_state() - _agent->start_episode(state);");
             _agent->start_episode(state);
+        }
     }
     L("Model::set_state(State) end");
 }
 
 State Model::get_state(uint32_t agent_index) {
     L("Model::get_state(uint32_t) start");
+    L("Model::get_state(uint32_t) - auto cell = _agents[agent_index]->data.cell");
     auto cell = _agents[agent_index]->data.cell;
+    L("Model::get_state(uint32_t) - auto vi = _visibility[cell];");
+    auto vi = _visibility[cell];
     State state;
     state.iteration = iteration;
-    for (uint32_t index = 0; index < _agents.size() ; index++)
-        if (index != agent_index && _visibility[cell].contains(_agents[index]->data.cell)) state.agents_data.push_back(_agents[index]->data);
+    L("Model::get_state(uint32_t) - for (uint32_t index = 0; index < _agents.size() ; index++)");
+    for (uint32_t index = 0; index < _agents.size() ; index++) {
+        L("Model::get_state(uint32_t) - if (index != agent_index && vi.contains(_agents[index]->data.cell))");
+        if (index != agent_index && vi.contains(_agents[index]->data.cell)) {
+            L("Model::get_state(uint32_t) - state.agents_data.push_back(_agents[index]->data);");
+            state.agents_data.push_back(_agents[index]->data);
+        }
+        L("Model::get_state(uint32_t) - end if");
+    }
     L("Model::get_state(uint32_t) end");
     return state;
 }

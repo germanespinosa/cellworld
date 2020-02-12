@@ -9,14 +9,10 @@ using namespace cell_world;
 using namespace ge211;
 
 uint32_t Cell_group::size() const {
-    L("Cell_group::size() start");
-    L("Cell_group::size() end");
     return _cells.size();
 }
 
 const Cell &Cell_group::operator[](uint32_t index) const {
-    L("Cell &Cell_group::operator[](uint32_t ) start");
-    L("Cell &Cell_group::operator[](uint32_t ) end");
     return _get_cell(index);
 }
 
@@ -68,6 +64,7 @@ bool Cell_group::contains(uint32_t cell_id) const {
 Cell_group &Cell_group::operator = (const Cell_group &cg) {
     if (this != &cg){ //prevent self assigment object ruin (cg = cg)
         clear();
+        this->cell_type = cg.cell_type;
         for (uint32_t i = 0; i < cg.size() ; i++) add(cg[i]);
     }
     return *this;
@@ -100,9 +97,7 @@ bool Cell_group::add(const Cell &cell) {
     return true;
 }
 
-Cell_group::Cell_group() {
-    clear();
-}
+Cell_group::Cell_group() = default;
 
 bool Cell_group::contains(const Cell &cell) const {
     return contains(cell.id);
@@ -168,15 +163,19 @@ Map::Map(const Cell_group &group)
 :_group(group){
     for (auto & i : _coordinate_index) for (int & j : i) j = Not_found;
     for ( uint32_t i = 0; i < group.size() ; i++){
-        int x = group[i].coordinates.x + 128;
-        int y = group[i].coordinates.y + 128;
+        uint8_t x = (uint8_t)group[i].coordinates.x;
+        uint8_t y = (uint8_t)group[i].coordinates.y;
         _coordinate_index[x][y] = i;
     }
 }
 
 int32_t Map::find(const Coordinates &c) const {
-    int x = c.x + 128;
-    int y = c.y + 128;
+    L("Map::find(const Coordinates &) start")
+    L("Map::find(const Coordinates &) - int x = (uint8_t)c.x;")
+    uint8_t x = (uint8_t)c.x;
+    L("Map::find(const Coordinates &) - int y = (uint8_t)c.y;")
+    uint8_t y = (uint8_t)c.y;
+    L("Map::find(const Coordinates &) end")
     return _coordinate_index[x][y];
 }
 

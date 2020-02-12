@@ -141,3 +141,4 @@ install(FILES resources.cmake DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Ce
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Ge211 REQUIRED)\n\") ")
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"SET(CELLWORLD_RESOURCES ${CELLWORLD_RESOURCES})\n\") ")
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"include(${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/resources.cmake)\n\") ")
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"get_target_property( UTF8-CPP_INTERFACE_INCLUDE_DIRECTORIES utf8-cpp INTERFACE_INCLUDE_DIRECTORIES )\n\") ")
