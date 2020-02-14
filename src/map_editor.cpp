@@ -9,24 +9,25 @@ Map_editor::Map_editor(World &world, ge211::Dimensions scene_dimensions) :
 world(world),
 _scene_dimensions(scene_dimensions),
 _cell_group(world.create_cell_group()),
-_visibility(_cell_group),
-_view(_cell_group, scene_dimensions),
-_world_connections(_cell_group,world.connection_pattern),
-_sub_worlds(_cell_group)
+_visibility(Visibility::create_graph(_cell_group)),
+_view(_cell_group, scene_dimensions)
 {
     Cell_group selected = world.create_cell_group( world.name + "_gates");
-    _sub_worlds.reset(selected,_world_connections);
+    //_sub_worlds.reset(selected,_world_connections);
+
+    _gates = Graph(selected);
+    _sub_worlds = world.create_graph().get_sub_graphs(_gates);
 
     Cell_group_view bridges {selected,Blue,true};
     cells_view.emplace_back(bridges);
 
-    Cell_group_view visible_cells {{}, Yellow, true};
+    Cell_group_view visible_cells {{}, Yellow, false};
     cells_view.emplace_back(visible_cells);
 
-    Cell_group_view sub_world_cells {{}, Purple, true};
+    Cell_group_view sub_world_cells {{}, Purple, false};
     cells_view.emplace_back(sub_world_cells);
 
-    Cell_group_view connected_gates_cells {{}, Green, true};
+    Cell_group_view connected_gates_cells {{}, Green, false};
     cells_view.emplace_back(connected_gates_cells);
 
     _current_cell_id = Not_found;
@@ -68,7 +69,6 @@ void Map_editor::on_key_up(ge211::Key key) {
     switch(c){
         case 's':
             world.save();
-            _world_connections.save(world.name);
             cells_view[_Gates].cells.save(world.name + "_gates");
             _message = "Saved to file";
             _message_timer = 0;
@@ -103,8 +103,8 @@ void Map_editor::on_key_up(ge211::Key key) {
         case 'r':
             _message = "Finding bridges";
             {
-                Cell_group ns = _sub_worlds.find_bridges(_world_connections);
-                cells_view[_Gates].cells = ns;
+//                Cell_group ns = _sub_worlds.find_bridges(_world_connections);
+//                cells_view[_Gates].cells = ns;
             }
             refresh_values();
             _message_timer = 0;
@@ -122,19 +122,25 @@ void Map_editor::on_frame(double dt) {
 }
 
 void Map_editor::refresh_values() {
-    _visibility.reset(world.create_cell_group());
-    _world_connections.reset(world.connection_pattern);
-    _sub_worlds.reset(cells_view[_Gates].cells, _world_connections);
-    _world_connections.process_betweenness_centrality();
+    L("Map_editor::refresh_values() start");
+
+    Cell_group cg = world.create_cell_group();
+    _visibility = Visibility::create_graph(cg);
+    auto graph = world.create_graph();
+//    _world_connections = world.connection_pattern.get_graph(cg);
+//    _sub_worlds.reset(cells_view[_Gates].cells, _world_connections);
+    auto c = Centrality::get_eigen_centrality(graph);
     double max = 0;
-    for (uint32_t i = 0 ; i < _world_connections.size(); i++) if (max < _world_connections[i].betweenness_centrality) max = _world_connections[i].betweenness_centrality;
-    for (uint32_t i = 0 ; i < _world_connections.size(); i++) world.set_value(i,_world_connections[i].betweenness_centrality/max);
+    for (uint32_t i = 0 ; i < graph.size(); i++) if (max < c[i]) max = c[i];
+    for (uint32_t i = 0 ; i < graph.size(); i++) world[graph.nodes[i].id].value = c[i]/max;
     uint32_t index = _current_cell_id;
     _update_current_cell(Not_found);
     _update_current_cell(index);
+    L("Map_editor::refresh_values() start");
 }
 
 void Map_editor::_update_current_cell(int32_t index) {
+    L("Map_editor::_update_current_cell(int32_t ) start");
     if (index != Not_found) {
         if (index != _current_cell_id){
             _current_cell_id = index;
@@ -144,6 +150,12 @@ void Map_editor::_update_current_cell(int32_t index) {
                 cells_view[_Connected_gates].cells.clear();
             } else {
                 cells_view[_Visible].cells = _visibility[world[_current_cell_id]];
+                if (_gates.nodes.contains(world[_current_cell_id])){
+                    cells_view[_Connected_gates].cells = _gates[world[_current_cell_id]];
+                } else {
+                    cells_view[_Connected_gates].cells.clear();
+                }
+                    /*
                 int32_t sub_world_index = _sub_worlds.get_sub_world_index(_current_cell_id);
                 if (sub_world_index != _current_sub_world) {
                     _current_sub_world = sub_world_index;
@@ -161,7 +173,7 @@ void Map_editor::_update_current_cell(int32_t index) {
                         cells_view[_Connected_gates].cells = _sub_worlds[_current_sub_world].gate_cells;
                         cells_view[_Sub_world].cells = _sub_worlds[_current_sub_world].cells;
                     }
-                }
+                }*/
             }
         }
     } else {
@@ -171,4 +183,5 @@ void Map_editor::_update_current_cell(int32_t index) {
         cells_view[_Sub_world].cells.clear();
         cells_view[_Connected_gates].cells.clear();
     }
+    L("Map_editor::_update_current_cell(int32_t ) end");
 }

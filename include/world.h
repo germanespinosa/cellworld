@@ -3,9 +3,9 @@
 #include <cell_group.h>
 #include <connection.h>
 #include <visibility.h>
+#include <graph.h>
 
 namespace cell_world{
-
     struct World{
         explicit World(std::string );
         bool add(Cell);
@@ -21,9 +21,9 @@ namespace cell_world{
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const std::vector<uint32_t>&) const;
         Cell_group create_cell_group(const std::string&) const;
+        Graph create_graph() const;
         std::string name;
         Connection_pattern connection_pattern;
-        Cell_type cell_type;
     private:
         std::vector<Cell> _cells;
         const std::string _extension = ".world";

@@ -23,8 +23,10 @@ namespace cell_world{
         Cell_group &_cell_group;
         std::vector<ge211::Image_sprite> _icon_sprites;
         std::vector<ge211::Image_sprite> _custom_icon_sprites;
-        std::vector<ge211::Circle_sprite> _cell_sprites;
-        std::vector<ge211::Circle_sprite> _value_sprites;
+        std::vector<ge211::Circle_sprite> _circle_sprites;
+        std::vector<ge211::Rectangle_sprite> _square_sprites;
+        std::vector<ge211::Circle_sprite> _circle_value_sprites;
+        std::vector<ge211::Rectangle_sprite> _square_value_sprites;
         ge211::Font sans{"sans.ttf", 30};
         ge211::Text_sprite fps;
         const ge211::Dimensions _scene_dimensions;

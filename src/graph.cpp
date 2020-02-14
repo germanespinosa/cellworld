@@ -1,0 +1,201 @@
+#include <graph.h>
+
+using namespace cell_world;
+using namespace std;
+
+Graph::Graph(const Cell_group &cell_group)
+{
+    for (uint32_t i=0;i<cell_group.size();i++) if (!cell_group[i].occluded) nodes.add(cell_group[i]);
+    _connections = vector<Cell_group>(nodes.size());
+}
+
+Cell_group &Graph::operator[](const Cell &c) {
+    return _connections[nodes.find(c)];
+}
+
+Cell_group &Graph::operator[](uint32_t index) {
+    return _connections[index];
+}
+
+uint32_t Graph::size() const {
+    return nodes.size();
+}
+
+Cell_group Graph::get_shortest_path (const Cell& s,const Cell & d, bool shuffle) {
+    D({if (nodes.find(s)==Not_found) L("Source not part of the cell_group")});
+    D({if (nodes.find(s)==Not_found) L("Destination not part of the cell_group")});
+    struct Node{
+        int32_t parent;
+        uint32_t cell_index;
+    };
+    vector<bool> visited (nodes.size(), false);
+    vector<Node> candidates;
+    Cell_group path;
+    int32_t cell_index = nodes.find(s);
+    candidates.push_back({Not_found,(uint32_t)cell_index});
+    uint32_t i = 0;
+    visited[cell_index] = true;
+    while (!_connections[candidates[i].cell_index].contains(d)) {
+        auto conns = shuffle?_connections[candidates[i].cell_index].random_shuffle():_connections[candidates[i].cell_index];
+        for (uint32_t c = 0;c < conns.size();c++) {
+            uint32_t candidate_index = nodes.find(conns[c]);
+            if (!visited[candidate_index]) {
+                candidates.push_back({(int32_t) i, candidate_index});
+                visited[candidate_index] = true;
+            }
+        }
+        if (++i == candidates.size()) return path; // no possible path;
+    }
+    path.add(d);
+    while (candidates[i].parent != Not_found){
+        path.add(nodes[candidates[i].cell_index]);
+        i=candidates[i].parent;
+    }
+    path.add(s);
+    return path;
+}
+
+std::vector<Graph> Graph::get_sub_graphs() {
+    Cell_group cg;
+    return get_sub_graphs(cg);
+}
+
+double Graph::get_entropy() {
+    vector<int> visible_cell_count;
+    for (auto & _connection : _connections){
+        visible_cell_count.push_back(_connection.size());
+    }
+    return entropy(histogram(visible_cell_count));
+}
+
+std::vector<double> Centrality::get_eigen_centrality(Graph &graph) {
+    return get_eigen_centrality(graph, 100, 0.000001);
+}
+
+std::vector<double> Centrality::get_betweenness_centrality(Graph &graph, uint32_t precision)  {
+    vector<double> result(graph.size(),0);
+    for (uint32_t i=0;i<graph.nodes.size()-1;i += (rand() % precision) + 1) {
+        for (uint32_t j = i+1; j < graph.nodes.size(); j+= (rand() % precision) + 1) {
+            auto path = graph.get_shortest_path(graph.nodes[i], graph.nodes[j]);
+            for (uint32_t c = 0; c < path.size(); c++) {
+                result[graph.nodes.find(path[c])]++;
+            }
+        }
+    }
+    return result;
+}
+
+std::vector<double> Centrality::get_eigen_centrality(Graph &graph, uint32_t max_iterations, double tolerance) {
+    auto nodes = (double)graph.size();
+    vector<double> result(graph.size());
+    vector<double> last(graph.size());
+    double err = nodes * 100;
+    for (auto & r : result) r = 1.0/nodes;
+    for (uint32_t iteration = 0; iteration < max_iterations && err > nodes * tolerance; iteration++){
+        last = result;
+        for (uint32_t n = 0; n < graph.size(); n++)
+            for (uint32_t nbr = 0; nbr < graph[n].size(); nbr++)
+                result[graph.nodes.find(graph[n][nbr])] += last[n];
+        double d=0;
+        for (auto & _connection : result) d += pow(_connection,2);
+        d = pow(d,.5);
+        double s = d==0?1:1.0/d;
+        for (auto & _connection : result) _connection *= s;
+        err=0;
+        for (uint32_t index = 0; index < result.size(); index++)
+            err += abs(result[index] - last[index]);
+    }
+    return result;
+}
+
+std::vector<double> Centrality::get_betweenness_centrality(Graph &graph) {
+    return get_betweenness_centrality(graph, 10);
+}
+
+vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
+    vector<Graph> graphs;
+    if (_connections.empty()) return graphs;
+    uint32_t offset = 0;
+    int32_t node_index = Not_found;
+    for (;offset<nodes.size() && node_index == Not_found;offset++) {
+        if (!gates.nodes.contains(nodes[offset])) node_index = offset; // finds the first node that is not a gate
+    }
+    L("sg first node " << node_index);
+    while( node_index != Not_found ) {
+        graphs.emplace_back();
+        auto &graph = graphs.back();
+        Cell_group bridges;
+        uint32_t lc = 0;
+        while( node_index != Not_found ) {
+            graph.add(nodes[node_index]);
+            node_index = Not_found;
+            for (; lc < graph.size() && node_index == Not_found; lc++){
+                auto &cn = (*this)[graph.nodes[lc]];
+                L("sg " << cn.size());
+                for (uint32_t c = 0; c < cn.size() ; c++){
+                    if (!graph.nodes.contains(cn[c])) {
+                        if (gates.nodes.contains(cn[c])){
+                            bridges.add(cn[c]);
+                        }else {
+                            node_index = nodes.find(cn[c]);
+                        }
+                    }
+                }
+            }
+        }
+        for (uint32_t b = 0; b<bridges.size(); b++){
+            graph.add(bridges[b]);
+            gates.connect(bridges[b],bridges-bridges[b]);
+        }
+        for (uint32_t b = 0; b<graph.nodes.size() ; b++){
+            options.connect(graph.nodes[b], bridges-graph.nodes[b]);
+        }
+        for (uint32_t b = 0; b<graph.size(); b++) {
+            graph.connect(graph.nodes[b],(*this)[graph.nodes[b]]);
+        }
+        for (;offset<nodes.size() && node_index == Not_found;offset++){
+            L("sg looking for a node: " << offset << " of " << nodes.size());
+            if ( !gates.nodes.contains(nodes[offset])) { // make sure is not a gate
+                node_index = offset;
+                L("sg checking node " << node_index );
+                for (uint32_t g = 0; g < graphs.size() && node_index != Not_found; g++) {
+                    if (graphs[g].nodes.contains(nodes[node_index])) {
+                        node_index = Not_found;
+                    }
+                }
+            }
+        }
+    }
+    return graphs;
+}
+
+void Graph::add(const Cell &node) {
+    if (nodes.add(node)) _connections.emplace_back();
+}
+
+void Graph::connect(const Cell &node, const Cell_group &connections) {
+    if (!nodes.contains(node)) return;
+    for (uint32_t i=0;i<connections.size();i++)
+        if (nodes.find(connections[i]) != Not_found) //only adds connection to nodes in the graph
+            (*this)[node] += connections[i];
+}
+
+std::vector<Graph> Graph::get_sub_graphs(Cell_group &gates) {
+    Graph g(gates);
+    return get_sub_graphs(g);
+}
+
+std::vector<Graph> Graph::get_sub_graphs(Graph &gates) {
+    Graph options;
+    return get_sub_graphs(gates,options);
+}
+
+Graph Graph::operator!() const {
+    Graph inv(nodes);
+    for (uint32_t i=0;i<nodes.size();i++)
+         for (uint32_t j=0; j<_connections[i].size();j++)
+            inv[_connections[i][j]].add(nodes[i]);
+    return inv;
+}
+
+Graph::Graph() = default;

@@ -62,10 +62,11 @@ vector<Agent_data> Model::get_agents_data(){
 Model::Model( Cell_group &cg, std::vector<Agent*> &agents ) :
     _agents (agents),
     _cell_group(cg),
-    _visibility(_cell_group),
-    _map(_cell_group)
+    _map(_cell_group),
+    _visibility(Visibility::create_graph(_cell_group))
     {
         L("Model::Model( World &, std::vector<Agent*> &) start");
+
         L("Model::Model( World &, std::vector<Agent*> &) end");
     }
 

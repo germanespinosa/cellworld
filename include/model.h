@@ -19,8 +19,8 @@ namespace cell_world{
         protected:
         std::vector<Agent*> &_agents;
         Cell_group _cell_group;
-        Visibility _visibility;
         Map _map;
+        Graph _visibility;
         void _epoch();
     };
 } 

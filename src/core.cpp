@@ -48,8 +48,9 @@ bool Cell::operator == (const Cell& c) const {
     return id == c.id;
 }
 
-Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double value, bool occluded)
+Cell::Cell (Cell_type cell_type, uint32_t id, Coordinates coordinates, Location location, double value, bool occluded)
 {
+    this->cell_type = cell_type;
     this->id = id;
     this->location = location;
     this->coordinates = coordinates;
@@ -60,6 +61,7 @@ Cell::Cell (uint32_t id, Coordinates coordinates, Location location, double valu
 }
 
 Cell::Cell(){
+    cell_type = Circle;
     id = 0;
     location = {0,0};
     coordinates = {0,0};
@@ -70,6 +72,7 @@ Cell::Cell(){
 }
 
 Cell &Cell::operator=(const Cell &c) {
+    cell_type = c.cell_type;
     id = c.id;
     location = c.location;
     coordinates = c.coordinates;

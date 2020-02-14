@@ -64,7 +64,6 @@ bool Cell_group::contains(uint32_t cell_id) const {
 Cell_group &Cell_group::operator = (const Cell_group &cg) {
     if (this != &cg){ //prevent self assigment object ruin (cg = cg)
         clear();
-        this->cell_type = cg.cell_type;
         for (uint32_t i = 0; i < cg.size() ; i++) add(cg[i]);
     }
     return *this;

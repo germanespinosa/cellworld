@@ -5,21 +5,19 @@
 #include <string>
 #include <vector>
 
-
 #ifdef DEBUG
-    #define D(x) (x)
-    #define L(x) std::cout << x << std::endl;
-    #define E(x) std::cerr << x << std::endl;
+    #define D(X) X
+    #define L(X) std::cout << X << std::endl;
+    #define E(X) std::cerr << X << std::endl;
 #else
-    #define D(x) ;
-    #define L(x) ;
-    #define E(x) ;
+    #define D(X) ;
+    #define L(X) ;
+    #define E(X) ;
 #endif
 
 namespace cell_world{
     const int16_t Not_found = -1;
     enum Cell_type {
-        Not_set,
         Circle,
         Square
     };
@@ -109,7 +107,8 @@ namespace cell_world{
 
     struct Cell{
         Cell();
-        Cell(uint32_t, Coordinates, Location, double , bool);
+        Cell(Cell_type, uint32_t, Coordinates, Location, double , bool);
+        Cell_type cell_type;
         uint32_t id;
         Coordinates coordinates;
         Location location;

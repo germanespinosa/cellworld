@@ -23,12 +23,12 @@ set(cellworld_files
     src/model.cpp
     src/chance.cpp
     src/simulation.cpp
-    src/sub_world.cpp
-    src/view.cpp
+        src/view.cpp
     src/visibility.cpp
-    src/world.cpp)
+    src/world.cpp
+    src/graph.cpp)
 
-add_library(cellworld ${cellworld_files})
+add_library(cellworld ${cellworld_files} catchtests/graph.cpp include/option.h)
 target_link_libraries(cellworld PUBLIC ge211)
 
 set_target_properties(cellworld

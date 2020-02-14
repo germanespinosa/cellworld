@@ -12,7 +12,6 @@ namespace cell_world{
         bool contains(uint32_t) const;
         bool contains(const Cell &) const;
         void clear();
-        Cell_type cell_type;
         uint32_t size() const;
         int32_t find(uint32_t) const;
         int32_t find(const Cell &) const;
