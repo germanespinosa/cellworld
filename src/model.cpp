@@ -10,18 +10,16 @@ void Model::_epoch(){
     iteration++;
     L("Model::_epoch() - for (Agent * _agent : _agents)");
     for (Agent * _agent : _agents) {
-        L("Model::_epoch() - auto action = _agent->get_action();");
-        auto action = _agent->get_action(); // read the action from the agent
+        L("Model::_epoch() - auto move = _agent->get_move();");
+        auto move = _agent->get_move(); // read the action from the agent
         L("Model::_epoch() - auto _agent->data.status = Action_pending;");
         _agent->data.status = Action_pending; // set the state to pending again
-        L("Model::_epoch() - auto move = action.destinations[action.probabilities.pick()];");
-        auto move = action.destinations[action.probabilities.pick()];
         L("Model::_epoch() - int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );");
         int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );
         L("Model::_epoch() - if ( destination_index!= Not_found && !_world[destination_index].occluded )");
-        if ( destination_index!= Not_found && !_cell_group[destination_index].occluded ) {
+        if ( destination_index!= Not_found && !cells[destination_index].occluded ) {
             L("Model::_epoch() - _agent->data.cell = _cell_group[destination_index];");
-            _agent->data.cell = _cell_group[destination_index];
+            _agent->data.cell = cells[destination_index];
         }
     }
     L("Model::_epoch() - for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++)");
@@ -59,11 +57,10 @@ vector<Agent_data> Model::get_agents_data(){
     return r;
 }
 
-Model::Model( Cell_group &cg, std::vector<Agent*> &agents ) :
-    _agents (agents),
-    _cell_group(cg),
-    _map(_cell_group),
-    _visibility(Visibility::create_graph(_cell_group))
+Model::Model( Cell_group &cg ) :
+        cells(cg),
+    _map(cells),
+    _visibility(Visibility::create_graph(cells))
     {
         L("Model::Model( World &, std::vector<Agent*> &) start");
 
@@ -144,4 +141,8 @@ State Model::get_state(uint32_t agent_index) {
     }
     L("Model::get_state(uint32_t) end");
     return state;
+}
+
+void Model::add_agent(Agent &agent) {
+    _agents.push_back(&agent);
 }

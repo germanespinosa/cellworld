@@ -168,3 +168,9 @@ Graph Connection_pattern::get_graph(const Cell_group &cg) const {
     }
     return n;
 }
+
+Connection_pattern Connection_pattern::get_pattern(Cell c, Cell_group cg) {
+    Connection_pattern cp;
+    for (uint32_t i=0;i< cg.size();i++) cp.pattern.push_back(cg[i].coordinates-c.coordinates);
+    return cp;
+}

@@ -30,6 +30,7 @@ TEST_CASE("World connections")
     w.add(c1);
     w.add(c2);
     w.add(c3);
+    cout << w << endl;
     w.connection_pattern = Connection_pattern({{-1,0},{1,0}});
     Graph wc = w.create_graph();
     CHECK(w.size()==4);

@@ -76,16 +76,24 @@ TEST_CASE("Sub graphs")
     Cell c2(Circle, 2,{2,1},{1,1},0,false);
     Cell c3(Circle, 3,{3,1},{1,1},0,false);
     Cell c4(Circle, 4,{4,1},{1,1},0,false);
+
+    cout << c0 << endl;
+    cout << c1 << endl;
+    cout << c2 << endl;
+    cout << c3 << endl;
+
     w.add(c0);
     w.add(c1);
     w.add(c2);
     w.add(c3);
     w.add(c4);
     Cell_group cg1 = w.create_cell_group();
+    cout << cg1 << endl;
     w.connection_pattern = Connection_pattern({{-1,0},{1,0},{0,-1},{0,1}});
     auto wc = w.create_graph();
     CHECK(wc.size()==5);
     CHECK(wc[0].size()==1);
+    CHECK(wc[0].contains(c1));
     CHECK(wc[1].size()==2);
     CHECK(wc[2].size()==2);
     CHECK(wc[3].size()==2);
@@ -251,8 +259,37 @@ TEST_CASE("Sub graphs options")
     auto inv = !options;
     CHECK(inv.nodes.size()==5);
     CHECK(inv[c0].size()==2);
+    CHECK(inv[c0].contains(c1));
+    CHECK(inv[c0].contains(c2));
     CHECK(inv[c1].size()==0);
     CHECK(inv[c2].size()==4);
+    CHECK(inv[c2].contains(c0));
+    CHECK(inv[c2].contains(c1));
+    CHECK(inv[c2].contains(c3));
+    CHECK(inv[c2].contains(c4));
     CHECK(inv[c3].size()==0);
     CHECK(inv[c4].size()==2);
+    CHECK(inv[c4].contains(c2));
+    CHECK(inv[c4].contains(c3));
+
+    Cell_group ncg;
+    ncg.add(c0);
+    ncg.add(c1);
+    ncg.add(c2);
+    Graph ng(ncg);
+    ncg.add(c3);
+    ncg.add(c4);
+
+    ng.connect(options);
+    CHECK(ng[c0].size()==1);
+    CHECK(ng[c1].size()==2);
+    CHECK(ng[c2].size()==1);
+    ng.add(c3);
+    ng.add(c4);
+    ng.connect(options);
+    CHECK(ng[c0].size()==1);
+    CHECK(ng[c1].size()==2);
+    CHECK(ng[c2].size()==2);
+    CHECK(ng[c3].size()==2);
+    CHECK(ng[c4].size()==1);
 }

@@ -3,10 +3,10 @@
 using namespace cell_world;
 using namespace std;
 
-Graph::Graph(const Cell_group &cell_group)
+Graph::Graph(const Cell_group &cell_group):
+nodes(cell_group.free_cells()),
+_connections(cell_group.size())
 {
-    for (uint32_t i=0;i<cell_group.size();i++) if (!cell_group[i].occluded) nodes.add(cell_group[i]);
-    _connections = vector<Cell_group>(nodes.size());
 }
 
 Cell_group &Graph::operator[](const Cell &c) {
@@ -114,6 +114,8 @@ std::vector<double> Centrality::get_betweenness_centrality(Graph &graph) {
 
 vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
     vector<Graph> graphs;
+    gates.clear();
+    options.clear();
     if (_connections.empty()) return graphs;
     uint32_t offset = 0;
     int32_t node_index = Not_found;
@@ -122,27 +124,23 @@ vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
     }
     L("sg first node " << node_index);
     while( node_index != Not_found ) {
-        graphs.emplace_back();
-        auto &graph = graphs.back();
+        Cell_group sub_graph_nodes;
+        sub_graph_nodes.add(nodes[node_index]); // adds the first node
         Cell_group bridges;
-        uint32_t lc = 0;
+        uint32_t lc = 1; // starts the search on the second node of the sub_graph
         while( node_index != Not_found ) {
-            graph.add(nodes[node_index]);
+            sub_graph_nodes += _connections[node_index]; // adds all the connections to the selected node;
             node_index = Not_found;
-            for (; lc < graph.size() && node_index == Not_found; lc++){
-                auto &cn = (*this)[graph.nodes[lc]];
-                L("sg " << cn.size());
-                for (uint32_t c = 0; c < cn.size() ; c++){
-                    if (!graph.nodes.contains(cn[c])) {
-                        if (gates.nodes.contains(cn[c])){
-                            bridges.add(cn[c]);
-                        }else {
-                            node_index = nodes.find(cn[c]);
-                        }
-                    }
+            for (; lc < sub_graph_nodes.size() && node_index == Not_found; lc++){
+                if (gates.nodes.contains(sub_graph_nodes[lc])){
+                    bridges.add(sub_graph_nodes[lc]);
+                }else {
+                    node_index = nodes.find(sub_graph_nodes[lc]);
                 }
             }
         }
+        graphs.emplace_back(sub_graph_nodes);
+        auto &graph = graphs.back();
         for (uint32_t b = 0; b<bridges.size(); b++){
             graph.add(bridges[b]);
             gates.connect(bridges[b],bridges-bridges[b]);
@@ -196,6 +194,31 @@ Graph Graph::operator!() const {
          for (uint32_t j=0; j<_connections[i].size();j++)
             inv[_connections[i][j]].add(nodes[i]);
     return inv;
+}
+
+void Graph::connect(Graph &graph) {
+    for (uint32_t i=0;i<graph.nodes.size();i++){
+        connect(graph.nodes[i],graph[i]);
+    }
+}
+
+Graph &Graph::operator=(const Graph &graph) {
+    nodes = graph.nodes;
+    _connections = graph._connections;
+    return *(this);
+}
+
+void Graph::clear() {
+    for (auto &c:_connections) c.clear();
+}
+
+bool Graph::operator==(const Graph &g) const{
+    if (size()!=g.size()) return false;
+    if (g.nodes != nodes) return false;
+    for (uint32_t i=0;i<_connections.size();i++) {
+        if (_connections[i] != g._connections[g.nodes.find(nodes[i])]) return false;
+    }
+    return true;
 }
 
 Graph::Graph() = default;

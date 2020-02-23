@@ -24,6 +24,7 @@ namespace cell_world{
         Graph create_graph() const;
         std::string name;
         Connection_pattern connection_pattern;
+        friend std::ostream& operator<<(std::ostream& , const World& );
     private:
         std::vector<Cell> _cells;
         const std::string _extension = ".world";

@@ -17,7 +17,10 @@ namespace cell_world{
         int32_t find(const Cell &) const;
         double distance(uint32_t, uint32_t) const;
         double distance(const Cell&, const Cell&) const;
+        std::vector<double> get_distances(const Cell &) const;
         Cell_group random_shuffle() const;
+        Cell_group occluded_cells() const;
+        Cell_group free_cells() const;
         Cell_group &operator = (const Cell_group &);
         Cell_group &operator += (const Cell_group &);
         Cell_group &operator += (const Cell &);
@@ -27,7 +30,10 @@ namespace cell_world{
         Cell_group operator + (const Cell &);
         Cell_group operator - (const Cell_group &);
         Cell_group operator - (const Cell &);
+        bool operator == (const Cell_group &) const;
+        bool operator != (const Cell_group &) const;
         const Cell &operator [](uint32_t) const;
+        friend std::ostream& operator<<(std::ostream& , const Cell_group& );
     private:
         std::vector<std::reference_wrapper<const Cell>> _cells;
         std::vector<int32_t> _id_index;

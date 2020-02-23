@@ -15,10 +15,14 @@ namespace cell_world {
         std::vector<Graph> get_sub_graphs(Graph &,Graph &);
         void add(const Cell &);
         void connect (const Cell &, const Cell_group &);
+        void connect (Graph &);
         double get_entropy();
+        void clear();
         uint32_t size() const;
-        Cell_group nodes;
         Graph operator !() const;
+        Graph &operator =(const Graph &);
+        bool operator == (const Graph &) const;
+        Cell_group nodes;
     private:
         std::vector<Cell_group> _connections;
     };

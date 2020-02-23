@@ -23,12 +23,13 @@ set(cellworld_files
     src/model.cpp
     src/chance.cpp
     src/simulation.cpp
-        src/view.cpp
+    src/view.cpp
     src/visibility.cpp
     src/world.cpp
-    src/graph.cpp)
+    src/graph.cpp
+    src/viewer.cpp )
 
-add_library(cellworld ${cellworld_files} catchtests/graph.cpp include/option.h)
+add_library(cellworld ${cellworld_files} )
 target_link_libraries(cellworld PUBLIC ge211)
 
 set_target_properties(cellworld
@@ -74,10 +75,6 @@ find_package(CatchTests CONFIG QUIET)
 
 add_library(cellworlddebug ${cellworld_files})
 
-target_compile_definitions(cellworlddebug PRIVATE
-        -DDEBUG=1
-        -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")
-
 target_link_libraries(cellworlddebug PUBLIC ge211)
 
 set_target_properties(cellworlddebug
@@ -120,6 +117,11 @@ target_link_libraries(cellworlddebug
 include(GNUInstallDirs)
 
 SET(CELLWORLD_RESOURCES "${CMAKE_INSTALL_FULL_DATADIR}/cellworld/resources")
+
+target_compile_definitions(cellworlddebug PRIVATE
+        -DDEBUG=1
+        -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")
+
 
 target_compile_definitions(cellworld PRIVATE
         -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")

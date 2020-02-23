@@ -17,16 +17,8 @@ namespace cell_world {
         Connection_pattern &operator =(const Connection_pattern &);
         bool load_from_string(const std::string&);
         std::string save_to_string() const;
+        static Connection_pattern get_pattern(Cell, Cell_group);
     private:
         const std::string _extension = ".pattern";
     };
-/*
-    struct Connection {
-        explicit Connection (const Cell &);
-        const Cell &cell;
-        Cell_group connections;
-    private:
-        const std::string _extension = ".connection";
-    };
-*/
 }

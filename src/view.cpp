@@ -6,7 +6,7 @@ using namespace ge211;
 using namespace std;
 using namespace cell_world;
 
-View::View(Cell_group &cg, Dimensions scene_dimensions):
+View::View( const Cell_group &cg, Dimensions scene_dimensions):
     _cell_group(cg) ,
     _scene_dimensions(scene_dimensions)
 {
@@ -66,7 +66,7 @@ View::View(Cell_group &cg, Dimensions scene_dimensions):
     for (uint16_t i=0; i<256 ; i++ ) {
         _square_value_sprites.emplace_back(d, ge211::Color{255, (uint8_t) (255 - i), (uint8_t) (255 - i)});
     }
-    int icon_counter = 0;
+    int icon_counter = 1;
     string file_name;
     {
         std::stringstream fmt;
@@ -74,6 +74,7 @@ View::View(Cell_group &cg, Dimensions scene_dimensions):
         file_name = resource_file(fmt.str());
     }
     while (file_exists (file_name)) {
+        L("Loading icon " + file_name);
         _icon_sprites.emplace_back(file_name);
         {
             std::stringstream fmt;
@@ -89,6 +90,7 @@ View::View(Cell_group &cg, Dimensions scene_dimensions):
         file_name = fmt.str();
     }
     while (file_exists (file_name)) {
+        L("Loading icon " + file_name);
         _custom_icon_sprites.emplace_back(file_name);
         {
             std::stringstream fmt;
@@ -102,8 +104,6 @@ View::View(Cell_group &cg, Dimensions scene_dimensions):
 
 Basic_position<int> View::_screen_location (const Location &location)
 {
-    L("View::_screen_location (const Location &) start");
-    L("View::_screen_location (const Location &) end");
     return {
         (int)((double)_scene_dimensions.width / 2 + location.x * _ratio - _ratio  / 2),
         (int)((double)_scene_dimensions.height / 2 + location.y * _ratio - _ratio  / 2)
@@ -216,6 +216,9 @@ int32_t View::get_cell(ge211::Position mouse_position) {
 std::string View::resource_file(std::string res) {
     L("View::resource_file(std::string ) start");
     string file_name(CELLWORLD_RESOURCES);
+
+    L("View::resource_file(std::string ) " << file_name);
+
     L("View::resource_file(std::string ) end");
     return file_name + "/" + res;
 }

@@ -4,62 +4,12 @@
 using namespace cell_world;
 using namespace std;
 
-TEST_CASE("Probabilities Pick value")
-{
-    Chance p((vector<uint32_t>){10, 10, 10, 10});
-    vector<double> v {1,2,3,4};
-    CHECK(p.pick(v,0)==3);
-    CHECK(p.pick(v,10)==2);
-    CHECK(p.pick(v,20)==1);
-    CHECK(p.pick(v,30)==0);
-    vector<double> v2{1,2,2,2};
-    CHECK(p.pick(v2,0)==1);
-    CHECK(p.pick(v2,1)==2);
-    CHECK(p.pick(v2,2)==3);
-}
-
 TEST_CASE("Probabilities Pick index")
 {
-    Chance p((vector<uint32_t>){10, 10, 10, 10});
-    CHECK(p.pick(0)==0);
-    CHECK(p.pick(10)==1);
-    CHECK(p.pick(20)==2);
-    CHECK(p.pick(30)==3);
-}
-
-TEST_CASE("Probabilities Dice")
-{
-    Chance p((vector<uint32_t>){10, 10, 10, 10});
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-    CHECK(p.dice(p.max())<=40);
-}
-
-TEST_CASE("Probabilities Compute")
-{
-    Chance p((vector<double>){.1, .1, .1, .1, .1, .5});
-    vector <double> v {10,20,30,40,50,20};
-    CHECK(p.compute(v)==25);
-}
-
-TEST_CASE("Probabilities Invert")
-{
-    Chance p((vector<uint32_t>){0, 0, 0, 0});
-    CHECK(p.probability(0)==.25);
-    CHECK((!p).probability(0)==.25);
-    for (uint32_t i = 0;i<100;i++)
-        CHECK(p.pick()<4);
-
-    Chance p2((vector<uint32_t>){0, 0, 1, 0});
-    for (uint32_t i = 0;i<100;i++)
-        CHECK(p2.pick()<4);
-
+    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},0)==0);
+    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},10)==1);
+    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},20)==2);
+    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},30)==3);
 }
 
 TEST_CASE("dice") {
@@ -77,17 +27,42 @@ TEST_CASE("dice") {
         CHECK(Chance::dice_double(-100,100)<=100);
 }
 
-TEST_CASE("Probabilities complete")
-{
-    Chance p(.9,5);
-    CHECK(p.probability(0)==.9);
-    CHECK(p.probability(1)==.025);
-    CHECK(p.probability(2)==.025);
-    CHECK(p.probability(3)==.025);
-    CHECK(p.probability(4)==.025);
-    CHECK(p.size()==5);
-    Chance p1(5);
-    vector<uint32_t> c(5,0);
-    for (uint32_t i=0;i<10000;i++) c[p1.pick()]++;
-    for (uint32_t i=0;i<5;i++) CHECK(c[i]>0);
+TEST_CASE("index") {
+    auto i = new_index({.1,.2,.3,.05}, false);
+    CHECK( i[0] == 2);
+    CHECK( i[1] == 1);
+    CHECK( i[2] == 0);
+    CHECK( i[3] == 3);
+    i = new_index({.1,.2,.3,.05}, true);
+    CHECK( i[0] == 3);
+    CHECK( i[1] == 0);
+    CHECK( i[2] == 1);
+    CHECK( i[3] == 2);
+}
+
+TEST_CASE("pick occurrence") {
+    CHECK(Chance::pick_random_occurrence({.1,.2,.3,.1},.1,0)==0);
+    CHECK(Chance::pick_random_occurrence({.1,.2,.3,.1},.1,1)==3);
+}
+
+TEST_CASE("pick by chance") {
+    CHECK(Chance::pick_by_chance({.1,.2,.3,.1},{100,10,10,10},0)==2);
+    CHECK(Chance::pick_by_chance({.1,.2,.3,.1},{100,10,10,10},100)==1);
+    CHECK(Chance::pick_by_chance({.1,.2,.3,.1},{100,10,10,10},110)==0);
+    CHECK(Chance::pick_by_chance({.1,.2,.3,.1},{100,10,10,10},111)==3);
+}
+
+TEST_CASE("coin toss") {
+    CHECK(Chance::coin_toss(1));
+    CHECK(!Chance::coin_toss(0));
+    CHECK(Chance::coin_toss(.5,1));
+    CHECK(Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX/2-1));
+    CHECK(!Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX/2+1));
+    CHECK(!Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX-1));
+    CHECK(Chance::pick_best(1, {.1,.2})==1);
+    CHECK(Chance::pick_best(0, {.1,.2},0)==0);
+    CHECK(Chance::pick_best(0, {.1,.2},1)==1);
+    CHECK(Chance::pick_best(0, {.1,.2},2)==0);
+    CHECK_THROWS(Chance::coin_toss(1.2));
+    CHECK_THROWS(Chance::pick_best(1.2, {.1,.2}));
 }

@@ -87,7 +87,7 @@ namespace cell_world{
         Coordinates operator +(const Coordinates &) const;
         Coordinates operator -(const Coordinates &) const;
         Coordinates operator -() const;
-        std::string operator !() const;
+        friend std::ostream& operator<<(std::ostream& , const Coordinates& );
     };
 
     struct Location{
@@ -103,6 +103,7 @@ namespace cell_world{
         double mod();
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
+        friend std::ostream& operator<<(std::ostream& , const Location& );
     };
 
     struct Cell{
@@ -118,10 +119,12 @@ namespace cell_world{
         Coordinates direction;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
+        friend std::ostream& operator<<(std::ostream& , const Cell& );
     };
-
     std::vector<int> histogram(std::vector<int>);
     double entropy(const std::vector<int>&);
     std::vector<uint32_t> new_index(uint32_t);
-
+    std::vector<uint32_t> new_index(std::vector<double>, bool);
+    double max(const std::vector<double> &);
+    uint32_t sum(const std::vector<uint32_t>& );
 }

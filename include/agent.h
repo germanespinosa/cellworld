@@ -5,6 +5,8 @@
 
 namespace cell_world{
 
+    using Move  = Coordinates;
+
     enum Agent_status{
         Started,
         Action_pending,
@@ -12,15 +14,11 @@ namespace cell_world{
         Finished
     };
 
-    struct Agent_action{
-        Agent_action() = default;
-        Agent_action(const Connection_pattern&, Chance);
-        Connection_pattern destinations;
-        Chance probabilities;
-        bool load(const std::string&);
-        bool save(const std::string&) const;
-    private:
-        const std::string _extension = ".action";
+     struct Stochastic_move {
+         Stochastic_move(const Connection_pattern&, std::vector<uint32_t>);
+         Move get_move();
+         Connection_pattern destinations;
+         std::vector<uint32_t> chances;
     };
 
     struct Agent_type{
@@ -45,7 +43,7 @@ namespace cell_world{
         explicit Agent(Agent_type);
         virtual const Cell &start_episode(const State &) = 0;
         virtual void update_state(const State &) = 0;
-        virtual Agent_action &get_action() = 0;
+        virtual Move get_move() = 0;
         virtual void end_episode(const State &) = 0;
         const Cell &cell() const;
         void set_status(Agent_status);

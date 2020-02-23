@@ -6,8 +6,8 @@
 #include<world.h>
 #include<cell_group.h>
 #include<graph.h>
-#include<visibility.h>
 #include<connection.h>
 #include<chance.h>
 #include<map_editor.h>
 #include<simulation.h>
+#include<viewer.h>
