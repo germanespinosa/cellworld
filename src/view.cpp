@@ -174,7 +174,7 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
             } else {
                 sprites.add_sprite(_circle_value_sprites[cell.value * 255], _screen_location(cell.location), 0);
                 if (cell.icon) {
-                    sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon] : _custom_icon_sprites[cell.icon],
+                    sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon-1] : _custom_icon_sprites[cell.icon],
                                        _screen_location(cell.location), 100,
                                        Transform{}.scale((double) _cell_size / 128.0).set_rotation(
                                                cell.direction.rotation()));
@@ -186,7 +186,7 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
             } else {
                 sprites.add_sprite(_square_value_sprites[cell.value * 255], _screen_location(cell.location), 0);
                 if (cell.icon) {
-                    sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon] : _custom_icon_sprites[cell.icon],
+                    sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon-1] : _custom_icon_sprites[cell.icon],
                                        _screen_location(cell.location), 100,
                                        Transform{}.scale((double) _cell_size / 128.0).set_rotation(
                                                cell.direction.rotation()));

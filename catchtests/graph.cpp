@@ -148,7 +148,6 @@ TEST_CASE("Sub graphs big") {
     cg.add(w[100]);
     Graph gates(cg);
     auto sw = wc.get_sub_graphs(gates);
-
 }
 
 TEST_CASE("Sub graphs disconnected") {

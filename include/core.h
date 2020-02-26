@@ -45,6 +45,7 @@ namespace cell_world{
         Green_arrow_icon,
         Prey_icon,
         Predator_icon,
+        Bridge_icon,
         Custom_0_icon = 100,
         Custom_1_icon,
         Custom_2_icon,

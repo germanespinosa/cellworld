@@ -69,7 +69,7 @@ uint32_t Chance::pick_best(double probability_best, const std::vector<double> &v
     uint32_t size = values.size();
     if (coin_toss(probability_best, dice)){ // find one random item from the best values
         double m = max(values);
-        return Chance::pick_random_occurrence(values, m, 0);
+        return Chance::pick_random_occurrence(values, m, dice);
     } else { // return a random item
         return dice % size;
     }

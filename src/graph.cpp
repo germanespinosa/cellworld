@@ -122,7 +122,6 @@ vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
     for (;offset<nodes.size() && node_index == Not_found;offset++) {
         if (!gates.nodes.contains(nodes[offset])) node_index = offset; // finds the first node that is not a gate
     }
-    L("sg first node " << node_index);
     while( node_index != Not_found ) {
         Cell_group sub_graph_nodes;
         sub_graph_nodes.add(nodes[node_index]); // adds the first node
@@ -152,10 +151,8 @@ vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
             graph.connect(graph.nodes[b],(*this)[graph.nodes[b]]);
         }
         for (;offset<nodes.size() && node_index == Not_found;offset++){
-            L("sg looking for a node: " << offset << " of " << nodes.size());
             if ( !gates.nodes.contains(nodes[offset])) { // make sure is not a gate
                 node_index = offset;
-                L("sg checking node " << node_index );
                 for (uint32_t g = 0; g < graphs.size() && node_index != Not_found; g++) {
                     if (graphs[g].nodes.contains(nodes[node_index])) {
                         node_index = Not_found;
@@ -164,11 +161,22 @@ vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
             }
         }
     }
+    for ( uint32_t i = 0 ; i < gates.size() ; i++ ){
+        auto &gate = gates.nodes[i];
+        auto &cnn = (*this)[gate];
+        for ( uint32_t j = 0 ; j < cnn.size() ; j++ ){
+            if (gates.nodes.contains(cnn[j])) options[gate].add(cnn[j]);
+        }
+    }
     return graphs;
 }
 
-void Graph::add(const Cell &node) {
-    if (nodes.add(node)) _connections.emplace_back();
+bool Graph::add(const Cell &node) {
+    if (nodes.add(node)){
+        _connections.emplace_back();
+        return true;
+    } else return false;
+
 }
 
 void Graph::connect(const Cell &node, const Cell_group &connections) {
@@ -218,6 +226,14 @@ bool Graph::operator==(const Graph &g) const{
     for (uint32_t i=0;i<_connections.size();i++) {
         if (_connections[i] != g._connections[g.nodes.find(nodes[i])]) return false;
     }
+    return true;
+}
+
+bool Graph::remove(const Cell &c) {
+    int32_t index = nodes.find(c);
+    if (index == Not_found) return false;
+    nodes.remove(c);
+    _connections.erase(_connections.begin()+index);
     return true;
 }
 

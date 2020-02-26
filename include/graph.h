@@ -13,7 +13,8 @@ namespace cell_world {
         std::vector<Graph> get_sub_graphs(Cell_group &);
         std::vector<Graph> get_sub_graphs(Graph &);
         std::vector<Graph> get_sub_graphs(Graph &,Graph &);
-        void add(const Cell &);
+        bool add(const Cell &);
+        bool remove(const Cell &);
         void connect (const Cell &, const Cell_group &);
         void connect (Graph &);
         double get_entropy();
