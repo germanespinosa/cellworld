@@ -21,7 +21,7 @@ uint32_t pick(std::vector<uint32_t> _chances, std::vector<double> &values, uint3
     double reward = values[indexes[action]]; // this is the expected value of the state-action pair
 
     uint32_t repetitions = 0;
-    for (uint32_t i = 0; i < values.size(); i++) if (values[i] == reward) repetitions ++; //find how many times the same value appears
+    for (double value : values) if (value == reward) repetitions ++; //find how many times the same value appears
 
     uint32_t selection = dice % repetitions; //use the dice to determine which repetition to use
     uint32_t pick;
@@ -60,12 +60,13 @@ bool Chance::coin_toss(double probability) {
 }
 
 bool Chance::coin_toss(double probability, uint32_t dice) {
-    if (probability>1) throw logic_error("probability can't be larger than 1");
+    if (probability>1) throw logic_error("Chance::coin_toss - probability can't be larger than 1");
     dice = dice % CELL_WORLD_CHANCE_MAX;
     return (dice<(probability*CELL_WORLD_CHANCE_MAX));
 }
 
 uint32_t Chance::pick_best(double probability_best, const std::vector<double> &values, uint32_t dice) {
+    if (values.empty()) throw logic_error("Chance::pick_best - can't pick from an empty set.");
     uint32_t size = values.size();
     if (coin_toss(probability_best, dice)){ // find one random item from the best values
         double m = max(values);
@@ -80,6 +81,7 @@ uint32_t Chance::pick(const std::vector<uint32_t> &chances) {
 }
 
 uint32_t Chance::pick(const std::vector<uint32_t> &chances, uint32_t dice) {
+    if (chances.empty()) throw logic_error("Chance::pick - can't pick from an empty set.");
     uint32_t sum = 0;
     for (auto c:chances) sum+=c;
     uint32_t size = chances.size();
@@ -98,6 +100,7 @@ uint32_t Chance::pick_inverse(const std::vector<uint32_t> &chances) {
 }
 
 uint32_t Chance::pick_inverse(std::vector<uint32_t> chances, uint32_t dice) {
+    if (chances.empty()) throw logic_error("Chance::pick_inverse - can't pick from an empty set.");
     uint32_t min = chances[0];
     uint32_t max = chances[0];
     for(auto &c:chances) {
@@ -117,7 +120,7 @@ uint32_t Chance::pick_by_chance(const std::vector<double> &values, const std::ve
 uint32_t Chance::pick_random_occurrence(const std::vector<double> &values, double value, uint32_t dice) {
     uint32_t occurrences = 0;
     for (double v : values) if (v == value) occurrences ++; //find how many times the same value appears
-    if (occurrences == 0) throw logic_error("value not found");
+    if (occurrences == 0) throw logic_error("Chance::pick_random_occurrence - value not found");
     uint32_t selected = dice % occurrences;
     uint32_t pick = 0;
     for (pick = 0; values[pick] != value || selected--; pick++); // find the correct repetition

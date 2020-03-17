@@ -77,14 +77,12 @@ void Model::end_episode() {
 void Model::start_episode() {
     L("Model::start_episode() start");
     iteration = 0;
-    L("Model::start_episode() - State state  = get_state();");
-    State state  = get_state();
     L("Model::start_episode() - for(auto & _agent : _agents)");
     for(auto & _agent : _agents) {
         L("Model::start_episode() - _agent->data.status = Started;");
         _agent->data.status = Started;
         L("Model::start_episode() - _agent->data.cell = _agent->start_episode(state);");
-        _agent->data.cell = _agent->start_episode(state);
+        _agent->data.cell = _agent->start_episode();
     }
     L("Model::start_episode() end");
 }
@@ -101,25 +99,6 @@ State Model::get_state() {
     }
     L("Model::get_state() end");
     return state;
-}
-
-void Model::set_state(State state) {
-    L("Model::set_state(State) start");
-    iteration = state.iteration;
-    L("Model::get_state() - for(auto & _agent : _agents)");
-    for(auto & _agent : _agents) {
-        L("Model::get_state() - int32_t index = state.find(_agent->data.type.name);");
-        int32_t index = state.find(_agent->data.type.name);
-        L("Model::get_state() - if (index!=Not_found)");
-        if (index!=Not_found) {
-            L("Model::get_state() - _agent->data = state.agents_data[index];");
-            _agent->data = state.agents_data[index];
-        } else {
-            L("Model::get_state() - _agent->start_episode(state);");
-            _agent->start_episode(state);
-        }
-    }
-    L("Model::set_state(State) end");
 }
 
 State Model::get_state(uint32_t agent_index) {
@@ -145,4 +124,10 @@ State Model::get_state(uint32_t agent_index) {
 
 void Model::add_agent(Agent &agent) {
     _agents.push_back(&agent);
+}
+
+void Model::run(uint32_t iterations) {
+    start_episode();
+    for (uint32_t i=0;i<iterations && update();i++);
+    end_episode();
 }

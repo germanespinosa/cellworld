@@ -15,9 +15,9 @@ namespace cell_world{
         void end_episode();
         State get_state(uint32_t);
         State get_state();
-        void set_state(State);
         uint32_t iteration;
         Cell_group cells;
+        void run(uint32_t);
         protected:
         std::vector<Agent*> _agents;
         Map _map;
