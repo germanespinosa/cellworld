@@ -66,3 +66,8 @@ TEST_CASE("coin toss") {
     CHECK_THROWS(Chance::coin_toss(1.2));
     CHECK_THROWS(Chance::pick_best(1.2, {.1,.2}));
 }
+
+TEST_CASE("get chances") {
+    CHECK(Chance::get_chances({-100.0,100})[0]==0);
+    CHECK(Chance::get_chances({-100.0,100})[1]==CELL_WORLD_CHANCE_MAX);
+}

@@ -17,6 +17,9 @@ namespace cell_world{
         static uint32_t pick_inverse(std::vector<uint32_t>, uint32_t);
         static uint32_t pick_best(double, const std::vector<double> &);
         static uint32_t pick_best(double, const std::vector<double> &, uint32_t);
+        static std::vector<uint32_t> get_chances(const std::vector<double> &);
+        static std::vector<uint32_t> invert_chances(std::vector<uint32_t>);
+        static std::vector<uint32_t> combine_chances(const std::vector<uint32_t>&, const std::vector<uint32_t>&);
         static bool coin_toss(double);
         static bool coin_toss(double, uint32_t);
         static double dice_double (double);

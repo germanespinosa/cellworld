@@ -101,15 +101,7 @@ uint32_t Chance::pick_inverse(const std::vector<uint32_t> &chances) {
 
 uint32_t Chance::pick_inverse(std::vector<uint32_t> chances, uint32_t dice) {
     if (chances.empty()) throw logic_error("Chance::pick_inverse - can't pick from an empty set.");
-    uint32_t min = chances[0];
-    uint32_t max = chances[0];
-    for(auto &c:chances) {
-        if (c < min) min = c; else if (c > max) max = c;
-    }
-    uint32_t target = min + max;
-    for (auto &c:chances ){
-        c = target - c;
-    }
+    chances = invert_chances(chances);
     return pick(chances, dice);
 }
 
@@ -137,4 +129,50 @@ uint32_t Chance::pick_by_chance(const std::vector<double> &values, const std::ve
 
 uint32_t Chance::pick_random_occurrence(const std::vector<double> &values, double value) {
     return Chance::pick_random_occurrence(values, value,Chance::dice());
+}
+
+std::vector<uint32_t> Chance::get_chances(const std::vector<double> &values) {
+    // values could be negative
+    if (values.empty()) return vector<uint32_t>();
+    double min = values[0];
+    double max = values[0];
+    for (auto v:values){
+        if (min>v) min = v;
+        if (max<v) max = v;
+    }
+    std::vector<uint32_t> chances(values.size());
+    for (uint32_t i=0;i<chances.size();i++){
+        double new_value = (values[i] - min) / (max - min) * CELL_WORLD_CHANCE_MAX;
+        chances[i] = new_value;
+    }
+    return chances;
+}
+
+std::vector<uint32_t> Chance::invert_chances(std::vector<uint32_t> chances) {
+    uint32_t min = chances[0];
+    uint32_t max = chances[0];
+    for(auto &c:chances) {
+        if (c < min) min = c; else if (c > max) max = c;
+    }
+    uint32_t target = min + max;
+    for (auto &c:chances ){
+        c = target - c;
+    }
+    return chances;
+}
+
+std::vector<uint32_t> Chance::combine_chances(const std::vector<uint32_t> &chances1, const std::vector<uint32_t> &chances2) {
+    if (chances1.size() != chances2.size()) throw logic_error("Chance::combine_chances - can't combine chances of different size.");
+    std::vector<double> values(chances1.size());
+    double max = 0;
+    for (uint32_t i=0;i<values.size();i++){
+        values[i] = (double)chances1[i] * (double)chances2[i];
+        if (max<values[i]) max = values[i];
+    }
+    std::vector<uint32_t> chances(values.size());
+    for (uint32_t i=0;i<values.size();i++){
+        double new_value = values[i] / max * CELL_WORLD_CHANCE_MAX;
+        chances[i] = new_value;
+    }
+    return chances;
 }
