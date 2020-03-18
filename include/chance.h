@@ -21,8 +21,6 @@ namespace cell_world{
         static bool coin_toss(double, uint32_t);
         static double dice_double (double);
         static double dice_double (double,double);
-    private:
-        std::vector<uint32_t> _chances;
     };
 
 }
