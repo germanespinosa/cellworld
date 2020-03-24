@@ -80,10 +80,10 @@ void Model::end_episode() {
     L("Model::end_episode() end");
 }
 
-void Model::start_episode() {
+void Model::start_episode(uint32_t initial_iteration) {
     if (status == Status::Running) throw logic_error("Model::start_episode - model is already running.");
     L("Model::start_episode() start");
-    iteration = 0;
+    iteration = initial_iteration;
     L("Model::start_episode() - for(auto & _agent : _agents)");
     for(auto & _agent : _agents) {
         L("Model::start_episode() - _agent->data.status = Started;");
@@ -152,4 +152,8 @@ void Model::run() {
 
 void Model::run(uint32_t to_iteration) {
     for(;iteration < to_iteration && update(););
+}
+
+void Model::start_episode() {
+    start_episode(0);
 }

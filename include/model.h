@@ -19,6 +19,7 @@ namespace cell_world{
         bool update();
         std::vector<Agent_data> get_agents_data();
         void start_episode();
+        void start_episode(uint32_t);
         void end_episode();
         State get_state(uint32_t);
         State get_state();
