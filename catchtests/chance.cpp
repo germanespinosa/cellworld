@@ -71,3 +71,17 @@ TEST_CASE("get chances") {
     CHECK(Chance::get_chances({-100.0,100})[0]==0);
     CHECK(Chance::get_chances({-100.0,100})[1]==CELL_WORLD_CHANCE_MAX);
 }
+
+TEST_CASE("invert chances") {
+    CHECK(Chance::invert_chances({10,90})[0]==90);
+    CHECK(Chance::invert_chances({10,90})[1]==10);
+    CHECK(Chance::invert_chances({10,20,90})[0]==90);
+    CHECK(Chance::invert_chances({10,20,90})[1]==80);
+    CHECK(Chance::invert_chances({10,20,90})[2]==10);
+}
+
+TEST_CASE("combine chances") {
+    CHECK(Chance::combine_chances({20,20,40},{8,16,20})[0] * 2 == Chance::combine_chances({20,20,40},{8,16,20})[1]);
+    CHECK(Chance::combine_chances({20,10,40},{8,16,20})[0] == Chance::combine_chances({20,10,40},{8,16,20})[1]);
+}
+

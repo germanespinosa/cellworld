@@ -31,14 +31,14 @@ namespace cell_world {
 
     bool Cell_group::save() const {
         L("Cell_group::save() start");
-        bool res = save(_file_name);L("Cell_group::save() end");
+        bool res = save(_file_name);
+        L("Cell_group::save() end");
         return res;
     }
 
     void Cell_group::clear() {
-        L("Cell_group::clear() start");
         _cells.clear();
-        _id_index.clear();L("Cell_group::clear() end");
+        _id_index.clear();
     }
 
     int32_t Cell_group::find(uint32_t cell_id) const {
@@ -200,9 +200,11 @@ namespace cell_world {
     }
 
     int32_t Map::find(const Coordinates &c) const {
-        L("Map::find(const Coordinates &) start")L("Map::find(const Coordinates &) - int x = (uint8_t)c.x;")
-        uint8_t x = (uint8_t) c.x;L("Map::find(const Coordinates &) - int y = (uint8_t)c.y;")
-        uint8_t y = (uint8_t) c.y;L("Map::find(const Coordinates &) end")
+        //L("Map::find(const Coordinates &) start")L("Map::find(const Coordinates &) - int x = (uint8_t)c.x;")
+        uint8_t x = (uint8_t) c.x;
+        //L("Map::find(const Coordinates &) - int y = (uint8_t)c.y;")
+        uint8_t y = (uint8_t) c.y;
+        //L("Map::find(const Coordinates &) end")
         return _coordinate_index[x][y];
     }
 

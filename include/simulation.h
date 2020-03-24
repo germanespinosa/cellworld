@@ -14,6 +14,7 @@ namespace cell_world{
         bool is_paused = false;
         void on_key(ge211::Key) override;
         void on_frame(double) override;
+        void on_start() override;
         void run_silent();
         void run_silent(bool);
         uint32_t episode;

@@ -13,7 +13,6 @@ Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions, 
         _iterations(iterations),
         _episodes(episodes){
     episode = 0;
-    _model.start_episode();
 }
 
 Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions ) :
@@ -88,4 +87,8 @@ void Simulation::run_silent(bool show_progress) {
 
 Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions, uint16_t iterations) :
         Simulation(model,scene_dimensions,iterations,1){
+}
+
+void Simulation::on_start() {
+    _model.start_episode();
 }

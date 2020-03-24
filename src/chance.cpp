@@ -149,6 +149,7 @@ std::vector<uint32_t> Chance::get_chances(const std::vector<double> &values) {
 }
 
 std::vector<uint32_t> Chance::invert_chances(std::vector<uint32_t> chances) {
+    if (chances.empty()) throw logic_error("Chance::invert_chances - can't invert empty chances");
     uint32_t min = chances[0];
     uint32_t max = chances[0];
     for(auto &c:chances) {

@@ -32,6 +32,7 @@ void Model::_epoch(){
 
 bool Model::update() // if all agents made their moves, it triggers an new epoch
 {
+    if (status != Status::Running) throw logic_error("Model::update - model is not running.");
     L("Model::update() start");
     bool finish;
     bool epoch_ready; // assumes no new actions
@@ -46,7 +47,7 @@ bool Model::update() // if all agents made their moves, it triggers an new epoch
     } while (!epoch_ready);
     _epoch(); //if all agents are done with their actions, trigger the epoch
     L("Model::update() end");
-    return true;
+    return iteration<iterations;
 }
 
 vector<Agent_data> Model::get_agents_data(){
@@ -57,24 +58,30 @@ vector<Agent_data> Model::get_agents_data(){
     return r;
 }
 
-Model::Model( Cell_group &cg ) :
-        cells(cg),
+Model::Model( Cell_group &cg, uint32_t iterations ) :
+    iterations(iterations),
+    cells(cg),
     _map(cells),
     _visibility(Visibility::create_graph(cells))
     {
         L("Model::Model( World &, std::vector<Agent*> &) start");
-
+        status = Status::Idle;
         L("Model::Model( World &, std::vector<Agent*> &) end");
     }
 
+Model::Model( Cell_group &cg ) : Model(cg,50) {}
+
 void Model::end_episode() {
     L("Model::end_episode() start");
+    if (status != Status::Running) throw logic_error("Model::end_episode - model is not running.");
     State state = get_state();
     for(auto & _agent : _agents) _agent->end_episode(state);
+    status = Status::Stopped;
     L("Model::end_episode() end");
 }
 
 void Model::start_episode() {
+    if (status == Status::Running) throw logic_error("Model::start_episode - model is already running.");
     L("Model::start_episode() start");
     iteration = 0;
     L("Model::start_episode() - for(auto & _agent : _agents)");
@@ -82,8 +89,14 @@ void Model::start_episode() {
         L("Model::start_episode() - _agent->data.status = Started;");
         _agent->data.status = Started;
         L("Model::start_episode() - _agent->data.cell = _agent->start_episode(state);");
-        _agent->data.cell = _agent->start_episode();
+        _agent->data.cell = _agent->start_episode(iterations);
     }
+    for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
+        L("Model::_epoch() - _agents[agent_index]->update_state(get_state(agent_index));");
+        _agents[agent_index]->data.status = Action_pending;
+        _agents[agent_index]->update_state(get_state(agent_index));
+    }
+    status = Status::Running;
     L("Model::start_episode() end");
 }
 
@@ -126,8 +139,17 @@ void Model::add_agent(Agent &agent) {
     _agents.push_back(&agent);
 }
 
-void Model::run(uint32_t iterations) {
-    start_episode();
-    for (uint32_t i=0;i<iterations && update();i++);
-    end_episode();
+void Model::set_state(const State &state) {
+    iteration = state.iteration;
+    for(uint32_t i = 0; i < state.agents_data.size(); i++){
+        _agents[i]->data = state.agents_data[i];
+    }
+}
+
+void Model::run() {
+    run(iterations);
+}
+
+void Model::run(uint32_t to_iteration) {
+    for(;iteration < to_iteration && update(););
 }

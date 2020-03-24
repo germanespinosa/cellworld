@@ -41,14 +41,15 @@ namespace cell_world{
 
     struct Agent{
         explicit Agent(Agent_type);
-        virtual const Cell &start_episode() = 0;
+        virtual const Cell &start_episode(uint32_t) = 0;
         virtual void update_state(const State &) = 0;
         virtual Move get_move() = 0;
         virtual void end_episode(const State &) = 0;
         const Cell &cell() const;
         void set_status(Agent_status);
         void set_color(Color);
-    private:
+
+    protected:
         Agent_data data;
         friend class Model;
     };
