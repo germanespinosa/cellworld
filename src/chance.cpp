@@ -31,6 +31,7 @@ uint32_t pick(std::vector<uint32_t> _chances, std::vector<double> &values, uint3
 }
 
 uint32_t Chance::dice(uint32_t max) {
+    if (max == 0) throw logic_error("Chance::dice - max can't be 0");
     return dice() % max;
 }
 

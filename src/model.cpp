@@ -8,46 +8,42 @@ using namespace cell_world;
 void Model::_epoch(){
     L("Model::_epoch() start");
     iteration++;
-    L("Model::_epoch() - for (Agent * _agent : _agents)");
     for (Agent * _agent : _agents) {
-        L("Model::_epoch() - auto move = _agent->get_move();");
         auto move = _agent->get_move(); // read the action from the agent
-        L("Model::_epoch() - auto _agent->data.status = Action_pending;");
-        _agent->data.status = Action_pending; // set the state to pending again
-        L("Model::_epoch() - int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );");
         int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );
-        L("Model::_epoch() - if ( destination_index!= Not_found && !_world[destination_index].occluded )");
         if ( destination_index!= Not_found && !cells[destination_index].occluded ) {
-            L("Model::_epoch() - _agent->data.cell = _cell_group[destination_index];");
             _agent->data.cell = cells[destination_index];
         }
     }
-    L("Model::_epoch() - for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++)");
     for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
-        L("Model::_epoch() - _agents[agent_index]->update_state(get_state(agent_index));");
         _agents[agent_index]->update_state(get_state(agent_index));
     }
     L("Model::_epoch() end");
+}
+
+bool Model::try_update()
+{
+    L("Model::update() start");
+    if (status != Status::Running) throw logic_error("Model::update - model is not running.");
+    bool epoch_ready = true; // assumes no new actions
+    finished = false;
+    for (auto &_agent : _agents) { // ask all agents to make their moves
+        epoch_ready = epoch_ready && _agent->status == Action_ready;
+        finished = finished || _agent->status == Finished; // check if all agents are done
+    }
+    if (epoch_ready) _epoch(); //if all agents are done with their actions, trigger the epoch
+    finished = finished || iteration >= iterations;
+    L("Model::update() end");
+    return epoch_ready;
 }
 
 bool Model::update() // if all agents made their moves, it triggers an new epoch
 {
     if (status != Status::Running) throw logic_error("Model::update - model is not running.");
     L("Model::update() start");
-    bool finish;
-    bool epoch_ready; // assumes no new actions
-    do {
-        finish = false;
-        epoch_ready = true;
-        for (auto &_agent : _agents) { // ask all agents to make their moves
-            finish = finish || _agent->data.status == Finished; // check if all agents are done
-            epoch_ready = epoch_ready && _agent->data.status == Action_ready;
-        }
-        if (finish) return false; //if any agent is not longer running, terminates the simulation
-    } while (!epoch_ready);
-    _epoch(); //if all agents are done with their actions, trigger the epoch
+    while (!try_update() && !finished);
     L("Model::update() end");
-    return iteration<iterations;
+    return !finished;
 }
 
 vector<Agent_data> Model::get_agents_data(){
@@ -84,16 +80,11 @@ void Model::start_episode(uint32_t initial_iteration) {
     if (status == Status::Running) throw logic_error("Model::start_episode - model is already running.");
     L("Model::start_episode() start");
     iteration = initial_iteration;
-    L("Model::start_episode() - for(auto & _agent : _agents)");
     for(auto & _agent : _agents) {
-        L("Model::start_episode() - _agent->data.status = Started;");
-        _agent->data.status = Started;
-        L("Model::start_episode() - _agent->data.cell = _agent->start_episode(state);");
+        _agent->status = Started;
         _agent->data.cell = _agent->start_episode(iterations);
     }
     for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
-        L("Model::_epoch() - _agents[agent_index]->update_state(get_state(agent_index));");
-        _agents[agent_index]->data.status = Action_pending;
         _agents[agent_index]->update_state(get_state(agent_index));
     }
     status = Status::Running;
@@ -122,6 +113,7 @@ State Model::get_state(uint32_t agent_index) {
     auto vi = _visibility[cell];
     State state;
     state.iteration = iteration;
+    state.iterations = iterations;
     L("Model::get_state(uint32_t) - for (uint32_t index = 0; index < _agents.size() ; index++)");
     for (uint32_t index = 0; index < _agents.size() ; index++) {
         L("Model::get_state(uint32_t) - if (index != agent_index && vi.contains(_agents[index]->data.cell))");
@@ -137,13 +129,6 @@ State Model::get_state(uint32_t agent_index) {
 
 void Model::add_agent(Agent &agent) {
     _agents.push_back(&agent);
-}
-
-void Model::set_state(const State &state) {
-    iteration = state.iteration;
-    for(uint32_t i = 0; i < state.agents_data.size(); i++){
-        _agents[i]->data = state.agents_data[i];
-    }
 }
 
 void Model::run() {

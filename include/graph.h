@@ -14,9 +14,11 @@ namespace cell_world {
         std::vector<Graph> get_sub_graphs(Graph &);
         std::vector<Graph> get_sub_graphs(Graph &,Graph &);
         bool add(const Cell &);
+        bool add(const Cell_group &);
         bool remove(const Cell &);
         void connect (const Cell &, const Cell_group &);
         void connect (Graph &);
+        std::vector<Coordinates> get_connectors (const Cell &);
         double get_entropy();
         void clear();
         uint32_t size() const;

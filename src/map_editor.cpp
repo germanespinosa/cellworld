@@ -16,7 +16,8 @@ _view(_cell_group, scene_dimensions)
     //_sub_worlds.reset(selected,_world_connections);
 
     _gates = Graph(selected);
-    _sub_worlds = world.create_graph().get_sub_graphs(_gates);
+    auto world_graph = world.create_graph();
+    _sub_worlds = world_graph.get_sub_graphs(_gates);
 
     Cell_group_view bridges {selected,Blue,true};
     cells_view.emplace_back(bridges);

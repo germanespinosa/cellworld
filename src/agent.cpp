@@ -12,12 +12,15 @@ namespace cell_world {
     Agent::Agent(Agent_type type) {
         L("Agent::Agent(Agent_type ) start");
         data.type = std::move(type);
-        data.status = Started;L("Agent::Agent(Agent_type ) end");
+        data.color = Black;
+        status = Started;
+        L("Agent::Agent(Agent_type ) end");
     }
 
-    void Agent::set_status(Agent_status status) {
+    void Agent::set_status(Agent_status s) {
         L("Agent::set_status(Agent_status ) start");
-        data.status = status;L("Agent::set_status(Agent_status ) end");
+        status = s;
+        L("Agent::set_status(Agent_status ) end");
     }
 
     void Agent::set_color(Color color) {

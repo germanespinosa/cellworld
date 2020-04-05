@@ -2,6 +2,7 @@
 #include <core.h>
 #include <chance.h>
 #include <connection.h>
+#include <atomic>
 
 namespace cell_world{
 
@@ -28,13 +29,13 @@ namespace cell_world{
 
     struct Agent_data{
         Agent_type type;
-        Agent_status status;
         Color color;
         Cell cell;
     };
 
     struct State{
         uint32_t iteration;
+        uint32_t iterations;
         std::vector<Agent_data> agents_data;
         int32_t find(const std::string&) const;
     };
@@ -51,6 +52,7 @@ namespace cell_world{
 
     protected:
         Agent_data data;
+        std::atomic<Agent_status> status;
         friend class Model;
     };
 

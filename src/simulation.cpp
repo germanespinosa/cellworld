@@ -6,17 +6,16 @@ using namespace ge211;
 using namespace std;
 using namespace cell_world;
 
-Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions, uint16_t iterations, uint32_t  episodes) :
+Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions, uint32_t  episodes) :
         _scene_dimensions(scene_dimensions),
         _model(model),
         _view(model.cells, scene_dimensions),
-        _iterations(iterations),
         _episodes(episodes){
     episode = 0;
 }
 
 Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions ) :
-        Simulation (model, scene_dimensions,0,1){}
+        Simulation (model, scene_dimensions,1){}
 
 void Simulation::on_frame(double dt)
 {
@@ -24,8 +23,7 @@ void Simulation::on_frame(double dt)
     t+=dt;
     if (t>.05){
         t=0;
-        if (!_model.update() ||
-            (_iterations && _model.iteration >= _iterations)) {
+        if ( _model.status==Model::Status::Running && !_model.try_update() && _model.finished ) {
             _model.end_episode();
             episode++;
             if (episode == _episodes)
@@ -79,16 +77,16 @@ void Simulation::run_silent(bool show_progress) {
             }
         }
         _model.start_episode();
-        for (uint32_t s = 0; s < _iterations &&  _model.update(); s++);
+        while (_model.update());
         _model.end_episode();
     }
     cout << "\r|==================================================| 100% (" << _episodes << "/" << _episodes << ")" << flush;
 }
 
-Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions, uint16_t iterations) :
-        Simulation(model,scene_dimensions,iterations,1){
-}
-
 void Simulation::on_start() {
     _model.start_episode();
+}
+
+void Simulation::on_quit() {
+    if (_model.status==Model::Status::Running) _model.end_episode();
 }

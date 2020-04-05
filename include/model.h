@@ -16,6 +16,7 @@ namespace cell_world{
         Model( Cell_group &, uint32_t);
         explicit Model( Cell_group &);
         void add_agent(Agent &);
+        bool try_update();
         bool update();
         std::vector<Agent_data> get_agents_data();
         void start_episode();
@@ -23,17 +24,18 @@ namespace cell_world{
         void end_episode();
         State get_state(uint32_t);
         State get_state();
-        void set_state(const State &);
         uint32_t iteration;
         uint32_t iterations;
         Cell_group cells;
         void run();
         void run(uint32_t);
         Status status;
-        protected:
+        bool finished;
+    protected:
         std::vector<Agent*> _agents;
         Map _map;
         Graph _visibility;
         void _epoch();
+    friend class Simulation;
     };
 } 

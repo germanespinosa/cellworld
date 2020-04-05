@@ -116,6 +116,7 @@ vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
     vector<Graph> graphs;
     gates.clear();
     options.clear();
+    options.add(nodes);
     if (_connections.empty()) return graphs;
     uint32_t offset = 0;
     int32_t node_index = Not_found;
@@ -192,7 +193,7 @@ std::vector<Graph> Graph::get_sub_graphs(Cell_group &gates) {
 }
 
 std::vector<Graph> Graph::get_sub_graphs(Graph &gates) {
-    Graph options;
+    Graph options(nodes);
     return get_sub_graphs(gates,options);
 }
 
@@ -235,6 +236,19 @@ bool Graph::remove(const Cell &c) {
     nodes.remove(c);
     _connections.erase(_connections.begin()+index);
     return true;
+}
+
+std::vector<Coordinates> Graph::get_connectors(const Cell &cell) {
+    auto c = _connections[nodes.find(cell)];
+    std::vector<Coordinates> cons;
+    for (uint32_t i=0;i<c.size();i++) cons.push_back(c[i].coordinates - cell.coordinates);
+    return std::move(cons);
+}
+
+bool Graph::add(const Cell_group &c) {
+    bool r = true;
+    for (uint32_t i=0;i<c.size();i++) r = r && add(c[i]);
+    return r;
 }
 
 Graph::Graph() = default;

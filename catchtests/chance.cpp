@@ -85,3 +85,6 @@ TEST_CASE("combine chances") {
     CHECK(Chance::combine_chances({20,10,40},{8,16,20})[0] == Chance::combine_chances({20,10,40},{8,16,20})[1]);
 }
 
+TEST_CASE("pick best") {
+    CHECK(Chance::pick_best(1,{-99.9319,-100,-100})==0);
+}

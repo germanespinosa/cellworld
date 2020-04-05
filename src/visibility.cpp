@@ -11,6 +11,7 @@ Graph Visibility::create_graph(const Cell_group &cell_group) {
     Graph vi(cell_group); // filters occluded
     for (unsigned int s = 0; s < vi.nodes.size()-1; s++){ //only not occluded
         auto &source = vi.nodes[s];
+        vi[source].add(source);
         for (unsigned int d = s + 1; d < vi.nodes.size(); d++) { //only not occluded
             auto &destination = vi.nodes[d];
             double dist = source.location.dist(destination.location); // distance between source & destination
