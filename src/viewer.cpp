@@ -9,17 +9,17 @@ namespace cell_world {
     }
     void Viewer::on_mouse_down(ge211::Mouse_button b, ge211::Position p) {
         Location l {(double)p.x,(double)p.y};
-        _handler.on_mouse_down(b,l);
+        _handler.on_mouse_down(b,l, _view.get_cell(p));
     }
 
     void Viewer::on_mouse_up(ge211::Mouse_button b, ge211::Position p) {
         Location l {(double)p.x,(double)p.y};
-        _handler.on_mouse_up(b,l);
+        _handler.on_mouse_up(b,l, _view.get_cell(p));
     }
 
     void Viewer::on_mouse_move(ge211::Position p) {
         Location l {(double)p.x,(double)p.y};
-        _handler.on_mouse_move(l);
+        _handler.on_mouse_move(l, _view.get_cell(p));
     }
 
     void Viewer::on_key_up(ge211::Key k) {

@@ -36,6 +36,7 @@ namespace cell_world{
         Map _map;
         Graph _visibility;
         void _epoch();
+        uint32_t _message_group;
     friend class Simulation;
     };
 } 

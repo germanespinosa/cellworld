@@ -1,5 +1,6 @@
 #include <agent.h>
 #include <utility>
+#include <mutex>
 
 using namespace std;
 namespace cell_world {
@@ -9,11 +10,13 @@ namespace cell_world {
         return data.cell;
     }
 
-    Agent::Agent(Agent_type type) {
+    Agent::Agent(Agent_type type) :
+    status(Started),
+    _message_group(0){
         L("Agent::Agent(Agent_type ) start");
         data.type = std::move(type);
         data.color = Black;
-        status = Started;
+        Agent_broadcaster::add(this, _message_group);
         L("Agent::Agent(Agent_type ) end");
     }
 
@@ -26,6 +29,23 @@ namespace cell_world {
     void Agent::set_color(Color color) {
         L("Agent::set_color(Color ) start");
         data.color = color;L("Agent::set_color(Color ) end");
+    }
+
+    void Agent::receive_message(const Agent_message &) {
+
+    }
+
+    void Agent::send_message(const Agent_type &to, const std::string &body) {
+        Agent_message m;
+        m.from.name = data.type.name;
+        m.from.version = data.type.version;
+        m.to = to;
+        m.body = body;
+        Agent_broadcaster::send(m,_message_group);
+    }
+
+    void Agent::send_message(const std::string &body) {
+        send_message({},body);
     }
 
     int32_t State::find(const std::string &type_name) const {
@@ -46,5 +66,31 @@ namespace cell_world {
         uint32_t i = Chance::pick(chances);L(i);
         Coordinates c = destinations[i];L(c);L("Coordinates Stochastic_agent_action::get_destination() end");
         return c;
+    }
+
+    static std::vector<std::vector<Agent*>> agent_broadcaster_agents;
+    static uint32_t agent_broadcaster_counter = 0;
+    static std::mutex agent_broadcaster_mutex;
+
+    void Agent_broadcaster::add(Agent *agent, uint32_t g) {
+        agent_broadcaster_mutex.lock();
+        while (agent_broadcaster_agents.size() <= g) agent_broadcaster_agents.emplace_back();
+        agent_broadcaster_agents[g].push_back(agent);
+        agent_broadcaster_mutex.unlock();
+    }
+
+    void Agent_broadcaster::send(const Agent_message &m, uint32_t g) {
+        if (g>=agent_broadcaster_agents.size()) return;
+        for (auto a:agent_broadcaster_agents[g])
+            if (( m.to.name.empty() || a->data.type.name == m.to.name ) &&
+                ( m.to.version == 0 || a->data.type.version == m.to.version )) a->receive_message(m);
+    }
+
+
+    uint32_t Agent_broadcaster::new_message_group() {
+        agent_broadcaster_mutex.lock();
+        uint32_t i = ++agent_broadcaster_counter;
+        agent_broadcaster_mutex.unlock();
+        return i;
     }
 }

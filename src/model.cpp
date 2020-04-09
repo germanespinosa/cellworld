@@ -58,7 +58,8 @@ Model::Model( Cell_group &cg, uint32_t iterations ) :
     iterations(iterations),
     cells(cg),
     _map(cells),
-    _visibility(Visibility::create_graph(cells))
+    _visibility(Visibility::create_graph(cells)),
+    _message_group(Agent_broadcaster::new_message_group())
     {
         L("Model::Model( World &, std::vector<Agent*> &) start");
         status = Status::Idle;
@@ -82,7 +83,8 @@ void Model::start_episode(uint32_t initial_iteration) {
     iteration = initial_iteration;
     for(auto & _agent : _agents) {
         _agent->status = Started;
-        _agent->data.cell = _agent->start_episode(iterations);
+        auto c = _agent->start_episode(initial_iteration);
+        _agent->data.cell = c;
     }
     for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
         _agents[agent_index]->update_state(get_state(agent_index));
@@ -129,6 +131,9 @@ State Model::get_state(uint32_t agent_index) {
 
 void Model::add_agent(Agent &agent) {
     _agents.push_back(&agent);
+    // agents attached to the model can only send messages to other agents in the model
+    agent._message_group = _message_group;
+    Agent_broadcaster::add(&agent, _message_group);
 }
 
 void Model::run() {

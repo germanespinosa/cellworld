@@ -17,20 +17,15 @@ Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions, 
 Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions ) :
         Simulation (model, scene_dimensions,1){}
 
-void Simulation::on_frame(double dt)
+void Simulation::on_frame(double )
 {
-    static double t=0;
-    t+=dt;
-    if (t>.05){
-        t=0;
-        if ( _model.status==Model::Status::Running && !_model.try_update() && _model.finished ) {
-            _model.end_episode();
-            episode++;
-            if (episode == _episodes)
-                quit();
-            else
-                _model.start_episode();
-        }
+    if ( _model.status==Model::Status::Running && !_model.try_update() && _model.finished ) {
+        _model.end_episode();
+        episode++;
+        if (episode == _episodes)
+            quit();
+        else
+            _model.start_episode();
     }
 }
 

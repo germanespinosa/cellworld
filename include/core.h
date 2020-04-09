@@ -5,15 +5,15 @@
 #include <string>
 #include <vector>
 
-#ifdef DEBUG
+/*#ifdef DEBUG
     #define D(X) X
     #define L(X) std::cout << X << std::endl;
     #define E(X) std::cerr << X << std::endl;
-#else
+#else*/
     #define D(X) ;
     #define L(X) ;
     #define E(X) ;
-#endif
+//#endif
 
 namespace cell_world{
     const int16_t Not_found = -1;

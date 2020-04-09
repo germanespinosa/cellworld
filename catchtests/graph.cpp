@@ -77,11 +77,6 @@ TEST_CASE("Sub graphs")
     Cell c3(Circle, 3,{3,1},{1,1},0,false);
     Cell c4(Circle, 4,{4,1},{1,1},0,false);
 
-    cout << c0 << endl;
-    cout << c1 << endl;
-    cout << c2 << endl;
-    cout << c3 << endl;
-
     w.add(c0);
     w.add(c1);
     w.add(c2);

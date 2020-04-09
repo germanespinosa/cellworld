@@ -8,9 +8,9 @@ namespace cell_world{
     using Mouse_button = ge211::Mouse_button;
 
     struct Viewer_handler {
-        virtual void on_mouse_down(Mouse_button, Location) {};
-        virtual void on_mouse_move(Location) {};
-        virtual void on_mouse_up(Mouse_button, Location) {};
+        virtual void on_mouse_down(Mouse_button, Location, int32_t) {};
+        virtual void on_mouse_move(Location, int32_t) {};
+        virtual void on_mouse_up(Mouse_button, Location, int32_t) {};
         virtual void on_key_up(Key) {};
         virtual void on_key_down(Key) {};
         virtual void on_frame(double){};
