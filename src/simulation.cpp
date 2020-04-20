@@ -19,7 +19,8 @@ Simulation::Simulation (Model &model, const ge211::Dimensions scene_dimensions )
 
 void Simulation::on_frame(double )
 {
-    if ( _model.status==Model::Status::Running && !_model.try_update() && _model.finished ) {
+    if (_model.status == Model::Status::Idle ) _model.start_episode();
+    else if ( _model.status == Model::Status::Running && !_model.try_update() && _model.finished ) {
         _model.end_episode();
         episode++;
         if (episode == _episodes)
@@ -68,18 +69,17 @@ void Simulation::run_silent(bool show_progress) {
                 progress++;
                 bar[progress]='=';
                 bar[progress+1]='>';
-                cout << "\r" << bar << (progress<5?" ":"") << progress * 2 << "% (" << (i+1) << "/" << _episodes << ")" << flush;
+                if (show_progress) cout << "\r" << bar << (progress<5?" ":"") << progress * 2 << "% (" << (i+1) << "/" << _episodes << ")" << flush;
             }
         }
         _model.start_episode();
         while (_model.update());
         _model.end_episode();
     }
-    cout << "\r|==================================================| 100% (" << _episodes << "/" << _episodes << ")" << flush;
+    if (show_progress) cout << "\r|==================================================| 100% (" << _episodes << "/" << _episodes << ")" << flush;
 }
 
 void Simulation::on_start() {
-    _model.start_episode();
 }
 
 void Simulation::on_quit() {

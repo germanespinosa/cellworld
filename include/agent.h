@@ -30,6 +30,7 @@ namespace cell_world{
     struct Agent_data{
         Agent_type type;
         Color color;
+        Icon icon = No_icon;
         Cell cell;
     };
 

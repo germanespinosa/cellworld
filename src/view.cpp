@@ -117,10 +117,17 @@ void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, const stri
     sprites.add_sprite(fps, {10, 10});
     _draw_world(sprites);
     for (unsigned int i =0 ; i< agents.size(); i++) {
-        if (agents[i].cell.cell_type==Circle) {
-            sprites.add_sprite( _circle_sprites[agents[i].color], _screen_location(agents[i].cell.location), 1);
+        auto &cell = agents[i].cell;
+        if (cell.cell_type==Circle) {
+            sprites.add_sprite( _circle_sprites[agents[i].color], _screen_location(cell.location), 1);
         } else {
-            sprites.add_sprite( _square_sprites[agents[i].color], _screen_location(agents[i].cell.location), 1);
+            sprites.add_sprite( _square_sprites[agents[i].color], _screen_location(cell.location), 1);
+        }
+        if (agents[i].icon) {
+            sprites.add_sprite(agents[i].icon < 100 ? _icon_sprites[agents[i].icon-1] : _custom_icon_sprites[agents[i].icon-100],
+
+                               _screen_location(cell.location), 100,
+                               Transform{}.scale((double) _cell_size / 128.0));
         }
     }
     L("View::draw_scene(Sprite_set& , vector<Agent_data> , const string& ) end");
@@ -173,25 +180,19 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
                 sprites.add_sprite(_circle_sprites[9], _screen_location(cell.location), 0);
             } else {
                 sprites.add_sprite(_circle_value_sprites[cell.value * 255], _screen_location(cell.location), 0);
-                if (cell.icon) {
-                    sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon-1] : _custom_icon_sprites[cell.icon],
-                                       _screen_location(cell.location), 100,
-                                       Transform{}.scale((double) _cell_size / 128.0).set_rotation(
-                                               cell.direction.rotation()));
-                }
             }
         }else{
             if (cell.occluded) {
                 sprites.add_sprite(_square_sprites[9], _screen_location(cell.location), 0);
             } else {
                 sprites.add_sprite(_square_value_sprites[cell.value * 255], _screen_location(cell.location), 0);
-                if (cell.icon) {
-                    sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon-1] : _custom_icon_sprites[cell.icon],
-                                       _screen_location(cell.location), 100,
-                                       Transform{}.scale((double) _cell_size / 128.0).set_rotation(
-                                               cell.direction.rotation()));
-                }
             }
+        }
+        if (cell.icon) {
+            sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon-1] : _custom_icon_sprites[cell.icon-100],
+                               _screen_location(cell.location), 100,
+                               Transform{}.scale((double) _cell_size / 128.0).set_rotation(
+                                       cell.direction.rotation()));
         }
     }
     L("View::_draw_world(ge211::Sprite_set &) end");
