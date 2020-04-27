@@ -1,6 +1,7 @@
 #include <core.h>
 #include <ge211.h>
 #include <iostream>
+#include <algorithm>
 using namespace std;
 using namespace ge211;
 
@@ -51,18 +52,18 @@ namespace cell_world {
         this->value = value;
         this->occluded = occluded;
         icon = No_icon;
-        direction = {0,0};
+        direction = Coordinates({0,0});
     }
 
     Cell::Cell(){
         cell_type = Circle;
         id = 0;
         location = {0,0};
-        coordinates = {0,0};
+        coordinates = Coordinates({0,0});
         occluded = false;
         value = 0;
         icon = No_icon;
-        direction = {0,0};
+        direction = Coordinates({0,0});
     }
 
     Cell &Cell::operator=(const Cell &c) {
@@ -151,12 +152,6 @@ namespace cell_world {
         return (*this - l).mod();
     }
 
-    std::string Location::operator!() const {
-        std::stringstream fmt;
-        fmt <<"(" << x << "," << y <<")";
-        return fmt.str();
-    }
-
     double Location::dist(const Location &l1, const Location &l2) const {
         return abs((l2.y-l1.y) * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(pow(l2.y-l1.y,2)+pow(l2.x-l1.x,2));
     }
@@ -165,6 +160,23 @@ namespace cell_world {
     std::ostream &operator<<(std::ostream &out, const Coordinates &c) {
         out << "(" << (int16_t) c.x << "," << (int16_t) c.y << ")";
         return out;
+    }
+
+    Coordinates Coordinates::operator=(const string &str) {
+        string s;
+        for (auto c : str) if ((c>='0' && c<='9') || c==',' || c=='-') s += c;
+        stringstream s_stream(s);
+        if (s_stream.good()) {
+            string substr;
+            getline(s_stream, substr, ','); //get first string delimited by comma
+            x = (uint8_t) stoi(substr);
+            if (s_stream.good()) {
+                string substr;
+                getline(s_stream, substr, ','); //get first string delimited by comma
+                y = (uint8_t) stoi(substr);
+            }
+        }
+        return *this;
     }
 
     std::ostream &operator<<(std::ostream &out, const Location &l) {

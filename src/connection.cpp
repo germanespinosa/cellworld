@@ -174,3 +174,16 @@ Connection_pattern Connection_pattern::get_pattern(Cell c, Cell_group cg) {
     for (uint32_t i=0;i< cg.size();i++) cp.pattern.push_back(cg[i].coordinates-c.coordinates);
     return cp;
 }
+
+Connection_pattern Connection_pattern::operator=(const string &s) {
+    stringstream s_stream(s);
+    pattern.clear();
+    while (s_stream.good()) {
+        string substr;
+        getline(s_stream, substr, ';'); //get first string delimited by comma
+        Coordinates c;
+        c=substr;
+        pattern.push_back(c);
+    }
+    return *this;
+}

@@ -18,6 +18,7 @@ namespace cell_world {
         bool load_from_string(const std::string&);
         std::string save_to_string() const;
         static Connection_pattern get_pattern(Cell, Cell_group);
+        Connection_pattern operator=(const std::string &);
     private:
         const std::string _extension = ".pattern";
     };

@@ -10,6 +10,17 @@ TEST_CASE("Coordinates c==c")
     CHECK( c0 == c1 );
 }
 
+TEST_CASE("Coordinates c=c")
+{
+    Coordinates c1{100,-100};
+    Coordinates c0;
+    c0 = "100,-100";
+    CHECK( c0 == c1 );
+    c0 = "(100,-100)";
+    CHECK( c0 == c1 );
+}
+
+
 TEST_CASE("Coordinates c!=c")
 {
     Coordinates c0{100,100};

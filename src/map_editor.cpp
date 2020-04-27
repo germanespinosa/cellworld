@@ -145,6 +145,7 @@ void Map_editor::_update_current_cell(int32_t index) {
     if (index != Not_found) {
         if (index != _current_cell_id){
             _current_cell_id = index;
+            cout << _cell_group[index].coordinates << endl;
             if (world[index].occluded) {
                 cells_view[_Visible].cells.clear();
                 cells_view[_Sub_world].cells.clear();
