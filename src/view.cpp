@@ -10,7 +10,6 @@ View::View( const Cell_group &cg, Dimensions scene_dimensions):
     _cell_group(cg) ,
     _scene_dimensions(scene_dimensions)
 {
-    L("View::View(World &, Dimensions ) start");
     double sx,sy,lx,ly;
     lx = sx = _cell_group[0].location.x;
     ly = sy = _cell_group[0].location.y;
@@ -45,7 +44,6 @@ View::View( const Cell_group &cg, Dimensions scene_dimensions):
     for (uint16_t i=0; i<256 ; i++ ) {
         _circle_value_sprites.emplace_back(_cell_size, ge211::Color{255, (uint8_t) (255 - i), (uint8_t) (255 - i)});
     }
-
     Dimensions d{_cell_size*2,_cell_size*2};
     _square_sprites.emplace_back(d, ge211::Color{0,0,0}); //0
     _square_sprites.emplace_back(d, ge211::Color{255,255,255}); //1
@@ -74,7 +72,6 @@ View::View( const Cell_group &cg, Dimensions scene_dimensions):
         file_name = resource_file(fmt.str());
     }
     while (file_exists (file_name)) {
-        L("Loading icon " + file_name);
         _icon_sprites.emplace_back(file_name);
         {
             std::stringstream fmt;
@@ -90,7 +87,6 @@ View::View( const Cell_group &cg, Dimensions scene_dimensions):
         file_name = fmt.str();
     }
     while (file_exists (file_name)) {
-        L("Loading icon " + file_name);
         _custom_icon_sprites.emplace_back(file_name);
         {
             std::stringstream fmt;
@@ -99,10 +95,9 @@ View::View( const Cell_group &cg, Dimensions scene_dimensions):
             file_name = fmt.str();
         }
     }
-    L("View::View(World &, Dimensions ) end");
 }
 
-Basic_position<int> View::_screen_location (const Location &location)
+Basic_position<int> View::_screen_location (const Location &location) const
 {
     return {
         (int)((double)_scene_dimensions.width / 2 + location.x * _ratio - _ratio  / 2),
@@ -110,31 +105,28 @@ Basic_position<int> View::_screen_location (const Location &location)
     };
 }
 
-void View::draw_scene(Sprite_set& sprites, vector<Agent_data> agents, const string& text)
+void View::draw_scene(Sprite_set& sprites, const vector<Agent_data>& agents, const string& text)
 {
-    L("View::draw_scene(Sprite_set& , vector<Agent_data> , const string& ) start");
     fps.reconfigure(Text_sprite::Builder(sans) << text);
     sprites.add_sprite(fps, {10, 10});
     _draw_world(sprites);
-    for (unsigned int i =0 ; i< agents.size(); i++) {
-        auto &cell = agents[i].cell;
+    for (auto & agent : agents) {
+        auto &cell = agent.cell;
         if (cell.cell_type==Circle) {
-            sprites.add_sprite( _circle_sprites[agents[i].color], _screen_location(cell.location), 1);
+            sprites.add_sprite( _circle_sprites[agent.color], _screen_location(cell.location), 1);
         } else {
-            sprites.add_sprite( _square_sprites[agents[i].color], _screen_location(cell.location), 1);
+            sprites.add_sprite( _square_sprites[agent.color], _screen_location(cell.location), 1);
         }
-        if (agents[i].icon) {
-            sprites.add_sprite(agents[i].icon < 100 ? _icon_sprites[agents[i].icon-1] : _custom_icon_sprites[agents[i].icon-100],
+        if (agent.icon) {
+            sprites.add_sprite(agent.icon < 100 ? _icon_sprites[agent.icon-1] : _custom_icon_sprites[agent.icon-100],
 
                                _screen_location(cell.location), 100,
-                               Transform{}.scale((double) _cell_size / 128.0));
+                               Transform::scale((double) _cell_size / 128.0));
         }
     }
-    L("View::draw_scene(Sprite_set& , vector<Agent_data> , const string& ) end");
 }
 
 void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Cell_group_view> groups, const std::string& text) {
-    L("View::draw_editor(ge211::Sprite_set &, int32_t , std::vector<Cell_group_view> , const std::string& ) start");
     if (!text.empty()) {
         fps.reconfigure(Text_sprite::Builder(sans) << text);
         sprites.add_sprite(fps, {10, 10});
@@ -168,11 +160,9 @@ void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Ce
                 sprites.add_sprite(_square_sprites[3], _screen_location(_cell_group[index].location),255);
         }
     }
-    L("View::draw_editor(ge211::Sprite_set &, int32_t , std::vector<Cell_group_view> , const std::string& ) end");
 }
 
 void View::_draw_world(ge211::Sprite_set &sprites) {
-    L("View::_draw_world(ge211::Sprite_set &) start");
     for (unsigned int i = 0 ; i< _cell_group.size(); i++) {
         const Cell &cell = _cell_group[i];
         if (cell.cell_type == Circle) {
@@ -191,15 +181,13 @@ void View::_draw_world(ge211::Sprite_set &sprites) {
         if (cell.icon) {
             sprites.add_sprite(cell.icon < 100 ? _icon_sprites[cell.icon-1] : _custom_icon_sprites[cell.icon-100],
                                _screen_location(cell.location), 100,
-                               Transform{}.scale((double) _cell_size / 128.0).set_rotation(
+                               Transform::scale((double) _cell_size / 128.0).set_rotation(
                                        cell.direction.rotation()));
         }
     }
-    L("View::_draw_world(ge211::Sprite_set &) end");
 }
 
 int32_t View::get_cell(ge211::Position mouse_position) {
-    L("View::get_cell(ge211::Position ) start");
     for (unsigned int i = 0 ; i< _cell_group.size(); i++) {
         const Cell &cell = _cell_group[i];
         ge211::Position cell_pos = _screen_location(cell.location);
@@ -210,23 +198,15 @@ int32_t View::get_cell(ge211::Position mouse_position) {
             return i;
         }
     }
-    L("View::get_cell(ge211::Position ) end");
     return Not_found;
 }
 
-std::string View::resource_file(std::string res) {
-    L("View::resource_file(std::string ) start");
+std::string View::resource_file(const std::string& res) {
     string file_name(CELLWORLD_RESOURCES);
-
-    L("View::resource_file(std::string ) " << file_name);
-
-    L("View::resource_file(std::string ) end");
     return file_name + "/" + res;
 }
 
 bool View::file_exists (const std::string& name) {
-    L("View::file_exists (const std::string& ) start");
     ifstream f(name.c_str());
-    L("View::file_exists (const std::string& ) end");
     return f.good();
 }

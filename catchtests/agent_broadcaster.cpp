@@ -5,18 +5,19 @@ using namespace std;
 using namespace cell_world;
 
 struct Base_Agent : Agent {
-    Base_Agent(uint32_t v): Agent ({"base",v}){
+    explicit Base_Agent(uint32_t v): Agent ({"base",v}){
 
     };
     string body;
+    Cell c;
     const Cell &start_episode(uint32_t) override{
-
+        return c;
     };
     void update_state(const State &) override{
 
     };
     Coordinates get_move() override{
-
+        return Move{0,0};
     };
     void end_episode(const State &, const History & ) override{
 

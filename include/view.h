@@ -12,14 +12,14 @@ namespace cell_world{
     struct View
     {
         View(const Cell_group &, ge211::Dimensions);
-        void draw_scene (ge211::Sprite_set& , std::vector<Agent_data>, const std::string&);
+        void draw_scene (ge211::Sprite_set& , const std::vector<Agent_data>&, const std::string&);
         void draw_editor (ge211::Sprite_set&, int32_t , std::vector<Cell_group_view>, const std::string&);
         int32_t get_cell(ge211::Position);
-        static std::string resource_file(std::string res);
+        static std::string resource_file(const std::string& res);
         static bool file_exists (const std::string&);
         private:
         void _draw_world(ge211::Sprite_set& sprites);
-        ge211::Basic_position<int> _screen_location (const Location & );
+        ge211::Basic_position<int> _screen_location (const Location & ) const;
         const Cell_group &_cell_group ;
         std::vector<ge211::Image_sprite> _icon_sprites;
         std::vector<ge211::Image_sprite> _custom_icon_sprites;

@@ -12,6 +12,7 @@ namespace cell_world {
 
     Agent::Agent(Agent_type type) :
     status(Update_pending),
+    _agent_index(0),
     _message_group(0){
         L("Agent::Agent(Agent_type ) start");
         data.type = std::move(type);
@@ -35,7 +36,7 @@ namespace cell_world {
 
     }
 
-    void Agent::send_message(const Agent_type &to, const std::string &body) {
+    void Agent::send_message(const Agent_type &to, const std::string &body) const {
         Agent_message m;
         m.from.name = data.type.name;
         m.from.version = data.type.version;
@@ -44,7 +45,7 @@ namespace cell_world {
         Agent_broadcaster::send(m,_message_group);
     }
 
-    void Agent::send_message(const std::string &body) {
+    void Agent::send_message(const std::string &body) const {
         send_message({},body);
     }
 

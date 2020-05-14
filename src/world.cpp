@@ -17,7 +17,6 @@ namespace cell_world {
     }
 
     bool World::load(const std::string &world_name) {
-        L("World::load(const std::string& ) start");
         string file_path = world_name + _extension;
         _cells.clear();
         std::ifstream file;
@@ -39,7 +38,7 @@ namespace cell_world {
             cell.coordinates.x = cx;
             cell.coordinates.y = cy;
             if (!add(cell)) return false;
-        }L("World::load(const std::string& ) end");
+        }
         return true;
     }
 
@@ -92,7 +91,7 @@ namespace cell_world {
 
     Cell_group World::create_cell_group() const {
         Cell_group cg;
-        for (uint32_t i = 0; i < _cells.size(); i++) cg.add(_cells[i]);
+        for (const auto & _cell : _cells) cg.add(_cell);
         return cg;
     }
 
@@ -128,7 +127,7 @@ namespace cell_world {
     }
 
     std::ostream &operator<<(std::ostream &out, const World &world) {
-        for (uint32_t i=0;i<world._cells.size();i++) out << world._cells[i] << endl;
+        for (const auto & _cell : world._cells) out << _cell << endl;
         return out;
     }
 }

@@ -36,35 +36,25 @@ namespace cell_world {
     }
 
     int Coordinates::rotation() const {
-        return atan2(x,-y) / 6.28 * 360;
+        return (int)(atan2(x,-y) / 6.28 * 360.0);
     }
 
     bool Cell::operator == (const Cell& c) const {
         return id == c.id;
     }
 
-    Cell::Cell (Cell_type cell_type, uint32_t id, Coordinates coordinates, Location location, double value, bool occluded)
-    {
-        this->cell_type = cell_type;
-        this->id = id;
-        this->location = location;
-        this->coordinates = coordinates;
-        this->value = value;
-        this->occluded = occluded;
-        icon = No_icon;
-        direction = Coordinates({0,0});
-    }
+    Cell::Cell (Cell_type cell_type, uint32_t id, Coordinates coordinates, Location location, double value, bool occluded):
+            cell_type (cell_type),
+            id(id),
+            coordinates(coordinates),
+            location(location),
+            value(value),
+            occluded(occluded),
+            icon(No_icon),
+            direction({0,0}) {}
 
-    Cell::Cell(){
-        cell_type = Circle;
-        id = 0;
-        location = {0,0};
-        coordinates = Coordinates({0,0});
-        occluded = false;
-        value = 0;
-        icon = No_icon;
-        direction = Coordinates({0,0});
-    }
+    Cell::Cell(): Cell(Circle,0,{0,0},{0.0,0.0},0,false) {}
+
 
     Cell &Cell::operator=(const Cell &c) {
         cell_type = c.cell_type;
@@ -144,7 +134,7 @@ namespace cell_world {
         return {x*m, y*m};
     }
 
-    double Location::mod() {
+    double Location::mod() const {
         return sqrt(y*y + x*x);
     }
 
@@ -162,7 +152,7 @@ namespace cell_world {
         return out;
     }
 
-    Coordinates Coordinates::operator=(const string &str) {
+    Coordinates &Coordinates::operator=(const string &str) {
         string s;
         for (auto c : str) if ((c>='0' && c<='9') || c==',' || c=='-') s += c;
         stringstream s_stream(s);
@@ -171,7 +161,6 @@ namespace cell_world {
             getline(s_stream, substr, ','); //get first string delimited by comma
             x = (uint8_t) stoi(substr);
             if (s_stream.good()) {
-                string substr;
                 getline(s_stream, substr, ','); //get first string delimited by comma
                 y = (uint8_t) stoi(substr);
             }
@@ -191,8 +180,8 @@ namespace cell_world {
         << c.coordinates << " "
         << c.location << " "
         << (c.occluded?"occluded":"free") << " = "
-        << c.value << " "
-        ;return out;
+        << c.value << " ";
+        return out;
     }
 
     double max(const std::vector<double> &values){

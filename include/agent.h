@@ -63,8 +63,8 @@ namespace cell_world{
         virtual Move get_move() = 0;
         virtual void end_episode(const State &, const History &) = 0;
         virtual void receive_message(const Agent_message&);
-        void send_message(const Agent_type&, const std::string &);
-        void send_message(const std::string &);
+        void send_message(const Agent_type&, const std::string &) const;
+        void send_message(const std::string &) const;
         const Cell &cell() const;
         void set_status(Agent_status);
         void set_color(Color);

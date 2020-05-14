@@ -69,7 +69,8 @@ void Simulation::run_silent(bool show_progress) {
                 progress++;
                 bar[progress]='=';
                 bar[progress+1]='>';
-                if (show_progress) cout << "\r" << bar << (progress<5?" ":"") << progress * 2 << "% (" << (i+1) << "/" << _episodes << ")" << flush;
+                cout << "\r" << bar << (progress < 5 ? " " : "") << progress * 2 << "% (" << (i + 1) << "/" << _episodes
+                     << ")" << flush;
             }
         }
         _model.start_episode();

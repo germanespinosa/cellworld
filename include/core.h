@@ -84,7 +84,7 @@ namespace cell_world{
         int rotation() const;
         bool operator ==(const Coordinates &) const;
         bool operator !=(const Coordinates &) const;
-        Coordinates operator =(const std::string &);
+        Coordinates &operator =(const std::string &);
         Coordinates operator +=(const Coordinates &);
         Coordinates operator +(const Coordinates &) const;
         Coordinates operator -(const Coordinates &) const;
@@ -103,7 +103,7 @@ namespace cell_world{
         Location operator -(const Location &) const;
         Location operator -() const;
         Location operator *(double)const;
-        double mod();
+        double mod() const;
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
         friend std::ostream& operator<<(std::ostream& , const Location& );

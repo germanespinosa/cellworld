@@ -16,7 +16,7 @@ namespace cell_world{
         int32_t find(uint32_t) const;
         int32_t find(const Cell &) const;
         double distance(uint32_t, uint32_t) const;
-        double distance(const Cell&, const Cell&) const;
+        static double distance(const Cell&, const Cell&) ;
         std::vector<double> get_distances(const Cell &) const;
         Cell_group random_shuffle() const;
         Cell_group occluded_cells() const;

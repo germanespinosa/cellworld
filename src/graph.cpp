@@ -1,4 +1,5 @@
 #include <graph.h>
+#include <chance.h>
 
 using namespace cell_world;
 using namespace std;
@@ -22,8 +23,6 @@ uint32_t Graph::size() const {
 }
 
 Cell_group Graph::get_shortest_path (const Cell& s,const Cell & d, bool shuffle) {
-    D({if (nodes.find(s)==Not_found) L("Source not part of the cell_group")});
-    D({if (nodes.find(s)==Not_found) L("Destination not part of the cell_group")});
     struct Node{
         int32_t parent;
         uint32_t cell_index;
@@ -74,8 +73,8 @@ std::vector<double> Centrality::get_eigen_centrality(Graph &graph) {
 
 std::vector<double> Centrality::get_betweenness_centrality(Graph &graph, uint32_t precision)  {
     vector<double> result(graph.size(),0);
-    for (uint32_t i=0;i<graph.nodes.size()-1;i += (rand() % precision) + 1) {
-        for (uint32_t j = i+1; j < graph.nodes.size(); j+= (rand() % precision) + 1) {
+    for (uint32_t i=0;i<graph.nodes.size()-1;i += (Chance::dice(precision)) + 1) {
+        for (uint32_t j = i+1; j < graph.nodes.size(); j+= (Chance::dice(precision)) + 1) {
             auto path = graph.get_shortest_path(graph.nodes[i], graph.nodes[j]);
             for (uint32_t c = 0; c < path.size(); c++) {
                 result[graph.nodes.find(path[c])]++;
@@ -211,11 +210,7 @@ void Graph::connect(Graph &graph) {
     }
 }
 
-Graph &Graph::operator=(const Graph &graph) {
-    nodes = graph.nodes;
-    _connections = graph._connections;
-    return *(this);
-}
+Graph &Graph::operator=(const Graph &graph) = default;
 
 void Graph::clear() {
     for (auto &c:_connections) c.clear();
@@ -242,7 +237,7 @@ std::vector<Coordinates> Graph::get_connectors(const Cell &cell) {
     auto c = _connections[nodes.find(cell)];
     std::vector<Coordinates> cons;
     for (uint32_t i=0;i<c.size();i++) cons.push_back(c[i].coordinates - cell.coordinates);
-    return std::move(cons);
+    return cons;
 }
 
 bool Graph::add(const Cell_group &c) {

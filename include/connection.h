@@ -10,7 +10,7 @@ namespace cell_world {
         std::vector<Coordinates> pattern;
         std::vector<Coordinates> get_candidates(Coordinates) const;
         const Coordinates &operator [](uint32_t);
-        uint32_t size();
+        uint32_t size() const;
         bool load(const std::string&);
         bool save(const std::string&) const;
         Graph get_graph(const Cell_group &) const;
@@ -18,7 +18,7 @@ namespace cell_world {
         bool load_from_string(const std::string&);
         std::string save_to_string() const;
         static Connection_pattern get_pattern(Cell, Cell_group);
-        Connection_pattern operator=(const std::string &);
+        Connection_pattern &operator=(const std::string &);
     private:
         const std::string _extension = ".pattern";
     };

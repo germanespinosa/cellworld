@@ -19,21 +19,18 @@ namespace cell_world {
     }
 
     bool Cell_group::save(const std::string &name) const {
-        L("Cell_group::save(const std::string &) start");
         string file_path = name + _extension;
         std::ofstream file;
         file.open(file_path.c_str());
         for (auto _cell_ref : _cells) {
             file << _cell_ref.get().id;
             file << std::endl;
-        }L("Cell_group::save(const std::string &) end");
+        }
         return true;
     }
 
     bool Cell_group::save() const {
-        L("Cell_group::save() start");
         bool res = save(_file_name);
-        L("Cell_group::save() end");
         return res;
     }
 
@@ -101,7 +98,7 @@ namespace cell_world {
         return contains(cell.id);
     }
 
-    double Cell_group::distance(const Cell &c0, const Cell &c1) const {
+    double Cell_group::distance(const Cell &c0, const Cell &c1) {
         return sqrt(pow(c1.location.y - c0.location.y, 2) + pow(c1.location.x - c0.location.x, 2));
     }
 
