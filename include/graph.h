@@ -8,8 +8,10 @@ namespace cell_world {
         explicit Graph(const Cell_group &);
         Graph(const cell_world::Graph&) = default;
         Cell_group &operator[](const Cell &);
+        const Cell_group &operator[](const Cell &) const;
         Cell_group &operator[](uint32_t);
-        Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false);
+        const Cell_group &operator[](uint32_t) const;
+        Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false) const;
         std::vector<Graph> get_sub_graphs();
         std::vector<Graph> get_sub_graphs(Cell_group &);
         std::vector<Graph> get_sub_graphs(Graph &);

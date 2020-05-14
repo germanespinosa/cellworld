@@ -10,8 +10,15 @@ _connections(cell_group.size())
 {
 }
 
+const Cell_group &Graph::operator[](const Cell &c) const {
+    return _connections[nodes.find(c)];
+}
+
 Cell_group &Graph::operator[](const Cell &c) {
     return _connections[nodes.find(c)];
+}
+const Cell_group &Graph::operator[](uint32_t index) const{
+    return _connections[index];
 }
 
 Cell_group &Graph::operator[](uint32_t index) {
@@ -22,7 +29,7 @@ uint32_t Graph::size() const {
     return nodes.size();
 }
 
-Cell_group Graph::get_shortest_path (const Cell& s,const Cell & d, bool shuffle) {
+Cell_group Graph::get_shortest_path (const Cell& s,const Cell & d, bool shuffle) const{
     struct Node{
         int32_t parent;
         uint32_t cell_index;
