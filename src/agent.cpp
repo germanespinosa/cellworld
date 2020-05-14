@@ -61,7 +61,7 @@ namespace cell_world {
 
      Stochastic_move::Stochastic_move(const Connection_pattern &d, vector<uint32_t> c) :
             destinations(d),
-            chances(c) {
+            chances(std::move(c)) {
     }
 
     Coordinates Stochastic_move::get_move() {
@@ -89,14 +89,12 @@ namespace cell_world {
                 ( m.to.version == 0 || a->data.type.version == m.to.version )) a->receive_message(m);
     }
 
-
     uint32_t Agent_broadcaster::new_message_group() {
         agent_broadcaster_mutex.lock();
         uint32_t i = ++agent_broadcaster_counter;
         agent_broadcaster_mutex.unlock();
         return i;
     }
-
 
     const std::vector<Coordinates> &History::operator[](uint32_t agentIndex) const{
         return _history[agentIndex];
