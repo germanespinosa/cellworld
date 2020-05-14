@@ -95,4 +95,5 @@ TEST_CASE("euclidean_blocked")
     CHECK(p.get_move(c10,c30) == Move{-1,0});
     CHECK(p.get_move(c30,c30) == Move{0,0});
     CHECK(p.get_move(c01,c30) == Move{0,-1});
+    CHECK(p.get_move(c02,c30) == Move{0,-1});
 }
