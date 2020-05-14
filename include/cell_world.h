@@ -11,3 +11,4 @@
 #include<map_editor.h>
 #include<simulation.h>
 #include<viewer.h>
+#include<path.h>

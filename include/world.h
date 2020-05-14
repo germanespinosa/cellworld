@@ -8,7 +8,7 @@
 namespace cell_world{
     struct World{
         explicit World(std::string );
-        bool add(Cell);
+        bool add(Cell&);
         bool load(const std::string&);
         bool load();
         bool save() const;

@@ -43,9 +43,9 @@ namespace cell_world {
         return id == c.id;
     }
 
-    Cell::Cell (Cell_type cell_type, uint32_t id, Coordinates coordinates, Location location, double value, bool occluded):
+    Cell::Cell (Cell_type cell_type, Coordinates coordinates, Location location, double value, bool occluded):
             cell_type (cell_type),
-            id(id),
+            id(0),
             coordinates(coordinates),
             location(location),
             value(value),
@@ -53,7 +53,7 @@ namespace cell_world {
             icon(No_icon),
             direction({0,0}) {}
 
-    Cell::Cell(): Cell(Circle,0,{0,0},{0.0,0.0},0,false) {}
+    Cell::Cell(): Cell(Circle,{0,0},{0.0,0.0},0,false) {}
 
 
     Cell &Cell::operator=(const Cell &c) {

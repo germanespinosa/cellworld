@@ -94,7 +94,7 @@ Graph Connection_pattern::get_graph(const Cell_group &cg) const {
         for (auto c : get_candidates(source.coordinates)) {
             int32_t destination_index = map.find(c);
             if (destination_index != Not_found) {
-                n[source].add(n.nodes[destination_index]);
+                n[s].add(n.nodes[destination_index]);
             }
         }
     }

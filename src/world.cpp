@@ -9,9 +9,8 @@ using namespace std;
 
 using namespace ge211;
 namespace cell_world {
-    bool World::add(Cell cell) {
+    bool World::add(Cell &cell) {
         cell.id = _cells.size();
-        vector<double> distances;
         _cells.emplace_back(cell);
         return true;
     }

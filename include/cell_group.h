@@ -35,7 +35,7 @@ namespace cell_world{
         bool operator != (const Cell_group &) const;
         const Cell &operator [](uint32_t) const;
         friend std::ostream& operator<<(std::ostream& , const Cell_group& );
-    private:
+    //private:
         std::vector<std::reference_wrapper<const Cell>> _cells;
         std::vector<int32_t> _id_index;
         std::string _file_name;

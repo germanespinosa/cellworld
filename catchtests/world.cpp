@@ -6,10 +6,10 @@ using namespace std;
 TEST_CASE("World")
 {
     World w("test");
-    Cell c1(Circle, 0,{0,1},{1,1},0,false);
-    Cell c2(Circle, 1,{1,1},{1,1},0,false);
-    Cell c3(Circle, 2,{2,1},{1,1},0,false);
-    Cell c4(Circle, 3,{3,1},{1,1},0,false);
+    Cell c1(Circle, {0,1},{1,1},0,false);
+    Cell c2(Circle, {1,1},{1,1},0,false);
+    Cell c3(Circle, {2,1},{1,1},0,false);
+    Cell c4(Circle, {3,1},{1,1},0,false);
     w.add(c1);
     w.add(c2);
     w.add(c3);
@@ -22,15 +22,14 @@ TEST_CASE("World")
 TEST_CASE("World connections")
 {
     World w("test");
-    Cell c0(Circle, 0,{0,1},{1,1},0,false);
-    Cell c1(Circle, 1,{1,1},{1,1},0,false);
-    Cell c2(Circle, 2,{2,1},{1,1},0,false);
-    Cell c3(Circle, 3,{3,1},{1,1},0,false);
+    Cell c0(Circle, {0,1},{1,1},0,false);
+    Cell c1(Circle, {1,1},{1,1},0,false);
+    Cell c2(Circle, {2,1},{1,1},0,false);
+    Cell c3(Circle, {3,1},{1,1},0,false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
     w.add(c3);
-    cout << w << endl;
     w.connection_pattern = Connection_pattern({{-1,0},{1,0}});
     Graph wc = w.create_graph();
     CHECK(w.size()==4);

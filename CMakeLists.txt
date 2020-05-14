@@ -30,7 +30,7 @@ set(cellworld_files
     src/viewer.cpp
     src/path.cpp )
 
-add_library(cellworld ${cellworld_files})
+add_library(cellworld ${cellworld_files} catchtests/paths.cpp)
 target_link_libraries(cellworld PUBLIC ge211)
 
 set_target_properties(cellworld
