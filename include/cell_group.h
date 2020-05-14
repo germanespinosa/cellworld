@@ -49,7 +49,7 @@ namespace cell_world{
         int32_t find (const Coordinates &) const;
 
     private:
-        int32_t _coordinate_index[256][256]{};
+        std::vector<std::vector<int32_t>> _coordinate_index;
         const Cell_group &_group;
     };
 }

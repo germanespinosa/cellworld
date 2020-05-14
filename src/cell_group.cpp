@@ -191,7 +191,7 @@ namespace cell_world {
 
     Map::Map(const Cell_group &group)
             : _group(group) {
-        for (auto &i : _coordinate_index) for (int &j : i) j = Not_found;
+        _coordinate_index = vector<vector<int32_t>>(256,vector<int32_t>(256,Not_found));
         for (uint32_t i = 0; i < group.size(); i++) {
             uint8_t x = (uint8_t) group[i].coordinates.x;
             uint8_t y = (uint8_t) group[i].coordinates.y;
@@ -200,11 +200,8 @@ namespace cell_world {
     }
 
     int32_t Map::find(const Coordinates &c) const {
-        //L("Map::find(const Coordinates &) start")L("Map::find(const Coordinates &) - int x = (uint8_t)c.x;")
         uint8_t x = (uint8_t) c.x;
-        //L("Map::find(const Coordinates &) - int y = (uint8_t)c.y;")
         uint8_t y = (uint8_t) c.y;
-        //L("Map::find(const Coordinates &) end")
         return _coordinate_index[x][y];
     }
 
