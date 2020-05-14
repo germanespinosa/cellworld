@@ -3,6 +3,7 @@
 #include <string>
 #include <algorithm>
 #include <random>
+#include <chance.h>
 
 using namespace std;
 using namespace ge211;
@@ -150,7 +151,7 @@ namespace cell_world {
     Cell_group Cell_group::random_shuffle() const {
         Cell_group cg;
         auto index = new_index(size());
-        uint32_t seed = rand();
+        uint32_t seed = Chance::dice();
         std::shuffle(index.begin(), index.end(), std::default_random_engine(seed));
         for (uint32_t i:index) cg.add((*this)[i]);
         return cg;
@@ -193,15 +194,15 @@ namespace cell_world {
             : _group(group) {
         _coordinate_index = vector<vector<int32_t>>(256,vector<int32_t>(256,Not_found));
         for (uint32_t i = 0; i < group.size(); i++) {
-            uint8_t x = (uint8_t) group[i].coordinates.x;
-            uint8_t y = (uint8_t) group[i].coordinates.y;
+            auto x = (uint8_t) group[i].coordinates.x;
+            auto y = (uint8_t) group[i].coordinates.y;
             _coordinate_index[x][y] = i;
         }
     }
 
     int32_t Map::find(const Coordinates &c) const {
-        uint8_t x = (uint8_t) c.x;
-        uint8_t y = (uint8_t) c.y;
+        auto x = (uint8_t) c.x;
+        auto y = (uint8_t) c.y;
         return _coordinate_index[x][y];
     }
 
