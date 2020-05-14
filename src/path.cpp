@@ -4,9 +4,9 @@ using namespace cell_world;
 using namespace std;
 
 Path::Path(const Graph &g, Path::Distance_type d){
-//    _cells = g.nodes;
-//    _next_move = vector<vector<Move>>(_cells.size(), vector<Move>(_cells.size(),Move{0,0}));
-//    if (d == Distance_type::a_star) {
+    _cells = g.nodes;
+    _next_move = vector<vector<Move>>(_cells.size(), vector<Move>(_cells.size(),Move{0,0}));
+    if (d == Distance_type::a_star) {
 //        for (uint32_t i = 0; i < _cells.size(); i++) {
 //            for (uint32_t j = 0; j < _cells.size(); j++) {
 //                auto sp = g.get_shortest_path(_cells[i], _cells[j]);
@@ -15,7 +15,7 @@ Path::Path(const Graph &g, Path::Distance_type d){
 //                }
 //            }
 //        }
-//    } else {
+    } else {
 //        for (uint32_t i = 0; i < _cells.size(); i++) {
 //            for (uint32_t j = 0; j < _cells.size(); j++) {
 //                auto cnn = g.get(_cells[i]);
@@ -31,7 +31,7 @@ Path::Path(const Graph &g, Path::Distance_type d){
 //                _next_move[i][j] = cnn[closest].coordinates - _cells[i].coordinates;
 //            }
 //        }
-//    }
+    }
 }
 
 Move Path::get_move(const Cell &s, const Cell &d) const{
@@ -40,4 +40,4 @@ Move Path::get_move(const Cell &s, const Cell &d) const{
     int32_t di = _cells.find(d);
     if (di == Not_found) return Move{0,0};
     return _next_move[si][di];
-};
+}

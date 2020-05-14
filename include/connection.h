@@ -6,6 +6,7 @@ namespace cell_world {
 
     struct Connection_pattern{
         Connection_pattern();
+        Connection_pattern(const cell_world::Connection_pattern&) = default;
         explicit Connection_pattern(std::vector<Coordinates>);
         std::vector<Coordinates> pattern;
         std::vector<Coordinates> get_candidates(Coordinates) const;

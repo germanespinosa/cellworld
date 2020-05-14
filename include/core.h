@@ -111,6 +111,7 @@ namespace cell_world{
 
     struct Cell{
         Cell();
+        Cell(const cell_world::Cell&) = default;
         Cell(Cell_type, uint32_t, Coordinates, Location, double , bool);
         Cell_type cell_type;
         uint32_t id;

@@ -6,6 +6,7 @@ namespace cell_world {
     struct Graph {
         Graph();
         explicit Graph(const Cell_group &);
+        Graph(const cell_world::Graph&) = default;
         Cell_group &operator[](const Cell &);
         Cell_group &operator[](uint32_t);
         Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false);

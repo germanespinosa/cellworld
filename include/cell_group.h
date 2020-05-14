@@ -4,6 +4,7 @@
 namespace cell_world{
     struct Cell_group{
         Cell_group();
+        Cell_group(const cell_world::Cell_group&) = default;
         bool save(const std::string &) const;
         bool save() const;
         bool add(const Cell &);

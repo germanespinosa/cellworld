@@ -105,7 +105,7 @@ namespace cell_world {
         for (auto &h : _history) h.clear();
     }
 
-    std::ostream &operator<<(ostream &s, const History &h) {
+    std::ostream &operator<<(ostream &s, const History &) {
         return s;
     }
 
