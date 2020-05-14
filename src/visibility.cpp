@@ -1,5 +1,4 @@
-#include<visibility.h>
-#include<iostream>
+#include <visibility.h>
 
 using namespace std;
 using namespace cell_world;

@@ -1,4 +1,5 @@
 #include <viewer.h>
+
 using namespace std;
 namespace cell_world {
     Viewer::Viewer(const Cell_group& cells, Viewer_handler &handler) :

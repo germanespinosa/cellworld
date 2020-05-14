@@ -1,5 +1,5 @@
-#include<view.h>
-#include<iostream>
+#include <view.h>
+#include <iostream>
 #include <fstream>
 
 using namespace ge211;
