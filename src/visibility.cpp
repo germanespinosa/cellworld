@@ -10,7 +10,7 @@ Graph Visibility::create_graph(const Cell_group &cell_group) {
     Cell_group occlusions;
     for (unsigned int i = 0; i < cell_group.size(); i++) if (cell_group[i].occluded) occlusions.add(cell_group[i]);
     Graph vi(cell_group); // filters occluded
-    for (unsigned int s = 0; s < vi.nodes.size()-1; s++){ //only not occluded
+    for (unsigned int s = 0; s < vi.nodes.size(); s++){ //only not occluded
         auto &source = vi.nodes[s];
         vi[source].add(source);
         for (unsigned int d = s + 1; d < vi.nodes.size(); d++) { //only not occluded

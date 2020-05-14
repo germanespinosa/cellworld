@@ -7,14 +7,18 @@
 namespace cell_world{
     struct Model
     {
+        enum class Mode{
+            Simultaneous,
+            Turns
+        };
         enum class Status{
             Idle,
             Running,
             Stopped,
             Finalized,
         };
-        Model( Cell_group &, uint32_t);
-        explicit Model( Cell_group &);
+        Model(Cell_group &, uint32_t);
+        explicit Model(Cell_group &);
         void add_agent(Agent &);
         bool try_update();
         bool update();
@@ -30,13 +34,18 @@ namespace cell_world{
         void run();
         void run(uint32_t);
         Status status;
-        bool finished;
+        bool finished{};
+        Mode mode;
+        History history;
     protected:
-        std::vector<Agent*> _agents;
+        std::vector<std::reference_wrapper<Agent>> _agents;
         Map _map;
         Graph _visibility;
-        void _epoch();
         uint32_t _message_group;
+        uint32_t _current_turn;
+        bool _try_update_simultaneous();
+        bool _try_update_turn();
     friend class Simulation;
     };
+
 } 

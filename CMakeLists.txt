@@ -27,9 +27,10 @@ set(cellworld_files
     src/visibility.cpp
     src/world.cpp
     src/graph.cpp
-    src/viewer.cpp )
+    src/viewer.cpp
+    src/path.cpp )
 
-add_library(cellworld ${cellworld_files} )
+add_library(cellworld ${cellworld_files})
 target_link_libraries(cellworld PUBLIC ge211)
 
 set_target_properties(cellworld
@@ -133,6 +134,8 @@ install(TARGETS cellworld cellworlddebug EXPORT CellworldConfig
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY resources/ DESTINATION ${CELLWORLD_RESOURCES})
+install(DIRECTORY scripts/ DESTINATION /bin)
+install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
 
 install(EXPORT CellworldConfig
         DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
@@ -144,3 +147,4 @@ install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/Cellworl
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"SET(CELLWORLD_RESOURCES ${CELLWORLD_RESOURCES})\n\") ")
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"include(${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/resources.cmake)\n\") ")
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"get_target_property( UTF8-CPP_INTERFACE_INCLUDE_DIRECTORIES utf8-cpp INTERFACE_INCLUDE_DIRECTORIES )\n\") ")
+

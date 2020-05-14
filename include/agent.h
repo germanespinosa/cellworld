@@ -6,10 +6,19 @@
 
 namespace cell_world{
 
-    using Move  = Coordinates;
+    struct History {
+        History() = default;
+        const std::vector<Coordinates> &operator[](uint32_t) const;
+        void clear();
+        uint32_t size() const;
+        friend std::ostream &operator<<(std::ostream &, const History &);
+        friend class Model;
+    private:
+        std::vector<std::vector<Coordinates>> _history;
+    };
 
     enum Agent_status{
-        Started,
+        Update_pending,
         Action_pending,
         Action_ready,
         Finished
@@ -52,19 +61,20 @@ namespace cell_world{
         virtual const Cell &start_episode(uint32_t) = 0;
         virtual void update_state(const State &) = 0;
         virtual Move get_move() = 0;
-        virtual void end_episode(const State &) = 0;
+        virtual void end_episode(const State &, const History &) = 0;
         virtual void receive_message(const Agent_message&);
         void send_message(const Agent_type&, const std::string &);
         void send_message(const std::string &);
         const Cell &cell() const;
         void set_status(Agent_status);
         void set_color(Color);
-
     protected:
         Agent_data data;
-        std::atomic<Agent_status> status;
+        Agent_status status;
     private:
+        uint32_t _agent_index;
         uint32_t _message_group;
+        void _set_cell(const Cell &);
         friend class Model;
         friend struct Agent_broadcaster;
     };

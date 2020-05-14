@@ -11,7 +11,7 @@ namespace cell_world {
     }
 
     Agent::Agent(Agent_type type) :
-    status(Started),
+    status(Update_pending),
     _message_group(0){
         L("Agent::Agent(Agent_type ) start");
         data.type = std::move(type);
@@ -48,6 +48,10 @@ namespace cell_world {
         send_message({},body);
     }
 
+    void Agent::_set_cell(const Cell &cell) {
+        data.cell = cell;
+    }
+
     int32_t State::find(const std::string &type_name) const {
         L("State::find(const std::string &) start");
         for (uint32_t i = 0; i < agents_data.size(); i++) if (agents_data[i].type.name == type_name) return i;L(
@@ -58,7 +62,6 @@ namespace cell_world {
      Stochastic_move::Stochastic_move(const Connection_pattern &d, vector<uint32_t> c) :
             destinations(d),
             chances(c) {
-
     }
 
     Coordinates Stochastic_move::get_move() {
@@ -92,5 +95,22 @@ namespace cell_world {
         uint32_t i = ++agent_broadcaster_counter;
         agent_broadcaster_mutex.unlock();
         return i;
+    }
+
+
+    const std::vector<Coordinates> &History::operator[](uint32_t agentIndex) const{
+        return _history[agentIndex];
+    }
+
+    void History::clear() {
+        for (auto &h : _history) h.clear();
+    }
+
+    std::ostream &operator<<(ostream &s, const History &h) {
+        return s;
+    }
+
+    uint32_t History::size() const{
+        return _history.size();
     }
 }

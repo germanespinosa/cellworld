@@ -1,0 +1,167 @@
+#!/bin/bash
+WORKERS_LOG=~/.workers
+WORKERS_LOCK=~/.workers.lock
+WORKERS_LOG_COPY=~/.workers.copy
+
+PRIORITY=.5
+
+function help(){
+    echo 'usage: worker -c "COMMAND" -w [SIMULTANEOUS WORKERS] [options]'
+    echo '  or:  worker --command "WORKER COMMAND" --workers [SIMULTANEOUS WORKERS] [options]'
+    echo "Execute a command on a worker limiting the number of simultaneous executions."
+    echo ""
+    echo "Mandatory arguments to long options are mandatory for short options too."
+    echo ' -c, --command "COMMAND"  command executed by the worker'
+    echo " -w, --workers WORKERS    number of simultaneous workers allowed"
+    echo " -n, --NO_BLOCK           do not block the terminal"
+    echo " -o, --output FILE        output file"
+    echo " -u, --unlock             lift lock to add new workers"
+    echo " -l, --list               list active workers"
+    echo " -k, --kill               kill all active workers"
+}
+
+function list_active_workers(){
+    cat $WORKERS_LOG
+}
+
+function active_workers(){
+    printf "pid\tstart_date\tstart_time\tworker_command\n" > $WORKERS_LOG_COPY
+    PROCESSES=$(ps -t)
+    WORKER_COUNT=0
+    while IFS= read -r line
+    do
+        if [ "$line" != "" ]; then
+            PID=$(echo "$line" |awk -F"\t" '{print $1}')
+            if [ "$PID" != "pid" ]; then
+                if [ $(echo "$PROCESSES" |grep "$PID"| wc -l) -ne 0 ]; then
+                    echo "$line">> $WORKERS_LOG_COPY
+                    WORKER_COUNT=$((WORKER_COUNT +1))
+                fi
+            fi
+        fi
+    done <<< $(cat $WORKERS_LOG)
+    mv $WORKERS_LOG_COPY $WORKERS_LOG -f
+    return $WORKER_COUNT
+}
+
+function kill_workers(){
+    while IFS= read -r line
+    do
+        if [ "$line" != "" ]; then
+            PID=$(echo "$line" |awk -F"\t" '{print $1}')
+            if [ "$PID" != "pid" ]; then
+              kill -9 $PID
+            fi
+        fi
+    done <<< $(cat $WORKERS_LOG)
+}
+
+function wait_for_workers(){
+    active_workers
+    while [ $? -ge $1 ]; do
+      sleep $PRIORITY
+      active_workers
+    done
+}
+
+function wait_for_lock(){
+    while [ -f $WORKERS_LOCK ] ;
+    do
+          sleep $PRIORITY
+    done
+    touch $WORKERS_LOCK
+}
+
+function unlock(){
+    if [ -f $WORKERS_LOCK ]; then
+        rm $WORKERS_LOCK
+    fi
+}
+WORKERS=1
+OUTPUT=/dev/tty
+NO_BLOCK="NO"
+COMMAND=""
+POSITIONAL=()
+while [[ $# -gt 0 ]]
+do
+key="$1"
+case $key in
+    -k|--kill)
+    unlock
+    kill_workers
+    wait_for_lock
+    active_workers
+    unlock
+    exit
+    ;;
+    -h|--help)
+    help
+    exit
+    ;;
+    -l|--list)
+    wait_for_lock
+    active_workers
+    list_active_workers
+    unlock
+    exit
+    ;;
+    -lo|--listold)
+    list_active_workers
+    exit
+    ;;
+    -u|--unlock)
+    unlock
+    exit
+    ;;
+    -n|--no_block)
+    NO_BLOCK="YES"
+    shift # past argument
+    ;;
+    -p|--priority)
+    PRIORITY=$2
+    shift # past argument
+    shift # past value
+    ;;
+    -o|--output)
+    OUTPUT=$2
+    shift # past argument
+    shift # past value
+    ;;
+    -w|--workers)
+    WORKERS="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    -c|--command)
+    COMMAND="$2"
+    shift # past argument
+    shift # past value
+    ;;
+    --default)
+    DEFAULT=YES
+    shift # past argument
+    ;;
+    *)    # unknown option
+    POSITIONAL+=("$1") # save it in an array for later
+    shift # past argument
+    ;;
+esac
+done
+
+if [ "$COMMAND" == "" ]; then
+  echo "failed: missing mandatory arguments"
+  echo
+  help
+  exit
+fi
+
+if [ "$NO_BLOCK" == "YES" ]; then
+    worker -w $WORKERS -c "$COMMAND" -p $PRIORITY -o "$OUTPUT" &
+else
+    wait_for_lock
+    touch $WORKERS_LOG
+    wait_for_workers $WORKERS
+    $COMMAND >> $OUTPUT &
+    printf "$!\t$(date +'%Y-%m-%d')\t$(date +'%H:%M:%S')\t$COMMAND\n" >> $WORKERS_LOG
+    unlock
+fi

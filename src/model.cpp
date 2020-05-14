@@ -5,133 +5,97 @@
 using namespace std;
 using namespace cell_world;
 
-void Model::_epoch(){
-    L("Model::_epoch() start");
-    iteration++;
-    for (Agent * _agent : _agents) {
-        auto move = _agent->get_move(); // read the action from the agent
-        int32_t destination_index = _map.find( _agent->data.cell.coordinates + move );
-        if ( destination_index!= Not_found && !cells[destination_index].occluded ) {
-            _agent->data.cell = cells[destination_index];
-        }
-    }
-    for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
-        _agents[agent_index]->update_state(get_state(agent_index));
-    }
-    L("Model::_epoch() end");
-}
-
 bool Model::try_update()
 {
-    L("Model::update() start");
     if (status != Status::Running) throw logic_error("Model::update - model is not running.");
-    bool epoch_ready = true; // assumes no new actions
-    finished = false;
-    for (auto &_agent : _agents) { // ask all agents to make their moves
-        epoch_ready = epoch_ready && _agent->status == Action_ready;
-        finished = finished || _agent->status == Finished; // check if all agents are done
+
+    if (mode == Mode::Turns) {
+        return _try_update_turn();
+    } else {
+        return _try_update_simultaneous();
     }
-    if (epoch_ready) _epoch(); //if all agents are done with their actions, trigger the epoch
-    finished = finished || iteration >= iterations;
-    L("Model::update() end");
-    return epoch_ready;
 }
 
 bool Model::update() // if all agents made their moves, it triggers an new epoch
 {
     if (status != Status::Running) throw logic_error("Model::update - model is not running.");
-    L("Model::update() start");
     while (!try_update() && !finished);
-    L("Model::update() end");
     return !finished;
 }
 
 vector<Agent_data> Model::get_agents_data(){
-    L("Model::get_agents_data() start");
     vector<Agent_data> r;
-    for (auto & _agent : _agents) r.push_back(_agent->data);
-    L("Model::get_agents_data() end");
+    for (auto & _agent : _agents) r.push_back(_agent.get().data);
     return r;
 }
 
 Model::Model( Cell_group &cg, uint32_t iterations ) :
+    iteration(0),
     iterations(iterations),
     cells(cg),
+    mode(Mode::Turns),
     _map(cells),
     _visibility(Visibility::create_graph(cells)),
-    _message_group(Agent_broadcaster::new_message_group())
+    _message_group(Agent_broadcaster::new_message_group()),
+    _current_turn(0)
     {
-        L("Model::Model( World &, std::vector<Agent*> &) start");
         status = Status::Idle;
-        L("Model::Model( World &, std::vector<Agent*> &) end");
     }
 
 Model::Model( Cell_group &cg ) : Model(cg,50) {}
 
 void Model::end_episode() {
-    L("Model::end_episode() start");
     if (status != Status::Running) throw logic_error("Model::end_episode - model is not running.");
     State state = get_state();
-    for(auto & _agent : _agents) _agent->end_episode(state);
+    for(auto & _agent : _agents) _agent.get().end_episode(state, history);
     status = Status::Stopped;
-    L("Model::end_episode() end");
 }
 
 void Model::start_episode(uint32_t initial_iteration) {
     if (status == Status::Running) throw logic_error("Model::start_episode - model is already running.");
-    L("Model::start_episode() start");
+    if (_agents.empty()) throw logic_error("Model::start_episode - can't start an episode with no agents.");
     iteration = initial_iteration;
-    for(auto & _agent : _agents) {
-        _agent->status = Started;
-        auto c = _agent->start_episode(initial_iteration);
-        _agent->data.cell = c;
-    }
-    for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
-        _agents[agent_index]->update_state(get_state(agent_index));
+    _current_turn = 0;
+    finished = false;
+    history.clear();
+    for(uint32_t i=0;i<_agents.size();i++) {
+        auto &agent = _agents[i].get();
+        agent.status = Update_pending;
+        Cell c = agent.start_episode(initial_iteration);
+        agent._set_cell(c);
+        history._history[i].push_back(c.coordinates);
     }
     status = Status::Running;
-    L("Model::start_episode() end");
 }
 
 State Model::get_state() {
-    L("Model::get_state() start");
     State state;
-    L("Model::get_state() - state.iteration = iteration");
     state.iteration = iteration;
-    L("Model::get_state() - for(auto & _agent : _agents)");
     for(auto & _agent : _agents) {
-        L("Model::get_state() - state.agents_data.push_back(_agent->data);");
-        state.agents_data.push_back(_agent->data);
+        state.agents_data.push_back(_agent.get().data);
     }
-    L("Model::get_state() end");
     return state;
 }
 
 State Model::get_state(uint32_t agent_index) {
-    L("Model::get_state(uint32_t) start");
-    L("Model::get_state(uint32_t) - auto cell = _agents[agent_index]->data.cell");
-    auto cell = _agents[agent_index]->data.cell;
-    L("Model::get_state(uint32_t) - auto vi = _visibility[cell];");
+    auto cell = _agents[agent_index].get().data.cell;
     auto vi = _visibility[cell];
     State state;
     state.iteration = iteration;
     state.iterations = iterations;
-    L("Model::get_state(uint32_t) - for (uint32_t index = 0; index < _agents.size() ; index++)");
     for (uint32_t index = 0; index < _agents.size() ; index++) {
-        L("Model::get_state(uint32_t) - if (index != agent_index && vi.contains(_agents[index]->data.cell))");
-        if (index != agent_index && vi.contains(_agents[index]->data.cell)) {
-            L("Model::get_state(uint32_t) - state.agents_data.push_back(_agents[index]->data);");
-            state.agents_data.push_back(_agents[index]->data);
+        if (index != agent_index && vi.contains(_agents[index].get().data.cell)) {
+            state.agents_data.push_back(_agents[index].get().data);
         }
-        L("Model::get_state(uint32_t) - end if");
     }
-    L("Model::get_state(uint32_t) end");
     return state;
 }
 
 void Model::add_agent(Agent &agent) {
-    _agents.push_back(&agent);
+    agent._agent_index = _agents.size();
+    _agents.emplace_back(agent);
     // agents attached to the model can only send messages to other agents in the model
+    history._history.emplace_back();
     agent._message_group = _message_group;
     Agent_broadcaster::add(&agent, _message_group);
 }
@@ -145,5 +109,60 @@ void Model::run(uint32_t to_iteration) {
 }
 
 void Model::start_episode() {
+    finished = false;
     start_episode(0);
+}
+
+bool Model::_try_update_simultaneous() {
+    bool epoch_ready = true;
+    for (uint32_t agent_index = 0; agent_index < _agents.size() ; agent_index++) {
+        auto &agent = _agents[agent_index].get();
+        if (agent.status == Update_pending) {
+            agent.status = Action_pending;
+            agent.update_state(get_state(agent_index));
+        }
+        epoch_ready = epoch_ready && agent.status == Action_ready;
+        finished = finished || agent.status == Finished; // check if all agents are done
+    }
+    if (epoch_ready) {
+        for (uint32_t i=0;i<_agents.size();i++) {
+            auto &agent = _agents[i].get();
+            auto move = agent.get_move(); // read the action from the agent
+            agent.status = Update_pending;
+            int32_t destination_index = _map.find( agent.data.cell.coordinates + move );
+            if ( destination_index != Not_found && !cells[destination_index].occluded ) {
+                agent._set_cell(cells[destination_index]);
+            }
+            history._history[i].push_back(agent.data.cell.coordinates);
+        }
+        iteration++;
+        finished = finished || iteration >= iterations;
+    };
+    return epoch_ready;
+}
+
+bool Model::_try_update_turn() {
+    bool epoch_ready = false;
+    auto &agent = _agents[_current_turn].get();
+    if (agent.status == Update_pending){
+        agent.status = Action_pending;
+        agent.update_state(get_state(_current_turn));
+    }
+    if (agent.status == Action_ready) {
+        auto move = agent.get_move();
+        agent.status = Update_pending;
+        int32_t destination_index = _map.find( agent.data.cell.coordinates + move );
+        if ( destination_index!= Not_found && !cells[destination_index].occluded ) {
+            agent._set_cell(cells[destination_index]);
+        }
+        history._history[_current_turn].push_back(agent.data.cell.coordinates);
+        _current_turn++;
+        if (_current_turn == _agents.size()) {
+            iteration++;
+            _current_turn = 0;
+            epoch_ready = true;
+        }
+    };
+    finished = finished || (agent.status == Finished) || iteration >= iterations;
+    return epoch_ready;
 }

@@ -92,6 +92,8 @@ namespace cell_world{
         friend std::ostream& operator<<(std::ostream& , const Coordinates& );
     };
 
+    using Move = Coordinates;
+
     struct Location{
         double x,y;
         bool operator ==(const Location &) const;

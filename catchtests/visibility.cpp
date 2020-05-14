@@ -2,7 +2,7 @@
 #include<cell_world.h>
 
 using namespace cell_world;
-
+using namespace std;
 
 TEST_CASE("Histogram and Entropy")
 {
@@ -18,4 +18,23 @@ TEST_CASE("Histogram and Entropy")
     CHECK(abs(entropy({1,3,3,4,5,8})-2.37165)<.001);
     CHECK(abs(entropy({0,0,0,0,0,0,10}))<.001);
     CHECK(abs(entropy({1,1,1,1,1,1,1,1,1,1})-3.32193)<.001);
+}
+TEST_CASE("Visibility")
+{
+    World w("test");
+    Cell c0(Circle, 0,{0,1},{0,1},0,false);
+    Cell c1(Circle, 1,{1,1},{1,1},0,false);
+    Cell c2(Circle, 2,{2,1},{2,1},0,false);
+    Cell c3(Circle, 3,{3,1},{3,1},0,false);
+    w.add(c0);
+    w.add(c1);
+    w.add(c2);
+    w.add(c3);
+    auto cg = w.create_cell_group();
+    Graph vi = Visibility::create_graph(cg);
+    CHECK(vi.nodes.size() == 4);
+    CHECK(vi[c0].size() == 4);
+    CHECK(vi[c1].size() == 4);
+    CHECK(vi[c2].size() == 4);
+    CHECK(vi[c3].size() == 4);
 }
