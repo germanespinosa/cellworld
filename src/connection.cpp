@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cmath>
 #include <utility>
+#include <chance.h>
 
 using namespace std;
 using namespace cell_world;
@@ -73,7 +74,9 @@ bool Connection_pattern::load_from_string(const std::string &line) {
         int16_t cx = -1000,cy = -1000;
         ss >> cx;
         ss >> cy;
-        if (cx==(int16_t)((int8_t)cx)) pattern.push_back({(int8_t) cx, (int8_t) cy});
+        if (cx==(int16_t)((int8_t)cx)) {
+            pattern.push_back({(int8_t) cx, (int8_t) cy});
+        }
         else return false;
     }
     return true;
@@ -118,4 +121,8 @@ Connection_pattern &Connection_pattern::operator=(const string &s) {
         pattern.push_back(c);
     }
     return *this;
+}
+
+Move Connection_pattern::random_move() {
+    return pattern[Chance::dice(pattern.size())];
 }

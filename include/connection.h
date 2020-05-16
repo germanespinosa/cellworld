@@ -7,9 +7,9 @@ namespace cell_world {
     struct Connection_pattern{
         Connection_pattern();
         Connection_pattern(const cell_world::Connection_pattern&) = default;
-        explicit Connection_pattern(std::vector<Coordinates>);
-        std::vector<Coordinates> pattern;
-        std::vector<Coordinates> get_candidates(Coordinates) const;
+        explicit Connection_pattern(std::vector<Move>);
+        std::vector<Move> pattern;
+        std::vector<Move> get_candidates(Move) const;
         const Coordinates &operator [](uint32_t);
         uint32_t size() const;
         bool load(const std::string&);
@@ -20,6 +20,7 @@ namespace cell_world {
         std::string save_to_string() const;
         static Connection_pattern get_pattern(Cell, Cell_group);
         Connection_pattern &operator=(const std::string &);
+        Move random_move();
     private:
         const std::string _extension = ".pattern";
     };

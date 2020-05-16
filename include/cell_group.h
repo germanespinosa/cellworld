@@ -34,6 +34,7 @@ namespace cell_world{
         bool operator == (const Cell_group &) const;
         bool operator != (const Cell_group &) const;
         const Cell &operator [](uint32_t) const;
+        const Cell &random_cell () const;
         friend std::ostream& operator<<(std::ostream& , const Cell_group& );
     //private:
         std::vector<std::reference_wrapper<const Cell>> _cells;

@@ -34,8 +34,8 @@ Model::Model( Cell_group &cg, uint32_t iterations ) :
     iterations(iterations),
     cells(cg),
     mode(Mode::Turns),
-    _map(cells),
-    _visibility(Visibility::create_graph(cells)),
+    map(cells),
+    visibility(Visibility::create_graph(cells)),
     _message_group(Agent_broadcaster::new_message_group()),
     _current_turn(0)
     {
@@ -79,7 +79,7 @@ State Model::get_state() {
 
 State Model::get_state(uint32_t agent_index) {
     auto cell = _agents[agent_index].get().data.cell;
-    auto vi = _visibility[cell];
+    auto vi = visibility[cell];
     State state;
     state.iteration = iteration;
     state.iterations = iterations;
@@ -129,7 +129,7 @@ bool Model::_try_update_simultaneous() {
             auto &agent = _agents[i].get();
             auto move = agent.get_move(); // read the action from the agent
             agent.status = Update_pending;
-            int32_t destination_index = _map.find( agent.data.cell.coordinates + move );
+            int32_t destination_index = map.find( agent.data.cell.coordinates + move );
             if ( destination_index != Not_found && !cells[destination_index].occluded ) {
                 agent._set_cell(cells[destination_index]);
             }
@@ -151,7 +151,7 @@ bool Model::_try_update_turn() {
     if (agent.status == Action_ready) {
         auto move = agent.get_move();
         agent.status = Update_pending;
-        int32_t destination_index = _map.find( agent.data.cell.coordinates + move );
+        int32_t destination_index = map.find( agent.data.cell.coordinates + move );
         if ( destination_index!= Not_found && !cells[destination_index].occluded ) {
             agent._set_cell(cells[destination_index]);
         }

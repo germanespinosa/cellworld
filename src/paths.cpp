@@ -1,13 +1,15 @@
-#include <path.h>
+#include <paths.h>
 #include <fstream>
+#include <connection.h>
 
 using namespace cell_world;
 using namespace std;
 
-Path::Path(const Graph &g, Path::Distance_type d){
-    _cells = g.nodes;
-    _next_move = vector<vector<Move>>(_cells.size(), vector<Move>(_cells.size(),Move{0,0}));
-    if (d == Distance_type::a_star) {
+Paths::Paths(const Graph &g, Paths::Path_type d):
+type (d),
+_cells (g.nodes){
+    _init(_cells.size());
+    if (d == Path_type::shortest) {
         for (uint32_t i = 0; i < _cells.size(); i++) {
             for (uint32_t j = 0; j < _cells.size(); j++) {
                 if (i==j) continue;
@@ -37,7 +39,7 @@ Path::Path(const Graph &g, Path::Distance_type d){
     }
 }
 
-Move Path::get_move(const Cell &s, const Cell &d) const{
+Move Paths::get_move(const Cell &s, const Cell &d) const{
     int32_t si = _cells.find(s);
     if (si == Not_found) return Move{0,0};
     int32_t di = _cells.find(d);
@@ -45,15 +47,38 @@ Move Path::get_move(const Cell &s, const Cell &d) const{
     return _next_move[si][di];
 }
 
-bool Path::save(const string &name) const {
-    string file_path = name + _extension;
+bool Paths::save(const string &name) const {
+    string file_path = name + "_" + _type_string(type) + _extension;
     std::ofstream file;
     file.open(file_path.c_str());
     for (auto &nmv:_next_move) {
-        for (auto &nm:nmv){
-            file << nm << " ";
-        }
-        file << endl;
+        Connection_pattern cp(nmv);
+        file << cp.save_to_string() << endl;
     }
     return false;
+}
+
+bool Paths::save() const {
+    return save(_name );
+}
+
+void Paths::_init(uint32_t size) {
+    _next_move = vector<vector<Move>>(size, vector<Move>(size,Move{0,0}));
+}
+
+std::string Paths::_type_string(Paths::Path_type type) {
+    if (type == Path_type::euclidean)
+        return "euclidean";
+    return "shortest";
+}
+
+bool Paths::operator==(const Paths &p) const {
+    if (_next_move.size() != p._next_move.size()) return false;
+    for (uint32_t i = 0; i < _next_move.size(); i++) {
+        if (_next_move[i].size()!=p._next_move[i].size()) return false;
+        for (uint32_t j = 0; j < _next_move[i].size(); j++){
+            if (_next_move[i][j]!=p._next_move[i][j]) return false;
+        }
+    }
+    return true;
 }

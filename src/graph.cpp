@@ -253,4 +253,17 @@ bool Graph::add(const Cell_group &c) {
     return r;
 }
 
+Graph Graph::invert() {
+    Graph g(nodes);
+    for (uint32_t i=0;i<nodes.size();i++) {
+        auto &conn = _connections[i];
+        for (uint32_t j = 0; j < nodes.size(); j++) {
+            if (!conn.contains(nodes[j])){
+                g[i].add(nodes[j]);
+            }
+        }
+    }
+    return g;
+}
+
 Graph::Graph() = default;

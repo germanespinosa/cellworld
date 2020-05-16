@@ -47,6 +47,29 @@ TEST_CASE("graph")
     CHECK(g[c4].size() == 1);
 }
 
+TEST_CASE("graph.invert")
+{
+    World w("test");
+    Cell c0(Circle, {0,1},{1,1},0,false);
+    Cell c1(Circle, {1,1},{1,1},0,false);
+    Cell c2(Circle, {2,1},{1,1},0,false);
+    Cell c3(Circle, {3,1},{1,1},0,false);
+    Cell c4(Circle, {4,1},{1,1},0,false);
+    w.add(c0);
+    w.add(c1);
+    w.add(c2);
+    w.add(c3);
+    w.add(c4);
+    Cell_group cg = w.create_cell_group();
+    Graph g = Connection_pattern({{-1,0},{1,0}}).get_graph(cg).invert();
+    CHECK(g.nodes.size() == 5);
+    CHECK(g[c0].size() == 4);
+    CHECK(g[c1].size() == 3);
+    CHECK(g[c2].size() == 3);
+    CHECK(g[c3].size() == 3);
+    CHECK(g[c4].size() == 4);
+}
+
 TEST_CASE("Connections shortest path")
 {
     World w("test");

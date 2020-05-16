@@ -187,6 +187,10 @@ namespace cell_world {
         return !(*this == cg);
     }
 
+    const Cell &Cell_group::random_cell() const {
+        return _cells[Chance::dice(_cells.size())].get();
+    }
+
     Map::Map(const Cell_group &group)
             : _group(group) {
         _coordinate_index = vector<vector<int32_t>>(256,vector<int32_t>(256,Not_found));

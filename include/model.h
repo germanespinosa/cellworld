@@ -37,10 +37,10 @@ namespace cell_world{
         bool finished{};
         Mode mode;
         History history;
+        Map map;
+        Graph visibility;
     protected:
         std::vector<std::reference_wrapper<Agent>> _agents;
-        Map _map;
-        Graph _visibility;
         uint32_t _message_group;
         uint32_t _current_turn;
         bool _try_update_simultaneous();

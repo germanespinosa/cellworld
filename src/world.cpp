@@ -129,4 +129,30 @@ namespace cell_world {
         for (const auto & _cell : world._cells) out << _cell << endl;
         return out;
     }
+
+    Paths World::create_paths(Paths::Path_type type) const {
+        Graph g = create_graph();
+        Paths p( g, type);
+        p._name = name;
+        return p;
+    }
+
+    Paths World::create_paths(std::string paths_name, Paths::Path_type type) const {
+        Paths p;
+        Graph g = create_graph();
+        p.type = type;
+        p._name=paths_name;
+        p._cells = g.nodes;
+        string file_path = paths_name + "_" + Paths::_type_string(type) +  p._extension;
+        std::ifstream file;
+        file.open(file_path.c_str());
+        if (!file.good()) return p;
+        string line;
+        while (getline(file, line)) {
+            Connection_pattern cp;
+            cp.load_from_string(line);
+            p._next_move.push_back(cp.pattern);
+        }
+        return p;
+    }
 }

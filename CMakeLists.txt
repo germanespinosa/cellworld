@@ -28,7 +28,7 @@ set(cellworld_files
     src/world.cpp
     src/graph.cpp
     src/viewer.cpp
-    src/path.cpp )
+        src/paths.cpp)
 
 add_library(cellworld ${cellworld_files} catchtests/paths.cpp)
 target_link_libraries(cellworld PUBLIC ge211)
