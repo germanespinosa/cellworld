@@ -37,6 +37,8 @@ function active_workers(){
                 if [ $(echo "$PROCESSES" |grep "$PID"| wc -l) -ne 0 ]; then
                     echo "$line">> $WORKERS_LOG_COPY
                     WORKER_COUNT=$((WORKER_COUNT +1))
+                else
+                  rm ${WORKERS_LOG}.state.${PID} -f
                 fi
             fi
         fi
@@ -59,13 +61,12 @@ function show_progress(){
                 if [ $(echo "$PROCESSES" |grep "$PID"| wc -l) -ne 0 ]; then
                     printf "$PID\t$(tail -1 ${WORKERS_LOG}.state.$PID)\n"
                     WORKER_COUNT=$((WORKER_COUNT +1))
+                else
+                  rm ${WORKERS_LOG}.state.${PID} -f
                 fi
             fi
         fi
     done <<< $(cat $WORKERS_LOG)
-    if [[ $WORKER_COUNT -eq 0 ]]; then
-      rm ${WORKERS_LOG}.state.* -f
-    fi
 }
 
 function kill_workers(){
