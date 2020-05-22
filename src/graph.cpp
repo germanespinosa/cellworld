@@ -6,7 +6,7 @@ using namespace std;
 
 Graph::Graph(const Cell_group &cell_group):
 nodes(cell_group.free_cells()),
-_connections(cell_group.size())
+_connections(cell_group.size(), Cell_group())
 {
 }
 
