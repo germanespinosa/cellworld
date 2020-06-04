@@ -58,7 +58,9 @@ case $operator in
     fi
     write_worker_log $$ "Stated"
     $COMMAND >> "$OUTPUT" 2>> "$ERROR"
-    #rm "~/.workers.state.${$}"
+    if [ "$?" != "0" ]; then
+      echo "failed: $COMMAND" >> "$ERROR"
+    fi
     exit
     ;;
     -c)

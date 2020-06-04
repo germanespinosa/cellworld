@@ -19,7 +19,7 @@ struct Base_Agent : Agent {
     Coordinates get_move() override{
         return Move{0,0};
     };
-    void end_episode(const State &, const History & ) override{
+    void end_episode(const State &) override{
 
     };
     void receive_message(const Agent_message& m) override {

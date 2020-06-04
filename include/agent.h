@@ -5,18 +5,6 @@
 #include <atomic>
 
 namespace cell_world{
-
-    struct History {
-        History() = default;
-        const std::vector<Coordinates> &operator[](uint32_t) const;
-        void clear();
-        uint32_t size() const;
-        friend std::ostream &operator<<(std::ostream &, const History &);
-        friend class Model;
-    private:
-        std::vector<std::vector<Coordinates>> _history;
-    };
-
     enum Agent_status{
         Update_pending,
         Action_pending,
@@ -61,7 +49,8 @@ namespace cell_world{
         virtual const Cell &start_episode(uint32_t) = 0;
         virtual void update_state(const State &) = 0;
         virtual Move get_move() = 0;
-        virtual void end_episode(const State &, const History &) = 0;
+        virtual double get_value();
+        virtual void end_episode(const State &) = 0;
         virtual void receive_message(const Agent_message&);
         void send_message(const Agent_type&, const std::string &) const;
         void send_message(const std::string &) const;

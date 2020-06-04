@@ -5,6 +5,20 @@
 #include <visibility.h>
 
 namespace cell_world{
+    struct Execution_log{
+        explicit Execution_log(uint32_t);
+        void add_agent();
+        void start_coordinates(uint32_t, Coordinates);
+        void set_value(uint32_t, uint32_t, double);
+        void set_coordinates(uint32_t, uint32_t, Coordinates);
+        std::vector<std::vector<Coordinates>> trajectories;
+        std::vector<std::vector<double>> values;
+        uint32_t iterations;
+        std::vector<uint32_t> _last_trajectory;
+        std::vector<uint32_t> _last_value;
+        friend std::ostream &operator<<(std::ostream&, Execution_log const&);
+    };
+
     struct Model
     {
         enum class Mode{
@@ -28,6 +42,7 @@ namespace cell_world{
         void end_episode();
         State get_state(uint32_t);
         State get_state();
+
         uint32_t iteration;
         uint32_t iterations;
         Cell_group cells;
@@ -36,12 +51,10 @@ namespace cell_world{
         Status status;
         bool finished{};
         Mode mode;
-        History history;
         Map map;
         Graph visibility;
+        Execution_log log;
     protected:
-        std::vector<std::vector<Coordinates>> trajectories;
-        std::vector<std::vector<double>> values;
         std::vector<std::reference_wrapper<Agent>> _agents;
         uint32_t _message_group;
         uint32_t _current_turn;

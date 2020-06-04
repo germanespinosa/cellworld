@@ -53,6 +53,10 @@ namespace cell_world {
         data.cell = cell;
     }
 
+    double Agent::get_value() {
+        return 0;
+    }
+
     int32_t State::find(const std::string &type_name) const {
         L("State::find(const std::string &) start");
         for (uint32_t i = 0; i < agents_data.size(); i++) if (agents_data[i].type.name == type_name) return i;L(
@@ -95,21 +99,5 @@ namespace cell_world {
         uint32_t i = ++agent_broadcaster_counter;
         agent_broadcaster_mutex.unlock();
         return i;
-    }
-
-    const std::vector<Coordinates> &History::operator[](uint32_t agentIndex) const{
-        return _history[agentIndex];
-    }
-
-    void History::clear() {
-        for (auto &h : _history) h.clear();
-    }
-
-    std::ostream &operator<<(ostream &s, const History &) {
-        return s;
-    }
-
-    uint32_t History::size() const{
-        return _history.size();
     }
 }

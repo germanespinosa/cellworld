@@ -6,8 +6,8 @@
 #include <utility>
 
 using namespace std;
-
 using namespace ge211;
+
 namespace cell_world {
     bool World::add(Cell &cell) {
         cell.id = _cells.size();
