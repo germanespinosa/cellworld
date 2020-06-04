@@ -40,6 +40,8 @@ namespace cell_world{
         Map map;
         Graph visibility;
     protected:
+        std::vector<std::vector<Coordinates>> trajectories;
+        std::vector<std::vector<double>> values;
         std::vector<std::reference_wrapper<Agent>> _agents;
         uint32_t _message_group;
         uint32_t _current_turn;
