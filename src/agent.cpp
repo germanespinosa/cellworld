@@ -11,6 +11,7 @@ namespace cell_world {
     }
 
     Agent::Agent(Agent_type type) :
+    value(0),
     status(Update_pending),
     _agent_index(0),
     _message_group(0){
@@ -54,7 +55,7 @@ namespace cell_world {
     }
 
     double Agent::get_value() {
-        return 0;
+        return value;
     }
 
     int32_t State::find(const std::string &type_name) const {

@@ -59,6 +59,7 @@ namespace cell_world{
         void set_status(Agent_status);
         void set_color(Color);
     protected:
+        double value;
         Agent_data data;
         Agent_status status;
     private:
