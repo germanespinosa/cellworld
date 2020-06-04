@@ -28,7 +28,7 @@ set(cellworld_files
     src/world.cpp
     src/graph.cpp
     src/viewer.cpp
-        src/paths.cpp)
+    src/paths.cpp)
 
 add_library(cellworld ${cellworld_files} catchtests/paths.cpp)
 target_link_libraries(cellworld PUBLIC ge211)
@@ -136,6 +136,10 @@ install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY resources/ DESTINATION ${CELLWORLD_RESOURCES})
 install(DIRECTORY scripts/ DESTINATION /bin)
 install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
+install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
+install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
+install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
+install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
 
 install(EXPORT CellworldConfig
         DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld

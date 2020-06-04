@@ -1,9 +1,6 @@
 #!/bin/bash
-WORKERS_LOG=~/.workers
-WORKERS_LOCK=~/.workers.lock
-WORKERS_LOG_COPY=~/.workers.copy
 
-PRIORITY=.5
+operator=$1
 
 function help(){
     echo 'usage: worker -c "COMMAND" -w [SIMULTANEOUS WORKERS] [options]'
@@ -12,217 +9,78 @@ function help(){
     echo ""
     echo "Mandatory arguments to long options are mandatory for short options too."
     echo ' -c, --command "COMMAND"  command executed by the worker'
-    echo " -w, --workers WORKERS    number of simultaneous workers allowed"
-    echo " -n, --NO_BLOCK           do not block the terminal"
-    echo " -o, --output FILE        output file"
-    echo " -u, --unlock             lift lock to add new workers"
-    echo " -l, --list               list active workers"
     echo " -k, --kill               kill all active workers"
     echo " -p, --progress           show active workers progress"
     echo " -s, --status             update own worker progress status"
 }
 
-function list_active_workers(){
-    cat $WORKERS_LOG
-}
-
-function active_workers(){
-    printf "pid\tstart_date\tstart_time\tworker_command\n" > $WORKERS_LOG_COPY
-    PROCESSES=$(ps -t)
-    while IFS= read -r line
-    do
-        if [ "$line" != "" ]; then
-            PID=$(echo "$line" |awk -F"\t" '{print $1}')
-            if [ "$PID" != "pid" ]; then
-                if [ $(echo "$PROCESSES" |grep "$PID"| wc -l) -ne 0 ]; then
-                    echo "$line">> $WORKERS_LOG_COPY
-                    WORKER_COUNT=$((WORKER_COUNT +1))
-                else
-                  rm ${WORKERS_LOG}.state.${PID} -f
-                fi
-            fi
-        fi
-    done <<< $(cat $WORKERS_LOG)
-    mv $WORKERS_LOG_COPY $WORKERS_LOG -f
-    if [[ $WORKER_COUNT -eq 0 ]]; then
-      rm ${WORKERS_LOG}.state.* -f
-    fi
-    return $WORKER_COUNT
-}
-
-function show_progress(){
-    printf "pid\tupdate_date\tupdate_time\tstate\tworker_command\n"
-    PROCESSES=$(ps -t)
-    while IFS= read -r line
-    do
-        if [ "$line" != "" ]; then
-            PID=$(echo "$line" |awk -F"\t" '{print $1}')
-            if [ "$PID" != "pid" ]; then
-                if [ $(echo "$PROCESSES" |grep "$PID"| wc -l) -ne 0 ]; then
-                    printf "$PID\t$(tail -1 ${WORKERS_LOG}.state.$PID)\n"
-                    WORKER_COUNT=$((WORKER_COUNT +1))
-                else
-                  rm ${WORKERS_LOG}.state.${PID} -f
-                fi
-            fi
-        fi
-    done <<< $(cat $WORKERS_LOG)
-}
-
-function kill_workers(){
-    while IFS= read -r line
-    do
-        if [ "$line" != "" ]; then
-            PID=$(echo "$line" |awk -F"\t" '{print $1}')
-            if [ "$PID" != "pid" ]; then
-              kill -9 $PID
-            fi
-        fi
-    done <<< $(cat $WORKERS_LOG)
-}
-
 function wait_for_workers(){
-    active_workers
-    while [ $? -ge $1 ]; do
-      sleep $PRIORITY
-      active_workers
+    while [ $(ps -at | grep "[w]orker -launch" | wc -l) -ge $1 ]; do
+      sleep .01
     done
 }
 
-function wait_for_lock(){
-    while [ -f $WORKERS_LOCK ] ;
-    do
-          sleep $PRIORITY
-    done
-    touch $WORKERS_LOCK
+function write_worker_log(){
+    worker_PID=$1
+    state_date_time=$(date +'%Y-%m-%d %H:%M:%S')
+    state=$2
+    WORKER_STATE=~/.workers.state.${worker_PID}
+    printf "%s: %s\n" "${state_date_time}" "${state}" >> "$WORKER_STATE"
 }
-
-function unlock(){
-    if [ -f $WORKERS_LOCK ]; then
-        rm $WORKERS_LOCK
-    fi
-}
-
 
 function update_status(){
     worker_PID=$1
-    state_date=$(date +'%Y-%m-%d')
-    state_time=$(date +'%H:%M:%S')
     state=$2
-    WORKER_STATE=~/.workers.state.${worker_PID}
-    while IFS= read -r line
-    do
-        if [ "$line" != "" ]; then
-            PID=$(echo "$line" |awk -F"\t" '{print $1}')
-            if [ "$PID" == "$worker_PID" ]; then
-              printf "${state_date}\t${state_time}\t${state}\n" >> "$WORKER_STATE"
-              exit
-            fi
-        fi
-    done <<< $(cat "$WORKERS_LOG")
-    echo "This process does not belong to an active worker"
+    if [ "$(ps -at | grep '[w]orker -launch' | grep "$worker_PID" | wc -l)" == 1 ]; then
+      write_worker_log $worker_PID "$state"
+    fi
 }
 
+function kill_workers(){
+  while IFS= read -r line
+  do
+    PID=$(echo "$line" |awk -F" " '{print $1}')
+    kill -9 $PID
+  done <<< $(ps -at | grep '[w]orker -launch')
 
-WORKERS=1
-OUTPUT=/dev/tty
-NO_BLOCK="NO"
-COMMAND=""
-POSITIONAL=()
-while [[ $# -gt 0 ]]
-do
-key="$1"
-case $key in
-    -s|--status)
-    update_status $PPID "$2"
-    ;;
-    -p|--progress)
-    show_progress
+}
+
+case $operator in
+    -launch)
+    COMMAND="$2"
+    OUTPUT="$3"
+    ERROR="$4"
+    if [ "$OUTPUT" == "" ]; then
+      OUTPUT="/dev/null"
+    fi
+    if [ "$ERROR" == "" ]; then
+      OUTPUT="/dev/null"
+    fi
+    write_worker_log $$ "Stated"
+    $COMMAND >> "$OUTPUT" 2>> "$ERROR"
+    #rm "~/.workers.state.${$}"
     exit
     ;;
-    -k|--kill)
-    unlock
+    -c)
+    WORKERS="$2"
+    COMMAND="$3"
+    OUTPUT="$4"
+    ERROR="$5"
+    wait_for_workers "$WORKERS"
+    worker -launch "$COMMAND" "$OUTPUT" "$ERROR" &
+    exit
+    ;;
+    -k)
     kill_workers
-    wait_for_lock
-    active_workers
-    unlock
     exit
     ;;
-    -h|--help)
+    -h)
     help
     exit
     ;;
-    -l|--list)
-    wait_for_lock
-    active_workers
-    list_active_workers
-    unlock
-    exit
-    ;;
-    -lo|--listold)
-    list_active_workers
-    exit
-    ;;
-    -u|--unlock)
-    unlock
-    exit
-    ;;
-    -n|--no_block)
-    NO_BLOCK="YES"
-    shift # past argument
-    ;;
-    -p|--priority)
-    PRIORITY=$2
-    shift # past argument
-    shift # past value
-    ;;
-    -o|--output)
-    OUTPUT=$2
-    shift # past argument
-    shift # past value
-    ;;
-    -w|--workers)
-    WORKERS="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    -c|--command)
-    COMMAND="$2"
-    shift # past argument
-    shift # past value
-    ;;
-    --default)
-    DEFAULT=YES
-    shift # past argument
-    ;;
     *)    # unknown option
-    POSITIONAL+=("$1") # save it in an array for later
-    shift # past argument
+    echo "unknown option '$operator'"
+#    help
+    exit
     ;;
 esac
-done
-
-if [ "$COMMAND" == "" ]; then
-  echo "failed: missing mandatory arguments"
-  echo
-  help
-  exit
-fi
-
-if [ "$NO_BLOCK" == "YES" ]; then
-    worker -w $WORKERS -c "$COMMAND" -p $PRIORITY -o "$OUTPUT" &
-else
-    wait_for_lock
-    touch $WORKERS_LOG
-    wait_for_workers $WORKERS
-    $COMMAND >> $OUTPUT &
-    worker_PID=$!
-    start_date=$(date +'%Y-%m-%d')
-    start_time=$(date +'%H:%M:%S')
-    printf "$worker_PID\t$start_time\t$start_time\t$COMMAND\n" >> $WORKERS_LOG
-    unlock
-
-    WORKER_STATE=~/.workers.state.${worker_PID}
-    printf "state_date\tstate_time\tstate\n" >> $WORKER_STATE
-    update_status $worker_PID started
-fi

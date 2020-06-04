@@ -1,0 +1,17 @@
+#!/bin/bash
+file=$(params f-file "-" "$@")
+json=$(params j-json "[' ']" "$@")
+return_value=$(params v-value "value" "$@")
+lines=$(params l-lines "no" "$@")
+output="print(json.dumps($return_value) if isinstance($return_value,dict) else $return_value)"
+value="value"
+if [ "$lines" != "no" ]; then
+  value="value_array"
+  output="[ $output for value in value_array ]"
+fi
+
+if [ "$file" == "-" ]; then
+  python3 -c "import json; $value = json.loads('$json'); $output"
+else
+  python3 -c "import sys, json; $value = json.load(sys.stdin); $output" < "$file"
+fi

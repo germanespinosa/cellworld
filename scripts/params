@@ -1,0 +1,35 @@
+#!/bin/bash
+
+function help(){
+    echo "Parameter parsing tool"
+    echo "----------------------"
+    echo 'usage: params KEY DEFAULT_VALUE [argument_list]'
+    echo "prints the value of a parameter key"
+    echo ""
+    echo "KEY format: \"k-key\" corresponding to \"-k\" and \"--key\""
+    echo "DEFAULT_VALUE required  "
+    echo ""
+}
+
+if (( $# < 2 )); then
+  help
+  exit
+fi
+
+key=-$(echo "$1" | cut -d'-' -f 1)
+ekey=--$(echo "$1" | cut -d'-' -f 2)
+
+value=$2
+shift
+shift
+while [[ $# -gt 0 ]]
+do
+  cur="$1"
+  if [ "$key" == "$cur" ] || [ "$ekey" == "$cur" ]; then
+      echo "$2"
+      exit
+  else
+      shift # past argument
+  fi
+done
+echo "$value"

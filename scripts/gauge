@@ -1,0 +1,12 @@
+#!/bin/bash
+work=$(params w-work 100 "$@")
+progress=$(params p-progress 0 "$@")
+size=$(params s-size 40 "$@")
+finish=$(params f-finish no "$@")
+note=$(params n-note " " "$@")
+title=$(params t-title " " "$@")
+cols=$(tput cols)
+python3 -c "title='$title';work=$work;progress=$progress;size=$size;columns=$cols+1;progress_string='%d/%d' % (progress, work);progress=int(progress/work*size);notes='$note';gauge='\r'+title+'|'+'='*progress+'>'+'-'*(size-progress)+'| '+progress_string+' '+notes;print(gauge[0:columns] if len(gauge)>columns else gauge+' '*(columns-len(gauge)), end='')"
+if [ "$finish" != "no" ]; then
+  printf "\n"
+fi

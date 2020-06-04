@@ -1,0 +1,2 @@
+#!/bin/bash
+python3 -c "import sys; value = set(sys.stdin.read().splitlines()); [print (v) for v in value]"
