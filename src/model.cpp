@@ -127,8 +127,8 @@ namespace cell_world {
         if (epoch_ready) {
             for (uint32_t i = 0; i < _agents.size(); i++) {
                 auto &agent = _agents[i].get();
-                log.set_value(iteration, i, agent.get_value());
                 auto move = agent.get_move(); // read the action from the agent
+                log.set_value(iteration, i, agent.get_value());
                 agent.status = Update_pending;
                 int32_t destination_index = map.find(agent.data.cell.coordinates + move);
                 if (destination_index != Not_found && !cells[destination_index].occluded) {
@@ -149,8 +149,8 @@ namespace cell_world {
             agent.update_state(get_state(_current_turn));
         }
         if (agent.status == Action_ready) {
-            log.set_value(iteration, _current_turn, agent.get_value());
             auto move = agent.get_move();
+            log.set_value(iteration, _current_turn, agent.get_value());
             agent.status = Update_pending;
             int32_t destination_index = map.find(agent.data.cell.coordinates + move);
             if (destination_index != Not_found && !cells[destination_index].occluded) {
