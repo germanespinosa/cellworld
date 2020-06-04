@@ -41,6 +41,7 @@ namespace cell_world {
             _message_group(Agent_broadcaster::new_message_group()),
             _current_turn(0) {
         status = Status::Idle;
+        state.iterations = iterations;
     }
 
     Model::Model(Cell_group &cg) : Model(cg, 50) {}
@@ -68,25 +69,22 @@ namespace cell_world {
         status = Status::Running;
     }
 
-    State Model::get_state() {
-        State state;
+    State &Model::get_state() {
         state.iteration = iteration;
-        for (auto &_agent : _agents) {
-            state.agents_data.push_back(_agent.get().data);
+        for (uint32_t a = 0; a<_agents.size(); a++) {
+            state.visible[a] = false;
+            state.agents_data[a] = _agents[a].get().data;
         }
         return state;
     }
 
-    State Model::get_state(uint32_t agent_index) {
+    State &Model::get_state(uint32_t agent_index) {
         auto cell = _agents[agent_index].get().data.cell;
         auto vi = visibility[cell];
-        State state;
         state.iteration = iteration;
-        state.iterations = iterations;
         for (uint32_t index = 0; index < _agents.size(); index++) {
-            if (index != agent_index && vi.contains(_agents[index].get().data.cell)) {
-                state.agents_data.push_back(_agents[index].get().data);
-            }
+            state.visible[index] = vi.contains(_agents[index].get().data.cell);
+            state.agents_data[index] = _agents[index].get().data;
         }
         return state;
     }
@@ -98,6 +96,8 @@ namespace cell_world {
         agent._message_group = _message_group;
         Agent_broadcaster::add(&agent, _message_group);
         log.add_agent();
+        state.visible.emplace_back();
+        state.agents_data.emplace_back();
     }
 
     void Model::run() {

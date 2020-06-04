@@ -34,6 +34,7 @@ namespace cell_world{
     struct State{
         uint32_t iteration;
         uint32_t iterations;
+        std::vector<bool> visible;
         std::vector<Agent_data> agents_data;
         int32_t find(const std::string&) const;
     };

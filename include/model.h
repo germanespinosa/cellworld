@@ -40,8 +40,8 @@ namespace cell_world{
         void start_episode();
         void start_episode(uint32_t);
         void end_episode();
-        State get_state(uint32_t);
-        State get_state();
+        State &get_state(uint32_t);
+        State &get_state();
 
         uint32_t iteration;
         uint32_t iterations;
@@ -54,6 +54,7 @@ namespace cell_world{
         Map map;
         Graph visibility;
         Execution_log log;
+        State state;
     protected:
         std::vector<std::reference_wrapper<Agent>> _agents;
         uint32_t _message_group;
