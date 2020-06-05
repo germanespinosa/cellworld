@@ -58,7 +58,8 @@ namespace cell_world{
         const Cell &cell() const;
         void set_status(Agent_status);
         void set_color(Color);
-
+        void set_value(double);
+    protected:
         double value;
         Agent_data data;
         Agent_status status;

@@ -11,7 +11,6 @@ namespace cell_world {
     }
 
     Agent::Agent(Agent_type type) :
-    value(0),
     status(Update_pending),
     _agent_index(0),
     _message_group(0){
@@ -19,6 +18,7 @@ namespace cell_world {
         data.type = std::move(type);
         data.color = Black;
         Agent_broadcaster::add(this, _message_group);
+        set_value(0);
         L("Agent::Agent(Agent_type ) end");
     }
 
@@ -100,5 +100,9 @@ namespace cell_world {
         uint32_t i = ++agent_broadcaster_counter;
         agent_broadcaster_mutex.unlock();
         return i;
+    }
+
+    void Agent::set_value(double v) {
+        value = v;
     }
 }

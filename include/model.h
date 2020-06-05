@@ -63,5 +63,4 @@ namespace cell_world{
         bool _try_update_turn();
     friend class Simulation;
     };
-
-} 
+}
