@@ -185,7 +185,7 @@ namespace cell_world {
 
     void Execution_log::set_coordinates(uint32_t iteration, uint32_t agent_ind, Coordinates coordinate) {
         trajectories[agent_ind][iteration + 1] = coordinate;
-        _last_trajectory[agent_ind] = iteration + 1;
+        _last_trajectory[agent_ind] = iteration + 2;
     }
 
     void Execution_log::start_coordinates(uint32_t agent_ind, Coordinates coordinate) {

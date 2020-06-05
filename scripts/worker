@@ -24,7 +24,7 @@ function write_worker_log(){
     worker_PID=$1
     state_date_time=$(date +'%Y-%m-%d %H:%M:%S')
     state=$2
-    WORKER_STATE=~/.workers.state.${worker_PID}
+    WORKER_STATE="${HOME}/.workers.state.${worker_PID}"
     printf "%s: %s\n" "${state_date_time}" "${state}" >> "$WORKER_STATE"
 }
 
@@ -42,47 +42,64 @@ function kill_workers(){
     PID=$(echo "$line" |awk -F" " '{print $1}')
     kill -9 $PID
   done <<< $(ps -at | grep '[w]orker -launch')
-
 }
 
-case $operator in
-    -launch)
-    COMMAND="$2"
-    OUTPUT="$3"
-    ERROR="$4"
-    if [ "$OUTPUT" == "" ]; then
-      OUTPUT="/dev/null"
-    fi
-    if [ "$ERROR" == "" ]; then
-      OUTPUT="/dev/null"
-    fi
-    write_worker_log $$ "Stated"
+function launch_command(){
+    COMMAND="$1"
+    OUTPUT="$2"
+    ERROR="$3"
+    write_worker_log "$WORKER_PROCESS" "Started"
     $COMMAND >> "$OUTPUT" 2>> "$ERROR"
     if [ "$?" != "0" ]; then
       echo "failed: $COMMAND" >> "$ERROR"
     fi
-    exit
+    rm "${HOME}/.workers.state.${WORKER_PROCESS}"
+}
+
+
+case $operator in
+    -launch)
+      WORKER_PROCESS="$$"
+      export WORKER_PROCESS
+      COMMAND="$2"
+      OUTPUT="$3"
+      ERROR="$4"
+      if [ "$OUTPUT" == "" ]; then
+        OUTPUT="/dev/null"
+      fi
+      if [ "$ERROR" == "" ]; then
+        ERROR="/dev/null"
+      fi
+      launch_command "$COMMAND" "$OUTPUT" "$ERROR"
+      exit
     ;;
     -c)
-    WORKERS="$2"
-    COMMAND="$3"
-    OUTPUT="$4"
-    ERROR="$5"
-    wait_for_workers "$WORKERS"
-    worker -launch "$COMMAND" "$OUTPUT" "$ERROR" &
-    exit
+      WORKERS="$2"
+      COMMAND="$3"
+      OUTPUT="$4"
+      ERROR="$5"
+      wait_for_workers "$WORKERS"
+      worker -launch "$COMMAND" "$OUTPUT" "$ERROR" &
+      exit
     ;;
     -k)
-    kill_workers
-    exit
+      kill_workers
+      exit
+    ;;
+    -s)
+      write_worker_log "$WORKER_PROCESS" "$2"
+      exit
+    ;;
+    -w)
+      wait_for_workers 1
+      exit
     ;;
     -h)
-    help
-    exit
+      help
+      exit
     ;;
     *)    # unknown option
-    echo "unknown option '$operator'"
-#    help
-    exit
+      echo "unknown option '$operator'"
+      exit
     ;;
 esac

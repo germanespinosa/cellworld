@@ -106,6 +106,7 @@ namespace cell_world{
         double mod() const;
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
+        double manhattan(const Location &) const;
         friend std::ostream& operator<<(std::ostream& , const Location& );
     };
 

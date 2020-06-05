@@ -173,6 +173,10 @@ namespace cell_world {
         return out;
     }
 
+    double Location::manhattan(const Location &l) const {
+        return abs(l.x-x) + abs(l.y-y);
+    }
+
     std::ostream &operator<<(std::ostream &out, const Cell &c) {
         out << "id: "
         << c.id << " "
