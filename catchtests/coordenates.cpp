@@ -1,6 +1,7 @@
 #include<catch.h>
 #include<cell_world.h>
 
+using namespace std;
 using namespace cell_world;
 
 TEST_CASE("Coordinates c==c")
@@ -61,4 +62,25 @@ TEST_CASE("Coordinates -c")
     Coordinates c0{10,5};
     Coordinates c1{-10,-5};
     CHECK( -c0 == c1 );
+}
+
+
+TEST_CASE(">>1")
+{
+    string s = "[41,-5]";
+    stringstream s_stream(s);
+    Coordinates c0;
+    Coordinates c1 {41,-5};
+    s_stream >> c0;
+    CHECK(c0==c1);
+}
+
+TEST_CASE(">>2")
+{
+    string s = " [ 4 , 5 ]";
+    stringstream s_stream(s);
+    Coordinates c0;
+    Coordinates c1 {4,5};
+    s_stream >> c0;
+    CHECK(c0==c1);
 }

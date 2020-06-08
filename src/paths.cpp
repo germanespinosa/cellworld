@@ -11,8 +11,8 @@ namespace cell_world {
             _cells(g.nodes) {
         _init(_cells.size());
         if (d == Path_type::shortest) {
-            for (uint32_t i = 0; i < _cells.size(); i++) {
-                for (uint32_t j = 0; j < _cells.size(); j++) {
+            for (unsigned int i = 0; i < _cells.size(); i++) {
+                for (unsigned int j = 0; j < _cells.size(); j++) {
                     if (i == j) continue;
                     auto sp = g.get_shortest_path(_cells[i], _cells[j]);
                     if (sp.size() > 0) {
@@ -21,13 +21,13 @@ namespace cell_world {
                 }
             }
         } else {
-            for (uint32_t i = 0; i < _cells.size(); i++) {
-                for (uint32_t j = 0; j < _cells.size(); j++) {
+            for (unsigned int i = 0; i < _cells.size(); i++) {
+                for (unsigned int j = 0; j < _cells.size(); j++) {
                     if (i == j) continue;
                     auto cnn = g[_cells[i]];
-                    uint32_t closest = 0;
+                    unsigned int closest = 0;
                     double closest_distance = _cells[j].location.dist(cnn[0].location);
-                    for (uint32_t c = 1; c < cnn.size(); c++) {
+                    for (unsigned int c = 1; c < cnn.size(); c++) {
                         double distance = _cells[j].location.dist(cnn[c].location);
                         if (distance < closest_distance) {
                             closest_distance = distance;
@@ -41,9 +41,9 @@ namespace cell_world {
     }
 
     Move Paths::get_move(const Cell &s, const Cell &d) const {
-        int32_t si = _cells.find(s);
+         int si = _cells.find(s);
         if (si == Not_found) return Move{0, 0};
-        int32_t di = _cells.find(d);
+         int di = _cells.find(d);
         if (di == Not_found) return Move{0, 0};
         return _next_move[si][di];
     }
@@ -63,7 +63,7 @@ namespace cell_world {
         return save(_name);
     }
 
-    void Paths::_init(uint32_t size) {
+    void Paths::_init(unsigned int size) {
         _next_move = vector<vector<Move>>(size, vector<Move>(size, Move{0, 0}));
     }
 
@@ -75,9 +75,9 @@ namespace cell_world {
 
     bool Paths::operator==(const Paths &p) const {
         if (_next_move.size() != p._next_move.size()) return false;
-        for (uint32_t i = 0; i < _next_move.size(); i++) {
+        for (unsigned int i = 0; i < _next_move.size(); i++) {
             if (_next_move[i].size() != p._next_move[i].size()) return false;
-            for (uint32_t j = 0; j < _next_move[i].size(); j++) {
+            for (unsigned int j = 0; j < _next_move[i].size(); j++) {
                 if (_next_move[i][j] != p._next_move[i][j]) return false;
             }
         }

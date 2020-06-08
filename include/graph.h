@@ -9,8 +9,8 @@ namespace cell_world {
         Graph(const cell_world::Graph&) = default;
         Cell_group &operator[](const Cell &);
         const Cell_group &operator[](const Cell &) const;
-        Cell_group &operator[](uint32_t);
-        const Cell_group &operator[](uint32_t) const;
+        Cell_group &operator[](unsigned int);
+        const Cell_group &operator[](unsigned int) const;
         Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false) const;
         std::vector<Graph> get_sub_graphs();
         std::vector<Graph> get_sub_graphs(Cell_group &);
@@ -24,7 +24,7 @@ namespace cell_world {
         std::vector<Coordinates> get_connectors (const Cell &);
         double get_entropy();
         void clear();
-        uint32_t size() const;
+        unsigned int size() const;
         Graph operator !() const;
         Graph &operator =(const Graph &);
         bool operator == (const Graph &) const;
@@ -35,9 +35,9 @@ namespace cell_world {
     };
 
     struct Centrality {
-        static std::vector<double> get_eigen_centrality(Graph&, uint32_t, double) ;
+        static std::vector<double> get_eigen_centrality(Graph&, unsigned int, double) ;
         static std::vector<double> get_eigen_centrality(Graph&) ;
-        static std::vector<double> get_betweenness_centrality(Graph&, uint32_t) ;
+        static std::vector<double> get_betweenness_centrality(Graph&, unsigned int) ;
         static std::vector<double> get_betweenness_centrality(Graph&) ;
     };
 }

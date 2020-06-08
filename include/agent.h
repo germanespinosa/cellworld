@@ -13,15 +13,15 @@ namespace cell_world{
     };
 
      struct Stochastic_move {
-         Stochastic_move(const Connection_pattern&, std::vector<uint32_t>);
+         Stochastic_move(const Connection_pattern&, std::vector<unsigned int>);
          Move get_move();
          Connection_pattern destinations;
-         std::vector<uint32_t> chances;
+         std::vector<unsigned int> chances;
     };
 
     struct Agent_type{
         std::string name = "";
-        uint32_t version = 0;
+        unsigned int version = 0;
     };
 
     struct Agent_data{
@@ -32,11 +32,11 @@ namespace cell_world{
     };
 
     struct State{
-        uint32_t iteration;
-        uint32_t iterations;
+        unsigned int iteration;
+        unsigned int iterations;
         std::vector<bool> visible;
         std::vector<Agent_data> agents_data;
-        int32_t find(const std::string&) const;
+         int find(const std::string&) const;
     };
 
     struct Agent_message{
@@ -47,7 +47,7 @@ namespace cell_world{
 
     struct Agent{
         explicit Agent(Agent_type);
-        virtual const Cell &start_episode(uint32_t) = 0;
+        virtual const Cell &start_episode(unsigned int) = 0;
         virtual void update_state(const State &) = 0;
         virtual Move get_move() = 0;
         virtual double get_value();
@@ -64,17 +64,17 @@ namespace cell_world{
         Agent_data data;
         Agent_status status;
     private:
-        uint32_t _agent_index;
-        uint32_t _message_group;
+        unsigned int _agent_index;
+        unsigned int _message_group;
         void _set_cell(const Cell &);
         friend class Model;
         friend struct Agent_broadcaster;
     };
 
     struct Agent_broadcaster{
-        static void add(Agent *agent, uint32_t group);
-        static void send(const Agent_message &, uint32_t group);
-        static uint32_t new_message_group();
+        static void add(Agent *agent, unsigned int group);
+        static void send(const Agent_message &, unsigned int group);
+        static unsigned int new_message_group();
     };
 
 }

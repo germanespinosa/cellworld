@@ -5,12 +5,12 @@ using namespace std;
 using namespace cell_world;
 
 struct Base_Agent : Agent {
-    explicit Base_Agent(uint32_t v): Agent ({"base",v}){
+    explicit Base_Agent( unsigned int v): Agent ({"base",v}){
 
     };
     string body;
     Cell c;
-    const Cell &start_episode(uint32_t) override{
+    const Cell &start_episode( unsigned int) override{
         return c;
     };
     void update_state(const State &) override{

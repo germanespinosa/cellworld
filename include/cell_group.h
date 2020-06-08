@@ -10,13 +10,13 @@ namespace cell_world{
         bool add(const Cell &);
         bool remove(const Cell &);
         bool toggle(const Cell &);
-        bool contains(uint32_t) const;
+        bool contains(unsigned int) const;
         bool contains(const Cell &) const;
         void clear();
-        uint32_t size() const;
-        int32_t find(uint32_t) const;
-        int32_t find(const Cell &) const;
-        double distance(uint32_t, uint32_t) const;
+        unsigned int size() const;
+         int find(unsigned int) const;
+         int find(const Cell &) const;
+        double distance(unsigned int, unsigned int) const;
         static double distance(const Cell&, const Cell&) ;
         std::vector<double> get_distances(const Cell &) const;
         Cell_group random_shuffle() const;
@@ -33,14 +33,14 @@ namespace cell_world{
         Cell_group operator - (const Cell &);
         bool operator == (const Cell_group &) const;
         bool operator != (const Cell_group &) const;
-        const Cell &operator [](uint32_t) const;
+        const Cell &operator [](unsigned int) const;
         const Cell &random_cell () const;
         friend std::ostream& operator<<(std::ostream& , const Cell_group& );
     //private:
         std::vector<std::reference_wrapper<const Cell>> _cells;
-        std::vector<int32_t> _id_index;
+        std::vector< int> _id_index;
         std::string _file_name;
-        const Cell & _get_cell(uint32_t) const;
+        const Cell & _get_cell(unsigned int) const;
         const std::string _extension = ".group";
         friend class World;
     };
@@ -48,10 +48,10 @@ namespace cell_world{
     struct Map{
         explicit Map(const Cell_group &);
         const Cell& operator [](const Coordinates &) const;
-        int32_t find (const Coordinates &) const;
+         int find (const Coordinates &) const;
 
     private:
-        std::vector<std::vector<int32_t>> _coordinate_index;
+        std::vector<std::vector< int>> _coordinate_index;
         const Cell_group &_group;
     };
 }

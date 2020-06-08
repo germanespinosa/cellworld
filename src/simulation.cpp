@@ -7,7 +7,7 @@ using namespace std;
 
 namespace cell_world {
 
-    Simulation::Simulation(Model &model, const ge211::Dimensions scene_dimensions, uint32_t episodes) :
+    Simulation::Simulation(Model &model, const ge211::Dimensions scene_dimensions, unsigned int episodes) :
             _scene_dimensions(scene_dimensions),
             _model(model),
             _view(model.cells, scene_dimensions),
@@ -55,10 +55,10 @@ namespace cell_world {
 
     void Simulation::run_silent(bool show_progress) {
         string bar("|--------------------------------------------------|  ");
-        uint32_t step = _episodes / 50;
-        uint32_t step_count = 0;
-        uint32_t progress = 0;
-        for (uint32_t i = 0; i < _episodes; i++) {
+        unsigned int step = _episodes / 50;
+        unsigned int step_count = 0;
+        unsigned int progress = 0;
+        for (unsigned int i = 0; i < _episodes; i++) {
             if (show_progress) {
                 step_count++;
                 if (step_count >= step) {

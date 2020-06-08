@@ -6,24 +6,24 @@ using namespace std;
 
 TEST_CASE("Probabilities Pick index")
 {
-    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},0)==0);
-    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},10)==1);
-    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},20)==2);
-    CHECK(Chance::pick((vector<uint32_t>){10, 10, 10, 10},30)==3);
+    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},0)==0);
+    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},10)==1);
+    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},20)==2);
+    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},30)==3);
 }
 
 TEST_CASE("dice") {
-    for (uint32_t i = 0;i<10000;i++)
+    for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice(100)<=100);
-    for (uint32_t i = 0;i<10000;i++)
+    for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice(-100,100)>=-100);
-    for (uint32_t i = 0;i<10000;i++)
+    for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice(-100,100)<=100);
-    for (uint32_t i = 0;i<10000;i++)
+    for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice_double(100)<=100);
-    for (uint32_t i = 0;i<10000;i++)
+    for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice_double(-100,100)>=-100);
-    for (uint32_t i = 0;i<10000;i++)
+    for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice_double(-100,100)<=100);
 }
 

@@ -13,8 +13,8 @@ namespace cell_world{
     {
         View(const Cell_group &, ge211::Dimensions);
         void draw_scene (ge211::Sprite_set& , const std::vector<Agent_data>&, const std::string&);
-        void draw_editor (ge211::Sprite_set&, int32_t , std::vector<Cell_group_view>, const std::string&);
-        int32_t get_cell(ge211::Position);
+        void draw_editor (ge211::Sprite_set&,  int , std::vector<Cell_group_view>, const std::string&);
+         int get_cell(ge211::Position);
         static std::string resource_file(const std::string& res);
         static bool file_exists (const std::string&);
         private:

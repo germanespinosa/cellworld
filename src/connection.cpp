@@ -15,11 +15,11 @@ namespace cell_world {
         return c;
     }
 
-    const Coordinates &Connection_pattern::operator[](uint32_t index) {
+    const Coordinates &Connection_pattern::operator[](unsigned int index) {
         return pattern[index];
     }
 
-    uint32_t Connection_pattern::size() const {
+    unsigned int Connection_pattern::size() const {
         return pattern.size();
     }
 
@@ -32,7 +32,7 @@ namespace cell_world {
         string line;
         while (getline(file, line)) {
             istringstream ss(line);
-            int16_t cx, cy;
+            int cx, cy;
             ss >> cx;
             ss >> cy;
             pattern.push_back({(int8_t) cx, (int8_t) cy});
@@ -47,8 +47,8 @@ namespace cell_world {
         if (!file.good()) return false;
         for (const auto c : pattern) {
             file
-                    << (int16_t) c.x << " "
-                    << (int16_t) c.y << std::endl;
+                    << (int) c.x << " "
+                    << (int) c.y << std::endl;
         }
         return true;
     }
@@ -72,10 +72,10 @@ namespace cell_world {
         istringstream ss(line);
         pattern.clear();
         while (!ss.eof()) {
-            int16_t cx = -1000, cy = -1000;
+            int cx = -1000, cy = -1000;
             ss >> cx;
             ss >> cy;
-            if (cx == (int16_t) ((int8_t) cx)) {
+            if (cx == (int) ((int8_t) cx)) {
                 pattern.push_back({(int8_t) cx, (int8_t) cy});
             } else return false;
         }
@@ -85,17 +85,17 @@ namespace cell_world {
     std::string Connection_pattern::save_to_string() const {
         std::stringstream fmt;
         for (auto &p:pattern)
-            fmt << (int16_t) p.x << " " << (int16_t) p.y << " ";
+            fmt << (int) p.x << " " << (int) p.y << " ";
         return fmt.str();
     }
 
     Graph Connection_pattern::get_graph(const Cell_group &cg) const {
         Graph n(cg); // filter occluded
         Map map(n.nodes);
-        for (uint32_t s = 0; s < n.size(); s++) {
+        for (unsigned int s = 0; s < n.size(); s++) {
             auto &source = n.nodes[s];
             for (auto c : get_candidates(source.coordinates)) {
-                int32_t destination_index = map.find(c);
+                 int destination_index = map.find(c);
                 if (destination_index != Not_found) {
                     n[s].add(n.nodes[destination_index]);
                 }
@@ -106,7 +106,7 @@ namespace cell_world {
 
     Connection_pattern Connection_pattern::get_pattern(Cell c, Cell_group cg) {
         Connection_pattern cp;
-        for (uint32_t i = 0; i < cg.size(); i++) cp.pattern.push_back(cg[i].coordinates - c.coordinates);
+        for (unsigned int i = 0; i < cg.size(); i++) cp.pattern.push_back(cg[i].coordinates - c.coordinates);
         return cp;
     }
 

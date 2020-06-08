@@ -16,7 +16,7 @@
 //#endif
 
 namespace cell_world{
-    const int16_t Not_found = -1;
+    const int Not_found = -1;
     enum Cell_type {
         Circle,
         Square
@@ -79,7 +79,7 @@ namespace cell_world{
         Custom_icon_30
     };
     struct Coordinates{
-        int8_t x,y;
+        int x,y;
         bool is_origin() const;
         int rotation() const;
         bool operator ==(const Coordinates &) const;
@@ -89,7 +89,9 @@ namespace cell_world{
         Coordinates operator +(const Coordinates &) const;
         Coordinates operator -(const Coordinates &) const;
         Coordinates operator -() const;
+        unsigned int manhattan(const Coordinates &) const;
         friend std::ostream& operator<<(std::ostream& , const Coordinates& );
+        friend std::istream & operator >> (std::istream &,  Coordinates &);
     };
 
     using Move = Coordinates;
@@ -115,7 +117,7 @@ namespace cell_world{
         Cell(const cell_world::Cell&) = default;
         Cell(Cell_type, Coordinates, Location, double , bool);
         Cell_type cell_type;
-        uint32_t id;
+        unsigned int id;
         Coordinates coordinates;
         Location location;
         double value;
@@ -128,8 +130,8 @@ namespace cell_world{
     };
     std::vector<int> histogram(std::vector<int>);
     double entropy(const std::vector<int>&);
-    std::vector<uint32_t> new_index(uint32_t);
-    std::vector<uint32_t> new_index(std::vector<double>, bool);
+    std::vector<unsigned int> new_index(unsigned int);
+    std::vector<unsigned int> new_index(std::vector<double>, bool);
     double max(const std::vector<double> &);
-    uint32_t sum(const std::vector<uint32_t>& );
+    unsigned int sum(const std::vector<unsigned int>& );
 }

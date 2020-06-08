@@ -37,12 +37,12 @@ namespace cell_world {
     }
 
     void Map_editor::on_mouse_move(ge211::Position mouse_position) {
-        int32_t index = _view.get_cell(mouse_position);
+         int index = _view.get_cell(mouse_position);
         _update_current_cell(index);
     }
 
     void Map_editor::on_mouse_up(ge211::Mouse_button mouse_button, ge211::Position mouse_position) {
-        int32_t index = _view.get_cell(mouse_position);
+         int index = _view.get_cell(mouse_position);
         if (index >= 0) {
             if (mouse_button == ge211::Mouse_button::left) {
                 world.set_occlusion(index, !world[index].occluded);
@@ -125,14 +125,14 @@ namespace cell_world {
         auto graph = world.create_graph();
         auto c = Centrality::get_eigen_centrality(graph);
         double max = 0;
-        for (uint32_t i = 0; i < graph.size(); i++) if (max < c[i]) max = c[i];
-        for (uint32_t i = 0; i < graph.size(); i++) world[graph.nodes[i].id].value = c[i] / max;
-        uint32_t index = _current_cell_id;
+        for (unsigned int i = 0; i < graph.size(); i++) if (max < c[i]) max = c[i];
+        for (unsigned int i = 0; i < graph.size(); i++) world[graph.nodes[i].id].value = c[i] / max;
+        unsigned int index = _current_cell_id;
         _update_current_cell(Not_found);
         _update_current_cell(index);
     }
 
-    void Map_editor::_update_current_cell(int32_t index) {
+    void Map_editor::_update_current_cell( int index) {
         if (index != Not_found) {
             if (index != _current_cell_id) {
                 _current_cell_id = index;

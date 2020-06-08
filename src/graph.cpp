@@ -18,37 +18,37 @@ namespace cell_world {
         return _connections[nodes.find(c)];
     }
 
-    const Cell_group &Graph::operator[](uint32_t index) const {
+    const Cell_group &Graph::operator[](unsigned int index) const {
         return _connections[index];
     }
 
-    Cell_group &Graph::operator[](uint32_t index) {
+    Cell_group &Graph::operator[](unsigned int index) {
         return _connections[index];
     }
 
-    uint32_t Graph::size() const {
+    unsigned int Graph::size() const {
         return nodes.size();
     }
 
     Cell_group Graph::get_shortest_path(const Cell &s, const Cell &d, bool shuffle) const {
         struct Node {
-            int32_t parent;
-            uint32_t cell_index;
+             int parent;
+            unsigned int cell_index;
         };
         vector<bool> visited(nodes.size(), false);
         vector<Node> candidates;
         Cell_group path;
-        int32_t cell_index = nodes.find(s);
-        candidates.push_back({Not_found, (uint32_t) cell_index});
-        uint32_t i = 0;
+         int cell_index = nodes.find(s);
+        candidates.push_back({Not_found, (unsigned int) cell_index});
+        unsigned int i = 0;
         visited[cell_index] = true;
         while (!_connections[candidates[i].cell_index].contains(d)) {
             auto conns = shuffle ? _connections[candidates[i].cell_index].random_shuffle()
                                  : _connections[candidates[i].cell_index];
-            for (uint32_t c = 0; c < conns.size(); c++) {
-                uint32_t candidate_index = nodes.find(conns[c]);
+            for (unsigned int c = 0; c < conns.size(); c++) {
+                unsigned int candidate_index = nodes.find(conns[c]);
                 if (!visited[candidate_index]) {
-                    candidates.push_back({(int32_t) i, candidate_index});
+                    candidates.push_back({( int) i, candidate_index});
                     visited[candidate_index] = true;
                 }
             }
@@ -80,12 +80,12 @@ namespace cell_world {
         return get_eigen_centrality(graph, 100, 0.000001);
     }
 
-    std::vector<double> Centrality::get_betweenness_centrality(Graph &graph, uint32_t precision) {
+    std::vector<double> Centrality::get_betweenness_centrality(Graph &graph, unsigned int precision) {
         vector<double> result(graph.size(), 0);
-        for (uint32_t i = 0; i < graph.nodes.size() - 1; i += (Chance::dice(precision)) + 1) {
-            for (uint32_t j = i + 1; j < graph.nodes.size(); j += (Chance::dice(precision)) + 1) {
+        for (unsigned int i = 0; i < graph.nodes.size() - 1; i += (Chance::dice(precision)) + 1) {
+            for (unsigned int j = i + 1; j < graph.nodes.size(); j += (Chance::dice(precision)) + 1) {
                 auto path = graph.get_shortest_path(graph.nodes[i], graph.nodes[j]);
-                for (uint32_t c = 0; c < path.size(); c++) {
+                for (unsigned int c = 0; c < path.size(); c++) {
                     result[graph.nodes.find(path[c])]++;
                 }
             }
@@ -93,16 +93,16 @@ namespace cell_world {
         return result;
     }
 
-    std::vector<double> Centrality::get_eigen_centrality(Graph &graph, uint32_t max_iterations, double tolerance) {
+    std::vector<double> Centrality::get_eigen_centrality(Graph &graph, unsigned int max_iterations, double tolerance) {
         auto nodes = (double) graph.size();
         vector<double> result(graph.size());
         vector<double> last(graph.size());
         double err = nodes * 100;
         for (auto &r : result) r = 1.0 / nodes;
-        for (uint32_t iteration = 0; iteration < max_iterations && err > nodes * tolerance; iteration++) {
+        for (unsigned int iteration = 0; iteration < max_iterations && err > nodes * tolerance; iteration++) {
             last = result;
-            for (uint32_t n = 0; n < graph.size(); n++)
-                for (uint32_t nbr = 0; nbr < graph[n].size(); nbr++)
+            for (unsigned int n = 0; n < graph.size(); n++)
+                for (unsigned int nbr = 0; nbr < graph[n].size(); nbr++)
                     result[graph.nodes.find(graph[n][nbr])] += last[n];
             double d = 0;
             for (auto &_connection : result) d += pow(_connection, 2);
@@ -110,7 +110,7 @@ namespace cell_world {
             double s = d == 0 ? 1 : 1.0 / d;
             for (auto &_connection : result) _connection *= s;
             err = 0;
-            for (uint32_t index = 0; index < result.size(); index++)
+            for (unsigned int index = 0; index < result.size(); index++)
                 err += abs(result[index] - last[index]);
         }
         return result;
@@ -126,8 +126,8 @@ namespace cell_world {
         options.clear();
         options.add(nodes);
         if (_connections.empty()) return graphs;
-        uint32_t offset = 0;
-        int32_t node_index = Not_found;
+        unsigned int offset = 0;
+         int node_index = Not_found;
         for (; offset < nodes.size() && node_index == Not_found; offset++) {
             if (!gates.nodes.contains(nodes[offset])) node_index = offset; // finds the first node that is not a gate
         }
@@ -135,7 +135,7 @@ namespace cell_world {
             Cell_group sub_graph_nodes;
             sub_graph_nodes.add(nodes[node_index]); // adds the first node
             Cell_group bridges;
-            uint32_t lc = 1; // starts the search on the second node of the sub_graph
+            unsigned int lc = 1; // starts the search on the second node of the sub_graph
             while (node_index != Not_found) {
                 sub_graph_nodes += _connections[node_index]; // adds all the connections to the selected node;
                 node_index = Not_found;
@@ -149,20 +149,20 @@ namespace cell_world {
             }
             graphs.emplace_back(sub_graph_nodes);
             auto &graph = graphs.back();
-            for (uint32_t b = 0; b < bridges.size(); b++) {
+            for (unsigned int b = 0; b < bridges.size(); b++) {
                 graph.add(bridges[b]);
                 gates.connect(bridges[b], bridges - bridges[b]);
             }
-            for (uint32_t b = 0; b < graph.nodes.size(); b++) {
+            for (unsigned int b = 0; b < graph.nodes.size(); b++) {
                 options.connect(graph.nodes[b], bridges - graph.nodes[b]);
             }
-            for (uint32_t b = 0; b < graph.size(); b++) {
+            for (unsigned int b = 0; b < graph.size(); b++) {
                 graph.connect(graph.nodes[b], (*this)[graph.nodes[b]]);
             }
             for (; offset < nodes.size() && node_index == Not_found; offset++) {
                 if (!gates.nodes.contains(nodes[offset])) { // make sure is not a gate
                     node_index = offset;
-                    for (uint32_t g = 0; g < graphs.size() && node_index != Not_found; g++) {
+                    for (unsigned int g = 0; g < graphs.size() && node_index != Not_found; g++) {
                         if (graphs[g].nodes.contains(nodes[node_index])) {
                             node_index = Not_found;
                         }
@@ -170,10 +170,10 @@ namespace cell_world {
                 }
             }
         }
-        for (uint32_t i = 0; i < gates.size(); i++) {
+        for (unsigned int i = 0; i < gates.size(); i++) {
             auto &gate = gates.nodes[i];
             auto &cnn = (*this)[gate];
-            for (uint32_t j = 0; j < cnn.size(); j++) {
+            for (unsigned int j = 0; j < cnn.size(); j++) {
                 if (gates.nodes.contains(cnn[j])) options[gate].add(cnn[j]);
             }
         }
@@ -190,7 +190,7 @@ namespace cell_world {
 
     void Graph::connect(const Cell &node, const Cell_group &connections) {
         if (!nodes.contains(node)) return;
-        for (uint32_t i = 0; i < connections.size(); i++)
+        for (unsigned int i = 0; i < connections.size(); i++)
             if (nodes.find(connections[i]) != Not_found) //only adds connection to nodes in the graph
                 (*this)[node] += connections[i];
     }
@@ -207,14 +207,14 @@ namespace cell_world {
 
     Graph Graph::operator!() const {
         Graph inv(nodes);
-        for (uint32_t i = 0; i < nodes.size(); i++)
-            for (uint32_t j = 0; j < _connections[i].size(); j++)
+        for (unsigned int i = 0; i < nodes.size(); i++)
+            for (unsigned int j = 0; j < _connections[i].size(); j++)
                 inv[_connections[i][j]].add(nodes[i]);
         return inv;
     }
 
     void Graph::connect(Graph &graph) {
-        for (uint32_t i = 0; i < graph.nodes.size(); i++) {
+        for (unsigned int i = 0; i < graph.nodes.size(); i++) {
             connect(graph.nodes[i], graph[i]);
         }
     }
@@ -228,14 +228,14 @@ namespace cell_world {
     bool Graph::operator==(const Graph &g) const {
         if (size() != g.size()) return false;
         if (g.nodes != nodes) return false;
-        for (uint32_t i = 0; i < _connections.size(); i++) {
+        for (unsigned int i = 0; i < _connections.size(); i++) {
             if (_connections[i] != g._connections[g.nodes.find(nodes[i])]) return false;
         }
         return true;
     }
 
     bool Graph::remove(const Cell &c) {
-        int32_t index = nodes.find(c);
+         int index = nodes.find(c);
         if (index == Not_found) return false;
         nodes.remove(c);
         _connections.erase(_connections.begin() + index);
@@ -245,21 +245,21 @@ namespace cell_world {
     std::vector<Coordinates> Graph::get_connectors(const Cell &cell) {
         auto c = _connections[nodes.find(cell)];
         std::vector<Coordinates> cons;
-        for (uint32_t i = 0; i < c.size(); i++) cons.push_back(c[i].coordinates - cell.coordinates);
+        for (unsigned int i = 0; i < c.size(); i++) cons.push_back(c[i].coordinates - cell.coordinates);
         return cons;
     }
 
     bool Graph::add(const Cell_group &c) {
         bool r = true;
-        for (uint32_t i = 0; i < c.size(); i++) r = r && add(c[i]);
+        for (unsigned int i = 0; i < c.size(); i++) r = r && add(c[i]);
         return r;
     }
 
     Graph Graph::invert() {
         Graph g(nodes);
-        for (uint32_t i = 0; i < nodes.size(); i++) {
+        for (unsigned int i = 0; i < nodes.size(); i++) {
             auto &conn = _connections[i];
-            for (uint32_t j = 0; j < nodes.size(); j++) {
+            for (unsigned int j = 0; j < nodes.size(); j++) {
                 if (!conn.contains(nodes[j])) {
                     g[i].add(nodes[j]);
                 }

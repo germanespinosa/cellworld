@@ -40,7 +40,7 @@ namespace cell_world {
         _circle_sprites.emplace_back(_cell_size, ge211::Color{128, 0, 128}); //13
         _circle_sprites.emplace_back(_cell_size, ge211::Color{0, 128, 128}); //14
         _circle_sprites.emplace_back(_cell_size, ge211::Color{0, 0, 128}); //15
-        for (uint16_t i = 0; i < 256; i++) {
+        for (uint i = 0; i < 256; i++) {
             _circle_value_sprites.emplace_back(_cell_size, ge211::Color{255, (uint8_t) (255 - i), (uint8_t) (255 - i)});
         }
         Dimensions d{_cell_size * 2, _cell_size * 2};
@@ -60,7 +60,7 @@ namespace cell_world {
         _square_sprites.emplace_back(d, ge211::Color{128, 0, 128}); //13
         _square_sprites.emplace_back(d, ge211::Color{0, 128, 128}); //14
         _square_sprites.emplace_back(d, ge211::Color{0, 0, 128}); //15
-        for (uint16_t i = 0; i < 256; i++) {
+        for (uint i = 0; i < 256; i++) {
             _square_value_sprites.emplace_back(d, ge211::Color{255, (uint8_t) (255 - i), (uint8_t) (255 - i)});
         }
         int icon_counter = 1;
@@ -124,14 +124,14 @@ namespace cell_world {
         }
     }
 
-    void View::draw_editor(ge211::Sprite_set &sprites, int32_t index, std::vector<Cell_group_view> groups,
+    void View::draw_editor(ge211::Sprite_set &sprites,  int index, std::vector<Cell_group_view> groups,
                            const std::string &text) {
         if (!text.empty()) {
             fps.reconfigure(Text_sprite::Builder(sans) << text);
             sprites.add_sprite(fps, {10, 10});
         }
         _draw_world(sprites);
-        for (uint32_t group_index = 0; group_index < groups.size(); group_index++) {
+        for (unsigned int group_index = 0; group_index < groups.size(); group_index++) {
             Cell_group_view &gv = groups[group_index];
             if (gv.show) {
                 Cell_group &cells = gv.cells;
@@ -187,7 +187,7 @@ namespace cell_world {
         }
     }
 
-    int32_t View::get_cell(ge211::Position mouse_position) {
+     int View::get_cell(ge211::Position mouse_position) {
         for (unsigned int i = 0; i < _cell_group.size(); i++) {
             const Cell &cell = _cell_group[i];
             ge211::Position cell_pos = _screen_location(cell.location);

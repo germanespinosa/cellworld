@@ -24,7 +24,7 @@ namespace cell_world {
         if (getline(file, line)) connection_pattern.load_from_string(line);
         while (getline(file, line)) {
             istringstream ss(line);
-            int16_t ct, cx, cy;
+            int ct, cx, cy;
             Cell cell;
             ss >> ct;
             ss >> cx;
@@ -49,9 +49,9 @@ namespace cell_world {
         file << connection_pattern.save_to_string() << endl;
         for (const auto &cell : _cells) {
             file
-                    << (int16_t) cell.cell_type << " "
-                    << (int16_t) cell.coordinates.x << " "
-                    << (int16_t) cell.coordinates.y << " "
+                    << cell.cell_type << " "
+                    << cell.coordinates.x << " "
+                    << cell.coordinates.y << " "
                     << cell.location.x << " "
                     << cell.location.y << " "
                     << cell.value << " "
@@ -61,19 +61,19 @@ namespace cell_world {
         return true;
     }
 
-    uint32_t World::size() const {
+    unsigned int World::size() const {
         return _cells.size();
     }
 
-    Cell &World::operator[](const uint32_t &id) {
+    Cell &World::operator[](const unsigned int &id) {
         return _cells[id];
     }
 
-    void World::set_occlusion(uint32_t id, bool occluded) {
+    void World::set_occlusion(unsigned int id, bool occluded) {
         _cells[id].occluded = occluded;
     }
 
-    void World::set_value(uint32_t id, double value) {
+    void World::set_value(unsigned int id, double value) {
         _cells[id].value = value;
     }
 
@@ -94,7 +94,7 @@ namespace cell_world {
         return cg;
     }
 
-    Cell_group World::create_cell_group(const std::vector<uint32_t> &cell_ids) const {
+    Cell_group World::create_cell_group(const std::vector<unsigned int> &cell_ids) const {
         Cell_group cg;
         for (auto id : cell_ids) cg.add(_cells[id]);
         return cg;
@@ -109,7 +109,7 @@ namespace cell_world {
         string line;
         while (getline(file, line)) {
             istringstream ss(line);
-            int32_t cell_id;
+             int cell_id;
             Cell cell;
             ss >> cell_id;
             cg.add(_cells[cell_id]);
@@ -117,7 +117,7 @@ namespace cell_world {
         return cg;
     }
 
-    void World::set_direction(uint32_t index, const Coordinates &direction) {
+    void World::set_direction(unsigned int index, const Coordinates &direction) {
         _cells[index].direction = direction;
     }
 

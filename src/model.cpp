@@ -30,7 +30,7 @@ namespace cell_world {
         return r;
     }
 
-    Model::Model(Cell_group &cg, uint32_t iterations) :
+    Model::Model(Cell_group &cg, unsigned int iterations) :
             iteration(0),
             iterations(iterations),
             cells(cg),
@@ -49,17 +49,21 @@ namespace cell_world {
     void Model::end_episode() {
         if (status != Status::Running) throw logic_error("Model::end_episode - model is not running.");
         State state = get_state();
-        for (auto &_agent : _agents) _agent.get().end_episode(state);
+        for (unsigned int agent_ind=0;agent_ind<_agents.size();agent_ind++) {
+            auto &_agent = _agents[agent_ind].get();
+            _agent.end_episode(state);
+            log.end_value(agent_ind, _agent.get_value());
+        }
         status = Status::Stopped;
     }
 
-    void Model::start_episode(uint32_t initial_iteration) {
+    void Model::start_episode(unsigned int initial_iteration) {
         if (status == Status::Running) throw logic_error("Model::start_episode - model is already running.");
         if (_agents.empty()) throw logic_error("Model::start_episode - can't start an episode with no agents.");
         iteration = initial_iteration;
         _current_turn = 0;
         finished = false;
-        for (uint32_t i = 0; i < _agents.size(); i++) {
+        for (unsigned int i = 0; i < _agents.size(); i++) {
             auto &agent = _agents[i].get();
             agent.status = Update_pending;
             Cell c = agent.start_episode(initial_iteration);
@@ -71,18 +75,18 @@ namespace cell_world {
 
     State &Model::get_state() {
         state.iteration = iteration;
-        for (uint32_t a = 0; a<_agents.size(); a++) {
+        for (unsigned int a = 0; a<_agents.size(); a++) {
             state.visible[a] = false;
             state.agents_data[a] = _agents[a].get().data;
         }
         return state;
     }
 
-    State &Model::get_state(uint32_t agent_index) {
+    State &Model::get_state(unsigned int agent_index) {
         auto cell = _agents[agent_index].get().data.cell;
         auto vi = visibility[cell];
         state.iteration = iteration;
-        for (uint32_t index = 0; index < _agents.size(); index++) {
+        for (unsigned int index = 0; index < _agents.size(); index++) {
             state.visible[index] = vi.contains(_agents[index].get().data.cell);
             state.agents_data[index] = _agents[index].get().data;
         }
@@ -104,7 +108,7 @@ namespace cell_world {
         run(iterations);
     }
 
-    void Model::run(uint32_t to_iteration) {
+    void Model::run(unsigned int to_iteration) {
         for (; iteration < to_iteration && update(););
     }
 
@@ -115,7 +119,7 @@ namespace cell_world {
 
     bool Model::_try_update_simultaneous() {
         bool epoch_ready = true;
-        for (uint32_t agent_index = 0; agent_index < _agents.size(); agent_index++) {
+        for (unsigned int agent_index = 0; agent_index < _agents.size(); agent_index++) {
             auto &agent = _agents[agent_index].get();
             if (agent.status == Update_pending) {
                 agent.status = Action_pending;
@@ -125,12 +129,12 @@ namespace cell_world {
             finished = finished || agent.status == Finished; // check if all agents are done
         }
         if (epoch_ready) {
-            for (uint32_t i = 0; i < _agents.size(); i++) {
+            for (unsigned int i = 0; i < _agents.size(); i++) {
                 auto &agent = _agents[i].get();
                 auto move = agent.get_move(); // read the action from the agent
                 log.set_value(iteration, i, agent.get_value());
                 agent.status = Update_pending;
-                int32_t destination_index = map.find(agent.data.cell.coordinates + move);
+                 int destination_index = map.find(agent.data.cell.coordinates + move);
                 if (destination_index != Not_found && !cells[destination_index].occluded) {
                     agent._set_cell(cells[destination_index]);
                 }
@@ -152,7 +156,7 @@ namespace cell_world {
             auto move = agent.get_move();
             log.set_value(iteration, _current_turn, agent.get_value());
             agent.status = Update_pending;
-            int32_t destination_index = map.find(agent.data.cell.coordinates + move);
+             int destination_index = map.find(agent.data.cell.coordinates + move);
             if (destination_index != Not_found && !cells[destination_index].occluded) {
                 agent._set_cell(cells[destination_index]);
             }
@@ -168,7 +172,7 @@ namespace cell_world {
         return epoch_ready;
     }
 
-    Execution_log::Execution_log(uint32_t iterations) :
+    Execution_log::Execution_log(unsigned int iterations) :
             iterations(iterations) {}
 
     void Execution_log::add_agent() {
@@ -178,37 +182,37 @@ namespace cell_world {
         _last_value.push_back(0);
     }
 
-    void Execution_log::set_value(uint32_t iteration, uint32_t agent_ind, double value) {
+    void Execution_log::set_value(unsigned int iteration, unsigned int agent_ind, double value) {
         values[agent_ind][iteration] = value;
         _last_value[agent_ind] = iteration + 1;
     }
 
-    void Execution_log::set_coordinates(uint32_t iteration, uint32_t agent_ind, Coordinates coordinate) {
+    void Execution_log::set_coordinates(unsigned int iteration, unsigned int agent_ind, Coordinates coordinate) {
         trajectories[agent_ind][iteration + 1] = coordinate;
         _last_trajectory[agent_ind] = iteration + 2;
     }
 
-    void Execution_log::start_coordinates(uint32_t agent_ind, Coordinates coordinate) {
+    void Execution_log::start_coordinates(unsigned int agent_ind, Coordinates coordinate) {
         trajectories[agent_ind][0] = coordinate;
     }
 
     std::ostream &operator<<(std::ostream &o, Execution_log const &log) {
         o << "{ \"trajectories\": [";
-        for (uint32_t agent_ind = 0; agent_ind < log.trajectories.size(); agent_ind++) {
+        for (unsigned int agent_ind = 0; agent_ind < log.trajectories.size(); agent_ind++) {
             if (agent_ind) o << ",";
             o << "[";
-            for (uint32_t iteration = 0; iteration < log._last_trajectory[agent_ind]; iteration++) {
+            for (unsigned int iteration = 0; iteration < log._last_trajectory[agent_ind]; iteration++) {
                 if (iteration) o << ",";
-                o << "[" << (int16_t) log.trajectories[agent_ind][iteration].x << ","
-                  << (int16_t) log.trajectories[agent_ind][iteration].y << "]";
+                o << "[" << (int) log.trajectories[agent_ind][iteration].x << ","
+                  << (int) log.trajectories[agent_ind][iteration].y << "]";
             }
             o << "]";
         }
         o << "], \"values\": [";
-        for (uint32_t agent_ind = 0; agent_ind < log.values.size(); agent_ind++) {
+        for (unsigned int agent_ind = 0; agent_ind < log.values.size(); agent_ind++) {
             if (agent_ind) o << ",";
             o << "[";
-            for (uint32_t iteration = 0; iteration < log._last_value[agent_ind]; iteration++) {
+            for (unsigned int iteration = 0; iteration < log._last_value[agent_ind]; iteration++) {
                 if (iteration) o << ",";
                 o << log.values[agent_ind][iteration];
             }
@@ -216,5 +220,9 @@ namespace cell_world {
         }
         o << "]}" << endl;
         return o;
+    }
+
+    void Execution_log::end_value(unsigned int agent_ind, double value) {
+        set_value(_last_value[agent_ind], agent_ind, value);
     }
 }

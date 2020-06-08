@@ -16,7 +16,7 @@ namespace cell_world {
         bool operator==(const Paths&) const;
     //private:
         static std::string _type_string(Path_type);
-        void _init(uint32_t);
+        void _init(unsigned int);
         Paths() = default;
         std::string _name;
         Cell_group _cells;

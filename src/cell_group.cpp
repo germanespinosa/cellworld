@@ -10,11 +10,11 @@ using namespace ge211;
 
 namespace cell_world {
 
-    uint32_t Cell_group::size() const {
+    unsigned int Cell_group::size() const {
         return _cells.size();
     }
 
-    const Cell &Cell_group::operator[](uint32_t index) const {
+    const Cell &Cell_group::operator[](unsigned int index) const {
         return _get_cell(index);
     }
 
@@ -39,35 +39,35 @@ namespace cell_world {
         _id_index.clear();
     }
 
-    int32_t Cell_group::find(uint32_t cell_id) const {
+     int Cell_group::find(unsigned int cell_id) const {
         if (cell_id >= _id_index.size()) return Not_found;
         return _id_index[cell_id];
     }
 
-    int32_t Cell_group::find(const Cell &cell) const {
+     int Cell_group::find(const Cell &cell) const {
         if (cell.id >= _id_index.size()) return Not_found;
         return _id_index[cell.id];
     }
 
-    const Cell &Cell_group::_get_cell(uint32_t index) const {
+    const Cell &Cell_group::_get_cell(unsigned int index) const {
         return _cells[index].get();
     }
 
-    bool Cell_group::contains(uint32_t cell_id) const {
+    bool Cell_group::contains(unsigned int cell_id) const {
         return find(cell_id) != Not_found;
     }
 
     Cell_group &Cell_group::operator=(const Cell_group &cg) {
         if (this != &cg) { //prevent self assigment object ruin (cg = cg)
             clear();
-            for (uint32_t i = 0; i < cg.size(); i++) add(cg[i]);
+            for (unsigned int i = 0; i < cg.size(); i++) add(cg[i]);
         }
         return *this;
     }
 
     Cell_group &Cell_group::operator+=(const Cell_group &cg) {
         if (this != &cg) { //prevent self assigment object ruin (cg = cg)
-            for (uint32_t i = 0; i < cg.size(); i++) add(cg[i]);
+            for (unsigned int i = 0; i < cg.size(); i++) add(cg[i]);
         }
         return *this;
     }
@@ -76,7 +76,7 @@ namespace cell_world {
         if (find(cell.id) == Not_found) return false;
         Cell_group cg = *this;
         clear();
-        for (uint32_t i = 0; i < cg.size(); i++) if (cg[i].id != cell.id) add(cg[i]);
+        for (unsigned int i = 0; i < cg.size(); i++) if (cg[i].id != cell.id) add(cg[i]);
         return true;
     }
 
@@ -102,7 +102,7 @@ namespace cell_world {
         return sqrt(pow(c1.location.y - c0.location.y, 2) + pow(c1.location.x - c0.location.x, 2));
     }
 
-    double Cell_group::distance(const uint32_t s, const uint32_t d) const {
+    double Cell_group::distance(const unsigned int s, const unsigned int d) const {
         return distance(_cells[s].get(), _cells[d].get());
     }
 
@@ -114,7 +114,7 @@ namespace cell_world {
 
     Cell_group Cell_group::operator-(const Cell_group &cg) {
         Cell_group ncg = *this;
-        for (uint32_t i = 0; i < cg.size(); i++) ncg.remove(cg[i]);
+        for (unsigned int i = 0; i < cg.size(); i++) ncg.remove(cg[i]);
         return ncg;
     }
 
@@ -135,7 +135,7 @@ namespace cell_world {
     }
 
     Cell_group &Cell_group::operator-=(const Cell_group &cg) {
-        for (uint32_t i = 0; i < cg.size(); i++) remove(cg[i]);
+        for (unsigned int i = 0; i < cg.size(); i++) remove(cg[i]);
         return *this;
     }
 
@@ -148,9 +148,9 @@ namespace cell_world {
     Cell_group Cell_group::random_shuffle() const {
         Cell_group cg;
         auto index = new_index(size());
-        uint32_t seed = Chance::dice();
+        unsigned int seed = Chance::dice();
         std::shuffle(index.begin(), index.end(), std::default_random_engine(seed));
-        for (uint32_t i:index) cg.add((*this)[i]);
+        for (unsigned int i:index) cg.add((*this)[i]);
         return cg;
     }
 
@@ -167,7 +167,7 @@ namespace cell_world {
     }
 
     std::ostream &operator<<(std::ostream &out, const Cell_group &cg) {
-        for (uint32_t i=0;i<cg.size();i++) out << cg[i].coordinates << " ";
+        for (unsigned int i=0;i<cg.size();i++) out << cg[i].coordinates << " ";
         return out;
     }
 
@@ -179,7 +179,7 @@ namespace cell_world {
 
     bool Cell_group::operator==(const Cell_group &cg) const {
         if (size()!=cg.size()) return false;
-        for (uint32_t i=0;i<cg.size();i++) if (!contains(cg[i])) return false;
+        for (unsigned int i=0;i<cg.size();i++) if (!contains(cg[i])) return false;
         return true;
     }
 
@@ -193,15 +193,15 @@ namespace cell_world {
 
     Map::Map(const Cell_group &group)
             : _group(group) {
-        _coordinate_index = vector<vector<int32_t>>(256,vector<int32_t>(256,Not_found));
-        for (uint32_t i = 0; i < group.size(); i++) {
+        _coordinate_index = vector<vector< int>>(256,vector< int>(256,Not_found));
+        for (unsigned int i = 0; i < group.size(); i++) {
             auto x = (uint8_t) group[i].coordinates.x;
             auto y = (uint8_t) group[i].coordinates.y;
             _coordinate_index[x][y] = i;
         }
     }
 
-    int32_t Map::find(const Coordinates &c) const {
+     int Map::find(const Coordinates &c) const {
         auto x = (uint8_t) c.x;
         auto y = (uint8_t) c.y;
         return _coordinate_index[x][y];

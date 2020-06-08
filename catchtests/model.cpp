@@ -5,12 +5,12 @@ using namespace cell_world;
 using namespace std;
 
 struct Test_Agent : Agent {
-    Test_Agent(uint32_t v, Cell &c): cell(c), Agent ({"base",v}){
+    Test_Agent( unsigned int v, Cell &c): cell(c), Agent ({"base",v}){
 
     };
     string body;
     Cell cell;
-    const Cell &start_episode(uint32_t) override{
+    const Cell &start_episode( unsigned int) override{
         return cell;
     };
     void update_state(const State &) override{

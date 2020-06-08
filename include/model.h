@@ -6,16 +6,17 @@
 
 namespace cell_world{
     struct Execution_log{
-        explicit Execution_log(uint32_t);
+        explicit Execution_log(unsigned int);
         void add_agent();
-        void start_coordinates(uint32_t, Coordinates);
-        void set_value(uint32_t, uint32_t, double);
-        void set_coordinates(uint32_t, uint32_t, Coordinates);
+        void start_coordinates(unsigned int, Coordinates);
+        void end_value(unsigned int, double);
+        void set_value(unsigned int, unsigned int, double);
+        void set_coordinates(unsigned int, unsigned int, Coordinates);
         std::vector<std::vector<Coordinates>> trajectories;
         std::vector<std::vector<double>> values;
-        uint32_t iterations;
-        std::vector<uint32_t> _last_trajectory;
-        std::vector<uint32_t> _last_value;
+        unsigned int iterations;
+        std::vector<unsigned int> _last_trajectory;
+        std::vector<unsigned int> _last_value;
         friend std::ostream &operator<<(std::ostream&, Execution_log const&);
     };
 
@@ -31,23 +32,23 @@ namespace cell_world{
             Stopped,
             Finalized,
         };
-        Model(Cell_group &, uint32_t);
+        Model(Cell_group &, unsigned int);
         explicit Model(Cell_group &);
         void add_agent(Agent &);
         bool try_update();
         bool update();
         std::vector<Agent_data> get_agents_data();
         void start_episode();
-        void start_episode(uint32_t);
+        void start_episode(unsigned int);
         void end_episode();
-        State &get_state(uint32_t);
+        State &get_state(unsigned int);
         State &get_state();
 
-        uint32_t iteration;
-        uint32_t iterations;
+        unsigned int iteration;
+        unsigned int iterations;
         Cell_group cells;
         void run();
-        void run(uint32_t);
+        void run(unsigned int);
         Status status;
         bool finished{};
         Mode mode;
@@ -57,8 +58,8 @@ namespace cell_world{
         State state;
     protected:
         std::vector<std::reference_wrapper<Agent>> _agents;
-        uint32_t _message_group;
-        uint32_t _current_turn;
+        unsigned int _message_group;
+        unsigned int _current_turn;
         bool _try_update_simultaneous();
         bool _try_update_turn();
     friend class Simulation;

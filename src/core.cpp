@@ -16,19 +16,19 @@ namespace cell_world {
     }
 
     Coordinates Coordinates::operator +=(const Coordinates &c) {
-        return { (int8_t)(x += c.x), (int8_t)(y += c.y) };
+        return { (x += c.x), (y += c.y) };
     }
 
     Coordinates Coordinates::operator +(const Coordinates &c) const{
-        return { (int8_t)(c.x + x), (int8_t)(c.y + y) };
+        return { (c.x + x), (c.y + y) };
     }
 
     Coordinates Coordinates::operator -(const Coordinates &c) const{
-        return { (int8_t)(x - c.x), (int8_t)(y - c.y) };
+        return { (x - c.x), (y - c.y) };
     }
 
     Coordinates Coordinates::operator -() const{
-        return { (int8_t)(-x), (int8_t)(-y) };
+        return { (-x), (-y) };
     }
 
     bool Coordinates::is_origin() const {
@@ -90,16 +90,16 @@ namespace cell_world {
         }
     }
 
-    vector<uint32_t> new_index(uint32_t n) {
-        std::vector<uint32_t> index(n);
-        for(uint32_t i=0;i<n;i++) index[i]=i;
+    vector<unsigned int> new_index(unsigned int n) {
+        std::vector<unsigned int> index(n);
+        for(unsigned int i=0;i<n;i++) index[i]=i;
         return index;
     }
 
-    vector<uint32_t> new_index(vector<double>values, bool ascending = true){
+    vector<unsigned int> new_index(vector<double>values, bool ascending = true){
         auto index = new_index(values.size()); // creates an index vector for the options
-        for (uint32_t i = 1; i < index.size(); i++) // sort the indexes of the options by expected reward descending
-            for (uint32_t j = i; j > 0 && (ascending?values[index[j - 1]] > values[index[j]]:values[index[j - 1]] < values[index[j]]); j--)
+        for (unsigned int i = 1; i < index.size(); i++) // sort the indexes of the options by expected reward descending
+            for (unsigned int j = i; j > 0 && (ascending?values[index[j - 1]] > values[index[j]]:values[index[j - 1]] < values[index[j]]); j--)
                 swap(index[j - 1], index[j]);
         return index;
     }
@@ -148,7 +148,7 @@ namespace cell_world {
 
 
     std::ostream &operator<<(std::ostream &out, const Coordinates &c) {
-        out << "(" << (int16_t) c.x << "," << (int16_t) c.y << ")";
+        out << "[" << c.x << "," << c.y << "]";
         return out;
     }
 
@@ -159,17 +159,65 @@ namespace cell_world {
         if (s_stream.good()) {
             string substr;
             getline(s_stream, substr, ','); //get first string delimited by comma
-            x = (uint8_t) stoi(substr);
+            x = stoi(substr);
             if (s_stream.good()) {
                 getline(s_stream, substr, ','); //get first string delimited by comma
-                y = (uint8_t) stoi(substr);
+                y = stoi(substr);
             }
         }
         return *this;
     }
 
+    unsigned int Coordinates::manhattan(const Coordinates &c) const {
+        return abs(c.x-x) + abs(c.y-y);
+    }
+
+    std::istream &operator>>(istream &i, Coordinates &coord) {
+        char c;
+        do {
+            i >> c;
+        } while (c == ' '); // read all blank spaces at the beginning
+        if (c!='[') throw logic_error("coordinates format should be [x,y]");
+        do {
+            i >> c;
+        } while (c == ' ');  // read all blank spaces after the first bracket
+
+        string sx = "";
+        if (c=='-'){{
+            sx += '-';
+            i>>c;
+        }}
+        while (c >='0' && c <='9'){ //copy all numbers to s
+            sx += c;
+            i >> c;
+        }
+        while (c == ' '){
+            i >> c;
+        }; // read all blank spaces before the comma
+        if (c!=',') throw logic_error("coordinates format should be [x,y]");
+        do {
+            i >> c;
+        } while (c == ' '); // read all blank spaces after the comma
+        string sy="";
+        if (c=='-'){{
+                sy += '-';
+                i>>c;
+            }}
+        while ( c >='0' && c <='9') {//copy all numbers to s
+            sy += c;
+            i >> c;
+        }
+        while (c == ' ') { // read all blank spaces before the closing bracket
+            i >> c;
+        }
+        if (c!=']') throw logic_error("coordinates format should be [x,y]");
+        coord.x = stoi(sx);
+        coord.y = stoi(sy);
+        return i;
+    }
+
     std::ostream &operator<<(std::ostream &out, const Location &l) {
-        out << "(" << l.x << "," << l.y << ")";
+        out << "[" << l.x << "," << l.y << "]";
         return out;
     }
 
@@ -178,13 +226,12 @@ namespace cell_world {
     }
 
     std::ostream &operator<<(std::ostream &out, const Cell &c) {
-        out << "id: "
-        << c.id << " "
-        << (c.cell_type==Circle?"circle":"square") << " "
-        << c.coordinates << " "
-        << c.location << " "
-        << (c.occluded?"occluded":"free") << " = "
-        << c.value << " ";
+        out << "{ \"id\": " << c.id << ", "
+        << "\"cell_type\": "  << (c.cell_type==Circle?"circle":"square") << "\", "
+        << "\"coordinates\": " << c.coordinates << ", "
+        << "\"location\": " << c.location << ", "
+        << "\"occluded\": " << c.occluded << ", "
+        << "\"value\": " << c.value << "}";
         return out;
     }
 
@@ -193,8 +240,8 @@ namespace cell_world {
         for (auto &v:values) m = v>m?v:m;
         return m;
     }
-    uint32_t sum(const std::vector<uint32_t> &values){
-        uint32_t s = 0;
+    unsigned int sum(const std::vector<unsigned int> &values){
+        unsigned int s = 0;
         for (auto &v:values) s+=v;
         return s;
     }
