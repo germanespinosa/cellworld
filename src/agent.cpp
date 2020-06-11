@@ -6,7 +6,6 @@ using namespace std;
 namespace cell_world {
 
     const Cell &Agent::cell() const {
-        L("Cell &Agent::cell() start");L("Cell &Agent::cell() end");
         return data.cell;
     }
 
@@ -14,23 +13,18 @@ namespace cell_world {
     status(Update_pending),
     _agent_index(0),
     _message_group(0){
-        L("Agent::Agent(Agent_type ) start");
         data.type = std::move(type);
         data.color = Black;
         Agent_broadcaster::add(this, _message_group);
         set_value(0);
-        L("Agent::Agent(Agent_type ) end");
     }
 
     void Agent::set_status(Agent_status s) {
-        L("Agent::set_status(Agent_status ) start");
         status = s;
-        L("Agent::set_status(Agent_status ) end");
     }
 
     void Agent::set_color(Color color) {
-        L("Agent::set_color(Color ) start");
-        data.color = color;L("Agent::set_color(Color ) end");
+        data.color = color;
     }
 
     void Agent::receive_message(const Agent_message &) {
@@ -59,9 +53,7 @@ namespace cell_world {
     }
 
      int State::find(const std::string &type_name) const {
-        L("State::find(const std::string &) start");
-        for (unsigned int i = 0; i < agents_data.size(); i++) if (agents_data[i].type.name == type_name) return i;L(
-                "State::find(const std::string &) end");
+        for (unsigned int i = 0; i < agents_data.size(); i++) if (agents_data[i].type.name == type_name) return i;
         return Not_found;
     }
 
@@ -71,10 +63,8 @@ namespace cell_world {
     }
 
     Coordinates Stochastic_move::get_move() {
-        L("Coordinates Stochastic_agent_action::get_destination() start");
-        unsigned int i = Chance::pick(chances);L(i);
-        Coordinates c = destinations[i];L(c);L("Coordinates Stochastic_agent_action::get_destination() end");
-        return c;
+        unsigned int i = Chance::pick(chances);
+        return destinations[i];
     }
 
     static std::vector<std::vector<Agent*>> agent_broadcaster_agents;
