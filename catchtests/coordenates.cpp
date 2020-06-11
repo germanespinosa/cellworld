@@ -67,20 +67,66 @@ TEST_CASE("Coordinates -c")
 
 TEST_CASE(">>1")
 {
-    string s = "[41,-5]";
+    string s = "[3,-8] [41,-5]";
     stringstream s_stream(s);
     Coordinates c0;
-    Coordinates c1 {41,-5};
+    Coordinates c1 {3,-8};
+    Coordinates c2 {41,-5};
     s_stream >> c0;
     CHECK(c0==c1);
+    s_stream >> c0;
+    CHECK(c0==c2);
 }
 
 TEST_CASE(">>2")
 {
-    string s = " [ 4 , 5 ]";
+    string s = " [ 41 , -53 ], ";
     stringstream s_stream(s);
     Coordinates c0;
-    Coordinates c1 {4,5};
+    Coordinates c1 {41,-53};
     s_stream >> c0;
     CHECK(c0==c1);
 }
+
+TEST_CASE(">>3")
+{
+    string s = " [ 41 , -53 , ";
+    stringstream s_stream(s);
+    Coordinates c0;
+    CHECK_THROWS(s_stream >> c0);
+}
+
+TEST_CASE(">>4")
+{
+    string s = "  41 , -53 ] ";
+    stringstream s_stream(s);
+    Coordinates c0;
+    CHECK_THROWS(s_stream >> c0);
+}
+
+TEST_CASE(">>5")
+{
+    string s = " [ 41  -53 ] ";
+    stringstream s_stream(s);
+    Coordinates c0;
+    CHECK_THROWS(s_stream >> c0);
+}
+
+
+TEST_CASE(">>6")
+{
+    string s = " \"hello\" ";
+    stringstream s_stream(s);
+    CHECK(read_string(s_stream) == "hello");
+}
+
+TEST_CASE(">>7")
+{
+    string s = " { \"x\": 41 , \"y\": -53 }";
+    stringstream s_stream(s);
+    Coordinates c0;
+    Coordinates c1 {41,-53};
+    s_stream >> c0;
+    CHECK(c0==c1);
+}
+

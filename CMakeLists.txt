@@ -28,7 +28,8 @@ set(cellworld_files
     src/world.cpp
     src/graph.cpp
     src/viewer.cpp
-    src/paths.cpp)
+    src/paths.cpp
+    src/json_parser.cpp)
 
 add_library(cellworld ${cellworld_files} catchtests/paths.cpp)
 target_link_libraries(cellworld PUBLIC ge211)

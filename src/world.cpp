@@ -125,11 +125,6 @@ namespace cell_world {
         return connection_pattern.get_graph(create_cell_group());
     }
 
-    std::ostream &operator<<(std::ostream &out, const World &world) {
-        for (const auto & _cell : world._cells) out << _cell << endl;
-        return out;
-    }
-
     Paths World::create_paths(Paths::Path_type type) const {
         Graph g = create_graph();
         Paths p( g, type);
@@ -155,4 +150,5 @@ namespace cell_world {
         }
         return p;
     }
+
 }

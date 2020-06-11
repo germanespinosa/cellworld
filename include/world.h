@@ -7,6 +7,7 @@
 #include<paths.h>
 namespace cell_world{
     struct World{
+        World() = default;
         explicit World(std::string );
         bool add(Cell&);
         bool load(const std::string&);
@@ -27,6 +28,7 @@ namespace cell_world{
         std::string name;
         Connection_pattern connection_pattern;
         friend std::ostream& operator<<(std::ostream& , const World& );
+        friend std::istream & operator >> (std::istream &, World&);
     private:
         std::vector<Cell> _cells;
         const std::string _extension = ".world";

@@ -21,6 +21,8 @@ namespace cell_world {
         static Connection_pattern get_pattern(Cell, Cell_group);
         Connection_pattern &operator=(const std::string &);
         Move random_move();
+        friend std::ostream& operator << (std::ostream& , const Connection_pattern& );
+        friend std::istream & operator >> (std::istream &, Connection_pattern&);
     private:
         const std::string _extension = ".pattern";
     };

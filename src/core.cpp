@@ -146,12 +146,6 @@ namespace cell_world {
         return abs((l2.y-l1.y) * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(pow(l2.y-l1.y,2)+pow(l2.x-l1.x,2));
     }
 
-
-    std::ostream &operator<<(std::ostream &out, const Coordinates &c) {
-        out << "[" << c.x << "," << c.y << "]";
-        return out;
-    }
-
     Coordinates &Coordinates::operator=(const string &str) {
         string s;
         for (auto c : str) if ((c>='0' && c<='9') || c==',' || c=='-') s += c;
@@ -172,67 +166,8 @@ namespace cell_world {
         return abs(c.x-x) + abs(c.y-y);
     }
 
-    std::istream &operator>>(istream &i, Coordinates &coord) {
-        char c;
-        do {
-            i >> c;
-        } while (c == ' '); // read all blank spaces at the beginning
-        if (c!='[') throw logic_error("coordinates format should be [x,y]");
-        do {
-            i >> c;
-        } while (c == ' ');  // read all blank spaces after the first bracket
-
-        string sx = "";
-        if (c=='-'){{
-            sx += '-';
-            i>>c;
-        }}
-        while (c >='0' && c <='9'){ //copy all numbers to s
-            sx += c;
-            i >> c;
-        }
-        while (c == ' '){
-            i >> c;
-        }; // read all blank spaces before the comma
-        if (c!=',') throw logic_error("coordinates format should be [x,y]");
-        do {
-            i >> c;
-        } while (c == ' '); // read all blank spaces after the comma
-        string sy="";
-        if (c=='-'){{
-                sy += '-';
-                i>>c;
-            }}
-        while ( c >='0' && c <='9') {//copy all numbers to s
-            sy += c;
-            i >> c;
-        }
-        while (c == ' ') { // read all blank spaces before the closing bracket
-            i >> c;
-        }
-        if (c!=']') throw logic_error("coordinates format should be [x,y]");
-        coord.x = stoi(sx);
-        coord.y = stoi(sy);
-        return i;
-    }
-
-    std::ostream &operator<<(std::ostream &out, const Location &l) {
-        out << "[" << l.x << "," << l.y << "]";
-        return out;
-    }
-
     double Location::manhattan(const Location &l) const {
         return abs(l.x-x) + abs(l.y-y);
-    }
-
-    std::ostream &operator<<(std::ostream &out, const Cell &c) {
-        out << "{ \"id\": " << c.id << ", "
-        << "\"cell_type\": "  << (c.cell_type==Circle?"circle":"square") << "\", "
-        << "\"coordinates\": " << c.coordinates << ", "
-        << "\"location\": " << c.location << ", "
-        << "\"occluded\": " << c.occluded << ", "
-        << "\"value\": " << c.value << "}";
-        return out;
     }
 
     double max(const std::vector<double> &values){

@@ -91,7 +91,7 @@ namespace cell_world{
         Coordinates operator -() const;
         unsigned int manhattan(const Coordinates &) const;
         friend std::ostream& operator<<(std::ostream& , const Coordinates& );
-        friend std::istream & operator >> (std::istream &,  Coordinates &);
+        friend std::istream & operator >> (std::istream &, Coordinates &);
     };
 
     using Move = Coordinates;
@@ -110,6 +110,7 @@ namespace cell_world{
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
         friend std::ostream& operator<<(std::ostream& , const Location& );
+        friend std::istream & operator >> (std::istream &, Location &);
     };
 
     struct Cell{
@@ -127,6 +128,7 @@ namespace cell_world{
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
         friend std::ostream& operator<<(std::ostream& , const Cell& );
+        friend std::istream & operator >> (std::istream &, Cell&);
     };
     std::vector<int> histogram(std::vector<int>);
     double entropy(const std::vector<int>&);
@@ -134,4 +136,10 @@ namespace cell_world{
     std::vector<unsigned int> new_index(std::vector<double>, bool);
     double max(const std::vector<double> &);
     unsigned int sum(const std::vector<unsigned int>& );
+    double read_double(char &, std::istream &);
+    int read_int(char &, std::istream &);
+    std::string read_string(std::istream &);
+    bool read_to(char, std::istream &);
+    char skip_blanks(char, std::istream &);
+    char skip_blanks(std::istream &);
 }

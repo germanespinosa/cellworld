@@ -2,6 +2,7 @@
 #include<cell_world.h>
 
 using namespace cell_world;
+using namespace std;
 
 TEST_CASE("Location l==l")
 {
@@ -41,3 +42,21 @@ TEST_CASE("Location dist")
     CHECK( l1.dist(l0) == 5);
 }
 
+TEST_CASE("location>>1")
+{
+    string s = "[41.5,-5.324]";
+    stringstream s_stream(s);
+    Location c0;
+    Location c1 {41.5,-5.324};
+    s_stream >> c0;
+    CHECK(c0==c1);
+}
+
+
+TEST_CASE("location>>5")
+{
+    string s = " [ 41  -53 ] ";
+    stringstream s_stream(s);
+    Location c0;
+    CHECK_THROWS(s_stream >> c0);
+}
