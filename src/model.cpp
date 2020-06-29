@@ -194,6 +194,8 @@ namespace cell_world {
 
     void Execution_log::start_coordinates(unsigned int agent_ind, Coordinates coordinate) {
         trajectories[agent_ind][0] = coordinate;
+        _last_trajectory[agent_ind] = 1;
+        _last_value[agent_ind]=0;
     }
 
     std::ostream &operator<<(std::ostream &o, Execution_log const &log) {

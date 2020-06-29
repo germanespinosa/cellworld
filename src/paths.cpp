@@ -20,7 +20,7 @@ namespace cell_world {
                     }
                 }
             }
-        } else {
+        } else if ( d == Path_type::euclidean ){
             for (unsigned int i = 0; i < _cells.size(); i++) {
                 for (unsigned int j = 0; j < _cells.size(); j++) {
                     if (i == j) continue;
@@ -35,6 +35,28 @@ namespace cell_world {
                         }
                     }
                     _next_move[i][j] = cnn[closest].coordinates - _cells[i].coordinates;
+                }
+            }
+        } else {
+            for (unsigned int i = 0; i < _cells.size(); i++) {
+                auto &source = _cells[i];
+                for (unsigned int j = 0; j < _cells.size(); j++) {
+                    if (i == j) continue;
+                    auto &dest = _cells[i];
+                    auto &cnn = g[source];
+                    unsigned int selected = 0;
+                    unsigned int min_pl = g.get_shortest_path(cnn[selected],dest).size();
+                    double min_dist = dest.location.dist(cnn[selected].location);
+                    for (unsigned int k=1;k<cnn.size();k++){
+                        unsigned int pl = g.get_shortest_path(cnn[k],dest).size();
+                        double dist = dest.location.dist(cnn[k].location);
+                        if (pl < min_pl || (pl==min_pl && dist<min_dist)){
+                            min_pl = pl;
+                            min_dist = dist;
+                            selected = k;
+                        }
+                    }
+                    _next_move[i][j] = cnn[selected].coordinates - source.coordinates;
                 }
             }
         }
@@ -68,9 +90,15 @@ namespace cell_world {
     }
 
     std::string Paths::_type_string(Paths::Path_type type) {
-        if (type == Path_type::euclidean)
-            return "euclidean";
-        return "shortest";
+
+        switch (type) {
+            case Path_type::euclidean:
+                return "euclidean";
+            case Path_type::shortest:
+                return "shortest";
+            default:
+                return "mix";
+        }
     }
 
     bool Paths::operator==(const Paths &p) const {

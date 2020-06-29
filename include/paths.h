@@ -6,7 +6,8 @@ namespace cell_world {
     struct Paths {
         enum class Path_type{
             euclidean,
-            shortest
+            shortest,
+            mix
         };
         Paths(const Graph&, Path_type);
         Move get_move(const Cell &, const Cell &) const;

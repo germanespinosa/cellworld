@@ -17,6 +17,10 @@ namespace cell_world {
 
     static Output_format output_format = Output_format::List;
 
+    void set_output_format(Output_format o){
+        output_format = o;
+    }
+
     std::ostream &operator<<(std::ostream &out, const Coordinates &c) {
         if (output_format == Output_format::List) {
             out << "[" << c.x << "," << c.y << "]";
@@ -262,7 +266,7 @@ namespace cell_world {
                 } else CELL_PARSE_ERROR;
                 t = skip_blanks(c,i);
             }
-            if (skip_blanks(i) != '}') WORLD_PARSE_ERROR;
+            if (skip_blanks(t,i) != '}') WORLD_PARSE_ERROR;
         } else WORLD_PARSE_ERROR;
         return i;
     }
