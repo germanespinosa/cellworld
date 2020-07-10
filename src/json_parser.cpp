@@ -1,279 +1,196 @@
 #include <cell_world.h>
 #include <iostream>
+#include <utility>
+#include <json_paser.h>
+#include <core.h>
+
 
 using namespace std;
 using namespace cell_world;
 
-#define CELL_PARSE_ERROR throw logic_error("Cell format should be [id, type, coordinates, location, occluded, value, icon, direction]")
-#define LOCATION_PARSE_ERROR throw logic_error("Location format should be [x,y]")
-#define COORDINATES_PARSE_ERROR throw logic_error("Coordinates format should be [x,y]")
-#define WORLD_PARSE_ERROR throw logic_error("World format should be [name, [cell_1,cell_2,...,cell_n], connection_pattern]")
-#define CONNECTION_PATTERN_PARSE_ERROR throw logic_error("Connection pattern format should be [coord_1,coord_2,...,coord_n]")
 #define STRING_PARSE_ERROR throw logic_error("decimal error converting to string")
 #define INT_PARSE_ERROR throw logic_error("decimal error converting to int")
 #define DOUBLE_PARSE_ERROR throw logic_error("decimal error converting to double")
 
 namespace cell_world {
-
     static Output_format output_format = Output_format::List;
 
     void set_output_format(Output_format o){
         output_format = o;
     }
 
-    std::ostream &operator<<(std::ostream &out, const Coordinates &c) {
-        if (output_format == Output_format::List) {
-            out << "[" << c.x << "," << c.y << "]";
-        } else {
-            out << "{\"x\":" << c.x << ",\"y\":" << c.y << "}";
-        }
-        return out;
+    std::istream &operator>>(istream &i, Json_base &o) {
+        o.json_parse(i);
+        return i;
     }
 
-    std::ostream &operator<<(std::ostream &out, const Connection_pattern &cp) {
-        out << "[";
+    std::ostream &operator<<(ostream &o, Json_base &j) {
+        j.json_write(o);
+        return o;
+    }
+
+    void Json_object::json_parse(istream &i) {
+        Json_parser p;
+        json_set_parser(p);
+        p.json_parse(i);
+    }
+
+    void Json_object::json_write(ostream &o) {
+        Json_parser p;
+        json_set_parser(p);
+        p.json_write(o);
+    }
+
+
+    void Json_parser::json_add_member(std::string name, bool mandatory, bool &variable) {
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Boolean_value, bool_members.size()});
+        bool_members.emplace_back(variable);
+    }
+
+    void Json_parser::json_add_member(std::string name, bool mandatory, double &variable) {
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Double_value, double_members.size()});
+        double_members.emplace_back(variable);
+    }
+
+    void Json_parser::json_add_member(std::string name, bool mandatory, int &variable) {
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Int_value, int_members.size()});
+        int_members.emplace_back(variable);
+    }
+
+    void Json_parser::json_add_member(std::string name, bool mandatory, unsigned int &variable) {
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Unsigned_int_value, uint_members.size()});
+        uint_members.emplace_back(variable);
+    }
+
+    void Json_parser::json_add_member(std::string name, bool mandatory, string &variable) {
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::String_value, string_members.size()});
+        string_members.emplace_back(variable);
+    }
+
+    void Json_parser::json_add_member(std::string name, bool mandatory, Json_base &variable) {
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_value, json_members.size()});
+        json_members.emplace_back(variable);
+    }
+
+    void Json_parser::json_parse(istream &i) {
+        if (Json_util::skip_blanks(i) == '{') {
+            Json_util::discard(i);
+            string name;
+            while (Json_util::skip_blanks(i) != '}') {
+                if (!Json_util::read_name(name, i)) throw logic_error("format error: field name");
+                _json_set_member_value(_json_descriptor(name), i);
+                if (Json_util::skip_blanks(i) != ',') break;
+                Json_util::discard(i);
+            }
+            if (Json_util::skip_blanks(i) != '}') {
+                throw logic_error("format error: expecting '}'");
+            }
+            Json_util::discard(i);
+        } else if (Json_util::skip_blanks(i) == '[') {
+            Json_util::discard(i);
+            bool finished = false;
+            for (auto &d:_json_descriptors) {
+                if (Json_util::skip_blanks(i) == ']') {
+                    finished = true;
+                }
+                if (!finished) {
+                    _json_set_member_value(d, i);
+                    if (Json_util::skip_blanks(i) != ',' && Json_util::skip_blanks(i) != ']') throw logic_error("format error: expecting ',' or ']'");
+                    if (Json_util::skip_blanks(i) == ',') Json_util::discard(i);
+                } else if (d.mandatory) {
+                    throw logic_error("missing mandatory fields");
+                }
+            }
+            if (Json_util::skip_blanks(i) != ']') {
+                throw logic_error("format error: expecting ']'");
+            }
+            Json_util::discard(i);
+        } else  {
+            throw logic_error("format error: expecting '{' or '[");
+        }
+    }
+
+    Json_parser::Json_descriptor &Json_parser::_json_descriptor(const string &name) {
+        for (auto &d:_json_descriptors) {
+            if (d.name == name) return d;
+        }
+        throw logic_error("format error: descriptor for field '" + name + "' not found");
+    }
+
+    void Json_parser::_json_set_member_value(Json_descriptor &d, istream &i) {
+        switch (d.type) {
+            case Json_value_type::Boolean_value :
+                bool_members[d._index].get() = Json_util::read_int(i);
+                break;
+            case Json_value_type::Unsigned_int_value :
+                uint_members[d._index].get() = Json_util::read_int(i);
+                break;
+            case Json_value_type::Int_value :
+                int_members[d._index].get() = Json_util::read_int(i);
+                break;
+            case Json_value_type::Double_value :
+                double_members[d._index].get() = Json_util::read_double(i);
+                break;
+            case Json_value_type::String_value :
+                string_members[d._index].get() =  Json_util::read_string(i);
+                break;
+            case Json_value_type::Json_value :
+                json_members[d._index].get().json_parse(i);
+                break;
+        }
+    }
+
+    void Json_parser::json_write(ostream &o) {
+        o << (output_format==Output_format::Object?"{":"[");
         bool first = true;
-        for (auto const &c: cp.pattern) {
-            if (!first) out << ",";
-            out << c;
+        for (auto &d:_json_descriptors) {
+            if (!first) o << ",";
             first = false;
-        }
-        out << "]";
-        return out;
-    }
-
-    std::ostream &operator<<(std::ostream &out, const Location &l) {
-        if (output_format == Output_format::List) {
-            out << "[" << l.x << "," << l.y << "]";
-        } else {
-            out << "{\"x\":" << l.x << ",\"y\":" << l.y << "}";
-        }
-        return out;
-    }
-
-    std::ostream &operator<<(std::ostream &out, const Cell &c) {
-        if (output_format == Output_format::List) {
-            out << "[" << c.id << ", "
-                << (int) c.cell_type << ", "
-                << c.coordinates << ", "
-                << c.location << ", "
-                << c.occluded << ", "
-                << c.value << ", "
-                << (int) c.icon << ", "
-                << c.direction << "]";
-        } else {
-            out << "{\"id\":" << c.id << ", "
-                << "\"type\":" << (int) c.cell_type << ", "
-                << "\"coordinates\":" << c.coordinates << ", "
-                << "\"location\":" << c.location << ", "
-                << "\"occluded\":" << c.occluded << ", "
-                << "\"value\":" << c.value << ", "
-                << "\"icon\":" << (int) c.icon << ", "
-                << "\"direction\":" << c.direction << "}";
-        }
-        return out;
-    }
-
-
-    std::ostream &operator<<(std::ostream &out, const World &world) {
-        if (output_format == Output_format::List) {
-            out << "[\"" << world.name << "\","
-                << world.connection_pattern << ",[";
-            for (unsigned int i=0; i<world._cells.size(); i++){
-                if (i) out << ",";
-                out << world._cells[i];
+            if (output_format == Output_format::Object) o << "\"" << d.name << "\": ";
+            switch (d.type) {
+                case Json_value_type::Boolean_value:
+                    o << bool_members[d._index].get();
+                    break;
+                case Json_value_type::Unsigned_int_value:
+                    o << uint_members[d._index].get();
+                    break;
+                case Json_value_type::Int_value:
+                    o << int_members[d._index].get();
+                    break;
+                case Json_value_type::Double_value:
+                    o << double_members[d._index].get();
+                    break;
+                case Json_value_type::String_value:
+                    o << "\"" << string_members[d._index].get() << "\"";
+                    break;
+                case Json_value_type::Json_value:
+                    json_members[d._index].get().json_write(o);
+                    break;
             }
-            out << "]]";
-        } else {
-            out << "{\"name\": \"" << world.name << "\","
-            << "\"connection_pattern\": " << world.connection_pattern << ","
-            << "\"cells\": [";
-            for (unsigned int i=0; i<world._cells.size(); i++){
-                if (i) out << ",";
-                out << world._cells[i];
-            }
-            out << "]}";
         }
-        return out;
+        o << (output_format==Output_format::Object?"}":"]");
     }
 
-    std::istream &operator>>(istream &i, Coordinates &coord) {
+    void Json_util::discard(istream &i) {
         char c;
-        int x,y;
-        char t;
-        t = skip_blanks(i);
-        if (t =='[') {
-            x = read_int(c, i);
-            if (skip_blanks(c, i) != ',') COORDINATES_PARSE_ERROR;
-            y = read_int(c, i);
-            if (skip_blanks(c, i) != ']') COORDINATES_PARSE_ERROR;
-            coord.x = x;
-            coord.y = y;
-        } else if ( t == '{') {
-            do {
-                c=' ';
-                string name = read_string(i);
-                if (( name != "x" && name != "y" ) || (skip_blanks(i)!=':')) COORDINATES_PARSE_ERROR;
-                int value = read_int(c, i);
-                if (name=="x") coord.x = value;
-                else coord.y = value;
-                t = skip_blanks(c,i);
-            } while (t == ',');
-            if (t!='}') COORDINATES_PARSE_ERROR;
-        } else COORDINATES_PARSE_ERROR;
-        return i;
+        i >> c;
     }
 
-    std::istream &operator>>(istream &i, Location &loc) {
+    char Json_util::skip_blanks(istream &i, bool s) {
+        i >> ws;
         char c;
-        double x,y;
-        char t;
-        t = skip_blanks(i);
-        if (t =='[') {
-            x = read_double(c, i);
-            if (skip_blanks(c, i) != ',') LOCATION_PARSE_ERROR;
-            y = read_double(c, i);
-            if (skip_blanks(c, i) != ']') LOCATION_PARSE_ERROR;
-            loc.x = x;
-            loc.y = y;
-        } else if ( t == '{') {
-            do {
-                c = ' ';
-                string name = read_string(i);
-                if (( name != "x" && name != "y" ) || (skip_blanks(i)!=':')) LOCATION_PARSE_ERROR;
-                double value = read_double(c, i);
-                if (name=="x") loc.x = value;
-                else loc.y = value;
-                t = skip_blanks(c,i);
-            } while (t == ',');
-            if (t!='}') LOCATION_PARSE_ERROR;
-        } else LOCATION_PARSE_ERROR;
-        return i;
-    }
-    std::istream &operator>>(istream &i, Cell &cell) {
-        char c,t;
-        t = skip_blanks( i);
-        if (t =='[') { ;
-            cell.id = read_int(c, i);
-
-            if (skip_blanks(c, i) != ',') CELL_PARSE_ERROR;
-            cell.cell_type = (Cell_type) read_int(c, i);
-
-            if (skip_blanks(c, i) != ',') CELL_PARSE_ERROR;
-            i >> cell.coordinates;
-
-
-            if (skip_blanks(i) != ',') CELL_PARSE_ERROR;
-            i >> cell.location;
-
-
-            if (skip_blanks(i) != ',') CELL_PARSE_ERROR;
-            cell.occluded = read_int(c, i);
-
-            t = skip_blanks(c, i);
-            if (t == ']') return i;
-            if (t != ',') CELL_PARSE_ERROR;
-            cell.value = read_double(c, i);
-
-            t = skip_blanks(c, i);
-            if (t == ']') return i;
-            if (t != ',') CELL_PARSE_ERROR;
-            cell.icon = (cell_world::Icon) read_int(c, i);
-
-            t = skip_blanks(c, i);
-            if (t == ']') return i;
-            if (t != ',') CELL_PARSE_ERROR;
-            i >> cell.direction;
-
-            if (skip_blanks(i) != ']') CELL_PARSE_ERROR;
-        } else if (t =='{'){
-            while (t!='}'){
-                c=' ';
-                string name = read_string(i);
-                if (skip_blanks(i)!=':') CELL_PARSE_ERROR;
-                if (name == "id"){
-                    cell.id = read_int(c,i);
-                } else if (name == "type") {
-                    cell.cell_type = (Cell_type) read_int(c,i);
-                } else if (name == "coordinates") {
-                    i >> cell.coordinates;
-                } else if (name == "location") {
-                    i >> cell.location;
-                } else if (name == "occluded") {
-                    cell.occluded = read_int(c,i);
-                } else if (name == "value") {
-                    cell.value = read_double(c,i);
-                } else if (name == "icon") {
-                    cell.icon = (Icon)read_int(c,i);
-                } else if (name == "direction") {
-                    i >> cell.direction;
-                } else CELL_PARSE_ERROR;
-                t = skip_blanks(c,i);
-            }
-        } else CELL_PARSE_ERROR;
-        return i;
+        if (s) i >> c; else c = i.peek();
+        return c;
     }
 
-    std::istream &operator>>(istream &i, Connection_pattern &cp) {
-        char t;
-        if (skip_blanks(i)!='[') CONNECTION_PATTERN_PARSE_ERROR;
-        cp.pattern.clear();
-        do {
-            Coordinates cnn;
-            i >> cnn;
-            cp.pattern.push_back(cnn);
-            t = skip_blanks(i);
-        } while (t == ',');
-        if (t != ']') CONNECTION_PATTERN_PARSE_ERROR;
-        return i;
+    char Json_util::skip_blanks(istream &i) {
+        return skip_blanks(i, false);
     }
 
-    std::istream &operator>>(istream &i, World &w) {
-        char c,t;
-        t = skip_blanks( i);
-        if (t =='[') {
-            w.name = read_string(i);
-            if (skip_blanks(i)!=',') WORLD_PARSE_ERROR;
-            i >> w.connection_pattern;
-            if (skip_blanks(i)!=',') WORLD_PARSE_ERROR;
-            if (skip_blanks(i)!='[') WORLD_PARSE_ERROR;
-            do {
-                Cell cell;
-                i >> cell;
-                w.add(cell);
-                t = skip_blanks(i);
-            } while (t == ',');
-            if (t != ']') WORLD_PARSE_ERROR;
-            if (skip_blanks(i) != ']') WORLD_PARSE_ERROR;
-        } else if(t=='{'){
-            while (t!='}'){
-                c=' ';
-                string name = read_string(i);
-                if (skip_blanks(i)!=':') CELL_PARSE_ERROR;
-                if (name == "name"){
-                    w.name = read_string(i);
-                } else if (name == "cells") {
-                    if (skip_blanks(i)!='[') WORLD_PARSE_ERROR;
-                    do {
-                        Cell cell;
-                        i >> cell;
-                        w.add(cell);
-                        t = skip_blanks(i);
-                    } while (t == ',');
-                    if (t != ']') WORLD_PARSE_ERROR;
-                } else if (name == "connection_pattern") {
-                    i >> w.connection_pattern;
-                } else CELL_PARSE_ERROR;
-                t = skip_blanks(c,i);
-            }
-            if (skip_blanks(t,i) != '}') WORLD_PARSE_ERROR;
-        } else WORLD_PARSE_ERROR;
-        return i;
-    }
-
-    string read_string(istream &i) {
+    std::string Json_util::read_string(istream &i) {
         char c;
         if (skip_blanks(i)!='"') STRING_PARSE_ERROR;
+        discard(i);
         string s;
         do {
             i >> c;
@@ -282,73 +199,26 @@ namespace cell_world {
         return s;
     }
 
-    double read_double(char &c, istream &i) {
-        do {
-            i >> c;
-        } while (c == ' ');  // read all blank spaces at the beginning
-        string s;
-        bool negative = false;
-        if (c=='-'){
-            negative = true;
-            i>>c;
-        }
-        bool decimal = false;
-        while ((c >='0' && c <='9') || c=='.'){ //copy all numbers to s
-            if (c=='.'){
-                if (decimal) DOUBLE_PARSE_ERROR;
-                decimal = true;
-            }
-            s += c;
-            i >> c;
-        }
-        if (s.empty()) DOUBLE_PARSE_ERROR;
-        if (negative)
-            return -stod(s);
-        else
-            return stod(s);
+    double Json_util::read_double(istream &i) {
+        char c = skip_blanks(i);
+        if (!isdigit(c) && c!='.' && c!='-') DOUBLE_PARSE_ERROR;
+        double r;
+        i >> r;
+        return r;
     }
 
-    int read_int(char &c, istream &i) {
-        do {
-            i >> c;
-        } while (c == ' ');  // read all blank spaces at the beginning
-        string s;
-        bool negative = false;
-        if (c=='-'){
-            negative = true;
-            i>>c;
-        }
-        while (c >='0' && c <='9') { //copy all numbers to s
-            s += c;
-            i >> c;
-        }
-        if (s.empty()) INT_PARSE_ERROR;
-        if (negative)
-            return -stoi(s);
-        else
-            return stoi(s);
+    int Json_util::read_int(istream &i) {
+        char c = skip_blanks(i);
+        if (!isdigit(c) && c!='-') INT_PARSE_ERROR;
+        int r;
+        i >> r;
+        return r;
     }
 
-    bool read_to(char d, istream &i) {
-        char c;
-        do {
-            i >> c;
-        } while (c == ' ');  // read all blank spaces
-        return c==d;
-    }
-
-    char skip_blanks(char c, istream &i) {
-        while (c == ' '){
-            i >> c;
-        }
-        return c;
-    }
-
-    char skip_blanks(istream &i) {
-        char c;
-        do {
-            i >> c;
-        } while (c == ' ' || c == '\r' || c == '\n');
-        return c;
+    bool Json_util::read_name(string &s, istream &i) {
+        s = read_string(i);
+        return skip_blanks(i, true) == ':';
     }
 }
+
+

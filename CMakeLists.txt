@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.13)
 
+set(CMAKE_CXX_STANDARD 17)
+
 project(cellworld
         VERSION 2019.1.0
         DESCRIPTION "Agent cell world simulation framework"
@@ -36,7 +38,7 @@ target_link_libraries(cellworld PUBLIC ge211)
 
 set_target_properties(cellworld
     PROPERTIES
-    CXX_STANDARD 14
+    CXX_STANDARD 17
     CXX_STANDARD_REQUIRED On
     CXX_EXTENSIONS Off
     VERSION ${PROJECT_VERSION})
@@ -72,47 +74,6 @@ find_package(CatchTests CONFIG QUIET)
 
 
 ###
-### DEBUG VERSION
-###
-
-add_library(cellworlddebug ${cellworld_files})
-
-target_link_libraries(cellworlddebug PUBLIC ge211)
-
-set_target_properties(cellworlddebug
-        PROPERTIES
-        CXX_STANDARD 14
-        CXX_STANDARD_REQUIRED On
-        CXX_EXTENSIONS Off
-        VERSION ${PROJECT_VERSION})
-
-if(MSVC)
-    target_compile_options(cellworlddebug PRIVATE /W4)
-else(MSVC)
-    target_compile_options(cellworlddebug PRIVATE -Wall -Wextra -pedantic)
-endif(MSVC)
-
-target_include_directories(cellworlddebug
-        SYSTEM INTERFACE
-        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-        $<INSTALL_INTERFACE:include>
-        ${SDL2_INCLUDE_DIRS})
-
-target_include_directories(cellworlddebug
-        PRIVATE
-        include )
-
-target_link_libraries(cellworlddebug
-        PUBLIC
-        ${SDL2_LIBRARIES}
-        ${SDL2_IMAGE_LIBRARIES}
-        ${SDL2_MIXER_LIBRARIES}
-        ${SDL2_TTF_LIBRARIES}
-        utf8-cpp)
-
-
-
-###
 ### LIBRARY INSTALLATION
 ###
 
@@ -120,15 +81,10 @@ include(GNUInstallDirs)
 
 SET(CELLWORLD_RESOURCES "${CMAKE_INSTALL_FULL_DATADIR}/cellworld/resources")
 
-target_compile_definitions(cellworlddebug PRIVATE
-        -DDEBUG=1
-        -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")
-
-
 target_compile_definitions(cellworld PRIVATE
         -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")
 
-install(TARGETS cellworld cellworlddebug EXPORT CellworldConfig
+install(TARGETS cellworld EXPORT CellworldConfig
         ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})

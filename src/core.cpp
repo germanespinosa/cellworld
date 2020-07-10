@@ -2,6 +2,8 @@
 #include <ge211.h>
 #include <iostream>
 #include <algorithm>
+#include <json_paser.h>
+
 using namespace std;
 using namespace ge211;
 
@@ -51,9 +53,22 @@ namespace cell_world {
             value(value),
             occluded(occluded),
             icon(No_icon),
-            direction({0,0}) {}
+            direction({0,0})
+            { Cell();}
 
-    Cell::Cell(): Cell(Circle,{0,0},{0.0,0.0},0,false) {}
+    Cell::Cell(){
+    }
+
+    void Cell::json_set_parser(Json_parser &p) {
+        p.json_add_member("id", true, id);
+        p.json_add_member("type", true, (int &)cell_type);
+        p.json_add_member("coordinates", true, coordinates);
+        p.json_add_member("location", true, location);
+        p.json_add_member("occluded", true, occluded);
+        p.json_add_member("value", false, value);
+        p.json_add_member("icon", false, (int &)icon);
+        p.json_add_member("direction",false,direction);
+    }
 
 
     Cell &Cell::operator=(const Cell &c) {
@@ -180,4 +195,31 @@ namespace cell_world {
         for (auto &v:values) s+=v;
         return s;
     }
+
+    Coordinates::Coordinates(int x, int y):
+        x(x),y(y){
+        Coordinates();
+    }
+
+    Coordinates::Coordinates() {
+    }
+
+    void Coordinates::json_set_parser(Json_parser &p) {
+        p.json_add_member("x",true,x);
+        p.json_add_member("y",true,y);
+    }
+
+    Location::Location(double x, double y) :
+        x(x), y(y){
+        Location();
+    }
+
+    Location::Location() {
+    }
+
+    void Location::json_set_parser(Json_parser &p) {
+        p.json_add_member("x",true,x);
+        p.json_add_member("y",true,y);
+    }
+
 }

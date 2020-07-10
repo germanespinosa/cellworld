@@ -4,14 +4,11 @@
 #include <graph.h>
 namespace cell_world {
 
-    struct Connection_pattern{
+    struct Connection_pattern: Coordinates_list{
         Connection_pattern();
         Connection_pattern(const cell_world::Connection_pattern&) = default;
         explicit Connection_pattern(std::vector<Move>);
-        std::vector<Move> pattern;
         std::vector<Move> get_candidates(Move) const;
-        const Coordinates &operator [](unsigned int);
-        unsigned int size() const;
         bool load(const std::string&);
         bool save(const std::string&) const;
         Graph get_graph(const Cell_group &) const;

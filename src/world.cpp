@@ -4,7 +4,7 @@
 #include <string>
 #include <algorithm>
 #include <utility>
-
+#include <any>
 using namespace std;
 using namespace ge211;
 
@@ -88,6 +88,15 @@ namespace cell_world {
     World::World(std::string name) : name(std::move(name)) {
     }
 
+    void World::json_set_parser(Json_parser &p) {
+        p.json_add_member("name",true,name);
+        p.json_add_member("connection_pattern",true, connection_pattern);
+        p.json_add_member("cells",true, _cells);
+    }
+
+    World::World() : World(""){
+    }
+
     Cell_group World::create_cell_group() const {
         Cell_group cg;
         for (const auto & _cell : _cells) cg.add(_cell);
@@ -132,7 +141,7 @@ namespace cell_world {
         return p;
     }
 
-    Paths World::create_paths(std::string paths_name, Paths::Path_type type) const {
+    Paths World::create_paths(const std::string paths_name, Paths::Path_type type) const {
         Paths p;
         Graph g = create_graph();
         p.type = type;
@@ -146,9 +155,8 @@ namespace cell_world {
         while (getline(file, line)) {
             Connection_pattern cp;
             cp.load_from_string(line);
-            p._next_move.push_back(cp.pattern);
+            p._next_move.push_back(cp);
         }
         return p;
     }
-
 }
