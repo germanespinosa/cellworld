@@ -2,21 +2,22 @@
 #include <any>
 
 namespace cell_world{
+
     enum class Output_format{
         List,
         Object
     };
 
-    enum class Json_value_type{
-        Boolean_value,
-        Unsigned_int_value,
-        Int_value,
-        Double_value,
-        String_value,
-        Json_value
-    };
-
     void set_output_format(Output_format);
+
+    enum class Json_value_type{
+        Json_Boolean,
+        Json_Unsigned,
+        Json_Int,
+        Json_Double,
+        Json_String,
+        Json_object
+    };
 
     struct Json_util {
         static void discard(std::istream &);
@@ -71,7 +72,7 @@ namespace cell_world{
 
     template <class T>
     struct Json_parsable_vector : std::vector<T>, Json_base {
-        static_assert(std::is_base_of<Json_object, T>::value, "Vector item type must derive from Json_object");
+        static_assert(std::is_base_of<Json_base, T>::value, "Vector item type must derive from Json_base");
         void json_parse (std::istream &i) override {
             if (Json_util::skip_blanks(i) != '[') throw std::logic_error("format error");
             Json_util::discard(i);
@@ -92,7 +93,7 @@ namespace cell_world{
             for (auto &i:*this){
                 if (!first) o << ",";
                 first = false;
-                o<<i;
+                o << i;
             }
             o<<"]";
         }

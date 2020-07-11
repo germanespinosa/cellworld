@@ -2,10 +2,13 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 
+
 project(cellworld
         VERSION 2019.1.0
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
+
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 
 ###
 ### DEPENDENCIES

@@ -4,7 +4,7 @@
 #include <cinttypes>
 #include <string>
 #include <vector>
-#include <json_paser.h>
+#include <json.h>
 
 #ifdef DEBUG
 #else
@@ -12,11 +12,11 @@
 
 namespace cell_world{
     const int Not_found = -1;
-    enum Cell_type : int{
+    enum Cell_type : int {
         Circle,
         Square
     };
-    enum Color : int {
+    enum Color : int{
         Black,
         White,
         Red,
@@ -34,7 +34,7 @@ namespace cell_world{
         Teal,
         Navy
     };
-    enum Icon : int {
+    enum Icon : int{
         No_icon,
         Arrow_icon,
         Green_arrow_icon,

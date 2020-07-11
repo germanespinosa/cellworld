@@ -1,7 +1,7 @@
 #include <cell_world.h>
 #include <iostream>
 #include <utility>
-#include <json_paser.h>
+#include <json.h>
 #include <core.h>
 
 
@@ -43,32 +43,32 @@ namespace cell_world {
 
 
     void Json_parser::json_add_member(std::string name, bool mandatory, bool &variable) {
-        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Boolean_value, bool_members.size()});
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_Boolean, bool_members.size()});
         bool_members.emplace_back(variable);
     }
 
     void Json_parser::json_add_member(std::string name, bool mandatory, double &variable) {
-        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Double_value, double_members.size()});
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_Double, double_members.size()});
         double_members.emplace_back(variable);
     }
 
     void Json_parser::json_add_member(std::string name, bool mandatory, int &variable) {
-        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Int_value, int_members.size()});
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_Int, int_members.size()});
         int_members.emplace_back(variable);
     }
 
     void Json_parser::json_add_member(std::string name, bool mandatory, unsigned int &variable) {
-        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Unsigned_int_value, uint_members.size()});
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_Unsigned, uint_members.size()});
         uint_members.emplace_back(variable);
     }
 
     void Json_parser::json_add_member(std::string name, bool mandatory, string &variable) {
-        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::String_value, string_members.size()});
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_String, string_members.size()});
         string_members.emplace_back(variable);
     }
 
     void Json_parser::json_add_member(std::string name, bool mandatory, Json_base &variable) {
-        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_value, json_members.size()});
+        _json_descriptors.push_back({std::move(name), mandatory, Json_value_type::Json_object, json_members.size()});
         json_members.emplace_back(variable);
     }
 
@@ -119,22 +119,22 @@ namespace cell_world {
 
     void Json_parser::_json_set_member_value(Json_descriptor &d, istream &i) {
         switch (d.type) {
-            case Json_value_type::Boolean_value :
+            case Json_value_type::Json_Boolean :
                 bool_members[d._index].get() = Json_util::read_int(i);
                 break;
-            case Json_value_type::Unsigned_int_value :
+            case Json_value_type::Json_Unsigned :
                 uint_members[d._index].get() = Json_util::read_int(i);
                 break;
-            case Json_value_type::Int_value :
+            case Json_value_type::Json_Int :
                 int_members[d._index].get() = Json_util::read_int(i);
                 break;
-            case Json_value_type::Double_value :
+            case Json_value_type::Json_Double :
                 double_members[d._index].get() = Json_util::read_double(i);
                 break;
-            case Json_value_type::String_value :
+            case Json_value_type::Json_String :
                 string_members[d._index].get() =  Json_util::read_string(i);
                 break;
-            case Json_value_type::Json_value :
+            case Json_value_type::Json_object :
                 json_members[d._index].get().json_parse(i);
                 break;
         }
@@ -148,22 +148,22 @@ namespace cell_world {
             first = false;
             if (output_format == Output_format::Object) o << "\"" << d.name << "\": ";
             switch (d.type) {
-                case Json_value_type::Boolean_value:
+                case Json_value_type::Json_Boolean:
                     o << bool_members[d._index].get();
                     break;
-                case Json_value_type::Unsigned_int_value:
+                case Json_value_type::Json_Unsigned:
                     o << uint_members[d._index].get();
                     break;
-                case Json_value_type::Int_value:
+                case Json_value_type::Json_Int:
                     o << int_members[d._index].get();
                     break;
-                case Json_value_type::Double_value:
+                case Json_value_type::Json_Double:
                     o << double_members[d._index].get();
                     break;
-                case Json_value_type::String_value:
+                case Json_value_type::Json_String:
                     o << "\"" << string_members[d._index].get() << "\"";
                     break;
-                case Json_value_type::Json_value:
+                case Json_value_type::Json_object:
                     json_members[d._index].get().json_write(o);
                     break;
             }
