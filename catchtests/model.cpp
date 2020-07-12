@@ -16,7 +16,7 @@ struct Test_Agent : Agent {
     void update_state(const State &) override{
         set_status(Action_ready);
     };
-    Coordinates get_move() override{
+    Coordinates get_move(const State &) override{
         return Move{1,0};
     };
     void end_episode(const State &) override{

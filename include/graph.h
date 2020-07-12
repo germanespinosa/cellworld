@@ -29,7 +29,7 @@ namespace cell_world {
         Graph &operator =(const Graph &);
         bool operator == (const Graph &) const;
         Cell_group nodes;
-        Graph invert();
+        Graph invert() const;
         friend std::ostream& operator << (std::ostream& , const Graph& );
     private:
         std::vector<Cell_group> _connections;

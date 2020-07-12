@@ -270,7 +270,7 @@ namespace cell_world {
         return r;
     }
 
-    Graph Graph::invert() {
+    Graph Graph::invert() const {
         Graph g(nodes);
         for (unsigned int i = 0; i < nodes.size(); i++) {
             auto &conn = _connections[i];
