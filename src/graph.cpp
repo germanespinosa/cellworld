@@ -7,7 +7,7 @@ namespace cell_world {
 
     Graph::Graph(const Cell_group &cell_group) :
             nodes(cell_group.free_cells()),
-            _connections(cell_group.size(), Cell_group()) {
+            _connections(nodes.size(), Cell_group()) {
     }
 
     const Cell_group &Graph::operator[](const Cell &c) const {
@@ -91,6 +91,21 @@ namespace cell_world {
             }
         }
         return result;
+    }
+
+    std::ostream &operator<<(std::ostream &out, const Graph &g) {
+        out << "{ \"cells\": " << g.nodes << ", \"connections\": [";
+        for (unsigned int i = 0; i < g._connections.size(); i ++) {
+            auto &cnn = g._connections[i];
+            out << (i?", ":"") << "[";
+            for (unsigned int j = 0; j < cnn.size(); j ++) {
+                auto cell_index =  g.nodes.find(cnn[j]);
+                out << (j?", ":"") << cell_index;
+            }
+            out << "]";
+        }
+        out << "]}";
+        return out;
     }
 
     std::vector<double> Centrality::get_eigen_centrality(Graph &graph, unsigned int max_iterations, double tolerance) {
@@ -255,7 +270,7 @@ namespace cell_world {
         return r;
     }
 
-    Graph Graph::invert() {
+    Graph Graph::invert() const {
         Graph g(nodes);
         for (unsigned int i = 0; i < nodes.size(); i++) {
             auto &conn = _connections[i];

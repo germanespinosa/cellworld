@@ -48,8 +48,8 @@ namespace cell_world{
     struct Agent{
         explicit Agent(Agent_type);
         virtual const Cell &start_episode(unsigned int) = 0;
+        virtual Move get_move(const State &) = 0;
         virtual void update_state(const State &) = 0;
-        virtual Move get_move() = 0;
         virtual double get_value();
         virtual void end_episode(const State &) = 0;
         virtual void receive_message(const Agent_message&);

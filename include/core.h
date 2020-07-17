@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include <string>
 #include <vector>
+#include <json.h>
 
 #ifdef DEBUG
 #else
@@ -11,11 +12,11 @@
 
 namespace cell_world{
     const int Not_found = -1;
-    enum Cell_type {
+    enum Cell_type : int {
         Circle,
         Square
     };
-    enum Color{
+    enum Color : int{
         Black,
         White,
         Red,
@@ -33,7 +34,7 @@ namespace cell_world{
         Teal,
         Navy
     };
-    enum Icon{
+    enum Icon : int{
         No_icon,
         Arrow_icon,
         Green_arrow_icon,
@@ -72,8 +73,10 @@ namespace cell_world{
         Custom_icon_29,
         Custom_icon_30
     };
-    struct Coordinates{
-        int x,y;
+    struct Coordinates : Json_object{
+        Coordinates ();
+        Coordinates (int x, int y);
+        int x{},y{};
         bool is_origin() const;
         int rotation() const;
         bool operator ==(const Coordinates &) const;
@@ -84,30 +87,33 @@ namespace cell_world{
         Coordinates operator -(const Coordinates &) const;
         Coordinates operator -() const;
         unsigned int manhattan(const Coordinates &) const;
-        friend std::ostream& operator<<(std::ostream& , const Coordinates& );
-        friend std::istream & operator >> (std::istream &, Coordinates &);
+        void json_set_parser(Json_parser &) override;
+    };
+
+    struct Coordinates_list : Json_parsable_vector<Coordinates>{
     };
 
     using Move = Coordinates;
 
-    struct Location{
-        double x,y;
-        bool operator ==(const Location &) const;
-        bool operator !=(const Location &) const;
-        Location operator +=(const Location &);
-        Location operator +(const Location &) const;
-        Location operator -(const Location &) const;
-        Location operator -() const;
-        Location operator *(double)const;
+    struct Location : Json_object {
+        Location();
+        Location(double x, double y);
+        double x{}, y{};
+        bool operator==(const Location &) const;
+        bool operator!=(const Location &) const;
+        Location operator+=(const Location &);
+        Location operator+(const Location &) const;
+        Location operator-(const Location &) const;
+        Location operator-() const;
+        Location operator*(double) const;
         double mod() const;
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
-        friend std::ostream& operator<<(std::ostream& , const Location& );
-        friend std::istream & operator >> (std::istream &, Location &);
+        void json_set_parser(Json_parser &) override;
     };
 
-    struct Cell{
+    struct Cell : Json_object{
         Cell();
         Cell(const cell_world::Cell&) = default;
         Cell(Cell_type, Coordinates, Location, double , bool);
@@ -121,19 +127,16 @@ namespace cell_world{
         Coordinates direction;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
-        friend std::ostream& operator<<(std::ostream& , const Cell& );
-        friend std::istream & operator >> (std::istream &, Cell&);
+        void json_set_parser(Json_parser &) override;
     };
+
+    struct Cell_list : Json_parsable_vector<Cell> {
+    };
+
     std::vector<int> histogram(std::vector<int>);
     double entropy(const std::vector<int>&);
     std::vector<unsigned int> new_index(unsigned int);
     std::vector<unsigned int> new_index(std::vector<double>, bool);
     double max(const std::vector<double> &);
     unsigned int sum(const std::vector<unsigned int>& );
-    double read_double(char &, std::istream &);
-    int read_int(char &, std::istream &);
-    std::string read_string(std::istream &);
-    bool read_to(char, std::istream &);
-    char skip_blanks(char, std::istream &);
-    char skip_blanks(std::istream &);
 }

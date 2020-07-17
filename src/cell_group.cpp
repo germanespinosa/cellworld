@@ -167,7 +167,11 @@ namespace cell_world {
     }
 
     std::ostream &operator<<(std::ostream &out, const Cell_group &cg) {
-        for (unsigned int i=0;i<cg.size();i++) out << cg[i].coordinates << " ";
+        out << "[" ;
+        for (unsigned int i=0;i<cg.size();i++) {
+            out << (i?", ":"") << cg[i].id;
+        }
+        out << "]";
         return out;
     }
 

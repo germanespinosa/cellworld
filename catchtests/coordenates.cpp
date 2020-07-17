@@ -113,20 +113,49 @@ TEST_CASE(">>5")
 }
 
 
-TEST_CASE(">>6")
-{
-    string s = " \"hello\" ";
-    stringstream s_stream(s);
-    CHECK(read_string(s_stream) == "hello");
-}
 
 TEST_CASE(">>7")
 {
-    string s = " { \"x\": 41 , \"y\": -53 }";
-    stringstream s_stream(s);
+    stringstream s_stream(R"( { "x": 41 , "y": -53 })");
     Coordinates c0;
     Coordinates c1 {41,-53};
     s_stream >> c0;
     CHECK(c0==c1);
 }
 
+TEST_CASE("goup>>1")
+{
+    stringstream s_stream(R"( [{ "x": 41 , "y": -53 }, { "x": 1 , "y": -3 }])");
+    Coordinates c0 {41,-53};
+    Coordinates c1 {1,-3};
+    Coordinates_list cg;
+    s_stream >> cg;
+    CHECK(cg.size() == 2);
+    CHECK(c0==cg[0]);
+    CHECK(c1==cg[1]);
+}
+
+
+TEST_CASE(">>8")
+{
+    string s = " [  { \"x\": 41 , \"y\": -53 }, { \"x\": 1 , \"y\": -3 } , { \"x\": 4 , \"y\": -5 } ] ";
+    stringstream s_stream(s);
+    Coordinates c0 {41,-53};;
+    Coordinates c1 {1,-3};
+    Coordinates c2 {4,-5};
+    Coordinates_list cg;
+    s_stream >> cg;
+    CHECK(cg.size()==3);
+    CHECK(cg[0]==c0);
+    CHECK(cg[1]==c1);
+    CHECK(cg[2]==c2);
+}
+
+TEST_CASE(">>9")
+{
+    string s = " [   ] ";
+    stringstream s_stream(s);
+    Coordinates_list cg;
+    s_stream >> cg;
+    CHECK(cg.size() == 0);
+}

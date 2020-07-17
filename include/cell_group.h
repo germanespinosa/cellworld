@@ -36,9 +36,9 @@ namespace cell_world{
         const Cell &operator [](unsigned int) const;
         const Cell &random_cell () const;
         friend std::ostream& operator<<(std::ostream& , const Cell_group& );
-    //private:
+    private:
         std::vector<std::reference_wrapper<const Cell>> _cells;
-        std::vector< int> _id_index;
+        std::vector<int> _id_index;
         std::string _file_name;
         const Cell & _get_cell(unsigned int) const;
         const std::string _extension = ".group";
