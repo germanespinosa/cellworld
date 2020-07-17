@@ -1,9 +1,9 @@
-#include <connection.h>
+#include <cell_world/connection.h>
 #include <iostream>
 #include <fstream>
 #include <cmath>
 #include <utility>
-#include <chance.h>
+#include <cell_world/chance.h>
 
 using namespace std;
 

@@ -1,5 +1,5 @@
 #pragma once
-#include <core.h>
+#include <cell_world/core.h>
 
 namespace cell_world{
     struct Cell_group{

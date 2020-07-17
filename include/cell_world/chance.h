@@ -1,5 +1,5 @@
 #pragma once
-#include <core.h>
+#include <cell_world/core.h>
 #define CELL_WORLD_CHANCE_MAX RAND_MAX
 #define CELL_WORLD_CHANCE rand()
 namespace cell_world{

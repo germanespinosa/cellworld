@@ -1,4 +1,4 @@
-#include <visibility.h>
+#include <cell_world/visibility.h>
 
 using namespace std;
 

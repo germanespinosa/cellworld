@@ -1,4 +1,4 @@
-#include <model.h>
+#include <cell_world/model.h>
 #include <ge211.h>
 #include <iostream>
 

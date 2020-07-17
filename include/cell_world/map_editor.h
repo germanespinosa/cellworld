@@ -1,9 +1,9 @@
 #pragma once
-#include <model.h>
-#include <view.h>
-#include <connection.h>
-#include <visibility.h>
-#include <graph.h>
+#include <cell_world/model.h>
+#include <cell_world/view.h>
+#include <cell_world/connection.h>
+#include <cell_world/visibility.h>
+#include <cell_world/graph.h>
 
 namespace cell_world {
     class Map_editor : public ge211::Abstract_game {

@@ -1,6 +1,6 @@
-#include <paths.h>
+#include <cell_world/paths.h>
 #include <fstream>
-#include <connection.h>
+#include <cell_world/connection.h>
 
 using namespace std;
 

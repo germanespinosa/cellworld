@@ -1,6 +1,6 @@
 #pragma once
-#include <core.h>
-#include <cell_group.h>
+#include <cell_world/core.h>
+#include <cell_world/cell_group.h>
 
 namespace cell_world {
     struct Graph {

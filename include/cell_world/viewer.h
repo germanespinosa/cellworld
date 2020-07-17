@@ -1,6 +1,6 @@
 #pragma once
-#include <model.h>
-#include <view.h>
+#include <cell_world/model.h>
+#include <cell_world/view.h>
 
 namespace cell_world{
 

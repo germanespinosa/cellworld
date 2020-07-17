@@ -1,4 +1,4 @@
-#include <view.h>
+#include <cell_world/view.h>
 #include <iostream>
 #include <fstream>
 

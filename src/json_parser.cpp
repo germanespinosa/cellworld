@@ -1,8 +1,8 @@
 #include <cell_world.h>
 #include <iostream>
 #include <utility>
-#include <json.h>
-#include <core.h>
+#include <cell_world/json.h>
+#include <cell_world/core.h>
 
 
 using namespace std;

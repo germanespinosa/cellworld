@@ -1,5 +1,5 @@
-#include <graph.h>
-#include <chance.h>
+#include <cell_world/graph.h>
+#include <cell_world/chance.h>
 
 using namespace std;
 

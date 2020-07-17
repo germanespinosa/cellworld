@@ -1,4 +1,4 @@
-#include <viewer.h>
+#include <cell_world/viewer.h>
 
 using namespace std;
 namespace cell_world {

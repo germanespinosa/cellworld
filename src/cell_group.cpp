@@ -1,9 +1,9 @@
-#include <cell_group.h>
+#include <cell_world/cell_group.h>
 #include <fstream>
 #include <string>
 #include <algorithm>
 #include <random>
-#include <chance.h>
+#include <cell_world/chance.h>
 
 using namespace std;
 using namespace ge211;

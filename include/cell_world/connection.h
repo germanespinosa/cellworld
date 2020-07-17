@@ -1,7 +1,7 @@
 #pragma once
-#include <core.h>
-#include <cell_group.h>
-#include <graph.h>
+#include <cell_world/core.h>
+#include <cell_world/cell_group.h>
+#include <cell_world/graph.h>
 namespace cell_world {
 
     struct Connection_pattern: Coordinates_list{
