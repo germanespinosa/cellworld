@@ -48,8 +48,7 @@ namespace cell_world {
             coordinates(coordinates),
             location(location),
             value(value),
-            occluded(occluded),
-            direction({0,0})
+            occluded(occluded)
             { Cell();}
 
     Cell::Cell(){

@@ -57,10 +57,6 @@ namespace cell_world {
         return cg;
     }
 
-    void World::set_direction(unsigned int index, const Coordinates &direction) {
-        cells[index].direction = direction;
-    }
-
     Graph World::create_graph() const {
         return connection_pattern.get_graph(create_cell_group());
     }

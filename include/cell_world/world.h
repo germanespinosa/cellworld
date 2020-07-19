@@ -14,7 +14,6 @@ namespace cell_world{
         Cell &operator[](const unsigned int& );
         void set_occlusion(unsigned int, bool);
         void set_value(unsigned int, double);
-        void set_direction(unsigned int, const Coordinates &);
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const std::vector<unsigned int>&) const;
         Cell_group create_cell_group(const std::string&) const;

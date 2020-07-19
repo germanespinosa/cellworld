@@ -1,6 +1,7 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
+#include<sstream>
 
 using namespace cell_world;
 using namespace std;
@@ -22,7 +23,7 @@ TEST_CASE("World")
 TEST_CASE("World connections")
 {
     World w;
-    string s ("{\"name\":\"test\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}}]}");
+    string s ("{\"name\":\"test\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0}]}");
     s >> w;
     CHECK(w.name=="test");
     CHECK(w.size()==4);
@@ -32,63 +33,43 @@ TEST_CASE("World connections")
 
 TEST_CASE("world>>1")
 {
-    string s ("{\"name\":\"w\",\"connection_pattern\":[{\"x\":-1,\"y\":1},{\"x\":2,\"y\":3}],\"cells\":["
-              "{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},"
-              "{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},"
-              "{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}}]}");
-    string s = "[\"w\",[[-1,1],[2,3]],[";
-    s+="[0,1,[4,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]],";
-    s+="[1,0,[5,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]],";
-    s+="[2,1,[6,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]]";
-    s+="]]";
+    string s = "{\"name\":\"w\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[";
+    s+="{\"id\":0,\"cell_type\":1,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":0.5,\"y\":1.5},\"occluded\":1,\"value\":-10.5},";
+    s+="{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":2},\"location\":{\"x\":1.5,\"y\":2.5},\"occluded\":0,\"value\":-20.5},";
+    s+="{\"id\":2,\"cell_type\":1,\"coordinates\":{\"x\":2,\"y\":3},\"location\":{\"x\":2.5,\"y\":3.5},\"occluded\":1,\"value\":30.5},";
+    s+="{\"id\":3,\"cell_type\":1,\"coordinates\":{\"x\":3,\"y\":4},\"location\":{\"x\":3.5,\"y\":4.5},\"occluded\":0,\"value\":40.5}]}";
     stringstream s_stream(s);
     World w("w");
     s_stream >> w;
     CHECK(w.name=="w");
-    CHECK(w.size()==3);
+    CHECK(w.size()==4);
     CHECK(w.connection_pattern.size()==2);
     auto c0 = w[0];
     CHECK(c0.id==0);
     CHECK(c0.cell_type==Square);
-    CHECK(c0.coordinates==Coordinates{4,5});
-    CHECK(c0.location==Location{41.5,-5.324});
+    CHECK(c0.coordinates==Coordinates{0,1});
+    CHECK(c0.location==Location{0.5,1.5});
     CHECK(c0.occluded);
-    CHECK(c0.value==35.4);
-    CHECK(c0.icon == Icon::Custom_icon_3);
-    CHECK(c0.direction==Coordinates{-1,-5});
+    CHECK(c0.value==-10.5);
     auto c1 = w[1];
     CHECK(c1.id==1);
     CHECK(c1.cell_type==Circle);
-    CHECK(c1.coordinates==Coordinates{5,5});
-    CHECK(c1.location==Location{41.5,-5.324});
-    CHECK(c1.occluded);
-    CHECK(c1.value==35.4);
-    CHECK(c1.icon == Icon::Custom_icon_3);
-    CHECK(c1.direction==Coordinates{-1,-5});
+    CHECK(c1.coordinates==Coordinates{1,2});
+    CHECK(c1.location==Location{1.5,2.5});
+    CHECK(!c1.occluded);
+    CHECK(c1.value==-20.5);
     auto c2 = w[2];
     CHECK(c2.id==2);
     CHECK(c2.cell_type==Square);
-    CHECK(c2.coordinates==Coordinates{6,5});
-    CHECK(c2.location==Location{41.5,-5.324});
+    CHECK(c2.coordinates==Coordinates{2,3});
+    CHECK(c2.location==Location{2.5,3.5});
     CHECK(c2.occluded);
-    CHECK(c2.value==35.4);
-    CHECK(c2.icon == Icon::Custom_icon_3);
-    CHECK(c2.direction==Coordinates{-1,-5});
+    CHECK(c2.value==30.5);
+    auto c3 = w[3];
+    CHECK(c3.id==3);
+    CHECK(c3.cell_type==Square);
+    CHECK(c3.coordinates==Coordinates{3,4});
+    CHECK(c3.location==Location{3.5,4.5});
+    CHECK(!c3.occluded);
+    CHECK(c3.value==40.5);
 }
-
-/*
-TEST_CASE("world>>2")
-{
-    string s = "{\"name\":\"w\",\"cells\":[";
-    s+="[0,1,[4,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]],";
-    s+="[1,0,[5,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]],";
-    s+="[2,1,[6,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]]";
-    s+="],\"connection_pattern\":[[1,1],[2,3]]}";
-    stringstream s_stream(s);
-    World w("w");
-    s_stream >> w;
-    CHECK(w.name=="w");
-    CHECK(w.size()==3);
-    CHECK(w.connection_pattern.size()==2);
-}
-*/
