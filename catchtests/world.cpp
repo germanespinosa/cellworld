@@ -29,9 +29,13 @@ TEST_CASE("World connections")
     CHECK(w.connection_pattern.size()==2);
 }
 
-/*
+
 TEST_CASE("world>>1")
 {
+    string s ("{\"name\":\"w\",\"connection_pattern\":[{\"x\":-1,\"y\":1},{\"x\":2,\"y\":3}],\"cells\":["
+              "{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},"
+              "{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},"
+              "{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}}]}");
     string s = "[\"w\",[[-1,1],[2,3]],[";
     s+="[0,1,[4,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]],";
     s+="[1,0,[5,5],[41.5,-5.324],1, 35.4, 103, [-1,-5]],";
@@ -72,6 +76,7 @@ TEST_CASE("world>>1")
     CHECK(c2.direction==Coordinates{-1,-5});
 }
 
+/*
 TEST_CASE("world>>2")
 {
     string s = "{\"name\":\"w\",\"cells\":[";

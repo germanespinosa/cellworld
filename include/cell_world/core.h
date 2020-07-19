@@ -73,7 +73,6 @@ namespace cell_world{
         Location location;
         double value;
         bool occluded;
-        Coordinates direction;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
         Json_set_builder({
@@ -83,7 +82,6 @@ namespace cell_world{
             Json_add_member(location, true);
             Json_add_member(occluded, true);
             Json_add_member(value, false);
-            Json_add_member(direction,false);
         })
     };
 
