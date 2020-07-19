@@ -1,13 +1,13 @@
 #include<catch.h>
 #include<cell_world.h>
 #include <sstream>
-/*
+
 using namespace cell_world;
 using namespace std;
 
 TEST_CASE("cell>>1")
 {
-    string s = "{\"id\":50,\"cell_type\":1,\"coordinates\":[4,5],\"location\":[41.5,-5.324],\"occludded\":1, \"value\":35.4}";
+    string s = "{\"id\":50,\"cell_type\":1,\"coordinates\":{\"x\":4,\"y\":5},\"location\":{\"x\":41.5,\"y\":-5.324},\"occluded\":1, \"value\":35.4}";
     stringstream s_stream(s);
     Cell c0;
     s_stream >> c0;
@@ -17,37 +17,12 @@ TEST_CASE("cell>>1")
     CHECK(c0.location==Location{41.5,-5.324});
     CHECK(c0.occluded);
     CHECK(c0.value==35.4);
-}
-/*
-TEST_CASE("cell>>2")
-{
-    string s = "[50,1,{\"x\":4,\"y\":5},{\"y\":-5.324, \"x\":41.5},1, 35.4, 103, [-1,-5]]";
-    stringstream s_stream(s);
-    Cell c0;
-    s_stream >> c0;
-    CHECK(c0.id==50);
-    CHECK(c0.cell_type==Square);
-    CHECK(c0.coordinates==Coordinates{4,5});
-    CHECK(c0.location==Location{41.5,-5.324});
-    CHECK(c0.occluded);
-    CHECK(c0.value==35.4);
-    CHECK(c0.icon == Icon::Custom_icon_3);
-    CHECK(c0.direction==Coordinates{-1,-5});
 }
 
-TEST_CASE("cell>>3")
+TEST_CASE("cell>>2")
 {
-    string s = "{\"type\":1, \"id\":50,\"coordinates\": {\"x\":4,\"y\":5}, \"location\":{\"y\":-5.324, \"x\":41.5}, \"occluded\": 1, \"value\": 35.4, \"icon\": 103, \"direction\" :[-1,-5]}";
+    string s = "{\"id\":50,\"type\":1,\"coordinates\":{\"x\":4,\"y\":5},\"location\":{\"x\":41.5,\"y\":-5.324},\"occluded\":1, \"value\":35.4}";
     stringstream s_stream(s);
     Cell c0;
-    s_stream >> c0;
-    CHECK(c0.id==50);
-    CHECK(c0.cell_type==Square);
-    CHECK(c0.coordinates==Coordinates{4,5});
-    CHECK(c0.location==Location{41.5,-5.324});
-    CHECK(c0.occluded);
-    CHECK(c0.value==35.4);
-    CHECK(c0.icon == Icon::Custom_icon_3);
-    CHECK(c0.direction==Coordinates{-1,-5});
+    CHECK_THROWS(s_stream >> c0);
 }
-*/
