@@ -185,6 +185,9 @@ namespace cell_world {
     }
 
     Cell_reference::Cell_reference(const Cell &cell):
-            std::reference_wrapper<const Cell>(cell),
-            id(cell.id){ }
+            std::reference_wrapper<const Cell>(cell){ }
+
+    void Cell_reference::json_write(ostream &o) const {
+        o << this->get().id;
+    }
 }
