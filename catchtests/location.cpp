@@ -1,5 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
+#include <sstream>
 
 using namespace cell_world;
 using namespace std;
@@ -44,7 +45,7 @@ TEST_CASE("Location dist")
 
 TEST_CASE("location>>1")
 {
-    string s = "[41.5,-5.324]";
+    string s = "{ \"x\":41.5,\"y\":-5.324}";
     stringstream s_stream(s);
     Location c0;
     Location c1 {41.5,-5.324};

@@ -1,10 +1,9 @@
 #pragma once
-#include <ge211.h>
 #include <iostream>
 #include <cinttypes>
 #include <string>
 #include <vector>
-#include <cell_world/json.h>
+#include <json_cpp.h>
 
 #ifdef DEBUG
 #else
@@ -16,64 +15,7 @@ namespace cell_world{
         Circle,
         Square
     };
-    enum Color : int{
-        Black,
-        White,
-        Red,
-        Lime,
-        Blue,
-        Yellow,
-        Cyan,
-        Magenta,
-        Silver,
-        Gray,
-        Maroon,
-        Olive,
-        Green,
-        Purple,
-        Teal,
-        Navy
-    };
-    enum Icon : int{
-        No_icon,
-        Arrow_icon,
-        Green_arrow_icon,
-        Prey_icon,
-        Predator_icon,
-        Bridge_icon,
-        Custom_icon_0 = 100,
-        Custom_icon_1,
-        Custom_icon_2,
-        Custom_icon_3,
-        Custom_icon_4,
-        Custom_icon_5,
-        Custom_icon_6,
-        Custom_icon_7,
-        Custom_icon_8,
-        Custom_icon_9,
-        Custom_icon_10,
-        Custom_icon_11,
-        Custom_icon_12,
-        Custom_icon_13,
-        Custom_icon_14,
-        Custom_icon_15,
-        Custom_icon_16,
-        Custom_icon_17,
-        Custom_icon_18,
-        Custom_icon_19,
-        Custom_icon_20,
-        Custom_icon_21,
-        Custom_icon_22,
-        Custom_icon_23,
-        Custom_icon_24,
-        Custom_icon_25,
-        Custom_icon_26,
-        Custom_icon_27,
-        Custom_icon_28,
-        Custom_icon_29,
-        Custom_icon_30
-    };
-    struct Coordinates : Json_object{
+    struct Coordinates : json_cpp::Json_object{
         Coordinates ();
         Coordinates (int x, int y);
         int x{},y{};
@@ -81,21 +23,24 @@ namespace cell_world{
         int rotation() const;
         bool operator ==(const Coordinates &) const;
         bool operator !=(const Coordinates &) const;
-        Coordinates &operator =(const std::string &);
         Coordinates operator +=(const Coordinates &);
         Coordinates operator +(const Coordinates &) const;
         Coordinates operator -(const Coordinates &) const;
         Coordinates operator -() const;
         unsigned int manhattan(const Coordinates &) const;
-        void json_set_parser(Json_parser &) override;
+        Json_set_builder({
+            Json_add_member(x,true);
+            Json_add_member(y,true);
+        })
     };
 
-    struct Coordinates_list : Json_parsable_vector<Coordinates>{
-    };
+    using Coordinates_list = json_cpp::Json_vector<Coordinates>;
 
     using Move = Coordinates;
 
-    struct Location : Json_object {
+    using Move_list = json_cpp::Json_vector<Move>;
+
+    struct Location : json_cpp::Json_object {
         Location();
         Location(double x, double y);
         double x{}, y{};
@@ -110,10 +55,15 @@ namespace cell_world{
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
-        void json_set_parser(Json_parser &) override;
+        Json_set_builder({
+            Json_add_member(x,true);
+            Json_add_member(y,true);
+        })
     };
 
-    struct Cell : Json_object{
+    using Location_list = json_cpp::Json_vector<Location>;
+
+    struct Cell : json_cpp::Json_object{
         Cell();
         Cell(const cell_world::Cell&) = default;
         Cell(Cell_type, Coordinates, Location, double , bool);
@@ -123,15 +73,21 @@ namespace cell_world{
         Location location;
         double value;
         bool occluded;
-        Icon icon;
         Coordinates direction;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
-        void json_set_parser(Json_parser &) override;
+        Json_set_builder({
+            Json_add_member(id, true);
+            Json_add_member(cell_type, true);
+            Json_add_member(coordinates, true);
+            Json_add_member(location, true);
+            Json_add_member(occluded, true);
+            Json_add_member(value, false);
+            Json_add_member(direction,false);
+        })
     };
 
-    struct Cell_list : Json_parsable_vector<Cell> {
-    };
+    using Cell_list = json_cpp::Json_vector<Cell>;
 
     std::vector<int> histogram(std::vector<int>);
     double entropy(const std::vector<int>&);

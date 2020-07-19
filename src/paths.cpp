@@ -70,23 +70,15 @@ namespace cell_world {
         return _next_move[si][di];
     }
 
-    bool Paths::save(const string &name) const {
-        string file_path = name + "_" + _type_string(type) + _extension;
-        std::ofstream file;
-        file.open(file_path.c_str());
-        for (auto &nmv:_next_move) {
-            Connection_pattern cp(nmv);
-            file << cp.save_to_string() << endl;
-        }
-        return false;
-    }
-
-    bool Paths::save() const {
-        return save(_name);
-    }
-
     void Paths::_init(unsigned int size) {
-        _next_move = vector<vector<Move>>(size, vector<Move>(size, Move{0, 0}));
+        _next_move.clear();
+        for (unsigned int x=0;x<size;x++){
+            Move_list ml;
+            for (unsigned int y=0;y<size;y++){
+                ml.push_back({0, 0});
+            }
+            _next_move.emplace_back(ml);
+        }
     }
 
     std::string Paths::_type_string(Paths::Path_type type) {

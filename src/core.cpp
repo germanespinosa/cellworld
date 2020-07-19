@@ -1,11 +1,8 @@
 #include <cell_world/core.h>
-#include <ge211.h>
-#include <iostream>
 #include <algorithm>
-#include <cell_world/json.h>
+#include <cmath>
 
 using namespace std;
-using namespace ge211;
 
 namespace cell_world {
 
@@ -52,24 +49,11 @@ namespace cell_world {
             location(location),
             value(value),
             occluded(occluded),
-            icon(No_icon),
             direction({0,0})
             { Cell();}
 
     Cell::Cell(){
     }
-
-    void Cell::json_set_parser(Json_parser &p) {
-        p.json_add_member("id", true, id);
-        p.json_add_member("type", true, (int &)cell_type);
-        p.json_add_member("coordinates", true, coordinates);
-        p.json_add_member("location", true, location);
-        p.json_add_member("occluded", true, occluded);
-        p.json_add_member("value", false, value);
-        p.json_add_member("icon", false, (int &)icon);
-        p.json_add_member("direction",false,direction);
-    }
-
 
     Cell &Cell::operator=(const Cell &c) {
         cell_type = c.cell_type;
@@ -161,22 +145,6 @@ namespace cell_world {
         return abs((l2.y-l1.y) * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(pow(l2.y-l1.y,2)+pow(l2.x-l1.x,2));
     }
 
-    Coordinates &Coordinates::operator=(const string &str) {
-        string s;
-        for (auto c : str) if ((c>='0' && c<='9') || c==',' || c=='-') s += c;
-        stringstream s_stream(s);
-        if (s_stream.good()) {
-            string substr;
-            getline(s_stream, substr, ','); //get first string delimited by comma
-            x = stoi(substr);
-            if (s_stream.good()) {
-                getline(s_stream, substr, ','); //get first string delimited by comma
-                y = stoi(substr);
-            }
-        }
-        return *this;
-    }
-
     unsigned int Coordinates::manhattan(const Coordinates &c) const {
         return abs(c.x-x) + abs(c.y-y);
     }
@@ -204,22 +172,12 @@ namespace cell_world {
     Coordinates::Coordinates() {
     }
 
-    void Coordinates::json_set_parser(Json_parser &p) {
-        p.json_add_member("x",true,x);
-        p.json_add_member("y",true,y);
-    }
-
     Location::Location(double x, double y) :
         x(x), y(y){
         Location();
     }
 
     Location::Location() {
-    }
-
-    void Location::json_set_parser(Json_parser &p) {
-        p.json_add_member("x",true,x);
-        p.json_add_member("y",true,y);
     }
 
 }

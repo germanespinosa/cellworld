@@ -1,41 +1,19 @@
 #include <cell_world/cell_group.h>
-#include <fstream>
 #include <string>
 #include <algorithm>
 #include <random>
 #include <cell_world/chance.h>
 
 using namespace std;
-using namespace ge211;
 
 namespace cell_world {
-
-    unsigned int Cell_group::size() const {
-        return _cells.size();
-    }
 
     const Cell &Cell_group::operator[](unsigned int index) const {
         return _get_cell(index);
     }
 
-    bool Cell_group::save(const std::string &name) const {
-        string file_path = name + _extension;
-        std::ofstream file;
-        file.open(file_path.c_str());
-        for (auto _cell_ref : _cells) {
-            file << _cell_ref.get().id;
-            file << std::endl;
-        }
-        return true;
-    }
-
-    bool Cell_group::save() const {
-        bool res = save(_file_name);
-        return res;
-    }
-
     void Cell_group::clear() {
-        _cells.clear();
+        clear();
         _id_index.clear();
     }
 
@@ -50,7 +28,7 @@ namespace cell_world {
     }
 
     const Cell &Cell_group::_get_cell(unsigned int index) const {
-        return _cells[index].get();
+        return (*this)[index];
     }
 
     bool Cell_group::contains(unsigned int cell_id) const {
@@ -87,8 +65,8 @@ namespace cell_world {
     bool Cell_group::add(const Cell &cell) {
         if (contains(cell.id)) return false;
         while (_id_index.size() <= cell.id) _id_index.push_back(Not_found);
-        _id_index[cell.id] = _cells.size();
-        _cells.emplace_back(cell);
+        _id_index[cell.id] = size();
+        emplace_back(cell);
         return true;
     }
 
@@ -103,7 +81,7 @@ namespace cell_world {
     }
 
     double Cell_group::distance(const unsigned int s, const unsigned int d) const {
-        return distance(_cells[s].get(), _cells[d].get());
+        return distance((*this)[s], (*this)[d]);
     }
 
     Cell_group Cell_group::operator+(const Cell_group &cg) {
@@ -156,28 +134,19 @@ namespace cell_world {
 
     Cell_group Cell_group::occluded_cells() const {
         Cell_group cg;
-        for (auto &c:_cells) if (c.get().occluded) cg.add(c.get());
+        for (auto &c:*this) if (c.get().occluded) cg.add(c.get());
         return cg;
     }
 
     Cell_group Cell_group::free_cells() const {
         Cell_group cg;
-        for (auto &c:_cells) if (!c.get().occluded) cg.add(c.get());
+        for (auto &c:*this) if (!c.get().occluded) cg.add(c.get());
         return cg;
-    }
-
-    std::ostream &operator<<(std::ostream &out, const Cell_group &cg) {
-        out << "[" ;
-        for (unsigned int i=0;i<cg.size();i++) {
-            out << (i?", ":"") << cg[i].id;
-        }
-        out << "]";
-        return out;
     }
 
     vector<double> Cell_group::get_distances(const Cell &bc) const {
         vector<double> d;
-        for (auto &c:_cells) d.push_back(bc.location.dist(c.get().location));
+        for (auto &c:*this) d.push_back(bc.location.dist(c.get().location));
         return d;
     }
 
@@ -192,7 +161,7 @@ namespace cell_world {
     }
 
     const Cell &Cell_group::random_cell() const {
-        return _cells[Chance::dice(_cells.size())].get();
+        return (*this)[Chance::dice(this->size())];
     }
 
     Map::Map(const Cell_group &group)
@@ -214,4 +183,8 @@ namespace cell_world {
     const Cell &Map::operator[](const Coordinates &c) const {
         return _group[find(c)];
     }
+
+    Cell_reference::Cell_reference(const Cell &cell):
+            std::reference_wrapper<const Cell>(cell),
+            id(cell.id){ }
 }

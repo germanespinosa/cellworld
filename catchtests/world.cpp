@@ -1,6 +1,7 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
+/*
 using namespace cell_world;
 using namespace std;
 TEST_CASE("World")
@@ -102,3 +103,4 @@ TEST_CASE("world>>2")
     CHECK(w.size()==3);
     CHECK(w.connection_pattern.size()==2);
 }
+*/

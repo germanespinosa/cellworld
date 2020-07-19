@@ -1,6 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
-
+/*
 using namespace cell_world;
 
 TEST_CASE("cell_group")
@@ -33,3 +33,4 @@ TEST_CASE("cell_group")
     CHECK(c2 == t[2]);
     CHECK(c3 == t[3]);
 }
+ */

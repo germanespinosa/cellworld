@@ -1,6 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
-
+/*
 using namespace cell_world;
 using namespace std;
 
@@ -37,4 +37,4 @@ TEST_CASE("Visibility")
     CHECK(vi[c1].size() == 4);
     CHECK(vi[c2].size() == 4);
     CHECK(vi[c3].size() == 4);
-}
+}*/

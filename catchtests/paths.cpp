@@ -1,7 +1,7 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
-
+/*
 using namespace cell_world;
 using namespace std;
 
@@ -237,3 +237,4 @@ TEST_CASE("euclidean_blocked_save")
     Paths np = w.create_paths("test_path",Paths::Path_type::euclidean);
     CHECK(p == np);
 }
+*/

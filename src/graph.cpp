@@ -1,5 +1,6 @@
 #include <cell_world/graph.h>
 #include <cell_world/chance.h>
+#include <cmath>
 
 using namespace std;
 

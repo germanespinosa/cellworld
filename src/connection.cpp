@@ -15,36 +15,6 @@ namespace cell_world {
         return c;
     }
 
-    bool Connection_pattern::load(const std::string &name) {
-        string file_name = name + _extension;
-        clear();
-        std::ifstream file;
-        file.open(file_name.c_str());
-        if (!file.good()) return false;
-        string line;
-        while (getline(file, line)) {
-            istringstream ss(line);
-            int cx, cy;
-            ss >> cx;
-            ss >> cy;
-            push_back({(int8_t) cx, (int8_t) cy});
-        }
-        return true;
-    }
-
-    bool Connection_pattern::save(const std::string &name) const {
-        string file_name = name + _extension;
-        std::ofstream file;
-        file.open(file_name.c_str());
-        if (!file.good()) return false;
-        for (const auto c : (*this)) {
-            file
-                    << (int) c.x << " "
-                    << (int) c.y << std::endl;
-        }
-        return true;
-    }
-
     Connection_pattern::Connection_pattern() = default;
 
     Connection_pattern::Connection_pattern(std::vector<Coordinates> pattern)
@@ -58,27 +28,6 @@ namespace cell_world {
             for (auto p:cp) push_back(p);
         }
         return *this;
-    }
-
-    bool Connection_pattern::load_from_string(const std::string &line) {
-        istringstream ss(line);
-        clear();
-        while (!ss.eof()) {
-            int cx = -1000, cy = -1000;
-            ss >> cx;
-            ss >> cy;
-            if (cx == (int) ((int8_t) cx)) {
-                push_back({(int8_t) cx, (int8_t) cy});
-            } else return false;
-        }
-        return true;
-    }
-
-    std::string Connection_pattern::save_to_string() const {
-        std::stringstream fmt;
-        for (auto &p:(*this))
-            fmt << (int) p.x << " " << (int) p.y << " ";
-        return fmt.str();
     }
 
     Graph Connection_pattern::get_graph(const Cell_group &cg) const {
@@ -100,19 +49,6 @@ namespace cell_world {
         Connection_pattern cp;
         for (unsigned int i = 0; i < cg.size(); i++) cp.push_back(cg[i].coordinates - c.coordinates);
         return cp;
-    }
-
-    Connection_pattern &Connection_pattern::operator=(const string &s) {
-        stringstream s_stream(s);
-        clear();
-        while (s_stream.good()) {
-            string substr;
-            getline(s_stream, substr, ';'); //get first string delimited by comma
-            Coordinates c{0, 0};
-            c = substr;
-            push_back(c);
-        }
-        return *this;
     }
 
     Move Connection_pattern::random_move() {

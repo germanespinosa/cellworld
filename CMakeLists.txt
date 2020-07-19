@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 
+find_package( Json-cpp CONFIG QUIET )
 
 project(cellworld
         VERSION 2019.1.0
@@ -11,9 +12,7 @@ project(cellworld
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 
 ###
-### DEPENDENCIES
-###
-find_package(Ge211 CONFIG)
+
 
 ###
 ### MAIN LIBRARY SETUP
@@ -24,20 +23,15 @@ set(cellworld_files
     src/cell_group.cpp
     src/connection.cpp
     src/core.cpp
-    src/map_editor.cpp
     src/model.cpp
     src/chance.cpp
-    src/simulation.cpp
-    src/view.cpp
     src/visibility.cpp
     src/world.cpp
     src/graph.cpp
-    src/viewer.cpp
     src/paths.cpp
-    src/json_parser.cpp)
+    src/state.cpp)
 
-add_library(cellworld ${cellworld_files} catchtests/paths.cpp)
-target_link_libraries(cellworld PUBLIC ge211)
+add_library(cellworld ${cellworld_files})
 
 set_target_properties(cellworld
     PROPERTIES
@@ -55,8 +49,7 @@ endif(MSVC)
 target_include_directories(cellworld
     SYSTEM INTERFACE
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>
-    ${SDL2_INCLUDE_DIRS})
+    $<INSTALL_INTERFACE:include>)
 
 target_include_directories(cellworld
     PRIVATE
@@ -64,11 +57,7 @@ target_include_directories(cellworld
 
 target_link_libraries(cellworld
     PUBLIC
-    ${SDL2_LIBRARIES}
-    ${SDL2_IMAGE_LIBRARIES}
-    ${SDL2_MIXER_LIBRARIES}
-    ${SDL2_TTF_LIBRARIES}
-    utf8-cpp)
+    json-cpp)
 
 ###
 ### TESTS

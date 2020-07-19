@@ -1,6 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
-
+/*
 using namespace cell_world;
 
 TEST_CASE("Pattern load from string")
@@ -25,3 +25,4 @@ TEST_CASE("Connection_pattern =")
     CHECK(cp.save_to_string() == "1 1 -1 -1 0 0 ");
 }
 
+*/

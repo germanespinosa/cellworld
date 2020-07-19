@@ -6,14 +6,10 @@
 #include <cell_world/graph.h>
 #include<cell_world/paths.h>
 namespace cell_world{
-    struct World : Json_object{
+    struct World : json_cpp::Json_object{
         World();
         explicit World(std::string );
         bool add(Cell&);
-        bool load(const std::string&);
-        bool load();
-        bool save() const;
-        bool save(const std::string&) const;
         unsigned int size() const;
         Cell &operator[](const unsigned int& );
         void set_occlusion(unsigned int, bool);
@@ -27,8 +23,12 @@ namespace cell_world{
         Graph create_graph() const;
         std::string name;
         Connection_pattern connection_pattern;
-        void json_set_parser(Json_parser &) override;
-    private:
+        Json_set_builder({
+            Json_add_member(name,true);
+            Json_add_member(connection_pattern,true);
+            Json_add_member(_cells,true);
+        })
+        private:
         Cell_list _cells;
         const std::string _extension = ".world";
     };

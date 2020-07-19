@@ -1,6 +1,7 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
+/*
 using namespace cell_world;
 using namespace std;
 
@@ -334,3 +335,4 @@ TEST_CASE("Sub graphs options")
     CHECK(ng[c3].size()==2);
     CHECK(ng[c4].size()==1);
 }
+*/
