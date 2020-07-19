@@ -21,15 +21,13 @@ namespace cell_world{
         Paths create_paths(Paths::Path_type) const;
         Paths create_paths(const std::string, Paths::Path_type) const;
         Graph create_graph() const;
-        std::string name;
-        Connection_pattern connection_pattern;
         Json_set_builder({
             Json_add_member(name,true);
             Json_add_member(connection_pattern,true);
-            Json_add_member(_cells,true);
+            Json_add_member(cells,true);
         })
-        private:
-        Cell_list _cells;
-        const std::string _extension = ".world";
+        std::string name;
+        Connection_pattern connection_pattern;
+        Cell_list cells;
     };
 }

@@ -9,25 +9,25 @@ using namespace std;
 
 namespace cell_world {
     bool World::add(Cell &cell) {
-        cell.id = _cells.size();
-        _cells.emplace_back(cell);
+        cell.id = cells.size();
+        cells.emplace_back(cell);
         return true;
     }
 
     unsigned int World::size() const {
-        return _cells.size();
+        return cells.size();
     }
 
     Cell &World::operator[](const unsigned int &id) {
-        return _cells[id];
+        return cells[id];
     }
 
     void World::set_occlusion(unsigned int id, bool occluded) {
-        _cells[id].occluded = occluded;
+        cells[id].occluded = occluded;
     }
 
     void World::set_value(unsigned int id, double value) {
-        _cells[id].value = value;
+        cells[id].value = value;
     }
 
     World::World(std::string name) : name(std::move(name)) {
@@ -38,13 +38,13 @@ namespace cell_world {
 
     Cell_group World::create_cell_group() const {
         Cell_group cg;
-        for (const auto & _cell : _cells) cg.add(_cell);
+        for (const auto & _cell : cells) cg.add(_cell);
         return cg;
     }
 
     Cell_group World::create_cell_group(const std::vector<unsigned int> &cell_ids) const {
         Cell_group cg;
-        for (auto id : cell_ids) cg.add(_cells[id]);
+        for (auto id : cell_ids) cg.add(cells[id]);
         return cg;
     }
 
@@ -53,12 +53,12 @@ namespace cell_world {
         string file_path = group_name + cg._extension;
         json_cpp::Json_vector<unsigned int> ids;
         ids.load(file_path);
-        for (auto id:ids) cg.add(_cells[id]);
+        for (auto id:ids) cg.add(cells[id]);
         return cg;
     }
 
     void World::set_direction(unsigned int index, const Coordinates &direction) {
-        _cells[index].direction = direction;
+        cells[index].direction = direction;
     }
 
     Graph World::create_graph() const {

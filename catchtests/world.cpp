@@ -1,12 +1,13 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
-/*
+
 using namespace cell_world;
 using namespace std;
 TEST_CASE("World")
 {
     World w("test");
+    w.connection_pattern = Connection_pattern({{-1,0},{1,0}});
     Cell c1(Circle, {0,1},{1,1},0,false);
     Cell c2(Circle, {1,1},{1,1},0,false);
     Cell c3(Circle, {2,1},{1,1},0,false);
@@ -15,38 +16,20 @@ TEST_CASE("World")
     w.add(c2);
     w.add(c3);
     w.add(c4);
-    w.connection_pattern = Connection_pattern({{-1,0},{1,0}});
-    Graph wc = w.create_graph();
     CHECK(w.size()==4);
 }
 
 TEST_CASE("World connections")
 {
-    World w("test");
-    Cell c0(Circle, {0,1},{1,1},0,false);
-    Cell c1(Circle, {1,1},{1,1},0,false);
-    Cell c2(Circle, {2,1},{1,1},0,false);
-    Cell c3(Circle, {3,1},{1,1},0,false);
-    w.add(c0);
-    w.add(c1);
-    w.add(c2);
-    w.add(c3);
-    w.connection_pattern = Connection_pattern({{-1,0},{1,0}});
-    Graph wc = w.create_graph();
+    World w;
+    string s ("{\"name\":\"test\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0,\"direction\":{\"x\":0,\"y\":0}}]}");
+    s >> w;
+    CHECK(w.name=="test");
     CHECK(w.size()==4);
-    CHECK(wc[0].size()==1);
-    CHECK(wc[0][0].id==1);
-    CHECK(wc[1].size()==2);
-    CHECK(wc[1][0].id==0);
-    CHECK(wc[1][1].id==2);
-    CHECK(wc[2].size()==2);
-    CHECK(wc[2][0].id==1);
-    CHECK(wc[2][1].id==3);
-    CHECK(wc[3].size()==1);
-    CHECK(wc[3][0].id==2);
+    CHECK(w.connection_pattern.size()==2);
 }
 
-
+/*
 TEST_CASE("world>>1")
 {
     string s = "[\"w\",[[-1,1],[2,3]],[";
