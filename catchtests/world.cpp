@@ -8,7 +8,7 @@ using namespace std;
 TEST_CASE("World")
 {
     World w("test");
-    w.connection_pattern = Connection_pattern({{-1,0},{1,0}});
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
     Cell c1(Circle, {0,1},{1,1},0,false);
     Cell c2(Circle, {1,1},{1,1},0,false);
     Cell c3(Circle, {2,1},{1,1},0,false);

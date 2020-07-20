@@ -8,23 +8,23 @@ namespace cell_world {
 
     Graph::Graph(const Cell_group &cell_group) :
             nodes(cell_group.free_cells()),
-            _connections(nodes.size(), Cell_group()) {
+            connections(nodes.size()){
     }
 
     const Cell_group &Graph::operator[](const Cell &c) const {
-        return _connections[nodes.find(c)];
+        return connections[nodes.find(c)];
     }
 
     Cell_group &Graph::operator[](const Cell &c) {
-        return _connections[nodes.find(c)];
+        return connections[nodes.find(c)];
     }
 
     const Cell_group &Graph::operator[](unsigned int index) const {
-        return _connections[index];
+        return connections[index];
     }
 
     Cell_group &Graph::operator[](unsigned int index) {
-        return _connections[index];
+        return connections[index];
     }
 
     unsigned int Graph::size() const {
@@ -43,9 +43,9 @@ namespace cell_world {
         candidates.push_back({Not_found, (unsigned int) cell_index});
         unsigned int i = 0;
         visited[cell_index] = true;
-        while (!_connections[candidates[i].cell_index].contains(d)) {
-            auto conns = shuffle ? _connections[candidates[i].cell_index].random_shuffle()
-                                 : _connections[candidates[i].cell_index];
+        while (!connections[candidates[i].cell_index].contains(d)) {
+            auto conns = shuffle ? connections[candidates[i].cell_index].random_shuffle()
+                                 : connections[candidates[i].cell_index];
             for (unsigned int c = 0; c < conns.size(); c++) {
                 unsigned int candidate_index = nodes.find(conns[c]);
                 if (!visited[candidate_index]) {
@@ -71,7 +71,7 @@ namespace cell_world {
 
     double Graph::get_entropy() {
         vector<int> visible_cell_count;
-        for (auto &_connection : _connections) {
+        for (auto &_connection : connections) {
             visible_cell_count.push_back(_connection.size());
         }
         return entropy(histogram(visible_cell_count));
@@ -96,8 +96,8 @@ namespace cell_world {
 
     std::ostream &operator<<(std::ostream &out, const Graph &g) {
         out << "{ \"cells\": " << g.nodes << ", \"connections\": [";
-        for (unsigned int i = 0; i < g._connections.size(); i ++) {
-            auto &cnn = g._connections[i];
+        for (unsigned int i = 0; i < g.connections.size(); i ++) {
+            auto &cnn = g.connections[i];
             out << (i?", ":"") << "[";
             for (unsigned int j = 0; j < cnn.size(); j ++) {
                 auto cell_index =  g.nodes.find(cnn[j]);
@@ -141,7 +141,7 @@ namespace cell_world {
         gates.clear();
         options.clear();
         options.add(nodes);
-        if (_connections.empty()) return graphs;
+        if (connections.empty()) return graphs;
         unsigned int offset = 0;
          int node_index = Not_found;
         for (; offset < nodes.size() && node_index == Not_found; offset++) {
@@ -153,7 +153,7 @@ namespace cell_world {
             Cell_group bridges;
             unsigned int lc = 1; // starts the search on the second node of the sub_graph
             while (node_index != Not_found) {
-                sub_graph_nodes += _connections[node_index]; // adds all the connections to the selected node;
+                sub_graph_nodes += connections[node_index]; // adds all the connections to the selected node;
                 node_index = Not_found;
                 for (; lc < sub_graph_nodes.size() && node_index == Not_found; lc++) {
                     if (gates.nodes.contains(sub_graph_nodes[lc])) {
@@ -198,7 +198,7 @@ namespace cell_world {
 
     bool Graph::add(const Cell &node) {
         if (nodes.add(node)) {
-            _connections.emplace_back();
+            connections.emplace_back();
             return true;
         } else return false;
 
@@ -224,8 +224,8 @@ namespace cell_world {
     Graph Graph::operator!() const {
         Graph inv(nodes);
         for (unsigned int i = 0; i < nodes.size(); i++)
-            for (unsigned int j = 0; j < _connections[i].size(); j++)
-                inv[_connections[i][j]].add(nodes[i]);
+            for (unsigned int j = 0; j < connections[i].size(); j++)
+                inv[connections[i][j]].add(nodes[i]);
         return inv;
     }
 
@@ -238,14 +238,14 @@ namespace cell_world {
     Graph &Graph::operator=(const Graph &graph) = default;
 
     void Graph::clear() {
-        for (auto &c:_connections) c.clear();
+        connections = json_cpp::Json_vector<Cell_group>(nodes.size());
     }
 
     bool Graph::operator==(const Graph &g) const {
         if (size() != g.size()) return false;
         if (g.nodes != nodes) return false;
-        for (unsigned int i = 0; i < _connections.size(); i++) {
-            if (_connections[i] != g._connections[g.nodes.find(nodes[i])]) return false;
+        for (unsigned int i = 0; i < connections.size(); i++) {
+            if (connections[i] != g.connections[g.nodes.find(nodes[i])]) return false;
         }
         return true;
     }
@@ -254,12 +254,12 @@ namespace cell_world {
          int index = nodes.find(c);
         if (index == Not_found) return false;
         nodes.remove(c);
-        _connections.erase(_connections.begin() + index);
+        connections.erase(connections.begin() + index);
         return true;
     }
 
     std::vector<Coordinates> Graph::get_connectors(const Cell &cell) {
-        auto c = _connections[nodes.find(cell)];
+        auto c = connections[nodes.find(cell)];
         std::vector<Coordinates> cons;
         for (unsigned int i = 0; i < c.size(); i++) cons.push_back(c[i].coordinates - cell.coordinates);
         return cons;
@@ -274,7 +274,7 @@ namespace cell_world {
     Graph Graph::invert() const {
         Graph g(nodes);
         for (unsigned int i = 0; i < nodes.size(); i++) {
-            auto &conn = _connections[i];
+            auto &conn = connections[i];
             for (unsigned int j = 0; j < nodes.size(); j++) {
                 if (!conn.contains(nodes[j])) {
                     g[i].add(nodes[j]);

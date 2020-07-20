@@ -3,14 +3,12 @@
 #include <cell_world/cell_group.h>
 
 namespace cell_world {
-    struct Graph {
+
+    struct Graph : json_cpp::Json_object{
         Graph();
         explicit Graph(const Cell_group &);
         Graph(const cell_world::Graph&) = default;
-        Cell_group &operator[](const Cell &);
-        const Cell_group &operator[](const Cell &) const;
-        Cell_group &operator[](unsigned int);
-        const Cell_group &operator[](unsigned int) const;
+
         Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false) const;
         std::vector<Graph> get_sub_graphs();
         std::vector<Graph> get_sub_graphs(Cell_group &);
@@ -25,14 +23,22 @@ namespace cell_world {
         double get_entropy();
         void clear();
         unsigned int size() const;
+        Graph invert() const;
+
+        Cell_group &operator[](const Cell &);
+        const Cell_group &operator[](const Cell &) const;
+        Cell_group &operator[](unsigned int);
+        const Cell_group &operator[](unsigned int) const;
         Graph operator !() const;
         Graph &operator =(const Graph &);
         bool operator == (const Graph &) const;
+
         Cell_group nodes;
-        Graph invert() const;
-        friend std::ostream& operator << (std::ostream& , const Graph& );
-    private:
-        std::vector<Cell_group> _connections;
+        json_cpp::Json_vector<Cell_group> connections;
+        Json_set_builder({
+            Json_add_member(nodes,true);
+            Json_add_member(connections, true);
+                         })
     };
 
     struct Centrality {

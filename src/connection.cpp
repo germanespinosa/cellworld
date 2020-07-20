@@ -1,26 +1,17 @@
 #include <cell_world/connection.h>
-#include <iostream>
-#include <fstream>
-#include <cmath>
-#include <utility>
 #include <cell_world/chance.h>
 
 using namespace std;
 
 namespace cell_world {
 
-    std::vector<Coordinates> Connection_pattern::get_candidates(Coordinates coordinate) const {
-        std::vector<Coordinates> c;
+    Move_list Connection_pattern::get_candidates(Coordinates coordinate) const {
+        Move_list c;
         for (auto &p:(*this)) c.push_back(coordinate + p);
         return c;
     }
 
     Connection_pattern::Connection_pattern() = default;
-
-    Connection_pattern::Connection_pattern(std::vector<Coordinates> pattern)
-    {
-        for (auto &p: pattern) push_back(p);
-    }
 
     Connection_pattern &Connection_pattern::operator=(const Connection_pattern &cp) {
         if (&cp != this) {

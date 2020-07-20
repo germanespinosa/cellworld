@@ -1,7 +1,7 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
-/*
+
 using namespace cell_world;
 using namespace std;
 
@@ -24,7 +24,7 @@ TEST_CASE("Network")
     n[c4].add(c3);
     CHECK(n[c4].size()==2);
 }
-
+/*
 TEST_CASE("graph")
 {
     World w("test");
@@ -39,7 +39,9 @@ TEST_CASE("graph")
     w.add(c3);
     w.add(c4);
     Cell_group cg = w.create_cell_group();
-    Graph g = Connection_pattern({{-1,0},{1,0}}).get_graph(cg);
+    Connection_pattern cp;
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> cp;
+    Graph g = cp.get_graph(cg);
     CHECK(g.nodes.size() == 5);
     CHECK(g[c0].size() == 1);
     CHECK(g[c1].size() == 2);
@@ -47,7 +49,7 @@ TEST_CASE("graph")
     CHECK(g[c3].size() == 2);
     CHECK(g[c4].size() == 1);
 }
-
+/*
 TEST_CASE("graph.invert")
 {
     World w("test");
