@@ -4,11 +4,8 @@
 namespace cell_world{
 
     struct Cell_reference : json_cpp::Json_base, std::reference_wrapper<const Cell>{
-        Cell_reference(): Cell_reference(_empty_cell) {};
         explicit Cell_reference(const Cell &);
         virtual void json_write(std::ostream &o) const;
-    private:
-        Cell _empty_cell;
     };
 
     struct Cell_group : json_cpp::Json_vector<Cell_reference>{
