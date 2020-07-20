@@ -94,21 +94,6 @@ namespace cell_world {
         return result;
     }
 
-    std::ostream &operator<<(std::ostream &out, const Graph &g) {
-        out << "{ \"cells\": " << g.nodes << ", \"connections\": [";
-        for (unsigned int i = 0; i < g.connections.size(); i ++) {
-            auto &cnn = g.connections[i];
-            out << (i?", ":"") << "[";
-            for (unsigned int j = 0; j < cnn.size(); j ++) {
-                auto cell_index =  g.nodes.find(cnn[j]);
-                out << (j?", ":"") << cell_index;
-            }
-            out << "]";
-        }
-        out << "]}";
-        return out;
-    }
-
     std::vector<double> Centrality::get_eigen_centrality(Graph &graph, unsigned int max_iterations, double tolerance) {
         auto nodes = (double) graph.size();
         vector<double> result(graph.size());

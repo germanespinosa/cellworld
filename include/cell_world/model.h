@@ -3,6 +3,7 @@
 #include <cell_world/world.h>
 #include <cell_world/agent.h>
 #include <cell_world/visibility.h>
+#include <cell_world/map.h>
 
 namespace cell_world{
     struct Model

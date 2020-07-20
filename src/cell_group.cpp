@@ -9,7 +9,7 @@ using namespace std;
 namespace cell_world {
 
     const Cell &Cell_group::operator[](unsigned int index) const {
-        return _get_cell(index);
+        return (begin() + index)->get();
     }
 
     void Cell_group::clear() {
@@ -25,10 +25,6 @@ namespace cell_world {
      int Cell_group::find(const Cell &cell) const {
         if (cell.id >= _id_index.size()) return Not_found;
         return _id_index[cell.id];
-    }
-
-    const Cell &Cell_group::_get_cell(unsigned int index) const {
-        return (*this)[index];
     }
 
     bool Cell_group::contains(unsigned int cell_id) const {
@@ -185,26 +181,6 @@ namespace cell_world {
             }
         }
         return r;
-    }
-
-    Map::Map(const Cell_group &group)
-            : _group(group) {
-        _coordinate_index = vector<vector< int>>(256,vector< int>(256,Not_found));
-        for (unsigned int i = 0; i < group.size(); i++) {
-            auto x = (uint8_t) group[i].coordinates.x;
-            auto y = (uint8_t) group[i].coordinates.y;
-            _coordinate_index[x][y] = i;
-        }
-    }
-
-     int Map::find(const Coordinates &c) const {
-        auto x = (uint8_t) c.x;
-        auto y = (uint8_t) c.y;
-        return _coordinate_index[x][y];
-    }
-
-    const Cell &Map::operator[](const Coordinates &c) const {
-        return _group[find(c)];
     }
 
     Cell_reference::Cell_reference(const Cell &cell):

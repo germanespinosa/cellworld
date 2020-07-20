@@ -1,5 +1,6 @@
 #include <cell_world/connection.h>
 #include <cell_world/chance.h>
+#include <cell_world/map.h>
 
 using namespace std;
 
@@ -22,7 +23,7 @@ namespace cell_world {
     }
 
     Graph Connection_pattern::get_graph(const Cell_group &cg) const {
-        Graph n(cg); // filter occluded
+        Graph n(cg);
         Map map(n.nodes);
         for (unsigned int s = 0; s < n.size(); s++) {
             auto &source = n.nodes[s];

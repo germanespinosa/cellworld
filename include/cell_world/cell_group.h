@@ -42,18 +42,6 @@ namespace cell_world{
     private:
         std::vector<int> _id_index;
         std::string _file_name;
-        const Cell & _get_cell(unsigned int) const;
-        const std::string _extension = ".group";
         friend class World;
-    };
-
-    struct Map{
-        explicit Map(const Cell_group &);
-        const Cell& operator [](const Coordinates &) const;
-         int find (const Coordinates &) const;
-
-    private:
-        std::vector<std::vector< int>> _coordinate_index;
-        const Cell_group &_group;
     };
 }

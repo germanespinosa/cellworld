@@ -48,9 +48,8 @@ namespace cell_world {
         return cg;
     }
 
-    Cell_group World::create_cell_group(const std::string &group_name) const {
+    Cell_group World::create_cell_group(const std::string &file_path) const {
         Cell_group cg;
-        string file_path = group_name + cg._extension;
         json_cpp::Json_vector<unsigned int> ids;
         ids.load(file_path);
         for (auto id:ids) cg.add(cells[id]);

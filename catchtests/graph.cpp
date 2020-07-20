@@ -24,7 +24,7 @@ TEST_CASE("Network")
     n[c4].add(c3);
     CHECK(n[c4].size()==2);
 }
-/*
+
 TEST_CASE("graph")
 {
     World w("test");
@@ -41,13 +41,13 @@ TEST_CASE("graph")
     Cell_group cg = w.create_cell_group();
     Connection_pattern cp;
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> cp;
-    Graph g = cp.get_graph(cg);
-    CHECK(g.nodes.size() == 5);
+//    Graph g = cp.get_graph(cg);
+/*    CHECK(g.nodes.size() == 5);
     CHECK(g[c0].size() == 1);
     CHECK(g[c1].size() == 2);
     CHECK(g[c2].size() == 2);
     CHECK(g[c3].size() == 2);
-    CHECK(g[c4].size() == 1);
+    CHECK(g[c4].size() == 1);*/
 }
 /*
 TEST_CASE("graph.invert")

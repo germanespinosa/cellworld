@@ -29,7 +29,8 @@ set(cellworld_files
     src/world.cpp
     src/graph.cpp
     src/paths.cpp
-    src/state.cpp)
+    src/state.cpp
+    src/map.cpp)
 
 add_library(cellworld ${cellworld_files})
 
