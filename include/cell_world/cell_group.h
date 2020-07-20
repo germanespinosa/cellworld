@@ -36,6 +36,7 @@ namespace cell_world{
         Cell_group operator - (const Cell &);
         bool operator == (const Cell_group &) const;
         bool operator != (const Cell_group &) const;
+        Cell_group operator &(const Cell_group &) const;
         const Cell &operator [](unsigned int) const;
         const Cell &random_cell () const;
     private:

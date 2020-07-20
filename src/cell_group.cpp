@@ -51,10 +51,17 @@ namespace cell_world {
     }
 
     bool Cell_group::remove(const Cell &cell) {
-        if (find(cell.id) == Not_found) return false;
-        Cell_group cg = *this;
-        clear();
-        for (unsigned int i = 0; i < cg.size(); i++) if (cg[i].id != cell.id) add(cg[i]);
+        auto cell_index = find(cell.id);
+        if ( cell_index == Not_found) return false;
+        erase(begin() + cell_index);
+        for (auto &i:_id_index) {
+            if (i<(int)cell.id) continue;
+            if (i==(int)cell.id) {
+                i = Not_found;
+            } else {
+                i --;
+            }
+        }
         return true;
     }
 
@@ -162,6 +169,22 @@ namespace cell_world {
 
     const Cell &Cell_group::random_cell() const {
         return (*this)[Chance::dice(this->size())];
+    }
+
+    Cell_group Cell_group::operator&(const Cell_group &cg) const {
+        Cell_group r;
+        if (cg.size()<size()){
+            for (auto &cr : cg){
+                auto &c = cr.get();
+                if (find(c.id)!=Not_found) r.add(c);
+            }
+        } else {
+            for (auto &cr : *this){
+                auto &c = cr.get();
+                if (cg.find(c.id)!=Not_found) r.add(c);
+            }
+        }
+        return r;
     }
 
     Map::Map(const Cell_group &group)
