@@ -8,7 +8,6 @@ namespace cell_world {
         Graph();
         explicit Graph(const Cell_group &);
         Graph(const cell_world::Graph&) = default;
-
         Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false) const;
         std::vector<Graph> get_sub_graphs();
         std::vector<Graph> get_sub_graphs(Cell_group &);

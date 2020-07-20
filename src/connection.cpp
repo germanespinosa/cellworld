@@ -28,7 +28,7 @@ namespace cell_world {
         for (unsigned int s = 0; s < n.size(); s++) {
             auto &source = n.nodes[s];
             for (auto c : get_candidates(source.coordinates)) {
-                 int destination_index = map.find(c);
+                int destination_index = map.find(c);
                 if (destination_index != Not_found) {
                     n[s].add(n.nodes[destination_index]);
                 }

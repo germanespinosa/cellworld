@@ -30,6 +30,8 @@ namespace cell_world{
     int Map::find(const Coordinates &c) const {
         auto x = c.x-base_x;
         auto y = c.y-base_y;
+        if (x<0 || x>=(int)_coordinate_index.size()) return Not_found;
+        if (y<0 || y>=(int)_coordinate_index[x].size()) return Not_found;
         return _coordinate_index[x][y];
     }
 

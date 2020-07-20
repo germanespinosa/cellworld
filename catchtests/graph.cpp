@@ -41,15 +41,15 @@ TEST_CASE("graph")
     Cell_group cg = w.create_cell_group();
     Connection_pattern cp;
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> cp;
-//    Graph g = cp.get_graph(cg);
-/*    CHECK(g.nodes.size() == 5);
+    Graph g = cp.get_graph(cg);
+    CHECK(g.nodes.size() == 5);
     CHECK(g[c0].size() == 1);
     CHECK(g[c1].size() == 2);
     CHECK(g[c2].size() == 2);
     CHECK(g[c3].size() == 2);
-    CHECK(g[c4].size() == 1);*/
+    CHECK(g[c4].size() == 1);
 }
-/*
+
 TEST_CASE("graph.invert")
 {
     World w("test");
@@ -64,7 +64,9 @@ TEST_CASE("graph.invert")
     w.add(c3);
     w.add(c4);
     Cell_group cg = w.create_cell_group();
-    Graph g = Connection_pattern({{-1,0},{1,0}}).get_graph(cg).invert();
+    Connection_pattern cp;
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> cp;
+    auto g = cp.get_graph(cg).invert();
     CHECK(g.nodes.size() == 5);
     CHECK(g[c0].size() == 4);
     CHECK(g[c1].size() == 3);
@@ -109,7 +111,7 @@ TEST_CASE("Connections shortest path")
     w.add(c1);
     w.add(c2);
     w.add(c3);
-    w.connection_pattern = Connection_pattern({{1,0},{-1,0}});
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
     auto c = w.create_graph();
     auto sp = c.get_shortest_path(c0,c3);
     CHECK(sp.size()==4);
@@ -134,7 +136,7 @@ TEST_CASE("Sub graphs")
     w.add(c3);
     w.add(c4);
     Cell_group cg1 = w.create_cell_group();
-    w.connection_pattern = Connection_pattern({{-1,0},{1,0},{0,-1},{0,1}});
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
     auto wc = w.create_graph();
     CHECK(wc.size()==5);
     CHECK(wc[0].size()==1);
@@ -186,7 +188,9 @@ TEST_CASE("Sub graphs big") {
         w.add(c0);
     }
     Cell_group cg1 = w.create_cell_group();
-    auto wc = Connection_pattern({{-1, 0},{1,  0}}).get_graph(cg1);
+    Connection_pattern cp;
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> cp;
+    auto wc = cp.get_graph(cg1);
     Cell_group cg;
     cg.add(w[0]);
     cg.add(w[50]);
@@ -208,7 +212,8 @@ TEST_CASE("Sub graphs disconnected") {
     w.add(c3);
     w.add(c4);
     Cell_group cg1 = w.create_cell_group();
-    w.connection_pattern = Connection_pattern({{-1,0},{1,0},{0,-1},{0,1}});
+    Connection_pattern cp;
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
     auto wc = w.create_graph();
     vector<Graph> sw = wc.get_sub_graphs();
     CHECK(sw.size() == 2);
@@ -226,7 +231,6 @@ TEST_CASE("Sub graphs disconnected") {
     CHECK(sw[1][c4].contains(c3));
 }
 
-
 TEST_CASE("Sub graphs options")
 {
     World w("test");
@@ -241,7 +245,7 @@ TEST_CASE("Sub graphs options")
     w.add(c3);
     w.add(c4);
     Cell_group cg1 = w.create_cell_group();
-    w.connection_pattern = Connection_pattern({{-1,0},{1,0},{0,-1},{0,1}});
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
     auto wc = w.create_graph();
     CHECK(wc.size()==5);
     CHECK(wc[0].size()==1);
@@ -337,4 +341,3 @@ TEST_CASE("Sub graphs options")
     CHECK(ng[c3].size()==2);
     CHECK(ng[c4].size()==1);
 }
-*/
