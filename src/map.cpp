@@ -19,23 +19,24 @@ namespace cell_world{
         }
         base_x = min_x;
         base_y = min_y;
-        _coordinate_index = vector<vector<int>>(max_x-min_x + 1,vector<int>(max_y-min_y + 1,Not_found));
+        columns = max_x-min_x + 1;
+        _coordinate_index = vector<int>(columns * (max_y-min_y + 1),Not_found);
         for (unsigned int i = 0; i < group.size(); i++) {
-            auto x = group[i].coordinates.x-base_x;
-            auto y = group[i].coordinates.y-base_y;
-            _coordinate_index[x][y] = i;
+            _coordinate_index[_index(group[i].coordinates)] = i;
         }
     }
 
     int Map::find(const Coordinates &c) const {
-        auto x = c.x-base_x;
-        auto y = c.y-base_y;
-        if (x<0 || x>=(int)_coordinate_index.size()) return Not_found;
-        if (y<0 || y>=(int)_coordinate_index[x].size()) return Not_found;
-        return _coordinate_index[x][y];
+        auto index = _index(c);
+        if (index<0 || index>=(int)_coordinate_index.size()) return Not_found;
+        return _coordinate_index[index];
     }
 
     const Cell &Map::operator[](const Coordinates &c) const {
         return _group[find(c)];
+    }
+
+    int Map::_index(const Coordinates &c) const {
+        return (c.x - base_x) + (c.y - base_y) * columns;
     }
 }
