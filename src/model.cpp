@@ -23,8 +23,7 @@ namespace cell_world {
     }
 
     Model::Model(Cell_group &cells, unsigned int iterations) :
-            map(cells.free_cells()),
-            visibility(Visibility::create_graph(cells)){
+            map(cells.free_cells()){
         state.status = Model_state::Status::Idle;
         state.iterations = iterations;
     }
@@ -42,10 +41,12 @@ namespace cell_world {
         if (_agents.empty()) throw logic_error("Model::start_episode - can't start an episode with no agents.");
         state.current_turn = 0;
         state.agents_state.clear();
+        unsigned int agent_index = 0;
         for (Agent &agent:_agents) {
-            Cell c = agent.start_episode();
+            Cell c = agent.start_episode(agent_index);
             if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
             state.agents_state.emplace_back(0,c);
+            agent_index++;
         }
         state.status = Model_state::Status::Running;
         for (Agent &agent:_agents) agent.update_state(state);
@@ -57,10 +58,8 @@ namespace cell_world {
     }
 
     void Model::run() {
-        run(state.iterations);
-    }
-
-    void Model::run(unsigned int to_iteration) {
-        for (; state.iterations < to_iteration && update(););
+        start_episode();
+        while (update());
+        end_episode();
     }
 }

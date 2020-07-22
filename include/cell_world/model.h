@@ -15,9 +15,7 @@ namespace cell_world{
         void start_episode();
         void end_episode();
         void run();
-        void run(unsigned int);
         Map map;
-        Graph visibility;
         Model_state state;
     protected:
         std::vector<std::reference_wrapper<Agent>> _agents;

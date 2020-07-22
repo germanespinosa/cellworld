@@ -23,7 +23,7 @@ TEST_CASE("World")
 TEST_CASE("World connections")
 {
     World w;
-    string s ("{\"name\":\"test\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0,\"value\":0}]}");
+    string s ("{\"name\":\"test\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0}]}");
     s >> w;
     CHECK(w.name=="test");
     CHECK(w.size()==4);

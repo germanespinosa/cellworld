@@ -11,11 +11,14 @@ struct Test_Agent : Agent {
     };
     Cell cell;
     Agent_state state;
-    const Cell &start_episode() override{
+    unsigned int index;
+
+    const Cell &start_episode(unsigned int agent_index) override{
+        index = agent_index;
         return cell;
     };
     Agent_status_code update_state(const Model_state &model_state) override{
-        state = model_state.agents_state[model_state.current_turn];
+        state = model_state.agents_state[index];
         return Agent_status_code::Running;
     };
     Move get_move(const Model_state &) override{
@@ -73,14 +76,14 @@ TEST_CASE("Model status")
     CHECK_THROWS(m.end_episode());
 }
 
-/*
+
 TEST_CASE("Model reset")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},0,false);
-    Cell c1(Circle, {1,1},{1,1},0,false);
-    Cell c2(Circle, {2,1},{2,1},0,false);
-    Cell c3(Circle, {3,1},{3,1},0,false);
+    Cell c0(Circle, {0,1},{0,1},false);
+    Cell c1(Circle, {1,1},{1,1},false);
+    Cell c2(Circle, {2,1},{2,1},false);
+    Cell c3(Circle, {3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -98,33 +101,23 @@ TEST_CASE("Model reset")
     CHECK_THROWS(m.start_episode());
     CHECK_NOTHROW(m.update());
     CHECK(a.get_state_reference().cell.coordinates == Coordinates{1,1});
-    CHECK(b.get_state_reference().cell.coordinates == Coordinates{0,1});
     Model_state s = m.state;
-    cout << s << endl;
     CHECK_NOTHROW(m.update());
-    CHECK(a.get_state_reference().cell.coordinates == Coordinates{1,1});
     CHECK(b.get_state_reference().cell.coordinates == Coordinates{1,1});
     CHECK_NOTHROW(m.update());
     CHECK(a.get_state_reference().cell.coordinates == Coordinates{2,1});
-    CHECK(b.get_state_reference().cell.coordinates == Coordinates{1,1});
     m.state=s;
     CHECK_NOTHROW(m.update());
-    CHECK(a.get_state_reference().cell.coordinates == Coordinates{1,1});
     CHECK(b.get_state_reference().cell.coordinates == Coordinates{1,1});
-    cout << m.state << endl;
-//    CHECK_NOTHROW(m.update());
-//    CHECK(a.get_state_reference().cell.coordinates == Coordinates{2,1});
-//    CHECK(b.get_state_reference().cell.coordinates == Coordinates{1,1});
-//    CHECK_NOTHROW(m.update());
-//    CHECK(a.get_state_reference().cell.coordinates == Coordinates{2,1});
-//    CHECK(b.get_state_reference().cell.coordinates == Coordinates{2,1});
-//    CHECK_NOTHROW(m.update());
-//    CHECK(a.get_state_reference().cell.coordinates == Coordinates{3,1});
-//    CHECK(b.get_state_reference().cell.coordinates == Coordinates{2,1});
-//    CHECK_NOTHROW(m.update());
-//    CHECK(a.get_state_reference().cell.coordinates == Coordinates{3,1});
-//    CHECK(b.get_state_reference().cell.coordinates == Coordinates{3,1});
-//    CHECK_NOTHROW(m.end_episode());
-//    CHECK_THROWS(m.update());
-//    CHECK_THROWS(m.end_episode());
-}*/
+    CHECK_NOTHROW(m.update());
+    CHECK(a.get_state_reference().cell.coordinates == Coordinates{2,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(b.get_state_reference().cell.coordinates == Coordinates{2,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(a.get_state_reference().cell.coordinates == Coordinates{3,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(b.get_state_reference().cell.coordinates == Coordinates{3,1});
+    CHECK_NOTHROW(m.end_episode());
+    CHECK_THROWS(m.update());
+    CHECK_THROWS(m.end_episode());
+}
