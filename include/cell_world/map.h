@@ -7,9 +7,9 @@ namespace cell_world{
         explicit Map(const Cell_group &);
         const Cell& operator [](const Coordinates &) const;
         int find (const Coordinates &) const;
+        const Cell_group cells;
     private:
         std::vector< int> _coordinate_index;
-        const Cell_group &_group;
         int base_y, base_x, columns, rows;
         int _index(const Coordinates &) const;
     };

@@ -14,7 +14,7 @@ namespace cell_world{
 
     struct Agent{
         Agent();
-        virtual const Cell &start_episode(unsigned int) = 0;
+        virtual const Cell &start_episode() = 0;
         virtual Move get_move(const Model_state &) = 0;
         virtual Agent_status_code update_state(const Model_state &) = 0;
         virtual void end_episode(const Model_state &) = 0;

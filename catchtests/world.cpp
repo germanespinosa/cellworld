@@ -9,10 +9,10 @@ TEST_CASE("World")
 {
     World w("test");
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
-    Cell c1(Circle, {0,1},{1,1},0,false);
-    Cell c2(Circle, {1,1},{1,1},0,false);
-    Cell c3(Circle, {2,1},{1,1},0,false);
-    Cell c4(Circle, {3,1},{1,1},0,false);
+    Cell c1(Circle, {0,1},{1,1},false);
+    Cell c2(Circle, {1,1},{1,1},false);
+    Cell c3(Circle, {2,1},{1,1},false);
+    Cell c4(Circle, {3,1},{1,1},false);
     w.add(c1);
     w.add(c2);
     w.add(c3);
@@ -34,10 +34,10 @@ TEST_CASE("World connections")
 TEST_CASE("world>>1")
 {
     string s = "{\"name\":\"w\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[";
-    s+="{\"id\":0,\"cell_type\":1,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":0.5,\"y\":1.5},\"occluded\":1,\"value\":-10.5},";
-    s+="{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":2},\"location\":{\"x\":1.5,\"y\":2.5},\"occluded\":0,\"value\":-20.5},";
-    s+="{\"id\":2,\"cell_type\":1,\"coordinates\":{\"x\":2,\"y\":3},\"location\":{\"x\":2.5,\"y\":3.5},\"occluded\":1,\"value\":30.5},";
-    s+="{\"id\":3,\"cell_type\":1,\"coordinates\":{\"x\":3,\"y\":4},\"location\":{\"x\":3.5,\"y\":4.5},\"occluded\":0,\"value\":40.5}]}";
+    s+="{\"id\":0,\"cell_type\":1,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":0.5,\"y\":1.5},\"occluded\":1},";
+    s+="{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":2},\"location\":{\"x\":1.5,\"y\":2.5},\"occluded\":0},";
+    s+="{\"id\":2,\"cell_type\":1,\"coordinates\":{\"x\":2,\"y\":3},\"location\":{\"x\":2.5,\"y\":3.5},\"occluded\":1},";
+    s+="{\"id\":3,\"cell_type\":1,\"coordinates\":{\"x\":3,\"y\":4},\"location\":{\"x\":3.5,\"y\":4.5},\"occluded\":0}]}";
     stringstream s_stream(s);
     World w("w");
     s_stream >> w;
@@ -50,26 +50,22 @@ TEST_CASE("world>>1")
     CHECK(c0.coordinates==Coordinates{0,1});
     CHECK(c0.location==Location{0.5,1.5});
     CHECK(c0.occluded);
-    CHECK(c0.value==-10.5);
     auto c1 = w[1];
     CHECK(c1.id==1);
     CHECK(c1.cell_type==Circle);
     CHECK(c1.coordinates==Coordinates{1,2});
     CHECK(c1.location==Location{1.5,2.5});
     CHECK(!c1.occluded);
-    CHECK(c1.value==-20.5);
     auto c2 = w[2];
     CHECK(c2.id==2);
     CHECK(c2.cell_type==Square);
     CHECK(c2.coordinates==Coordinates{2,3});
     CHECK(c2.location==Location{2.5,3.5});
     CHECK(c2.occluded);
-    CHECK(c2.value==30.5);
     auto c3 = w[3];
     CHECK(c3.id==3);
     CHECK(c3.cell_type==Square);
     CHECK(c3.coordinates==Coordinates{3,4});
     CHECK(c3.location==Location{3.5,4.5});
     CHECK(!c3.occluded);
-    CHECK(c3.value==40.5);
 }

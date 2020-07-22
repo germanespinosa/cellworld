@@ -8,10 +8,10 @@ using namespace std;
 TEST_CASE("euclidean")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},0,false);
-    Cell c1(Circle, {1,1},{1,1},0,false);
-    Cell c2(Circle, {2,1},{2,1},0,false);
-    Cell c3(Circle, {3,1},{3,1},0,false);
+    Cell c0(Circle, {0,1},{0,1},false);
+    Cell c1(Circle, {1,1},{1,1},false);
+    Cell c2(Circle, {2,1},{2,1},false);
+    Cell c3(Circle, {3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -32,10 +32,10 @@ TEST_CASE("euclidean")
 TEST_CASE("a_star")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},0,false);
-    Cell c1(Circle, {1,1},{1,1},0,false);
-    Cell c2(Circle, {2,1},{2,1},0,false);
-    Cell c3(Circle, {3,1},{3,1},0,false);
+    Cell c0(Circle, {0,1},{0,1},false);
+    Cell c1(Circle, {1,1},{1,1},false);
+    Cell c2(Circle, {2,1},{2,1},false);
+    Cell c3(Circle, {3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -56,18 +56,18 @@ TEST_CASE("a_star")
 TEST_CASE("euclidean_blocked")
 {
     World w("test");
-    Cell c00(Circle, {0,0},{0,0},0,false);
-    Cell c01(Circle, {0,1},{0,1},1,false);
-    Cell c02(Circle, {0,2},{0,2},2,false);
-    Cell c10(Circle, {1,0},{1,0},3,false);
-    Cell c11(Circle, {1,1},{1,1},4,true);
-    Cell c12(Circle, {1,2},{1,2},5,false);
-    Cell c20(Circle, {2,0},{2,0},6,true);
-    Cell c21(Circle, {2,1},{2,1},7,true);
-    Cell c22(Circle, {2,2},{2,2},8,false);
-    Cell c30(Circle, {3,0},{3,0},9,false);
-    Cell c31(Circle, {3,1},{3,1},10,false);
-    Cell c32(Circle, {3,2},{3,2},11,false);
+    Cell c00(Circle, {0,0},{0,0},false);
+    Cell c01(Circle, {0,1},{0,1},false);
+    Cell c02(Circle, {0,2},{0,2},false);
+    Cell c10(Circle, {1,0},{1,0},false);
+    Cell c11(Circle, {1,1},{1,1},true);
+    Cell c12(Circle, {1,2},{1,2},false);
+    Cell c20(Circle, {2,0},{2,0},true);
+    Cell c21(Circle, {2,1},{2,1},true);
+    Cell c22(Circle, {2,2},{2,2},false);
+    Cell c30(Circle, {3,0},{3,0},false);
+    Cell c31(Circle, {3,1},{3,1},false);
+    Cell c32(Circle, {3,2},{3,2},false);
     w.add(c00);
     w.add(c10);
     w.add(c20);
@@ -105,18 +105,18 @@ TEST_CASE("euclidean_blocked")
 TEST_CASE("a_start_blocked")
 {
     World w("test");
-    Cell c00(Circle, {0,0},{0,0},0,false);
-    Cell c01(Circle, {0,1},{0,1},1,false);
-    Cell c02(Circle, {0,2},{0,2},2,false);
-    Cell c10(Circle, {1,0},{1,0},3,false);
-    Cell c11(Circle, {1,1},{1,1},4,true);
-    Cell c12(Circle, {1,2},{1,2},5,false);
-    Cell c20(Circle, {2,0},{2,0},6,true);
-    Cell c21(Circle, {2,1},{2,1},7,true);
-    Cell c22(Circle, {2,2},{2,2},8,false);
-    Cell c30(Circle, {3,0},{3,0},9,false);
-    Cell c31(Circle, {3,1},{3,1},10,false);
-    Cell c32(Circle, {3,2},{3,2},11,false);
+    Cell c00(Circle, {0,0},{0,0},false);
+    Cell c01(Circle, {0,1},{0,1},false);
+    Cell c02(Circle, {0,2},{0,2},false);
+    Cell c10(Circle, {1,0},{1,0},false);
+    Cell c11(Circle, {1,1},{1,1},true);
+    Cell c12(Circle, {1,2},{1,2},false);
+    Cell c20(Circle, {2,0},{2,0},true);
+    Cell c21(Circle, {2,1},{2,1},true);
+    Cell c22(Circle, {2,2},{2,2},false);
+    Cell c30(Circle, {3,0},{3,0},false);
+    Cell c31(Circle, {3,1},{3,1},false);
+    Cell c32(Circle, {3,2},{3,2},false);
     w.add(c00);
     w.add(c01);
     w.add(c02);
@@ -156,18 +156,18 @@ TEST_CASE("a_start_blocked")
 TEST_CASE("path_save_shortest")
 {
     World w("test");
-    Cell c00(Circle, {0,0},{0,0},0,false);
-    Cell c01(Circle, {0,1},{0,1},1,false);
-    Cell c02(Circle, {0,2},{0,2},2,false);
-    Cell c10(Circle, {1,0},{1,0},3,false);
-    Cell c11(Circle, {1,1},{1,1},4,true);
-    Cell c12(Circle, {1,2},{1,2},5,false);
-    Cell c20(Circle, {2,0},{2,0},6,true);
-    Cell c21(Circle, {2,1},{2,1},7,true);
-    Cell c22(Circle, {2,2},{2,2},8,false);
-    Cell c30(Circle, {3,0},{3,0},9,false);
-    Cell c31(Circle, {3,1},{3,1},10,false);
-    Cell c32(Circle, {3,2},{3,2},11,false);
+    Cell c00(Circle, {0,0},{0,0},false);
+    Cell c01(Circle, {0,1},{0,1},false);
+    Cell c02(Circle, {0,2},{0,2},false);
+    Cell c10(Circle, {1,0},{1,0},false);
+    Cell c11(Circle, {1,1},{1,1},true);
+    Cell c12(Circle, {1,2},{1,2},false);
+    Cell c20(Circle, {2,0},{2,0},true);
+    Cell c21(Circle, {2,1},{2,1},true);
+    Cell c22(Circle, {2,2},{2,2},false);
+    Cell c30(Circle, {3,0},{3,0},false);
+    Cell c31(Circle, {3,1},{3,1},false);
+    Cell c32(Circle, {3,2},{3,2},false);
     w.add(c00);
     w.add(c01);
     w.add(c02);
@@ -199,18 +199,18 @@ TEST_CASE("path_save_shortest")
 TEST_CASE("euclidean_blocked_save")
 {
     World w("test");
-    Cell c00(Circle, {0,0},{0,0},0,false);
-    Cell c01(Circle, {0,1},{0,1},1,false);
-    Cell c02(Circle, {0,2},{0,2},2,false);
-    Cell c10(Circle, {1,0},{1,0},3,false);
-    Cell c11(Circle, {1,1},{1,1},4,true);
-    Cell c12(Circle, {1,2},{1,2},5,false);
-    Cell c20(Circle, {2,0},{2,0},6,true);
-    Cell c21(Circle, {2,1},{2,1},7,true);
-    Cell c22(Circle, {2,2},{2,2},8,false);
-    Cell c30(Circle, {3,0},{3,0},9,false);
-    Cell c31(Circle, {3,1},{3,1},10,false);
-    Cell c32(Circle, {3,2},{3,2},11,false);
+    Cell c00(Circle, {0,0},{0,0},false);
+    Cell c01(Circle, {0,1},{0,1},false);
+    Cell c02(Circle, {0,2},{0,2},false);
+    Cell c10(Circle, {1,0},{1,0},false);
+    Cell c11(Circle, {1,1},{1,1},true);
+    Cell c12(Circle, {1,2},{1,2},false);
+    Cell c20(Circle, {2,0},{2,0},true);
+    Cell c21(Circle, {2,1},{2,1},true);
+    Cell c22(Circle, {2,2},{2,2},false);
+    Cell c30(Circle, {3,0},{3,0},false);
+    Cell c31(Circle, {3,1},{3,1},false);
+    Cell c32(Circle, {3,2},{3,2},false);
     w.add(c00);
     w.add(c01);
     w.add(c02);

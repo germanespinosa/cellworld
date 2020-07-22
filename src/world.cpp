@@ -26,10 +26,6 @@ namespace cell_world {
         cells[id].occluded = occluded;
     }
 
-    void World::set_value(unsigned int id, double value) {
-        cells[id].value = value;
-    }
-
     World::World(std::string name) : name(std::move(name)) {
     }
 

@@ -7,56 +7,48 @@ namespace cell_world {
 
     bool Model::update()
     {
-        if (status != Status::Running) throw logic_error("Model::update - model is not running.");
-        auto &agent = _agents[_current_turn].get();
+        if (state.status != Model_state::Status::Running) throw logic_error("Model::update - model is not running.");
+        Agent &agent = _agents[state.current_turn];
+        auto &agent_state = state.agents_state[state.current_turn];
+        agent_state.iteration++;
         auto move = agent.get_move(state);
-        auto &agent_cell = state.agents_state[_current_turn].cell;
+        auto &agent_cell = agent_state.cell;
         int destination_index = map.find(agent_cell.coordinates + move);
-        if (destination_index != Not_found && !cells[destination_index].occluded) {
-            agent_cell = cells[destination_index];
-        }
-        state.agents_state[_current_turn].iteration++;
+        state.current_turn++;
+        if (destination_index != Not_found) agent_cell = map.cells[destination_index];
+        if (state.current_turn == _agents.size()) state.current_turn = 0;
         auto agent_status = agent.update_state(state);
-        _current_turn++;
-        if (_current_turn == _agents.size()) {
-            _current_turn = 0;
-        }
-        return state.agents_state[_current_turn].iteration < state.iterations &&
+        return state.agents_state[state.current_turn].iteration < state.iterations &&
                agent_status == Agent_status_code::Running;
     }
 
-    Model::Model(Cell_group &cg, unsigned int iterations) :
-            cells(cg),
-            map(cells),
-            visibility(Visibility::create_graph(cells)),
-            _current_turn(0) {
-        status = Status::Idle;
+    Model::Model(Cell_group &cells, unsigned int iterations) :
+            map(cells.free_cells()),
+            visibility(Visibility::create_graph(cells)){
+        state.status = Model_state::Status::Idle;
         state.iterations = iterations;
     }
 
     Model::Model(Cell_group &cg) : Model(cg, 50) {}
 
     void Model::end_episode() {
-        if (status != Status::Running) throw logic_error("Model::end_episode - model is not running.");
-        for (unsigned int agent_ind=0;agent_ind<_agents.size();agent_ind++) {
-            auto &_agent = _agents[agent_ind].get();
-            _agent.end_episode(state);
-        }
-        status = Status::Stopped;
+        if (state.status != Model_state::Status::Running) throw logic_error("Model::end_episode - model is not running.");
+        state.status = Model_state::Status::Stopped;
+        for (Agent &agent:_agents) agent.end_episode(state);
     }
 
-    void Model::start_episode(unsigned int initial_iteration) {
-        if (status == Status::Running) throw logic_error("Model::start_episode - model is already running.");
+    void Model::start_episode() {
+        if (state.status == Model_state::Status::Running) throw logic_error("Model::start_episode - model is already running.");
         if (_agents.empty()) throw logic_error("Model::start_episode - can't start an episode with no agents.");
-        _current_turn = 0;
-        finished = false;
+        state.current_turn = 0;
         state.agents_state.clear();
-        for (unsigned int i = 0; i < _agents.size(); i++) {
-            auto &agent = _agents[i].get();
-            Cell c = agent.start_episode(initial_iteration);
-            state.agents_state.emplace_back(initial_iteration,c);
+        for (Agent &agent:_agents) {
+            Cell c = agent.start_episode();
+            if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
+            state.agents_state.emplace_back(0,c);
         }
-        status = Status::Running;
+        state.status = Model_state::Status::Running;
+        for (Agent &agent:_agents) agent.update_state(state);
     }
 
     void Model::add_agent(Agent &agent) {
@@ -70,10 +62,5 @@ namespace cell_world {
 
     void Model::run(unsigned int to_iteration) {
         for (; state.iterations < to_iteration && update(););
-    }
-
-    void Model::start_episode() {
-        finished = false;
-        start_episode(0);
     }
 }

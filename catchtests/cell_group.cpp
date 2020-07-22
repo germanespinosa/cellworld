@@ -7,10 +7,10 @@ using namespace cell_world;
 TEST_CASE("cell_group")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},0,false);
-    Cell c1(Circle, {1,1},{1,1},0,false);
-    Cell c2(Circle, {2,1},{1,1},0,false);
-    Cell c3(Circle, {3,1},{1,1},0,false);
+    Cell c0(Circle, {0,1},{1,1},false);
+    Cell c1(Circle, {1,1},{1,1},false);
+    Cell c2(Circle, {2,1},{1,1},false);
+    Cell c3(Circle, {3,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -37,10 +37,10 @@ TEST_CASE("cell_group")
 TEST_CASE("cell_group 2")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},0,false);
-    Cell c1(Circle, {1,1},{1,1},0,false);
-    Cell c2(Circle, {2,1},{1,1},0,false);
-    Cell c3(Circle, {3,1},{1,1},0,false);
+    Cell c0(Circle, {0,1},{1,1},false);
+    Cell c1(Circle, {1,1},{1,1},false);
+    Cell c2(Circle, {2,1},{1,1},false);
+    Cell c3(Circle, {3,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);

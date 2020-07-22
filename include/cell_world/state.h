@@ -19,9 +19,19 @@ namespace cell_world {
     using Agent_state_list = json_cpp::Json_vector<Agent_state>;
 
     struct Model_state : json_cpp::Json_object{
+        enum Status{
+            Idle,
+            Running,
+            Stopped,
+            Finalized,
+        };
+        Status status;
+        unsigned int current_turn;
         unsigned int iterations;
         Agent_state_list agents_state;
         Json_set_builder({
+            Json_add_member(status,true);
+            Json_add_member(current_turn,true);
             Json_add_member(iterations,true);
             Json_add_member(agents_state,true);
         })

@@ -42,12 +42,11 @@ namespace cell_world {
         return id == c.id;
     }
 
-    Cell::Cell (Cell_type cell_type, Coordinates coordinates, Location location, double value, bool occluded):
+    Cell::Cell (Cell_type cell_type, Coordinates coordinates, Location location, bool occluded):
             cell_type (cell_type),
             id(0),
             coordinates(coordinates),
             location(location),
-            value(value),
             occluded(occluded)
             { Cell();}
 
@@ -60,7 +59,6 @@ namespace cell_world {
         location = c.location;
         coordinates = c.coordinates;
         occluded = c.occluded;
-        value =c.value;
         return *this;
     }
 

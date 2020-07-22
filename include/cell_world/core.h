@@ -66,12 +66,11 @@ namespace cell_world{
     struct Cell : json_cpp::Json_object{
         Cell();
         Cell(const cell_world::Cell&) = default;
-        Cell(Cell_type, Coordinates, Location, double , bool);
+        Cell(Cell_type, Coordinates, Location, bool);
         Cell_type cell_type;
         unsigned int id;
         Coordinates coordinates;
         Location location;
-        double value;
         bool occluded;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
@@ -81,7 +80,6 @@ namespace cell_world{
             Json_add_member(coordinates, true);
             Json_add_member(location, true);
             Json_add_member(occluded, true);
-            Json_add_member(value, false);
         })
     };
 
