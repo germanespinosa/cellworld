@@ -8,7 +8,7 @@ namespace cell_world {
         Move get_move(const Cell &, const Cell &) const;
         bool set_move(const Cell &, const Cell &, const Move &);
         bool operator==(const Paths&) const;
-        Json_members({
+        Json_object_members({
                          Add_member(cells,true);
                          Add_member(next_move,true);
         })

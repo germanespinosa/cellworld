@@ -10,7 +10,7 @@ namespace cell_world {
         Agent_state(unsigned int , Cell);
         unsigned int iteration;
         Cell cell;
-        Json_members({
+        Json_object_members({
             Add_member(iteration,true);
             Add_member(cell,true);
         })
@@ -29,7 +29,7 @@ namespace cell_world {
         unsigned int current_turn;
         unsigned int iterations;
         Agent_state_list agents_state;
-        Json_members({
+        Json_object_members({
             Add_member(status,true);
             Add_member(current_turn,true);
             Add_member(iterations,true);
