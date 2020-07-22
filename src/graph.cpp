@@ -77,50 +77,6 @@ namespace cell_world {
         return entropy(histogram(visible_cell_count));
     }
 
-    std::vector<double> Centrality::get_eigen_centrality(Graph &graph) {
-        return get_eigen_centrality(graph, 100, 0.000001);
-    }
-
-    std::vector<double> Centrality::get_betweenness_centrality(Graph &graph, unsigned int precision) {
-        vector<double> result(graph.size(), 0);
-        for (unsigned int i = 0; i < graph.nodes.size() - 1; i += (Chance::dice(precision)) + 1) {
-            for (unsigned int j = i + 1; j < graph.nodes.size(); j += (Chance::dice(precision)) + 1) {
-                auto path = graph.get_shortest_path(graph.nodes[i], graph.nodes[j]);
-                for (unsigned int c = 0; c < path.size(); c++) {
-                    result[graph.nodes.find(path[c])]++;
-                }
-            }
-        }
-        return result;
-    }
-
-    std::vector<double> Centrality::get_eigen_centrality(Graph &graph, unsigned int max_iterations, double tolerance) {
-        auto nodes = (double) graph.size();
-        vector<double> result(graph.size());
-        vector<double> last(graph.size());
-        double err = nodes * 100;
-        for (auto &r : result) r = 1.0 / nodes;
-        for (unsigned int iteration = 0; iteration < max_iterations && err > nodes * tolerance; iteration++) {
-            last = result;
-            for (unsigned int n = 0; n < graph.size(); n++)
-                for (unsigned int nbr = 0; nbr < graph[n].size(); nbr++)
-                    result[graph.nodes.find(graph[n][nbr])] += last[n];
-            double d = 0;
-            for (auto &_connection : result) d += pow(_connection, 2);
-            d = pow(d, .5);
-            double s = d == 0 ? 1 : 1.0 / d;
-            for (auto &_connection : result) _connection *= s;
-            err = 0;
-            for (unsigned int index = 0; index < result.size(); index++)
-                err += abs(result[index] - last[index]);
-        }
-        return result;
-    }
-
-    std::vector<double> Centrality::get_betweenness_centrality(Graph &graph) {
-        return get_betweenness_centrality(graph, 10);
-    }
-
     vector<Graph> Graph::get_sub_graphs(Graph &gates, Graph &options) {
         vector<Graph> graphs;
         gates.clear();
