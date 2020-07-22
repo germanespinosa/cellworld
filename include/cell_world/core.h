@@ -28,9 +28,9 @@ namespace cell_world{
         Coordinates operator -(const Coordinates &) const;
         Coordinates operator -() const;
         unsigned int manhattan(const Coordinates &) const;
-        Json_set_builder({
-            Json_add_member(x,true);
-            Json_add_member(y,true);
+        Json_members({
+            Add_member(x,true);
+            Add_member(y,true);
         })
     };
 
@@ -55,9 +55,9 @@ namespace cell_world{
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
-        Json_set_builder({
-            Json_add_member(x,true);
-            Json_add_member(y,true);
+        Json_members({
+                         Add_member(x,true);
+                         Add_member(y,true);
         })
     };
 
@@ -74,12 +74,12 @@ namespace cell_world{
         bool occluded;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
-        Json_set_builder({
-            Json_add_member(id, true);
-            Json_add_member(cell_type, true);
-            Json_add_member(coordinates, true);
-            Json_add_member(location, true);
-            Json_add_member(occluded, true);
+        Json_members({
+            Add_member(id, true);
+            Add_member(cell_type, true);
+            Add_member(coordinates, true);
+            Add_member(location, true);
+            Add_member(occluded, true);
         })
     };
 

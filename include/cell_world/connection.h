@@ -13,8 +13,6 @@ namespace cell_world {
         static Connection_pattern get_pattern(Cell, Cell_group);
         Connection_pattern &operator=(const std::string &);
         Move random_move();
-    private:
-        const std::string _extension = ".pattern";
     };
 /*
     struct Centrality {

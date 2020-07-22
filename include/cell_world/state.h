@@ -10,9 +10,9 @@ namespace cell_world {
         Agent_state(unsigned int , Cell);
         unsigned int iteration;
         Cell cell;
-        Json_set_builder({
-            Json_add_member(iteration,true);
-            Json_add_member(cell,true);
+        Json_members({
+            Add_member(iteration,true);
+            Add_member(cell,true);
         })
     };
 
@@ -29,11 +29,11 @@ namespace cell_world {
         unsigned int current_turn;
         unsigned int iterations;
         Agent_state_list agents_state;
-        Json_set_builder({
-            Json_add_member(status,true);
-            Json_add_member(current_turn,true);
-            Json_add_member(iterations,true);
-            Json_add_member(agents_state,true);
+        Json_members({
+            Add_member(status,true);
+            Add_member(current_turn,true);
+            Add_member(iterations,true);
+            Add_member(agents_state,true);
         })
     };
 }
