@@ -4,28 +4,23 @@
 
 namespace cell_world {
     struct Paths : json_cpp::Json_object {
-        enum Path_type{
-            euclidean,
-            shortest,
-            mix
-        };
-        Paths(const Graph&, Path_type);
+        Paths(const Graph&);
         Move get_move(const Cell &, const Cell &) const;
-        Path_type type;
+        bool set_move(const Cell &, const Cell &, const Move &);
         bool operator==(const Paths&) const;
         Json_set_builder({
-            Json_add_member(type,true);
-            Json_add_member(_name,true);
-            Json_add_member(_next_move,true);
+            Json_add_member(cells,true);
+            Json_add_member(next_move,true);
         })
+        const Cell_group cells;
+        Move_list next_move;
     private:
-        static std::string _type_string(Path_type);
-        void _init(unsigned int);
-        Paths() = default;
-        std::string _name;
-        Cell_group _cells;
-        json_cpp::Json_vector<Move_list> _next_move;
-        const std::string _extension = ".path";
-    friend class World;
+        int _index(const Cell &, const Cell &) const;
+    };
+    struct Path_builder {
+        static Paths get_euclidean(const Graph &);
+        static Paths get_manhattan(const Graph &);
+        static Paths get_shortest(const Graph &);
+        static Paths load_paths(const Graph &);
     };
 }

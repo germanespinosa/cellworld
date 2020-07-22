@@ -7,7 +7,7 @@ using namespace std;
 
 namespace cell_world {
 
-    Move_list Connection_pattern::get_candidates(Coordinates coordinate) const {
+    Coordinates_list Connection_pattern::get_candidates(Coordinates coordinate) const {
         Move_list c;
         for (auto &p:(*this)) c.push_back(coordinate + p);
         return c;
@@ -24,18 +24,15 @@ namespace cell_world {
     }
 
     Graph Connection_pattern::get_graph(const Cell_group &cg) const {
-        Graph n(cg);
-        Map map(n.nodes);
-        for (unsigned int s = 0; s < n.size(); s++) {
-            auto &source = n.nodes[s];
-            for (auto c : get_candidates(source.coordinates)) {
-                int destination_index = map.find(c);
-                if (destination_index != Not_found) {
-                    n[s].add(n.nodes[destination_index]);
-                }
-            }
-        }
-        return n;
+        auto free_cells = cg.free_cells();
+        Graph graph(free_cells);
+        Map map(free_cells);
+        int destination_index;
+        for (const Cell &cell:free_cells)
+            for (Coordinates &coord : get_candidates(cell.coordinates))
+                if ((destination_index = map.find(coord)) != Not_found)
+                    graph[cell].add(free_cells[destination_index]);
+        return graph;
     }
 
     Connection_pattern Connection_pattern::get_pattern(Cell c, Cell_group cg) {
@@ -47,22 +44,9 @@ namespace cell_world {
     Move Connection_pattern::random_move() {
         return (*this)[Chance::dice(size())];
     }
-
+/*
     std::vector<double> Centrality::get_eigen_centrality(Graph &graph) {
         return get_eigen_centrality(graph, 100, 0.000001);
-    }
-
-    std::vector<double> Centrality::get_betweenness_centrality(Graph &graph, unsigned int precision) {
-        vector<double> result(graph.size(), 0);
-        for (unsigned int i = 0; i < graph.nodes.size() - 1; i += (Chance::dice(precision)) + 1) {
-            for (unsigned int j = i + 1; j < graph.nodes.size(); j += (Chance::dice(precision)) + 1) {
-                auto path = graph.get_shortest_path(graph.nodes[i], graph.nodes[j]);
-                for (unsigned int c = 0; c < path.size(); c++) {
-                    result[graph.nodes.find(path[c])]++;
-                }
-            }
-        }
-        return result;
     }
 
     std::vector<double> Centrality::get_eigen_centrality(Graph &graph, unsigned int max_iterations, double tolerance) {
@@ -91,5 +75,5 @@ namespace cell_world {
     std::vector<double> Centrality::get_betweenness_centrality(Graph &graph) {
         return get_betweenness_centrality(graph, 10);
     }
-
+*/
 }

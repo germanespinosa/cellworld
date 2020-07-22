@@ -17,8 +17,6 @@ namespace cell_world{
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const std::vector<unsigned int>&) const;
         Cell_group create_cell_group(const std::string&) const;
-        Paths create_paths(Paths::Path_type) const;
-        Paths create_paths(const std::string, Paths::Path_type) const;
         Graph create_graph() const;
         Json_set_builder({
             Json_add_member(name,true);

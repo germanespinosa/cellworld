@@ -59,20 +59,4 @@ namespace cell_world {
     Graph World::create_graph() const {
         return connection_pattern.get_graph(create_cell_group());
     }
-
-    Paths World::create_paths(Paths::Path_type type) const {
-        Graph g = create_graph();
-        Paths p( g, type);
-        p._name = name;
-        return p;
-    }
-
-    Paths World::create_paths(const std::string paths_name, Paths::Path_type type) const {
-        Graph g = create_graph();
-        Paths p;
-        p._cells = g.nodes;
-        string file_path = paths_name + "_" + Paths::_type_string(type) +  p._extension;
-        p.load(file_path);
-        return p;
-    }
 }
