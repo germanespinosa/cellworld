@@ -42,22 +42,47 @@ namespace cell_world {
         for (const Cell &s:g.cells){
             Coordinates s_coordinates = s.coordinates;
             for (const Cell &d:g.cells){
-                Location d_location = d.location;
-                Cell_group s_connections = g[s];
-                if (s_connections.empty()) {
+                if (s==d) {
                     paths.set_move(s,d,{0,0});
                 } else {
-                    double min_distance = s_connections[0].location.dist(d_location);
-                    int best_option = 0;
-                    for (unsigned int i = 1 ; i<s_connections.size(); i++) {
-                        double distance = s_connections[i].location.dist(d_location);
-                        if (min_distance > distance){
-                            best_option = i;
-                            min_distance = distance;
+                    Location d_location = d.location;
+                    Cell_group s_connections = g[s];
+                    if (s_connections.empty()) {
+                        paths.set_move(s, d, {0, 0});
+                    } else {
+                        double min_distance = s_connections[0].location.dist(d_location);
+                        int best_option = 0;
+                        for (unsigned int i = 1; i < s_connections.size(); i++) {
+                            double distance = s_connections[i].location.dist(d_location);
+                            if (min_distance > distance) {
+                                best_option = i;
+                                min_distance = distance;
+                            }
                         }
+                        Move best_move = s_connections[best_option].coordinates - s_coordinates;
+                        paths.set_move(s, d, best_move);
                     }
-                    Move best_move = s_connections[best_option].coordinates - s_coordinates;
-                    paths.set_move(s,d,best_move);
+                }
+            }
+        }
+        return paths;
+    }
+
+    Paths Path_builder::get_manhattan(const Graph &g) {
+        Paths paths(g);
+        for (const Cell &s:g.cells) {
+            Coordinates s_coordinates = s.coordinates;
+            for (const Cell &d:g.cells) {
+                if (s == d) {
+                    paths.set_move(s, d, {0, 0});
+                } else {
+                    auto sp = g.get_shortest_path(s,d);
+                    if (sp.empty()){
+                        paths.set_move(s, d, {0, 0});
+                    } else {
+                        Move move = sp[sp.size()-2].coordinates - s_coordinates;
+                        paths.set_move(s, d, move);
+                    }
                 }
             }
         }

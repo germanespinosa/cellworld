@@ -1,6 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
-/*
+
 using namespace cell_world;
 using namespace std;
 
@@ -32,9 +32,9 @@ TEST_CASE("Visibility")
     w.add(c3);
     auto cg = w.create_cell_group();
     Graph vi = Visibility::create_graph(cg);
-    CHECK(vi.nodes.size() == 4);
+    CHECK(vi.size() == 4);
     CHECK(vi[c0].size() == 4);
     CHECK(vi[c1].size() == 4);
     CHECK(vi[c2].size() == 4);
     CHECK(vi[c3].size() == 4);
-}*/
+}

@@ -10,7 +10,7 @@ namespace cell_world{
     private:
         std::vector< int> _coordinate_index;
         const Cell_group &_group;
-        int base_y, base_x, columns;
+        int base_y, base_x, columns, rows;
         int _index(const Coordinates &) const;
     };
 }

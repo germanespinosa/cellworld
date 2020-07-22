@@ -28,10 +28,13 @@ namespace cell_world {
         Graph graph(free_cells);
         Map map(free_cells);
         int destination_index;
-        for (const Cell &cell:free_cells)
-            for (Coordinates &coord : get_candidates(cell.coordinates))
-                if ((destination_index = map.find(coord)) != Not_found)
+        for (const Cell &cell:free_cells) {
+            for (Coordinates &coord : get_candidates(cell.coordinates)) {
+                if ((destination_index = map.find(coord)) != Not_found) {
                     graph[cell].add(free_cells[destination_index]);
+                }
+            }
+        }
         return graph;
     }
 

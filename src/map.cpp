@@ -20,7 +20,8 @@ namespace cell_world{
         base_x = min_x;
         base_y = min_y;
         columns = max_x-min_x + 1;
-        _coordinate_index = vector<int>(columns * (max_y-min_y + 1),Not_found);
+        rows = max_y-min_y + 1;
+        _coordinate_index = vector<int>(columns * (rows),Not_found);
         for (unsigned int i = 0; i < group.size(); i++) {
             _coordinate_index[_index(group[i].coordinates)] = i;
         }
@@ -37,6 +38,10 @@ namespace cell_world{
     }
 
     int Map::_index(const Coordinates &c) const {
-        return (c.x - base_x) + (c.y - base_y) * columns;
+        int x = c.x - base_x;
+        if (x<0 || x>=columns) return Not_found;
+        int y = c.y - base_y;
+        if (y<0 || y>=rows) return Not_found;
+        return (x) + (y) * columns;
     }
 }
