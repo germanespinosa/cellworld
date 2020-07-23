@@ -38,7 +38,7 @@ namespace cell_world {
         return cg;
     }
 
-    Cell_group World::create_cell_group(const std::vector<unsigned int> &cell_ids) const {
+    Cell_group World::create_cell_group(const Cell_group_builder &cell_ids) const {
         Cell_group cg;
         for (auto id : cell_ids) cg.add(cells[id]);
         return cg;
@@ -46,10 +46,9 @@ namespace cell_world {
 
     Cell_group World::create_cell_group(const std::string &file_path) const {
         Cell_group cg;
-        json_cpp::Json_vector<unsigned int> ids;
+        Cell_group_builder ids;
         ids.load(file_path);
-        for (auto id:ids) cg.add(cells[id]);
-        return cg;
+        return create_cell_group(ids);
     }
 
     Graph World::create_graph() const {

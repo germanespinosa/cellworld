@@ -15,7 +15,7 @@ namespace cell_world{
         void set_occlusion(unsigned int, bool);
         void set_value(unsigned int, double);
         Cell_group create_cell_group() const;
-        Cell_group create_cell_group(const std::vector<unsigned int>&) const;
+        Cell_group create_cell_group(const Cell_group_builder &) const;
         Cell_group create_cell_group(const std::string&) const;
         Graph create_graph() const;
         Json_object_members({
