@@ -13,5 +13,9 @@ fi
 if [ "$file" == "-" ]; then
   python3 -c "import json; $value = json.loads('$json'); $output"
 else
-  python3 -c "import sys, json; $value = json.load(sys.stdin); $output" < "$file"
+  if [ "$file" == "stdin" ]; then
+    python3 -c "import sys, json; $value = json.load(sys.stdin); $output"
+  else
+    python3 -c "import sys, json; $value = json.load(sys.stdin); $output" < "$file"
+  fi
 fi
