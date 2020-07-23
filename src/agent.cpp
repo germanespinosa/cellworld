@@ -2,7 +2,9 @@
 
 using namespace std;
 namespace cell_world {
-    Agent::Agent() :
-    _agent_index(0){
+    Agent::Agent() {
+    }
+    const Agent_state &Agent::state() const {
+        return *_state;
     }
 }

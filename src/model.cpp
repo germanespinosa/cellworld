@@ -45,15 +45,19 @@ namespace cell_world {
         for (Agent &agent:_agents) {
             Cell c = agent.start_episode(agent_index);
             if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
-            state.agents_state.emplace_back(0,c);
+            state.agents_state.emplace_back(agent_index,c);
             agent_index++;
         }
         state.status = Model_state::Status::Running;
-        for (Agent &agent:_agents) agent.update_state(state);
+        agent_index = 0;
+        for (Agent &agent:_agents) {
+            agent._state = state.agents_state[agent_index];
+            agent.update_state(state);
+            agent_index++;
+        }
     }
 
     void Model::add_agent(Agent &agent) {
-        agent._agent_index = _agents.size();
         _agents.emplace_back(agent);
     }
 

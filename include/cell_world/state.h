@@ -8,9 +8,11 @@ namespace cell_world {
     struct Agent_state : json_cpp::Json_object{
         Agent_state();
         Agent_state(unsigned int , Cell);
+        unsigned int agent_index;
         unsigned int iteration;
         Cell cell;
         Json_object_members({
+            Add_member(agent_index,true);
             Add_member(iteration,true);
             Add_member(cell,true);
         })
@@ -22,8 +24,7 @@ namespace cell_world {
         enum Status{
             Idle,
             Running,
-            Stopped,
-            Finalized,
+            Stopped
         };
         Status status;
         unsigned int current_turn;
