@@ -20,7 +20,7 @@ namespace cell_world{
         virtual Agent_status_code update_state(const Model_state &) = 0;
         virtual void end_episode(const Model_state &) = 0;
         const Agent_state &state() const;
-    //private:
+    private:
         std::optional<std::reference_wrapper<Agent_state>> _state;
         friend class Model;
     };
