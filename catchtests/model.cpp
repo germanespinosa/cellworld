@@ -70,7 +70,7 @@ TEST_CASE("Model status")
     CHECK_THROWS(m.update());
     CHECK_THROWS(m.end_episode());
 }
-/*
+
 
 TEST_CASE("Model reset")
 {
@@ -112,8 +112,18 @@ TEST_CASE("Model reset")
     CHECK(a.state().cell.coordinates == Coordinates{3,1});
     CHECK_NOTHROW(m.update());
     CHECK(b.state().cell.coordinates == Coordinates{3,1});
+    m.state=s;
+    CHECK_NOTHROW(m.update());
+    CHECK(b.state().cell.coordinates == Coordinates{1,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(a.state().cell.coordinates == Coordinates{2,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(b.state().cell.coordinates == Coordinates{2,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(a.state().cell.coordinates == Coordinates{3,1});
+    CHECK_NOTHROW(m.update());
+    CHECK(b.state().cell.coordinates == Coordinates{3,1});
     CHECK_NOTHROW(m.end_episode());
     CHECK_THROWS(m.update());
     CHECK_THROWS(m.end_episode());
 }
- */
