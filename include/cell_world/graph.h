@@ -4,6 +4,8 @@
 
 namespace cell_world {
 
+    using Graph_builder = json_cpp::Json_vector<json_cpp::Json_vector<unsigned int>>;
+
     struct Graph : json_cpp::Json_vector<Cell_group>{
         Graph();
         explicit Graph(const Cell_group &);
@@ -29,6 +31,5 @@ namespace cell_world {
         json_cpp::Json_vector<Graph> get_sub_graphs(Cell_group &);
         json_cpp::Json_vector<Graph> get_sub_graphs(Graph &);
         json_cpp::Json_vector<Graph> get_sub_graphs(Graph &,Graph &);
-
     };
 }
