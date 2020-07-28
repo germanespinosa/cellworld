@@ -54,4 +54,9 @@ namespace cell_world {
     Graph World::create_graph() const {
         return connection_pattern.get_graph(create_cell_group());
     }
+
+    Paths World::create_paths(const Path_builder &pb) const {
+        Graph graph = create_graph();
+        return Paths(graph, pb);
+    }
 }

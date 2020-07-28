@@ -1,23 +1,25 @@
 #include <cell_world/paths.h>
 
+#include <utility>
+
 using namespace std;
 
 namespace cell_world {
     Paths::Paths(const Graph &g) :
             cells(g.cells),
-            next_move(cells.size() * cells.size(), Coordinates{0,0}) {
+            moves(cells.size() * cells.size(), Coordinates{0, 0}) {
     }
 
     Move Paths::get_move(const Cell &s, const Cell &d) const {
         int si = _index(s,d);
         if (si == Not_found) return Move{0, 0};
-        return next_move[si];
+        return moves[si];
     }
 
     bool Paths::operator==(const Paths &p) const {
-        if (next_move.size() != p.next_move.size()) return false;
-        for (unsigned int i = 0; i < next_move.size(); i++) {
-            if (next_move[i] != p.next_move[i]) return false;
+        if (moves.size() != p.moves.size()) return false;
+        for (unsigned int i = 0; i < moves.size(); i++) {
+            if (moves[i] != p.moves[i]) return false;
         }
         return true;
     }
@@ -33,11 +35,17 @@ namespace cell_world {
     bool Paths::set_move(const Cell &s, const Cell &d, const Move &move) {
         int m_index = _index(s,d);
         if (m_index==Not_found) return false;
-        next_move [m_index] = move;
+        moves [m_index] = move;
         return true;
     }
 
-    Paths Path_builder::get_euclidean(const Graph &g) {
+    Paths::Paths(const Graph &g, Move_list m) :
+    cells(g.cells),
+    moves(std::move(m)){
+
+    }
+
+    Paths Paths::get_euclidean(const Graph &g) {
         Paths paths(g);
         for (const Cell &s:g.cells){
             Coordinates s_coordinates = s.coordinates;
@@ -68,7 +76,7 @@ namespace cell_world {
         return paths;
     }
 
-    Paths Path_builder::get_manhattan(const Graph &g) {
+    Paths Paths::get_manhattan(const Graph &g) {
         Paths paths(g);
         for (const Cell &s:g.cells) {
             Coordinates s_coordinates = s.coordinates;
@@ -82,6 +90,37 @@ namespace cell_world {
                     } else {
                         Move move = sp[sp.size()-2].coordinates - s_coordinates;
                         paths.set_move(s, d, move);
+                    }
+                }
+            }
+        }
+        return paths;
+    }
+
+    Paths Paths::get_astar(const Graph &g) {
+        Paths paths(g);
+        for (const Cell &s:g.cells) {
+            Coordinates s_coordinates = s.coordinates;
+            for (const Cell &d:g.cells) {
+                if (s == d) {
+                    paths.set_move(s, d, {0, 0});
+                } else {
+                    auto sp = g.get_shortest_path(s,d);
+                    if (sp.empty()){
+                        paths.set_move(s, d, {0, 0});
+                    } else {
+                        unsigned int path_len = sp.size() - 1;
+                        double min_distance = -1;
+                        for (const Cell&a:g[s]){
+                            if (g.get_shortest_path(a,d).size()==path_len){
+                                double a_distance = a.location.dist(d.location);
+                                if (min_distance == -1 || a_distance < min_distance){
+                                    min_distance = a_distance;
+                                    Move move = a.coordinates - s_coordinates;
+                                    paths.set_move(s, d, move);
+                                }
+                            }
+                        }
                     }
                 }
             }

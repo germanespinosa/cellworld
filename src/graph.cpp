@@ -118,9 +118,13 @@ namespace cell_world {
             int parent;
             unsigned int cell_index;
         };
+        Cell_group path;
+        if (s==d) {
+            path.add(s);
+            return path;
+        }
         vector<bool> visited(cells.size(), false);
         vector<Node> candidates;
-        Cell_group path;
         int cell_index = cells.find(s);
         candidates.push_back({Not_found, (unsigned int) cell_index});
         unsigned int i = 0;

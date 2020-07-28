@@ -18,7 +18,7 @@ TEST_CASE("euclidean")
     w.add(c3);
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
     auto g = w.create_graph();
-    Paths p = Path_builder::get_euclidean(g);
+    Paths p = Paths::get_euclidean(g);
     CHECK(p.get_move(c0,c3) == Move{1,0});
     CHECK(p.get_move(c1,c3) == Move{1,0});
     CHECK(p.get_move(c2,c3) == Move{1,0});
@@ -42,7 +42,7 @@ TEST_CASE("a_star")
     w.add(c3);
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
     auto g = w.create_graph();
-    Paths p = Path_builder::get_manhattan(g);
+    Paths p = Paths::get_manhattan(g);
     CHECK(p.get_move(c0,c3) == Move{1,0});
     CHECK(p.get_move(c1,c3) == Move{1,0});
     CHECK(p.get_move(c2,c3) == Move{1,0});
@@ -83,14 +83,14 @@ TEST_CASE("euclidean_blocked")
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
     CHECK(w.size() == 12);
     Graph g = w.create_graph();
-    CHECK(g.size() == 9);
+    CHECK(g.size() == 9); //three occluded are not part of the graph
     CHECK(g[c00].size() == 2);
     CHECK(g[c01].size() == 2);
     CHECK(g[c02].size() == 2);
     CHECK(g.cells.find(c10) != Not_found);
     CHECK(g.cells.find(c10) == 1);
     CHECK(g[c10].size() == 1);
-    Paths p = Path_builder::get_euclidean(g);
+    Paths p = Paths::get_euclidean(g);
     CHECK(p.get_move(c10,c30) == Move{-1,0});
     CHECK(p.get_move(c00,c30) == Move{1,0});
     CHECK(p.get_move(c01,c30) == Move{0,-1});
@@ -102,7 +102,7 @@ TEST_CASE("euclidean_blocked")
     CHECK(p.get_move(c30,c30) == Move{0,0});
 }
 
-TEST_CASE("a_start_blocked")
+TEST_CASE("manhattan")
 {
     World w("test");
     Cell c00(Circle, {0,0},{0,0},false);
@@ -141,7 +141,58 @@ TEST_CASE("a_start_blocked")
     CHECK(g.cells.find(c10) == 3);
     CHECK(g[c10].size() == 1);
 
-    Paths p = Path_builder::get_manhattan(g);
+    Paths p = Paths::get_manhattan(g);
+    CHECK(p.get_move(c10,c30) == Move{-1,0});
+    CHECK(p.get_move(c00,c30) == Move{0,1});
+    CHECK(p.get_move(c01,c30) == Move{0,1});
+    CHECK(p.get_move(c02,c30) == Move{1,0});
+    CHECK(p.get_move(c12,c30) == Move{1,0});
+    CHECK(p.get_move(c22,c30) == Move{1,0});
+    CHECK(p.get_move(c32,c30) == Move{0,-1});
+    CHECK(p.get_move(c31,c30) == Move{0,-1});
+    CHECK(p.get_move(c30,c30) == Move{0,0});
+}
+
+TEST_CASE("astar")
+{
+    World w("test");
+    Cell c00(Circle, {0,0},{0,0},false);
+    Cell c01(Circle, {0,1},{0,1},false);
+    Cell c02(Circle, {0,2},{0,2},false);
+    Cell c10(Circle, {1,0},{1,0},false);
+    Cell c11(Circle, {1,1},{1,1},true);
+    Cell c12(Circle, {1,2},{1,2},false);
+    Cell c20(Circle, {2,0},{2,0},true);
+    Cell c21(Circle, {2,1},{2,1},true);
+    Cell c22(Circle, {2,2},{2,2},false);
+    Cell c30(Circle, {3,0},{3,0},false);
+    Cell c31(Circle, {3,1},{3,1},false);
+    Cell c32(Circle, {3,2},{3,2},false);
+    w.add(c00);
+    w.add(c01);
+    w.add(c02);
+    w.add(c10);
+    w.add(c11);
+    w.add(c12);
+    w.add(c20);
+    w.add(c21);
+    w.add(c22);
+    w.add(c30);
+    w.add(c31);
+    w.add(c32);
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
+    CHECK(w.size() == 12);
+
+    Graph g = w.create_graph();
+    CHECK(g.size() == 9);
+    CHECK(g[c00].size() == 2);
+    CHECK(g[c01].size() == 2);
+    CHECK(g[c02].size() == 2);
+    CHECK(g.cells.find(c10) != Not_found);
+    CHECK(g.cells.find(c10) == 3);
+    CHECK(g[c10].size() == 1);
+
+    Paths p = Paths::get_astar(g);
     CHECK(p.get_move(c10,c30) == Move{-1,0});
     CHECK(p.get_move(c00,c30) == Move{0,1});
     CHECK(p.get_move(c01,c30) == Move{0,1});
@@ -190,9 +241,9 @@ TEST_CASE("path_save_shortest")
     CHECK(g.cells.find(c10) != Not_found);
     CHECK(g.cells.find(c10) == 3);
     CHECK(g[c10].size() == 1);
-    Paths p = Path_builder::get_manhattan(g);
+    Paths p = Paths::get_manhattan(g);
     p.save("test_path");
-    Paths np = Path_builder::get_manhattan(g);
+    Paths np = Paths::get_manhattan(g);
     CHECK(p == np);
 }
 
@@ -233,8 +284,8 @@ TEST_CASE("euclidean_blocked_save")
     CHECK(g.cells.find(c10) != Not_found);
     CHECK(g.cells.find(c10) == 3);
     CHECK(g[c10].size() == 1);
-    Paths p = Path_builder::get_euclidean(g);
+    Paths p = Paths::get_euclidean(g);
     p.save("test_path.path");
-    Paths np = Path_builder::get_euclidean(g);
+    Paths np = Paths::get_euclidean(g);
     CHECK(p == np);
 }

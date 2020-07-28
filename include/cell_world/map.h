@@ -8,6 +8,7 @@ namespace cell_world{
         const Cell& operator [](const Coordinates &) const;
         int find (const Coordinates &) const;
         const Cell_group cells;
+        Coordinates_list coordinates;
     private:
         std::vector< int> _coordinate_index;
         int base_y, base_x, columns, rows;

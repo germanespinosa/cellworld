@@ -18,10 +18,11 @@ namespace cell_world{
         Cell_group create_cell_group(const Cell_group_builder &) const;
         Cell_group create_cell_group(const std::string&) const;
         Graph create_graph() const;
+        Paths create_paths(const Path_builder &) const;
         Json_object_members({
-                         Add_member(name,true);
-                         Add_member(connection_pattern,true);
-                         Add_member(cells,true);
+                         Add_member(name);
+                         Add_member(connection_pattern);
+                         Add_member(cells);
         })
         std::string name;
         Connection_pattern connection_pattern;

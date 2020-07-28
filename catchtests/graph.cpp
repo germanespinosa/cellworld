@@ -342,3 +342,44 @@ TEST_CASE("Sub graphs")
     CHECK(gates[c2].size()==2);
     CHECK(gates[c4].size()==1);
 }
+
+TEST_CASE("shortest path") {
+    World w("test");
+    Cell c00(Circle, {0, 0}, {0, 0}, false);
+    Cell c01(Circle, {0, 1}, {0, 1}, false);
+    Cell c02(Circle, {0, 2}, {0, 2}, false);
+    Cell c10(Circle, {1, 0}, {1, 0}, false);
+    Cell c11(Circle, {1, 1}, {1, 1}, true);
+    Cell c12(Circle, {1, 2}, {1, 2}, false);
+    Cell c20(Circle, {2, 0}, {2, 0}, true);
+    Cell c21(Circle, {2, 1}, {2, 1}, true);
+    Cell c22(Circle, {2, 2}, {2, 2}, false);
+    Cell c30(Circle, {3, 0}, {3, 0}, false);
+    Cell c31(Circle, {3, 1}, {3, 1}, false);
+    Cell c32(Circle, {3, 2}, {3, 2}, false);
+    w.add(c00);
+    w.add(c01);
+    w.add(c02);
+    w.add(c10);
+    w.add(c11);
+    w.add(c12);
+    w.add(c20);
+    w.add(c21);
+    w.add(c22);
+    w.add(c30);
+    w.add(c31);
+    w.add(c32);
+    "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
+    CHECK(w.size() == 12);
+    Graph g = w.create_graph();
+    CHECK(g.size() == 9);
+    CHECK(g.get_shortest_path(c10,c30).size() == 9);
+    CHECK(g.get_shortest_path(c00,c30).size() == 8);
+    CHECK(g.get_shortest_path(c01,c30).size() == 7);
+    CHECK(g.get_shortest_path(c02,c30).size() == 6);
+    CHECK(g.get_shortest_path(c12,c30).size() == 5);
+    CHECK(g.get_shortest_path(c22,c30).size() == 4);
+    CHECK(g.get_shortest_path(c32,c30).size() == 3);
+    CHECK(g.get_shortest_path(c31,c30).size() == 2);
+    CHECK(g.get_shortest_path(c30,c30).size() == 1);
+}

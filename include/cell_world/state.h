@@ -12,9 +12,9 @@ namespace cell_world {
         unsigned int iteration;
         Cell cell;
         Json_object_members({
-            Add_member(agent_index,true);
-            Add_member(iteration,true);
-            Add_member(cell,true);
+            Add_member(agent_index);
+            Add_member(iteration);
+            Add_member(cell);
         })
     };
 
@@ -31,10 +31,10 @@ namespace cell_world {
         unsigned int iterations;
         Agent_state_list agents_state;
         Json_object_members({
-            Add_member(status,true);
-            Add_member(current_turn,true);
-            Add_member(iterations,true);
-            Add_member(agents_state,true);
+            Add_member(status);
+            Add_member(current_turn);
+            Add_member(iterations);
+            Add_member(agents_state);
         })
     };
 }

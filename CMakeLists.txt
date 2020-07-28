@@ -2,17 +2,14 @@ cmake_minimum_required(VERSION 3.13)
 
 set(CMAKE_CXX_STANDARD 17)
 
-find_package( Json-cpp CONFIG QUIET )
-
 project(cellworld
         VERSION 2019.1.0
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
+find_package( Json-cpp CONFIG QUIET )
+
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
-
-###
-
 
 ###
 ### MAIN LIBRARY SETUP
@@ -72,18 +69,12 @@ find_package(CatchTests CONFIG QUIET)
 
 include(GNUInstallDirs)
 
-SET(CELLWORLD_RESOURCES "${CMAKE_INSTALL_FULL_DATADIR}/cellworld/resources")
-
-target_compile_definitions(cellworld PRIVATE
-        -DCELLWORLD_RESOURCES="${CELLWORLD_RESOURCES}")
-
 install(TARGETS cellworld EXPORT CellworldConfig
         ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
 install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY resources/ DESTINATION ${CELLWORLD_RESOURCES})
 install(DIRECTORY scripts/ DESTINATION /bin)
 install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
 install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
@@ -96,7 +87,5 @@ install(EXPORT CellworldConfig
         EXPORT_LINK_INTERFACE_LIBRARIES)
 
 export(TARGETS cellworld FILE CellworldConfig.cmake)
-install(FILES resources.cmake DESTINATION ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/)
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"include(${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/resources.cmake)\n\") ")
 

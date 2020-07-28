@@ -17,6 +17,8 @@ namespace cell_world{
             if (y<min_y) min_y = y;
             if (y>max_y) max_y = y;
         }
+        coordinates.push_back({min_x,min_y});
+        coordinates.push_back({max_x,max_y});
         base_x = min_x;
         base_y = min_y;
         columns = max_x-min_x + 1;
