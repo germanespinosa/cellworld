@@ -10,14 +10,17 @@ namespace cell_world{
     {
         Model(Cell_group &, unsigned int);
         explicit Model(Cell_group &);
-        void add_agent(Agent &);
+        void add_agent(Agent_base &);
         bool update();
         void start_episode();
         void end_episode();
+        const Model_state &get_state() const;
+        void set_state(Model_state &);
+        void set_public_state(Model_public_state &);
         void run();
         Map map;
-        Model_state state;
     protected:
-        std::vector<std::reference_wrapper<Agent>> _agents;
+        Model_state _state;
+        std::vector<std::reference_wrapper<Agent_base>> _agents;
     };
 }

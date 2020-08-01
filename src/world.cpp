@@ -59,4 +59,16 @@ namespace cell_world {
         Graph graph = create_graph();
         return Paths(graph, pb);
     }
+
+    Graph World::create_graph(const Graph_builder &gb) const {
+        Graph g(create_cell_group());
+        for (unsigned int ids=0;ids<gb.size();ids++){
+            auto &sc = g[ids];
+            for (unsigned int idd:gb[ids]){
+                auto &d=g.cells[idd];
+                sc.add(d);
+            }
+        }
+        return g;
+    }
 }

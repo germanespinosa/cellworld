@@ -5,11 +5,11 @@
 #include <atomic>
 
 namespace cell_world {
-    struct Agent_state : json_cpp::Json_object{
-        Agent_state();
-        Agent_state(unsigned int , Cell);
-        unsigned int agent_index;
-        unsigned int iteration;
+    struct Agent_public_state : json_cpp::Json_object{
+        Agent_public_state();
+        Agent_public_state(unsigned int);
+        unsigned int agent_index{};
+        unsigned int iteration{};
         Cell cell;
         Json_object_members({
             Add_member(agent_index);
@@ -18,9 +18,18 @@ namespace cell_world {
         })
     };
 
-    using Agent_state_list = json_cpp::Json_vector<Agent_state>;
+    using Agent_state_list = json_cpp::Json_vector<Agent_public_state>;
 
-    struct Model_state : json_cpp::Json_object{
+    struct Agent_internal_state {
+        explicit Agent_internal_state(size_t);
+        void *get_address();
+    private:
+        std::vector<char> _mem_blob;
+    };
+
+    using Agent_internal_state_list = std::vector<Agent_internal_state>;
+
+    struct Model_public_state : json_cpp::Json_object{
         enum Status{
             Idle,
             Running,
@@ -37,4 +46,13 @@ namespace cell_world {
             Add_member(agents_state);
         })
     };
+
+    struct Model_state {
+        Model_public_state public_state;
+
+    private:
+        Agent_internal_state_list _agents_internal_state;
+        friend class Model;
+    };
+
 }

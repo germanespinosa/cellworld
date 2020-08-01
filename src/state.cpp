@@ -4,9 +4,16 @@
 using namespace std;
 
 namespace cell_world {
-    Agent_state::Agent_state() {
+    Agent_public_state::Agent_public_state() {
     }
-    Agent_state::Agent_state(unsigned int agent_index, Cell cell):
-            agent_index(agent_index), iteration(0), cell(cell){
+    Agent_public_state::Agent_public_state(unsigned int agent_index):
+        agent_index(agent_index){
+    }
+    Agent_internal_state::Agent_internal_state(size_t size):
+        _mem_blob(size){
+    }
+
+    void *Agent_internal_state::get_address() {
+        return _mem_blob.data();
     }
 }

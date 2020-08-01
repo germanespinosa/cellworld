@@ -5,24 +5,23 @@
 using namespace cell_world;
 using namespace std;
 
-struct Test_Agent : Agent {
+struct Test_Agent : Stateless_agent {
     Test_Agent( unsigned int v, Cell &c): cell(c){
 
     };
     Cell cell;
     unsigned int index;
 
-    const Cell &start_episode(unsigned int agent_index) override{
-        index = agent_index;
+    const Cell &start_episode() override{
         return cell;
     };
-    Agent_status_code update_state(const Model_state &model_state) override{
+    Agent_status_code update_state(const Model_public_state &model_state) override{
         return Agent_status_code::Running;
     };
-    Move get_move(const Model_state &) override{
+    Move get_move(const Model_public_state &) override{
         return {1,0};
     };
-    void end_episode(const Model_state &) override{
+    void end_episode(const Model_public_state &) override{
     };
 
 };
@@ -45,27 +44,27 @@ TEST_CASE("Model status")
     m.add_agent(a);
     m.add_agent(b);
     CHECK_NOTHROW(m.start_episode());
-    CHECK(a.state().cell.coordinates == Coordinates{0,1});
-    CHECK(b.state().cell.coordinates == Coordinates{0,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{0, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{0, 1});
     CHECK_THROWS(m.start_episode());
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{1,1});
-    CHECK(b.state().cell.coordinates == Coordinates{0,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{1, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{0, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{1,1});
-    CHECK(b.state().cell.coordinates == Coordinates{1,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{1, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{1, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{2,1});
-    CHECK(b.state().cell.coordinates == Coordinates{1,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{2, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{1, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{2,1});
-    CHECK(b.state().cell.coordinates == Coordinates{2,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{2, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{2, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{3,1});
-    CHECK(b.state().cell.coordinates == Coordinates{2,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{3, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{2, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{3,1});
-    CHECK(b.state().cell.coordinates == Coordinates{3,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{3, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{3, 1});
     CHECK_NOTHROW(m.end_episode());
     CHECK_THROWS(m.update());
     CHECK_THROWS(m.end_episode());
@@ -91,39 +90,40 @@ TEST_CASE("Model reset")
     m.add_agent(a);
     m.add_agent(b);
     CHECK_NOTHROW(m.start_episode());
-    CHECK(a.state().cell.coordinates == Coordinates{0,1});
-    CHECK(b.state().cell.coordinates == Coordinates{0,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{0, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{0, 1});
     CHECK_THROWS(m.start_episode());
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{1,1});
-    Model_state s = m.state;
+    CHECK(a.public_state().cell.coordinates == Coordinates{1, 1});
+    Model_state s = m.get_state();
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{1,1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{1, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{2,1});
-    m.state=s;
+    CHECK(a.public_state().cell.coordinates == Coordinates{2, 1});
+    m.set_public_state(s.public_state);
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{1,1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{1, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{2,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{2, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{2,1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{2, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{3,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{3, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{3,1});
-    m.state=s;
+    CHECK(b.public_state().cell.coordinates == Coordinates{3, 1});
+    m.set_state(s);
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{1,1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{1, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{2,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{2, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{2,1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{2, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(a.state().cell.coordinates == Coordinates{3,1});
+    CHECK(a.public_state().cell.coordinates == Coordinates{3, 1});
     CHECK_NOTHROW(m.update());
-    CHECK(b.state().cell.coordinates == Coordinates{3,1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{3, 1});
     CHECK_NOTHROW(m.end_episode());
     CHECK_THROWS(m.update());
     CHECK_THROWS(m.end_episode());
+
 }

@@ -18,7 +18,7 @@ namespace cell_world {
         unsigned int max = _chances[values.size() - 1];
         unsigned int chance_dice = (dice % max) + 1;
         for (action = 0; chance_dice > _chances[action] && action < values.size() - 1; action++);
-        double reward = values[indexes[action]]; // this is the expected value of the state-action pair
+        double reward = values[indexes[action]]; // this is the expected value of the public_state-action pair
 
         unsigned int repetitions = 0;
         for (double value : values) if (value == reward) repetitions++; //find how many times the same value appears
