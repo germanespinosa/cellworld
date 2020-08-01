@@ -22,7 +22,7 @@ namespace cell_world{
         const Agent_public_state &public_state() const;
     protected:
         virtual size_t get_internal_state_size () = 0;
-        virtual void set_internal_state (void *) = 0;
+        virtual void set_internal_state (Agent_internal_state_container &, bool) = 0;
     private:
         void set_public_state (Agent_public_state *s);
         Agent_public_state *_state;
@@ -31,19 +31,25 @@ namespace cell_world{
 
     struct Stateless_agent: Agent_base{
         size_t get_internal_state_size() override { return 0 ;};
-        void set_internal_state(void *) override {};
+        void set_internal_state(Agent_internal_state_container &, bool) override {};
+    };
+
+    struct Agent_internal_state {
+        virtual void init_data() = 0;
     };
 
     template <class STATE_STRUCT>
     struct Stateful_agent : Agent_base {
+        static_assert(std::is_base_of<Agent_internal_state, STATE_STRUCT>::value, "STATE_STRUCT must inherit from Agent_internal_state");
         size_t get_internal_state_size () override {
             return sizeof(STATE_STRUCT);
         }
         STATE_STRUCT &internal_state() {
             return *_internal_state;
         }
-        void set_internal_state(void *ptr) override {
-            _internal_state = (STATE_STRUCT *)ptr;
+        void set_internal_state(Agent_internal_state_container &c, bool init) override {
+            _internal_state = (STATE_STRUCT *)c.get_address();
+            if (init) _internal_state->init_data();
         }
     private:
         STATE_STRUCT *_internal_state;

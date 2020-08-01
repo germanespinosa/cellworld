@@ -20,14 +20,14 @@ namespace cell_world {
 
     using Agent_state_list = json_cpp::Json_vector<Agent_public_state>;
 
-    struct Agent_internal_state {
-        explicit Agent_internal_state(size_t);
+    struct Agent_internal_state_container {
+        explicit Agent_internal_state_container(size_t);
         void *get_address();
     private:
         std::vector<char> _mem_blob;
     };
 
-    using Agent_internal_state_list = std::vector<Agent_internal_state>;
+    using Agent_internal_state_list = std::vector<Agent_internal_state_container>;
 
     struct Model_public_state : json_cpp::Json_object{
         enum Status{
