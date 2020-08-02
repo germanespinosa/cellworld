@@ -76,6 +76,12 @@ namespace cell_world {
 
     void Model::set_public_state(Model_public_state &mps) {
         _state.public_state = mps;
+        //reset all internal states
+        unsigned int agent_index = 0;
+        for (Agent_base &agent:_agents) {
+            agent.set_internal_state(_state._agents_internal_state[agent_index], true);
+            agent_index++;
+        }
     }
 
     void Model::set_state(Model_state &ms) {

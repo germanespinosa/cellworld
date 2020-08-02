@@ -34,12 +34,11 @@ namespace cell_world{
         void set_internal_state(Agent_internal_state_container &, bool) override {};
     };
 
-    struct Agent_internal_state {
-    };
+    using Agent_internal_state = json_cpp::Json_object;
 
     template <class STATE_STRUCT>
     struct Stateful_agent : Agent_base {
-        static_assert(std::is_base_of<json_cpp::Json_object, STATE_STRUCT>::value, "STATE_STRUCT must inherit from "
+        static_assert(std::is_base_of<Agent_internal_state, STATE_STRUCT>::value, "STATE_STRUCT must inherit from "
                                                                          "Agent_internal_state");
         size_t get_internal_state_size () override {
             return sizeof(STATE_STRUCT);
@@ -54,6 +53,9 @@ namespace cell_world{
             } else {
                 _internal_state =  (STATE_STRUCT *) place;
             }
+        }
+        void set_internal_state(STATE_STRUCT &s) {
+            *_internal_state = s;
         }
     private:
         STATE_STRUCT *_internal_state;
