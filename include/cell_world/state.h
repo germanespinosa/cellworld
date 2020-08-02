@@ -6,7 +6,7 @@
 
 namespace cell_world {
     struct Agent_public_state : json_cpp::Json_object{
-        Agent_public_state();
+        Agent_public_state()  = default;
         Agent_public_state(unsigned int);
         unsigned int agent_index{};
         unsigned int iteration{};
