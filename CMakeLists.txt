@@ -7,7 +7,7 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
-find_package( Json-cpp CONFIG QUIET )
+find_package( Json-cpp REQUIRED )
 
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 
@@ -88,4 +88,5 @@ install(EXPORT CellworldConfig
 
 export(TARGETS cellworld FILE CellworldConfig.cmake)
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp)\n\") ")
 
