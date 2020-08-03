@@ -8,8 +8,8 @@
 namespace cell_world{
     struct Model
     {
-        Model(Cell_group &, unsigned int);
-        explicit Model(Cell_group &);
+        Model(const Cell_group &, unsigned int);
+        explicit Model(const Cell_group &);
         void add_agent(Agent_base &);
         bool update();
         void start_episode();

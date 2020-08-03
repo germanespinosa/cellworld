@@ -24,13 +24,13 @@ namespace cell_world {
                agent_status == Agent_status_code::Running;
     }
 
-    Model::Model(Cell_group &cells, unsigned int iterations) :
+    Model::Model(const Cell_group &cells, unsigned int iterations) :
             map(cells.free_cells()){
         _state.public_state.status = Model_public_state::Status::Idle;
         _state.public_state.iterations = iterations;
     }
 
-    Model::Model(Cell_group &cg) : Model(cg, 50) {}
+    Model::Model(const Cell_group &cg) : Model(cg, 50) {}
 
     void Model::end_episode() {
         if (_state.public_state.status != Model_public_state::Status::Running) throw logic_error("Model::end_episode - model is not running.");
