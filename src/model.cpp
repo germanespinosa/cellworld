@@ -25,7 +25,8 @@ namespace cell_world {
     }
 
     Model::Model(const Cell_group &cells, unsigned int iterations) :
-            map(cells.free_cells()){
+            map(cells.free_cells()),
+            state(_state){
         _state.public_state.status = Model_public_state::Status::Idle;
         _state.public_state.iterations = iterations;
     }

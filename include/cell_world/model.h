@@ -19,6 +19,7 @@ namespace cell_world{
         void set_public_state(Model_public_state &);
         void run();
         Map map;
+        Model_state &state;
     protected:
         Model_state _state;
         std::vector<std::reference_wrapper<Agent_base>> _agents;
