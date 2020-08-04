@@ -18,7 +18,7 @@ namespace cell_world{
         virtual const Cell &start_episode() = 0;
         virtual Move get_move(const Model_public_state &) = 0;
         virtual Agent_status_code update_state(const Model_public_state &) = 0;
-        virtual void end_episode(const Model_public_state &) = 0;
+        virtual void end_episode(const Model_public_state &) {};
         const Agent_public_state &public_state() const;
     protected:
         virtual size_t get_internal_state_size () = 0;
