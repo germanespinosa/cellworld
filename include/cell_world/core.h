@@ -72,6 +72,7 @@ namespace cell_world{
         Coordinates coordinates;
         Location location;
         bool occluded;
+        bool operator != (const Cell&) const;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
         Json_object_members({

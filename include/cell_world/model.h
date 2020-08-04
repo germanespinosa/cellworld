@@ -16,7 +16,7 @@ namespace cell_world{
         void end_episode();
         const Model_state &get_state() const;
         void set_state(Model_state &);
-        void set_public_state(Model_public_state &);
+        void set_public_state(const Model_public_state &);
         void run();
         Map map;
         Model_state &state;

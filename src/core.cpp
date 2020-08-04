@@ -42,6 +42,10 @@ namespace cell_world {
         return id == c.id;
     }
 
+    bool Cell::operator!=(const Cell &c) const {
+        return id != c.id;
+    }
+
     Cell::Cell (Cell_type cell_type, Coordinates coordinates, Location location, bool occluded):
             cell_type (cell_type),
             id(0),

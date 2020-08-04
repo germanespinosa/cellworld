@@ -3,6 +3,7 @@
 #define CELL_WORLD_CHANCE_MAX RAND_MAX
 #define CELL_WORLD_CHANCE rand()
 #define pick_random(VECTOR) VECTOR[cell_world::Chance::dice(VECTOR.size())]
+#define pick_random_index(VECTOR) cell_world::Chance::dice(VECTOR.size())
 
 namespace cell_world{
     struct Chance {
