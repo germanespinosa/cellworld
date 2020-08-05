@@ -7,9 +7,7 @@ namespace cell_world {
 
     bool Model::update()
     {
-        if (_state.public_state.status != Model_public_state::Status::Running) throw logic_error("Model::update - "
-                                                                                                "model is not "
-                                                                                   "running.");
+        if (_state.public_state.status != Model_public_state::Status::Running) throw logic_error("Model::update - model is not running.");
         Agent_base &agent = _agents[_state.public_state.current_turn];
         auto &agent_state = _state.public_state.agents_state[_state.public_state.current_turn];
         agent_state.iteration++;
