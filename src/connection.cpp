@@ -1,7 +1,6 @@
 #include <cell_world/connection.h>
 #include <cell_world/chance.h>
 #include <cell_world/map.h>
-#include <cmath>
 
 using namespace std;
 
@@ -23,15 +22,16 @@ namespace cell_world {
         return *this;
     }
 
-    Graph Connection_pattern::get_graph(const Cell_group &cg) const {
-        auto free_cells = cg.free_cells();
-        Graph graph(free_cells);
-        Map map(free_cells);
+    Graph Connection_pattern::get_graph(const Cell_group &cells) const {
+        Graph graph(cells);
+        Map map(cells);
         int destination_index;
-        for (const Cell &cell:free_cells) {
+        for (const Cell &cell:cells) {
+            if (cell.occluded) continue;
             for (Coordinates &coord : get_candidates(cell.coordinates)) {
-                if ((destination_index = map.find(coord)) != Not_found) {
-                    graph[cell].add(free_cells[destination_index]);
+                if ((destination_index = map.find(coord)) != Not_found &&
+                        !cells[destination_index].occluded) {
+                    graph[cell].add(cells[destination_index]);
                 }
             }
         }
