@@ -99,9 +99,10 @@ namespace cell_world {
 
     Paths Paths::get_astar(const Graph &g) {
         Paths paths(g);
-        for (const Cell &s:g.cells) {
+        Cell_group free_cells = g.cells.free_cells();
+        for (const Cell &s:free_cells) {
             Coordinates s_coordinates = s.coordinates;
-            for (const Cell &d:g.cells) {
+            for (const Cell &d:free_cells) {
                 if (s == d) {
                     paths.set_move(s, d, {0, 0});
                 } else {
