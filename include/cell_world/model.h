@@ -10,7 +10,7 @@ namespace cell_world{
     {
         Model(const Cell_group &, unsigned int);
         explicit Model(const Cell_group &);
-        void add_agent(Agent_base &);
+        Model &add_agent(Agent_base &);
         bool update();
         void start_episode();
         void end_episode();

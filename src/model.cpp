@@ -53,18 +53,19 @@ namespace cell_world {
         _state.public_state.status = Model_public_state::Status::Running;
         agent_index = 0;
         for (Agent_base &agent:_agents) {
-            agent.set_public_state(_state.public_state.agents_state.data() + agent_index);
-            agent.set_internal_state(_state._agents_internal_state[agent_index],true);
             agent.update_state(_state.public_state);
             agent_index++;
         }
     }
 
-    void Model::add_agent(Agent_base &agent) {
+    Model& Model::add_agent(Agent_base &agent) {
         unsigned int agent_index = _agents.size();
         _agents.emplace_back(agent);
         _state.public_state.agents_state.emplace_back(agent_index);
         _state._agents_internal_state.emplace_back(agent.get_internal_state_size());
+        agent.set_public_state(_state.public_state.agents_state.data() + agent_index);
+        agent.set_internal_state(_state._agents_internal_state[agent_index],true);
+        return *this;
     }
 
     void Model::run() {
