@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.13)
+cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_CXX_STANDARD 17)
 
@@ -67,26 +67,29 @@ find_package(CatchTests CONFIG QUIET)
 ### LIBRARY INSTALLATION
 ###
 
-include(GNUInstallDirs)
+if (CMAKE_BUILD_TYPE MATCHES Release)
 
-install(TARGETS cellworld EXPORT CellworldConfig
-        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+    include(GNUInstallDirs)
 
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY scripts/ DESTINATION /bin)
-install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
+    install(TARGETS cellworld EXPORT CellworldConfig
+            ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-install(EXPORT CellworldConfig
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
-        EXPORT_LINK_INTERFACE_LIBRARIES)
+    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY scripts/ DESTINATION /bin)
+    install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
 
-export(TARGETS cellworld FILE CellworldConfig.cmake)
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp)\n\") ")
+    install(EXPORT CellworldConfig
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
+            EXPORT_LINK_INTERFACE_LIBRARIES)
 
+    export(TARGETS cellworld FILE CellworldConfig.cmake)
+    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
+    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp)\n\") ")
+
+endif()
