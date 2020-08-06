@@ -1,7 +1,7 @@
 #include <cell_world/paths.h>
+#include <cell_world/map.h>
 
 #include <utility>
-
 using namespace std;
 
 namespace cell_world {
@@ -128,4 +128,18 @@ namespace cell_world {
         }
         return paths;
     }
+}
+
+cell_world::Cell_group cell_world::Paths::get_path(const cell_world::Cell &source, const cell_world::Cell &destination) {
+    Map map (cells);
+    Cell_group trajectory;
+    Cell current = source;
+    trajectory.add(source);
+    while (!trajectory.contains(destination)){
+        const Cell &next = map[current.coordinates + get_move(current,destination)];
+        if (trajectory.contains(next)) throw logic_error("no path found between source and destination");
+        trajectory.add(next);
+        current = next;
+    }
+    return trajectory;
 }

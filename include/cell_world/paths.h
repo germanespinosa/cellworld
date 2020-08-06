@@ -9,6 +9,7 @@ namespace cell_world {
         explicit Paths(const Graph&);
         Paths(const Graph&, Move_list);
         Move get_move(const Cell &, const Cell &) const;
+        Cell_group get_path(const Cell &, const Cell &);
         bool set_move(const Cell &, const Cell &, const Move &);
         bool operator==(const Paths&) const;
         Json_object_members({
