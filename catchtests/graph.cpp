@@ -156,19 +156,19 @@ TEST_CASE("Sub graphs disconnected") {
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
     auto wc = w.create_graph();
     vector<Graph> sw = wc.get_sub_graphs();
-    CHECK(sw.size() == 2);
+    CHECK(sw.size() == 3);
     CHECK(sw[0].cells.contains(c0));
     CHECK(sw[0].cells.contains(c1));
-    CHECK(sw[1].cells.contains(c3));
-    CHECK(sw[1].cells.contains(c4));
+    CHECK(sw[2].cells.contains(c3));
+    CHECK(sw[2].cells.contains(c4));
     CHECK(sw[0][c0].size()==1);
     CHECK(sw[0][c0].contains(c1));
     CHECK(sw[0][c1].size()==1);
     CHECK(sw[0][c1].contains(c0));
-    CHECK(sw[1][c3].size()==1);
-    CHECK(sw[1][c3].contains(c4));
-    CHECK(sw[1][c4].size()==1);
-    CHECK(sw[1][c4].contains(c3));
+    CHECK(sw[2][c3].size()==1);
+    CHECK(sw[2][c3].contains(c4));
+    CHECK(sw[2][c4].size()==1);
+    CHECK(sw[2][c4].contains(c3));
 }
 
 TEST_CASE("Sub graphs options")
@@ -372,7 +372,7 @@ TEST_CASE("shortest path") {
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0},{\"x\":0,\"y\":-1},{\"x\":0,\"y\":1}]" >> w.connection_pattern;
     CHECK(w.size() == 12);
     Graph g = w.create_graph();
-    CHECK(g.size() == 9);
+    CHECK(g.size() == 12);
     CHECK(g.get_shortest_path(c10,c30).size() == 9);
     CHECK(g.get_shortest_path(c00,c30).size() == 8);
     CHECK(g.get_shortest_path(c01,c30).size() == 7);

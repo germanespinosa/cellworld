@@ -41,7 +41,17 @@ namespace cell_world {
         if (_state.public_state.status == Model_public_state::Status::Running) throw logic_error("Model::start_episode - model is already running.");
         if (_agents.empty()) throw logic_error("Model::start_episode - can't start an episode with no agents.");
         _state.public_state.current_turn = 0;
-        unsigned int agent_index = 0;
+        unsigned int agent_index;
+
+        // set state
+        agent_index = 0;
+        for (Agent_base &agent:_agents) {
+            agent.set_public_state(_state.public_state.agents_state.data() + agent_index);
+            agent.set_internal_state(_state._agents_internal_state[agent_index],true);
+            agent_index++;
+        }
+
+        agent_index = 0;
         for (Agent_base &agent:_agents) {
             Cell c = agent.start_episode();
             if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
@@ -63,8 +73,6 @@ namespace cell_world {
         _agents.emplace_back(agent);
         _state.public_state.agents_state.emplace_back(agent_index);
         _state._agents_internal_state.emplace_back(agent.get_internal_state_size());
-        agent.set_public_state(_state.public_state.agents_state.data() + agent_index);
-        agent.set_internal_state(_state._agents_internal_state[agent_index],true);
         return *this;
     }
 
