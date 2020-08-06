@@ -137,7 +137,7 @@ cell_world::Cell_group cell_world::Paths::get_path(const cell_world::Cell &sourc
     trajectory.add(source);
     while (!trajectory.contains(destination)){
         const Cell &next = map[current.coordinates + get_move(current,destination)];
-        if (trajectory.contains(next)) throw logic_error("no path found between source and destination");
+        if (trajectory.contains(next)) return Cell_group();
         trajectory.add(next);
         current = next;
     }
