@@ -4,5 +4,6 @@
 namespace cell_world{
     struct Visibility{
         static Graph create_graph(const Cell_group &);
+        static Graph invert_visibility(const Graph &);
     };
 }

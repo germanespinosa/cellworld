@@ -34,4 +34,17 @@ namespace cell_world {
         }
         return vi;
     }
+
+    Graph Visibility::invert_visibility(const Graph &visibility) {
+        Graph iv(visibility.cells);
+        Cell_group free_cells = iv.cells.free_cells();
+        for (auto &s:free_cells) {
+            for (auto &d:free_cells) {
+                if (!visibility[s].contains(d)) {
+                    iv[s].add(d);
+                }
+            }
+        }
+        return iv;
+    }
 }
