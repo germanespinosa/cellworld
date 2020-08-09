@@ -13,6 +13,7 @@ namespace cell_world{
         Model &add_agent(Agent_base &);
         bool update();
         void start_episode();
+        void restart_episode();
         void end_episode();
         const Model_state &get_state() const;
         void set_state(Model_state &);

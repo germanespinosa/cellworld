@@ -6,10 +6,10 @@
 
 namespace cell_world {
     struct Agent_public_state : json_cpp::Json_object{
-        Agent_public_state()  = default;
-        Agent_public_state(unsigned int);
-        unsigned int agent_index{};
-        unsigned int iteration{};
+        Agent_public_state();
+        explicit Agent_public_state(unsigned int);
+        unsigned int agent_index;
+        unsigned int iteration;
         Cell cell;
         Json_object_members({
             Add_member(agent_index);

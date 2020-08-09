@@ -40,7 +40,6 @@ namespace cell_world {
     void Model::start_episode() {
         if (_state.public_state.status == Model_public_state::Status::Running) throw logic_error("Model::start_episode - model is already running.");
         if (_agents.empty()) throw logic_error("Model::start_episode - can't start an episode with no agents.");
-        _state.public_state.current_turn = 0;
         unsigned int agent_index;
 
         // set state
@@ -51,21 +50,8 @@ namespace cell_world {
             agent_index++;
         }
 
-        agent_index = 0;
-        for (Agent_base &agent:_agents) {
-            Cell c = agent.start_episode();
-            if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
-            auto &agent_state = _state.public_state.agents_state[agent_index];
-            agent_state.iteration = 0;
-            agent_state.cell = c;
-            agent_index++;
-        }
-        _state.public_state.status = Model_public_state::Status::Running;
-        agent_index = 0;
-        for (Agent_base &agent:_agents) {
-            agent.update_state(_state.public_state);
-            agent_index++;
-        }
+        restart_episode();
+
     }
 
     Model& Model::add_agent(Agent_base &agent) {
@@ -103,5 +89,32 @@ namespace cell_world {
 
     const Model_state &Model::get_state() const {
         return _state;
+    }
+
+    void Model::restart_episode() {
+        _state.public_state.current_turn = 0;
+
+        unsigned int agent_index;
+        for (agent_index = 0; agent_index < _agents.size(); agent_index++) {
+            _state.public_state.agents_state[agent_index] = Agent_public_state(agent_index);
+        }
+
+        agent_index = 0;
+        for (Agent_base &agent:_agents) {
+            Cell c = agent.start_episode();
+            if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
+            auto &agent_state = _state.public_state.agents_state[agent_index];
+            agent_state.iteration = 0;
+            agent_state.cell = c;
+            agent_index++;
+        }
+
+        _state.public_state.status = Model_public_state::Running;
+
+        agent_index = 0;
+        for (Agent_base &agent:_agents) {
+            agent.update_state(_state.public_state);
+            agent_index++;
+        }
     }
 }

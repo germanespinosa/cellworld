@@ -124,7 +124,13 @@ TEST_CASE("Model reset")
     CHECK_NOTHROW(m.end_episode());
     CHECK_THROWS(m.update());
     CHECK_THROWS(m.end_episode());
-
+    auto oa = &m.state.public_state.agents_state[0];
+    auto ob = &m.state.public_state.agents_state[1];
+    m.restart_episode();
+    CHECK( oa == &m.state.public_state.agents_state[0]);
+    CHECK( ob == &m.state.public_state.agents_state[1]);
+    CHECK(a.public_state().cell.coordinates == Coordinates{0, 1});
+    CHECK(b.public_state().cell.coordinates == Coordinates{0, 1});
 }
 
 struct Test_state : json_cpp::Json_object {

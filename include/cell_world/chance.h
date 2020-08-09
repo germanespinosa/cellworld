@@ -9,7 +9,7 @@ namespace cell_world{
     struct Chance {
         static unsigned int dice();
         static unsigned int dice(unsigned int);
-        static  int dice( int,  int);
+        static int dice( int,  int);
         static unsigned int pick_random_occurrence(const std::vector<double> &, double);
         static unsigned int pick_random_occurrence(const std::vector<double> &, double, unsigned int);
         static unsigned int pick_by_chance(const std::vector<double> &,const std::vector<unsigned int> &);
