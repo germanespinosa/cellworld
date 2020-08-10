@@ -67,12 +67,13 @@ namespace cell_world{
         Cell();
         Cell(const cell_world::Cell&) = default;
         Cell(Cell_type, Coordinates, Location, bool);
-        static Cell ghost_cell();
-        Cell_type cell_type;
+        Cell(unsigned int, Cell_type, Coordinates, Location, bool);
         unsigned int id;
+        Cell_type cell_type;
         Coordinates coordinates;
         Location location;
         bool occluded;
+        static Cell &ghost_cell();
         bool operator != (const Cell&) const;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
@@ -84,7 +85,6 @@ namespace cell_world{
             Add_member(occluded);
         })
     };
-
 
     using Cell_list = json_cpp::Json_vector<Cell>;
 

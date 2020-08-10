@@ -15,9 +15,9 @@ namespace cell_world{
 
     struct Agent_base : json_cpp::Json_object{
         Agent_base();
-        virtual const Cell &start_episode() = 0;
-        virtual Move get_move(const Model_public_state &) = 0;
-        virtual Agent_status_code update_state(const Model_public_state &) = 0;
+        virtual const Cell &start_episode() { return Cell::ghost_cell(); };
+        virtual Move get_move(const Model_public_state &) { return {0,0};};
+        virtual Agent_status_code update_state(const Model_public_state &) { return Agent_status_code::Running; };
         virtual void end_episode(const Model_public_state &) {};
         const Agent_public_state &public_state() const;
     protected:

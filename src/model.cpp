@@ -13,9 +13,11 @@ namespace cell_world {
         agent_state.iteration++;
         auto move = agent.get_move(_state.public_state);
         auto &agent_cell = agent_state.cell;
-        int destination_index = map.find(agent_cell.coordinates + move);
+        if (agent_cell != Cell::ghost_cell()) {
+            int destination_index = map.find(agent_cell.coordinates + move);
+            if (destination_index != Not_found) agent_cell = map.cells[destination_index];
+        }
         _state.public_state.current_turn++;
-        if (destination_index != Not_found) agent_cell = map.cells[destination_index];
         if (_state.public_state.current_turn == _agents.size()) _state.public_state.current_turn = 0;
         auto agent_status = agent.update_state(_state.public_state);
         return _state.public_state.agents_state[_state.public_state.current_turn].iteration < _state.public_state.iterations &&
@@ -102,7 +104,7 @@ namespace cell_world {
         agent_index = 0;
         for (Agent_base &agent:_agents) {
             Cell c = agent.start_episode();
-            if (map.cells.find(c)==Not_found) throw logic_error("Model::start_episode - agent start cell not available.");
+            if (c != Cell::ghost_cell() && map.cells.find(c) == Not_found ) throw logic_error("Model::start_episode - agent start cell not available.");
             auto &agent_state = _state.public_state.agents_state[agent_index];
             agent_state.iteration = 0;
             agent_state.cell = c;
