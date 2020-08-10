@@ -66,6 +66,16 @@ namespace cell_world {
         return *this;
     }
 
+    Cell Cell::ghost_cell() {
+        Cell c;
+        c.cell_type = Square;
+        c.coordinates = {100000,100000};
+        c.location = {100000,100000};
+        c.occluded = true;
+        c.id = 100000;
+        return c;
+    }
+
     double entropy(const std::vector<int>& histogram) {
         vector<double> prob;
         int c = 0;

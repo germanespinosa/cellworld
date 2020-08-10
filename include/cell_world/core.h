@@ -67,6 +67,7 @@ namespace cell_world{
         Cell();
         Cell(const cell_world::Cell&) = default;
         Cell(Cell_type, Coordinates, Location, bool);
+        static Cell ghost_cell();
         Cell_type cell_type;
         unsigned int id;
         Coordinates coordinates;
@@ -83,6 +84,7 @@ namespace cell_world{
             Add_member(occluded);
         })
     };
+
 
     using Cell_list = json_cpp::Json_vector<Cell>;
 
