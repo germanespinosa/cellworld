@@ -73,6 +73,7 @@ namespace cell_world {
                 }
             }
         }
+        paths._compute_steps();
         return paths;
     }
 
@@ -94,6 +95,7 @@ namespace cell_world {
                 }
             }
         }
+        paths._compute_steps();
         return paths;
     }
 
@@ -126,20 +128,32 @@ namespace cell_world {
                 }
             }
         }
+        paths._compute_steps();
         return paths;
     }
-}
 
-cell_world::Cell_group cell_world::Paths::get_path(const cell_world::Cell &source, const cell_world::Cell &destination) {
-    Map map (cells);
-    Cell_group trajectory;
-    Cell current = source;
-    trajectory.add(source);
-    while (!trajectory.contains(destination)){
-        const Cell &next = map[current.coordinates + get_move(current,destination)];
-        if (trajectory.contains(next)) return Cell_group();
-        trajectory.add(next);
-        current = next;
+
+    Cell_group cell_world::Paths::get_path(const Cell &source, const Cell &destination) {
+        Map map (cells);
+        Cell_group trajectory;
+        Cell current = source;
+        trajectory.add(source);
+        while (!trajectory.contains(destination)){
+            const Cell &next = map[current.coordinates + get_move(current,destination)];
+            if (trajectory.contains(next)) return Cell_group();
+            trajectory.add(next);
+            current = next;
+        }
+        return trajectory;
     }
-    return trajectory;
+
+    void Paths::_compute_steps() {
+        steps.clear();
+        for (auto &s: cells){
+            for (auto &d: cells){
+                int pl = get_path(s,d).size();
+                steps.push_back(pl-1);
+            }
+        }
+    }
 }
