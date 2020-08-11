@@ -3,11 +3,19 @@
 #include <cell_world/graph.h>
 
 namespace cell_world {
-    using Path_builder = Move_list;
+    struct Path_builder : json_cpp::Json_object {
+        Move_list moves;
+        json_cpp::Json_vector<int> steps;
+        Json_object_members({
+            Add_member(moves);
+            Add_member(steps);
+        })
+    };
 
     struct Paths : json_cpp::Json_object {
         explicit Paths(const Graph&);
-        Paths(const Graph&, Move_list);
+        Paths(const Graph&, Move_list );
+        Paths(const Graph&, const Path_builder &);
         Move get_move(const Cell &, const Cell &) const;
         Cell_group get_path(const Cell &, const Cell &);
         bool set_move(const Cell &, const Cell &, const Move &);

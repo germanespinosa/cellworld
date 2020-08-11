@@ -10,6 +10,19 @@ namespace cell_world {
             moves(cells.size() * cells.size(), Coordinates{0, 0}) {
     }
 
+    Paths::Paths(const Graph &g, Move_list m) :
+            cells(g.cells),
+            moves(std::move(m)){
+        _compute_steps();
+    }
+
+    Paths::Paths(const Graph &g, const Path_builder &pb):
+    cells(g.cells),
+    moves(pb.moves),
+    steps(pb.steps){
+
+    }
+
     Move Paths::get_move(const Cell &s, const Cell &d) const {
         int si = _index(s,d);
         if (si == Not_found) return Move{0, 0};
@@ -37,12 +50,6 @@ namespace cell_world {
         if (m_index==Not_found) return false;
         moves [m_index] = move;
         return true;
-    }
-
-    Paths::Paths(const Graph &g, Move_list m) :
-    cells(g.cells),
-    moves(std::move(m)){
-
     }
 
     Paths Paths::get_euclidean(const Graph &g) {
