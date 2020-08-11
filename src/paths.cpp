@@ -164,7 +164,7 @@ namespace cell_world {
         }
     }
 
-    unsigned int Paths::get_steps(const Cell &s, const Cell &d) const {
+    int Paths::get_steps(const Cell &s, const Cell &d) const {
         return steps[_index(s,d)];
     }
 }
