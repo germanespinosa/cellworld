@@ -20,7 +20,7 @@ namespace cell_world{
         static unsigned int pick_inverse(std::vector<unsigned int>, unsigned int);
         static unsigned int pick_best(double, const std::vector<double> &);
         static unsigned int pick_best(double, const std::vector<double> &, unsigned int);
-        static std::vector<unsigned int> get_chances(const std::vector<double> &);
+        static std::vector<unsigned int> get_chances(const std::vector<double> &, double, double );
         static std::vector<unsigned int> invert_chances(std::vector<unsigned int>);
         static std::vector<unsigned int> combine_chances(const std::vector<unsigned int>&, const std::vector<unsigned int>&);
         static bool coin_toss(double);

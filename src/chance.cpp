@@ -134,18 +134,12 @@ namespace cell_world {
         return Chance::pick_random_occurrence(values, value, Chance::dice());
     }
 
-    std::vector<unsigned int> Chance::get_chances(const std::vector<double> &values) {
+    std::vector<unsigned int> Chance::get_chances(const std::vector<double> &values, double min, double max) {
         // values could be negative
         if (values.empty()) return vector<unsigned int>();
-        double min = values[0];
-        double max = values[0];
-        for (auto v:values) {
-            if (min > v) min = v;
-            if (max < v) max = v;
-        }
         std::vector<unsigned int> chances(values.size());
         for (unsigned int i = 0; i < chances.size(); i++) {
-            double new_value = (values[i] - min) / (max - min) * CELL_WORLD_CHANCE_MAX;
+            double new_value = (values[i] - min) / (max - min) * 1000;
             chances[i] = new_value;
         }
         return chances;
@@ -177,7 +171,7 @@ namespace cell_world {
         }
         std::vector<unsigned int> chances(values.size());
         for (unsigned int i = 0; i < values.size(); i++) {
-            double new_value = values[i] / max * CELL_WORLD_CHANCE_MAX;
+            double new_value = values[i] / max * 1000;
             chances[i] = new_value;
         }
         return chances;
