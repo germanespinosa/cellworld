@@ -86,9 +86,18 @@ TEST_CASE("combine chances") {
     auto a = Chance::get_chances({80, 30, 2}, -100,100);
     auto b = Chance::invert_chances({14,5,5});
     auto c = Chance::combine_chances(a,b);
-    cout << a[0] << " " << a[1] << " " << a[2] << endl;
-    cout << b[0] << " " << b[1] << " " << b[2] << endl;
-    cout << c[0] << " " << c[1] << " " << c[2] << endl;
+    CHECK(a[0] == 900);
+    CHECK(a[1] == 650);
+    CHECK(a[2] == 510);
+    CHECK(b[0] == 5);
+    CHECK(b[1] == 14);
+    CHECK(b[2] == 14);
+    CHECK(c[0] == 494);
+    CHECK(c[1] == 1000);
+    CHECK(c[2] == 784);
+    CHECK(Chance::pick(c,487) == 0);
+    CHECK(Chance::pick(c,495) == 1);
+    CHECK(Chance::pick(c,1495) == 2);
 }
 
 TEST_CASE("pick best") {
