@@ -19,6 +19,7 @@ namespace cell_world {
         Move get_move(const Cell &, const Cell &) const;
         int get_steps(const Cell &, const Cell &) const;
         Cell_group get_path(const Cell &, const Cell &);
+        Move_list get_moves(const Cell &, const Cell &);
         bool set_move(const Cell &, const Cell &, const Move &);
         bool operator==(const Paths&) const;
         Json_object_members({

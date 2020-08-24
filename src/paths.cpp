@@ -167,4 +167,21 @@ namespace cell_world {
     int Paths::get_steps(const Cell &s, const Cell &d) const {
         return steps[_index(s,d)];
     }
+
+    Move_list Paths::get_moves(const Cell &source, const Cell &destination) {
+        Move_list moves;
+        Map map (cells);
+        Cell_group trajectory;
+        Cell current = source;
+        trajectory.add(source);
+        while (!trajectory.contains(destination)){
+            auto move = get_move(current,destination);
+            moves.push_back(move);
+            const Cell &next = map[current.coordinates + move];
+            if (trajectory.contains(next)) return Move_list();
+            trajectory.add(next);
+            current = next;
+        }
+        return moves;
+    }
 }
