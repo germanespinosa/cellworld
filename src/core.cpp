@@ -190,5 +190,4 @@ namespace cell_world {
 
     Location::Location() {
     }
-
 }

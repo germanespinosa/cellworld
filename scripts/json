@@ -1,4 +1,5 @@
 #!/bin/bash
+index=$(params i-index "-" "$@")
 file=$(params f-file "-" "$@")
 json=$(params j-json "[' ']" "$@")
 return_value=$(params v-value "value" "$@")
