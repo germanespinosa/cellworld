@@ -7,14 +7,8 @@ class Display:
     def __init__ (self, heat_map, cmap = "Purples"):
         self.type = heat_map.world.cells[0]["cell_type"]
         self.heat_map = heat_map
-        plt.style.use("dark_background")
-        if self.type == 0:
-            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 9))
-        else:
-            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 10))
         self.map = Map(heat_map.world)
-        self.ax.axes.xaxis.set_visible(False)
-        self.ax.axes.yaxis.set_visible(False)
+        plt.style.use("dark_background")
         self.values = []
         self.colors = []
         for cell in heat_map.world.cells:
@@ -43,6 +37,12 @@ class Display:
             self.o.append("lightgrey")
 
     def show(self):
+        if self.type == 0:
+            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 9))
+        else:
+            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 10))
+        self.ax.axes.xaxis.set_visible(False)
+        self.ax.axes.yaxis.set_visible(False)
         if self.type == 0:
             plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="h", s=850, edgecolors=self.o)
         else:
