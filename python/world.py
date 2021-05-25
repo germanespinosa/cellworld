@@ -36,13 +36,9 @@ class World:
         for cell in self.cells:
             self._index[(cell["coordinates"]["x"] - self.coordinates[0]["x"], cell["coordinates"]["y"] - self.coordinates[0]["y"])] = index
             index += 1
-        # self.visibility = Graph(world_name + ".visibility")
+        # self.visibility = Graph(self, ".visibility")
         self.graph = Graph(self)
-        for cell in self.cells:
-            for conn in self.connection_pattern:
-                connected_cell = self.cell(coord_sum(cell["coordinates"], conn))
-                if connected_cell and connected_cell["occluded"] == 0:
-                    self.graph.connect(cell["id"], connected_cell["id"], False)
+
     def is_valid(self, coordinates):
         if not is_coord(coordinates):
             return False
