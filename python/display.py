@@ -1,7 +1,10 @@
+import warnings
 import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
 from map import Map
+
+warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 class Display:
     def __init__ (self, heat_map, cmap = "Purples"):
