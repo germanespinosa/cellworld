@@ -53,6 +53,8 @@ class Display:
         else:
             plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="s", s=1300, edgecolors=self.o)
 
+        for x,y,c in self.extras:
+            plt.scatter(x, y, c=c)
         plt.show()
 
     def set_cell_color(self, id_or_coordinates, color):
