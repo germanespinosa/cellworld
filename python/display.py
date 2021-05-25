@@ -49,12 +49,12 @@ class Display:
         self.ax.axes.xaxis.set_visible(False)
         self.ax.axes.yaxis.set_visible(False)
         if self.type == 0:
-            plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="h", s=850, edgecolors=self.o)
+            plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="h", s=850, edgecolors=self.o, linewidths=1)
         else:
-            plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="s", s=1300, edgecolors=self.o)
+            plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="s", s=1170, edgecolors=self.o , linewidths=2)
 
         for x,y,c in self.extras:
-            plt.scatter(x, y, c=c)
+            plt.plot(x, y, c=c)
         plt.show()
 
     def set_cell_color(self, id_or_coordinates, color):
