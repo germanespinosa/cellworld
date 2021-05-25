@@ -15,6 +15,7 @@ class Display:
         self.values = []
         self.colors = []
         self.size = (980, 862)
+        self.extras = []
         for cell in heat_map.world.cells:
             self.values.append(heat_map.values[heat_map.get_index(cell["coordinates"])])
         unique_values = list(set(self.values))
