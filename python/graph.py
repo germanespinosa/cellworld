@@ -1,16 +1,27 @@
 import web_resources as wr
 import networkx as nx
+from map import Map
 
 class Graph:
-    def __init__(self, graph_name=None):
+    def __init__(self, world, graph_name=None):
         if graph_name:
-            self._connections = wr.get_resource("graph", graph_name)
+            self._connections = wr.get_resource("graph", world.name + "." + graph_name)
         else:
-            self._connections = []
+            map = Map(world)
+            self._connections = [[] for x in range(len(world.cells))]
+            for cell in world.cells:
+                src = cell["id"]
+                src_coord = cell["coordinates"]
+                if cell["occluded"] == 0:
+                    for conn in world.connection_pattern:
+                        dst_coord = {"x": src_coord["x"] + conn["x"], "y": src_coord["y"] + conn["y"]}
+                        dst_index = map.find(dst_coord)
+                        if dst_index >= 0:
+                            if world.cells[dst_index]["occluded"] == 0:
+                                dst = world.cells[dst_index]["id"]
+                                self.connect(src, dst, False)
 
     def connect(self, src, dst, bi=True):
-        if src >= len(self._connections):
-            self._connections += [[] for x in range(src-len(self._connections)+1)]
         if not self.is_connected(src, dst):
             self._connections[src].append(dst)
         if bi and not self.is_connected(dst, src):
