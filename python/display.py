@@ -67,3 +67,13 @@ class Display:
 
     def close(self):
         plt.close()
+
+
+    def convert_location (self, location):
+        return location["x"] / 980 * self.size[0] - self.size[0] / 2, (1 - location["y"] / 862) * self.size[1] - self.size[1] / 2
+
+    def add_trajectory(self, trajectory, color="red"):
+        if self.type == 0:
+            x = [self.convert_location(step["location"])[0] for step in trajectory]
+            y = [self.convert_location(step["location"])[1] for step in trajectory]
+            self.extras.append((x,y,color))
