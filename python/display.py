@@ -3,7 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib import cm
 import numpy as np
 from map import Map
-
+from IPython.display import clear_output
+from time import sleep
 warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
 
 class Display:
@@ -41,11 +42,7 @@ class Display:
                 self.c.append("black")
             self.o.append("lightgrey")
 
-    def show(self):
-        if self.type == 0:
-            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 9))
-        else:
-            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 10))
+    def prepare(self):
         self.ax.axes.xaxis.set_visible(False)
         self.ax.axes.yaxis.set_visible(False)
         if self.type == 0:
@@ -55,6 +52,13 @@ class Display:
 
         for x,y,c in self.extras:
             plt.plot(x, y, c=c)
+
+    def show(self):
+        if self.type == 0:
+            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 9))
+        else:
+            self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 10))
+        self.prepare()
         plt.show()
 
     def set_cell_color(self, id_or_coordinates, color):
@@ -81,3 +85,16 @@ class Display:
             x = [self.convert_location(step["location"])[0] for step in trajectory]
             y = [self.convert_location(step["location"])[1] for step in trajectory]
             self.extras.append((x,y,color))
+
+    def show_trajectory(self, trajectory, color="red"):
+        if self.type == 0:
+            x = [self.convert_location(step["location"])[0] for step in trajectory]
+            y = [self.convert_location(step["location"])[1] for step in trajectory]
+
+            for i in range(len(x)):
+                clear_output(wait=True)
+                self.fig, self.ax = plt.subplots(1, 1, figsize=(10, 9))
+                self.prepare()
+                plt.plot(x[:i], y[:i], c=color)
+                plt.show()
+                sleep(.1)
