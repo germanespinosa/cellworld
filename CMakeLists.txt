@@ -33,7 +33,7 @@ add_library(cellworld ${cellworld_files})
 
 set_target_properties(cellworld
     PROPERTIES
-    CXX_STANDARD 17
+    CXX_STANDARD 20
     CXX_STANDARD_REQUIRED On
     CXX_EXTENSIONS Off
     VERSION ${PROJECT_VERSION})
