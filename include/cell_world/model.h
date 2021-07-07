@@ -11,10 +11,10 @@ namespace cell_world{
         Model(const Cell_group &, unsigned int);
         explicit Model(const Cell_group &);
         Model &add_agent(Agent_base &);
-        bool update();
-        void start_episode();
+        virtual bool update();
+        virtual void start_episode();
         void restart_episode();
-        void end_episode();
+        virtual void end_episode();
         const Model_state &get_state() const;
         void set_state(Model_state &);
         void set_public_state(const Model_public_state &);

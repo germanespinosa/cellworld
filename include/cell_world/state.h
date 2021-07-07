@@ -32,6 +32,7 @@ namespace cell_world {
     struct Model_public_state : json_cpp::Json_object{
         enum Status{
             Idle,
+            Starting,
             Running,
             Stopped
         };

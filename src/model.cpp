@@ -111,12 +111,13 @@ namespace cell_world {
             agent_index++;
         }
 
-        _state.public_state.status = Model_public_state::Running;
+        _state.public_state.status = Model_public_state::Starting;
 
         agent_index = 0;
         for (Agent_base &agent:_agents) {
             agent.update_state(_state.public_state);
             agent_index++;
         }
+        _state.public_state.status = Model_public_state::Running;
     }
 }
