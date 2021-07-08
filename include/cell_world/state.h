@@ -29,6 +29,17 @@ namespace cell_world {
 
     using Agent_internal_state_list = std::vector<Agent_internal_state_container>;
 
+    struct Progress : json_cpp::Json_object {
+        Progress (unsigned int, unsigned int);
+        unsigned int iteration;
+        unsigned int turn;
+        bool operator == (Progress &) const;
+        bool operator < (Progress &) const;
+        bool operator <= (Progress &) const;
+        bool operator > (Progress &) const;
+        bool operator >= (Progress &) const;
+    };
+
     struct Model_public_state : json_cpp::Json_object{
         enum Status{
             Idle,
@@ -40,6 +51,7 @@ namespace cell_world {
         unsigned int current_turn;
         unsigned int iterations;
         Agent_state_list agents_state;
+        Progress get_progress();
         Json_object_members({
             Add_member(status);
             Add_member(current_turn);

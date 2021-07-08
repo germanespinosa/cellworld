@@ -18,4 +18,32 @@ namespace cell_world {
     void *Agent_internal_state_container::get_address() {
         return _mem_blob.data();
     }
+
+    bool cell_world::Progress::operator==(Progress &p) const {
+        return this->iteration == p.iteration && this->turn == p.turn;
+    }
+
+    bool cell_world::Progress::operator<(Progress &p) const {
+        return this->iteration < p.iteration || (this->iteration == p.iteration && this->turn < p.turn);
+    }
+
+    bool cell_world::Progress::operator<=(Progress &p) const {
+        return *this == p || *this < p;
+    }
+
+    bool cell_world::Progress::operator>(Progress &p) const {
+        return this->iteration > p.iteration || (this->iteration == p.iteration && this->turn > p.turn);
+    }
+
+    bool cell_world::Progress::operator>=(Progress &p) const {
+        return *this == p || *this > p;
+    }
+
+    Progress::Progress(unsigned int iteration, unsigned int turn):
+    iteration(iteration), turn(turn){
+    }
+
+    Progress Model_public_state::get_progress() {
+        return Progress({agents_state[current_turn].iteration,current_turn});
+    }
 }
