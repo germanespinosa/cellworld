@@ -44,7 +44,7 @@ namespace cell_world {
         return cp;
     }
 
-    Move Connection_pattern::random_move() {
+    Move Connection_pattern::random_move() const {
         return (*this)[Chance::dice(size())];
     }
 /*

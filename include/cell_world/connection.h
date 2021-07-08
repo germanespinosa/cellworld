@@ -12,7 +12,7 @@ namespace cell_world {
         Connection_pattern &operator =(const Connection_pattern &);
         static Connection_pattern get_pattern(Cell, Cell_group);
         Connection_pattern &operator=(const std::string &);
-        Move random_move();
+        Move random_move() const;
     };
 /*
     struct Centrality {
