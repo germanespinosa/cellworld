@@ -33,11 +33,11 @@ namespace cell_world {
         Progress (unsigned int, unsigned int);
         unsigned int iteration;
         unsigned int turn;
-        bool operator == (Progress &) const;
-        bool operator < (Progress &) const;
-        bool operator <= (Progress &) const;
-        bool operator > (Progress &) const;
-        bool operator >= (Progress &) const;
+        bool operator == (const Progress &) const;
+        bool operator < (const Progress &) const;
+        bool operator <= (const Progress &) const;
+        bool operator > (const Progress &) const;
+        bool operator >= (const Progress &) const;
     };
 
     struct Model_public_state : json_cpp::Json_object{
@@ -51,7 +51,7 @@ namespace cell_world {
         unsigned int current_turn;
         unsigned int iterations;
         Agent_state_list agents_state;
-        Progress get_progress();
+        Progress get_progress() const;
         Json_object_members({
             Add_member(status);
             Add_member(current_turn);

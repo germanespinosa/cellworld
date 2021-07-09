@@ -120,4 +120,10 @@ namespace cell_world {
         }
         _state.public_state.status = Model_public_state::Running;
     }
+
+    bool Model::update(const Progress &progress) {
+        bool last_update;
+        while (state.public_state.get_progress() < progress && (last_update=update()));
+        return last_update;
+    }
 }

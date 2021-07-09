@@ -12,6 +12,7 @@ namespace cell_world{
         explicit Model(const Cell_group &);
         Model &add_agent(Agent_base &);
         virtual bool update();
+        virtual bool update(const Progress &);
         virtual void start_episode();
         void restart_episode();
         virtual void end_episode();
