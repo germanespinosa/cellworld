@@ -33,6 +33,11 @@ namespace cell_world {
         Progress (unsigned int, unsigned int);
         unsigned int iteration;
         unsigned int turn;
+
+        Json_object_members(
+                Add_member(iteration);
+                Add_member(turn);
+                )
         bool operator == (const Progress &) const;
         bool operator < (const Progress &) const;
         bool operator <= (const Progress &) const;
