@@ -53,7 +53,6 @@ TEST_CASE("location>>1")
     CHECK(c0==c1);
 }
 
-
 TEST_CASE("location>>5")
 {
     string s = " [ 41  -53 ] ";
@@ -61,3 +60,12 @@ TEST_CASE("location>>5")
     Location c0;
     CHECK_THROWS(s_stream >> c0);
 }
+
+TEST_CASE("location atan")
+{
+    Location c0{0,0};
+    Location c1{1,1};
+//    CHECK (c0.atan(c1) == 0.7853981634);
+//    CHECK (c1.atan(c0) == -2.3561944902);
+}
+

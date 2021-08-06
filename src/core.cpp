@@ -190,4 +190,9 @@ namespace cell_world {
 
     Location::Location() {
     }
+
+    double Location::atan(const Location &l) const {
+        auto v=l-*this;
+        return atan2(v.x,v.y);
+    }
 }
