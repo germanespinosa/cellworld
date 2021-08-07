@@ -86,10 +86,10 @@ class Display:
             y = [self.convert_location(step["location"])[1] for step in trajectory]
             self.extras.append((x,y,color))
 
-    def show_trajectory(self, trajectory, color="red"):
+    def show_trajectory(self, trajectory, agent_name, color="red"):
         if self.type == 0:
-            x = [self.convert_location(step["location"])[0] for step in trajectory]
-            y = [self.convert_location(step["location"])[1] for step in trajectory]
+            x = [self.convert_location(step["location"])[0] for step in trajectory if step["agent_name"] == agent_name]
+            y = [self.convert_location(step["location"])[1] for step in trajectory if step["agent_name"] == agent_name]
 
             for i in range(len(x)):
                 clear_output(wait=True)
