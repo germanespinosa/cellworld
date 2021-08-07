@@ -80,11 +80,11 @@ class Display:
     def convert_location (self, location):
         return location["x"] * self.size[0] - self.size[0] / 2, (1 - location["y"]) * self.size[1] - self.size[1] / 2
 
-    def add_trajectory(self, trajectory, color="red"):
+    def add_trajectory(self, trajectory, agent_name, color="red"):
         if self.type == 0:
-            x = [self.convert_location(step["location"])[0] for step in trajectory]
-            y = [self.convert_location(step["location"])[1] for step in trajectory]
-            self.extras.append((x,y,color))
+            x = [self.convert_location(step["location"])[0] for step in trajectory if step["agent_name"] == agent_name]
+            y = [self.convert_location(step["location"])[1] for step in trajectory if step["agent_name"] == agent_name]
+            self.extras.append((x, y, color))
 
     def show_trajectory(self, trajectory, agent_name, color="red"):
         if self.type == 0:
