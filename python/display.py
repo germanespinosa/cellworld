@@ -78,7 +78,7 @@ class Display:
 
 
     def convert_location (self, location):
-        return location["x"] * (self.size[0]-.5) - self.size[0] / 2, (1 - (location["y"]-.5)) * self.size[1] - self.size[1] / 2
+        return location["x"] * (self.size[0]+.5) - self.size[0] / 2, (1 - (location["y"]-.5)) * self.size[1] - self.size[1] / 2
 
     def add_trajectory(self, trajectory, agent_name, color="red"):
         if self.type == 0:

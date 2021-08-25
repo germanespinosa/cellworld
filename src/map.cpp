@@ -35,32 +35,8 @@ namespace cell_world{
         return _coordinate_index[index];
     }
 
-    int Map::find(const Location &l) const {
-        auto index = _index(l);
-        if (index<0 || index>=(int)_coordinate_index.size()) return Not_found;
-        return _coordinate_index[index];
-    }
-
     const Cell &Map::operator[](const Coordinates &c) const {
         return cells[find(c)];
-    }
-
-    const Cell &Map::operator[](const Location &l) const {
-        return cells[find(l)];
-    }
-
-    int Map::_index(const Location &l) const {
-        double min_distance = l.dist(cells[0].location);
-        unsigned int min_index = 0;
-        for (Cell const &cell:cells) {
-            auto distance = l.dist(cell.location);
-            if (min_distance > distance){
-                min_index = cell.id;
-                min_distance = distance;
-            }
-        }
-        return (int)min_index;
-
     }
 
     int Map::_index(const Coordinates &c) const {
