@@ -47,4 +47,16 @@ namespace cell_world {
         }
         return iv;
     }
+
+    double cell_world::Visibility_cone::angle_difference(double a1, double a2) {
+        if (a1 > a2) {
+            auto d = a1 - a2;
+            if (d < M_PI) return d;
+            else return a2 + M_PI * 2 - a1;
+        } else {
+            auto d = a2 - a1;
+            if (d < M_PI) return d;
+            else return a1 + M_PI * 2 - a2;
+        }
+    }
 }

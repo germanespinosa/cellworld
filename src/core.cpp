@@ -153,7 +153,9 @@ namespace cell_world {
     }
 
     double Location::dist(const Location &l1, const Location &l2) const {
-        return abs((l2.y-l1.y) * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(pow(l2.y - l1.y,2) + pow(l2.x - l1.x,2));
+        auto y_dif = l2.y - l1.y;
+        auto x_dif = l2.x - l1.x;
+        return abs(y_dif * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(y_dif * y_dif + x_dif * x_dif);
     }
 
     unsigned int Coordinates::manhattan(const Coordinates &c) const {

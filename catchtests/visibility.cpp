@@ -38,3 +38,12 @@ TEST_CASE("Visibility")
     CHECK(vi[c2].size() == 4);
     CHECK(vi[c3].size() == 4);
 }
+TEST_CASE("Cone")
+{
+    CHECK(Visibility_cone::angle_difference(1,2) == 1);
+    CHECK(Visibility_cone::angle_difference(2,1) == 1);
+    CHECK(Visibility_cone::angle_difference(1,4) == 3);
+    CHECK(Visibility_cone::angle_difference(4,1) == 3);
+    CHECK(Visibility_cone::angle_difference(1,5) == 2.2831853072);
+    CHECK(Visibility_cone::angle_difference(5,1) == 2.2831853072);
+}
