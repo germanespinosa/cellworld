@@ -5,7 +5,7 @@ using namespace std;
 namespace cell_world {
 
     Graph Visibility::create_graph(const Cell_group &cell_group) {
-        if (cell_group.size() == 0) return Graph();
+        if (cell_group.empty()) return {};
         Cell_group occlusions = cell_group.occluded_cells();
         Cell_group free_cells = cell_group.free_cells(); // filters occluded
         Graph vi(cell_group);
