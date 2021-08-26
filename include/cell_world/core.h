@@ -9,6 +9,8 @@
 #else
 #endif
 
+#define SIMILAR(A,B,M) ((A-M < B) && (A+M > B))
+
 namespace cell_world{
     const int Not_found = -1;
     enum Cell_type : int {

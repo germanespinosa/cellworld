@@ -49,14 +49,52 @@ namespace cell_world {
     }
 
     double cell_world::Visibility_cone::angle_difference(double a1, double a2) {
+        a1 = normalize(a1);
+        a2 = normalize(a2);
         if (a1 > a2) {
             auto d = a1 - a2;
             if (d < M_PI) return d;
-            else return a2 + M_PI * 2 - a1;
+            else return a2 + M_PI * 2.0 - a1;
         } else {
             auto d = a2 - a1;
             if (d < M_PI) return d;
-            else return a1 + M_PI * 2 - a2;
+            else return a1 + M_PI * 2.0 - a2;
         }
+    }
+
+    double cell_world::Visibility_cone::normalize(double angle) {
+        while (angle < 0) angle += 2.0 * M_PI;
+        while (angle > 2 * M_PI) angle -= 2.0 * M_PI;
+        return angle;
+    }
+
+    double cell_world::Visibility_cone::to_radians(double degrees) {
+        return normalize(degrees / 360.0 * 2.0 * M_PI);
+    }
+
+    double cell_world::Visibility_cone::to_degrees(double radians) {
+
+        return normalize_degrees(radians *  360.0 / (2.0 * M_PI) );
+    }
+
+    double cell_world::Visibility_cone::normalize_degrees(double angle) {
+        while (angle < -180.0) angle += 360.0;
+        while (angle > 180.0) angle -= 360.0;
+        return angle;
+    }
+
+    Cell_group cell_world::Visibility_cone::visible_cells(const Cell &src, double theta) {
+        Cell_group res;
+        for (auto &dst: visibility[src])
+            if (is_visible(src,theta, dst))
+                res.add(dst);
+        return res;
+    }
+
+    bool cell_world::Visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) {
+        if (!visibility[src].contains(dst)) return false;
+        auto angle = src.location.atan(dst.location);
+        auto theta_dif = angle_difference(angle, theta);
+        return theta_dif <= visual_angle;
     }
 }

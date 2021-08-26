@@ -11,6 +11,10 @@ namespace cell_world{
         Cell_group visible_cells(const Cell &, double);
         bool is_visible(const Cell &, double, const Cell &);
         static double angle_difference(double, double);
+        static double to_radians(double);
+        static double to_degrees(double);
+        static double normalize(double);
+        static double normalize_degrees(double);
         const Graph &visibility;
         const double visual_angle;
     };
