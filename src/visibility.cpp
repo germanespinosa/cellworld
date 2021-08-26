@@ -85,9 +85,11 @@ namespace cell_world {
 
     Cell_group cell_world::Visibility_cone::visible_cells(const Cell &src, double theta) {
         Cell_group res;
-        for (auto &dst: visibility[src])
-            if (is_visible(src,theta, dst))
+        for (auto &dst: visibility[src]) {
+            if (is_visible(src,theta, dst)) {
                 res.add(dst);
+            }
+        }
         return res;
     }
 
