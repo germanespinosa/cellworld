@@ -99,4 +99,10 @@ namespace cell_world {
         auto theta_dif = angle_difference(angle, theta);
         return theta_dif <= visual_angle;
     }
+
+    Visibility_cone::Visibility_cone(const Graph &visibility, double visual_angle):
+    visibility(visibility),
+    visual_angle(visual_angle){
+
+    }
 }
