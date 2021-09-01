@@ -69,11 +69,10 @@ namespace cell_world {
     }
 
     double cell_world::Visibility_cone::to_radians(double degrees) {
-        return normalize(degrees / 360.0 * 2.0 * M_PI);
+        return normalize((degrees-180) / 360.0 * 2.0 * M_PI);
     }
 
     double cell_world::Visibility_cone::to_degrees(double radians) {
-
         return normalize_degrees(radians *  360.0 / (2.0 * M_PI) );
     }
 
@@ -97,7 +96,7 @@ namespace cell_world {
         if (!visibility[src].contains(dst)) return false;
         auto angle = src.location.atan(dst.location);
         auto theta_dif = angle_difference(angle, theta);
-        return theta_dif <= visual_angle;
+        return theta_dif <= visual_angle / 2;
     }
 
     Visibility_cone::Visibility_cone(const Graph &visibility, double visual_angle):
