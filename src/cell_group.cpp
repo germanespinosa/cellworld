@@ -13,7 +13,7 @@ namespace cell_world {
     }
 
     void Cell_group::clear() {
-        clear();
+        json_cpp::Json_vector<Cell_reference>::clear();
         _id_index.clear();
     }
 
