@@ -51,8 +51,8 @@ TEST_CASE("Cone")
     CHECK(Visibility_cone::normalize_degrees(360)==0);
     CHECK(Visibility_cone::normalize_degrees(0)==0);
     CHECK(Visibility_cone::normalize_degrees(181)==-179);
-    CHECK(Visibility_cone::to_radians(90)==M_PI/2);
-    CHECK(Visibility_cone::to_radians(-90)==3*M_PI/2);
+    CHECK(Visibility_cone::to_radians(90)==3*M_PI/2);
+    CHECK(Visibility_cone::to_radians(-90)==M_PI/2);
     CHECK(Visibility_cone::to_degrees(M_PI/2)==90);
     CHECK(Visibility_cone::to_degrees(3*M_PI/2)==-90);
 }
