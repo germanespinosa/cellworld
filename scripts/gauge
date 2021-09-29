@@ -10,3 +10,6 @@ python3 -c "title='$title';work=$work;progress=$progress;size=$size;columns=$col
 if [ "$finish" != "no" ]; then
   printf "\n"
 fi
+
+
+. /mnt/c/experiment/robot/esp-idf/export.sh
