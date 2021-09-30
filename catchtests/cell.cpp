@@ -25,3 +25,11 @@ TEST_CASE("cell>>2")
     Cell c0;
     CHECK_THROWS(s_stream >> c0);
 }
+
+TEST_CASE("cell bool")
+{
+    Cell c;
+    CHECK(c);
+    c = Cell::ghost_cell();
+    CHECK(!c);
+}

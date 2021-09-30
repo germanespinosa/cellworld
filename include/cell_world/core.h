@@ -80,6 +80,9 @@ namespace cell_world{
         bool operator != (const Cell&) const;
         bool operator == (const Cell&) const;
         Cell &operator = (const Cell&);
+        operator bool () const{
+            return this->id != ghost_cell().id;
+        };
         Json_object_members({
             Add_member(id);
             Add_member(cell_type);
