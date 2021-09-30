@@ -63,6 +63,20 @@ namespace cell_world {
         }
     }
 
+    int Visibility_cone::direction(double a1, double a2) {
+        a1 = normalize(a1);
+        a2 = normalize(a2);
+        if (a1 > a2) {
+            auto d = a1 - a2;
+            if (d < M_PI) return 1;
+            else return -1;
+        } else {
+            auto d = a2 - a1;
+            if (d < M_PI) return -1;
+            else return 1;
+        }
+    }
+
     double cell_world::Visibility_cone::normalize(double angle) {
         while (angle < 0) angle += 2.0 * M_PI;
         while (angle > 2 * M_PI) angle -= 2.0 * M_PI;
