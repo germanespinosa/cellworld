@@ -53,6 +53,7 @@ namespace cell_world{
         Location operator-(const Location &) const;
         Location operator-() const;
         Location operator*(double) const;
+        Location operator/(double) const;
         double mod() const;
         double atan(const Location &) const;
         double dist(const Location &) const;

@@ -144,6 +144,10 @@ namespace cell_world {
         return {x*m, y*m};
     }
 
+    Location Location::operator/(double d) const {
+        return {x/d, y/d};
+    }
+
     double Location::mod() const {
         return sqrt(y*y + x*x);
     }
@@ -201,4 +205,5 @@ namespace cell_world {
     Location Location::move(double theta, double dist) const{
         return {x + sin(theta) * dist, y + cos(theta) * dist};
     }
+
 }
