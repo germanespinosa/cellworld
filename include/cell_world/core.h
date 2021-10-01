@@ -58,6 +58,7 @@ namespace cell_world{
         double dist(const Location &) const;
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
+        Location move(double theta, double dist) const;
         Json_object_members({
                          Add_member(x);
                          Add_member(y);

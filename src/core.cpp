@@ -197,4 +197,8 @@ namespace cell_world {
         auto v=l-*this;
         return atan2(v.x,v.y);
     }
+
+    Location Location::move(double theta, double dist) const{
+        return {x + sin(theta) * dist, y + cos(theta) * dist};
+    }
 }
