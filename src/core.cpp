@@ -203,7 +203,7 @@ namespace cell_world {
     }
 
     Location Location::move(double theta, double dist) const{
-        return {x + sin(theta) * dist, y + cos(theta) * dist};
+        return {x + cos(theta) * dist, y + sin(theta) * dist};
     }
 
 }
