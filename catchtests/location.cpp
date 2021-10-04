@@ -61,11 +61,18 @@ TEST_CASE("location>>5")
     CHECK_THROWS(s_stream >> c0);
 }
 
+double round(double v, int d){
+    return ((int) (v * pow(10, d))) / pow(10, d);
+}
+
 TEST_CASE("location atan")
 {
-    Location c0{0,0};
-    Location c1{1,1};
-//    CHECK (c0.atan(c1) == 0.7853981634);
-//    CHECK (c1.atan(c0) == -2.3561944902);
+    Location c0{-.6,.5};
+    Location c1{1, 0};
+    double d = c0.dist(c1);
+    double t = c0.atan(c1);
+    auto c2 = c0.move(t,d);
+    CHECK(round(c2.x,5) == c1.x);
+    CHECK(round(c2.y,5) == c1.y);
 }
 
