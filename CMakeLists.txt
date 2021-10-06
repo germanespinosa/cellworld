@@ -9,7 +9,7 @@ project(cellworld
 
 find_package( Json-cpp REQUIRED )
 
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
 
 ###
 ### MAIN LIBRARY SETUP

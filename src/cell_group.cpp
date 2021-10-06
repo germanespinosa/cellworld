@@ -183,6 +183,20 @@ namespace cell_world {
         return r;
     }
 
+    int Cell_group::find(const Location &location) const {
+        if (empty()) return Not_found;
+        double min_d = location.dist((*this)[0].location);
+        int cell_id = 0;
+        for(unsigned i = 1;i < size();i++){
+            double d = location.dist((*this)[i].location);
+            if (d < min_d) {
+                min_d = d;
+                cell_id = i;
+            }
+        }
+        return cell_id;
+    }
+
     Cell_reference::Cell_reference(const Cell &cell):
             std::reference_wrapper<const Cell>(cell){ }
 
