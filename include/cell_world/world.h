@@ -10,6 +10,7 @@ namespace cell_world{
         World();
         explicit World(std::string );
         World(std::string, const World_configuration &, const Location_list &, const Cell_group_builder &);
+        World(std::string, const World_configuration &, const Location_list &);
         bool add(Cell&);
         unsigned int size() const;
         Cell &operator[](const unsigned int& );

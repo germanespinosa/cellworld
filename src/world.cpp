@@ -75,8 +75,7 @@ namespace cell_world {
     World::World(
             std::string name,
             const World_configuration &world_configuration,
-            const Location_list &cell_locations,
-            const Cell_group_builder &occlusions):
+            const Location_list &cell_locations):
             name(name),
             connection_pattern(world_configuration.connection_pattern),
             cell_descriptor(world_configuration.cell_descriptor)
@@ -89,6 +88,13 @@ namespace cell_world {
             cell.location = cell_locations[id];
             id++;
         }
+    }
+
+    World::World(std::string name,
+                 const World_configuration & world_configuration,
+                 const Location_list &cell_locations,
+                 const Cell_group_builder &occlusions):
+                 World(name, world_configuration, cell_locations){
         for (auto &occlusion: occlusions){
             cells[occlusion].occluded = true;
         }
