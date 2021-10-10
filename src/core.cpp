@@ -46,16 +46,15 @@ namespace cell_world {
         return id != c.id;
     }
 
-    Cell::Cell (Cell_type cell_type, Coordinates coordinates, Location location, bool occluded):
-            Cell(0,cell_type,coordinates,location,occluded)
+    Cell::Cell (Coordinates coordinates, Location location, bool occluded):
+            Cell(0,coordinates,location,occluded)
             { }
 
     Cell::Cell():
-            Cell(0,Square, {0,0}, {0,0},false){
+            Cell(0,{0,0}, {0,0},false){
     }
 
     Cell &Cell::operator=(const Cell &c) {
-        cell_type = c.cell_type;
         id = c.id;
         location = c.location;
         coordinates = c.coordinates;
@@ -64,13 +63,12 @@ namespace cell_world {
     }
 
     Cell &Cell::ghost_cell() {
-        static Cell c (100000,Square, {100000,100000}, {100000,100000}, true);
+        static Cell c (100000, {100000,100000}, {100000,100000}, true);
         return c;
     }
 
-    Cell::Cell(unsigned int id, Cell_type cell_type, Coordinates coordinates, Location location, bool occluded) :
+    Cell::Cell(unsigned int id, Coordinates coordinates, Location location, bool occluded) :
             id(id),
-            cell_type (cell_type),
             coordinates(coordinates),
             location(location),
             occluded(occluded) { }
@@ -206,4 +204,18 @@ namespace cell_world {
         return {x + sin(theta) * dist, y + cos(theta) * dist};
     }
 
+    Cell_descriptor::Cell_descriptor(int sides, double radius, double rotation):
+        sides(sides),
+        radius(radius),
+        rotation(rotation){
+
+    }
+
+    Cell_descriptor::Cell_descriptor() {
+
+    }
+
+    double Cell_descriptor::theta() const {
+        return rotation / 180 * M_PI;
+    }
 }

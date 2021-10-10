@@ -3,7 +3,7 @@
 #include <cell_world/graph.h>
 namespace cell_world{
     struct Visibility{
-        static Graph create_graph(const Cell_group &);
+        static Graph create_graph(const Cell_group &, const Cell_descriptor &);
         static Graph invert(const Graph &);
     };
     struct Visibility_cone{

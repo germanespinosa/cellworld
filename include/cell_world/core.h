@@ -13,10 +13,21 @@
 
 namespace cell_world{
     const int Not_found = -1;
-    enum Cell_type : int {
-        Circle,
-        Square
+
+    struct Cell_descriptor : json_cpp::Json_object{
+        Cell_descriptor ();
+        Cell_descriptor (int, double, double);
+        int sides;
+        double radius;
+        double rotation;
+        double theta() const;
+        Json_object_members({
+                                Add_member(sides);
+                                Add_member(radius);
+                                Add_member(rotation);
+                            })
     };
+
     struct Coordinates : json_cpp::Json_object{
         Coordinates ();
         Coordinates (int x, int y);
@@ -71,10 +82,9 @@ namespace cell_world{
     struct Cell : json_cpp::Json_object{
         Cell();
         Cell(const cell_world::Cell&) = default;
-        Cell(Cell_type, Coordinates, Location, bool);
-        Cell(unsigned int, Cell_type, Coordinates, Location, bool);
+        Cell(Coordinates, Location, bool);
+        Cell(unsigned int, Coordinates, Location, bool);
         unsigned int id;
-        Cell_type cell_type;
         Coordinates coordinates;
         Location location;
         bool occluded;
@@ -87,10 +97,10 @@ namespace cell_world{
         };
         Json_object_members({
             Add_member(id);
-            Add_member(cell_type);
             Add_member(coordinates);
             Add_member(location);
             Add_member(occluded);
+            Ignore_member("cell_type");
         })
     };
 

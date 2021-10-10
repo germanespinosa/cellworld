@@ -1,3 +1,4 @@
+
 import warnings
 import matplotlib.pyplot as plt
 from matplotlib import cm
@@ -30,6 +31,7 @@ class Display:
         self.y = []
         self.c = []
         self.o = []
+        self.agents = []
         for i, cell in enumerate(heat_map.world.cells):
             self.x.append(cell["location"]["x"])
             self.y.append(cell["location"]["y"])
@@ -50,8 +52,16 @@ class Display:
         else:
             plt.scatter(self.x, self.y, c=self.c, alpha=1, marker="s", s=1170, edgecolors=self.o , linewidths=2)
 
-        for x,y,c in self.extras:
+        for x, y, c in self.extras:
             plt.plot(x, y, c=c)
+            x, y = location
+
+        for location, rotation, speed, marker, size, color, name in self.agents:
+            x,y = location
+            hx, hy = x + sin(rotation) * speed, y + cos(rotation) * speed
+            plt.plot(x, y, hx, hy, c=color)
+            plt.plot(x, y, marker = marker, c=color, markersize=size)
+
 
     def show(self):
         if self.type == 0:
@@ -76,7 +86,6 @@ class Display:
     def close(self):
         plt.close()
 
-
     def convert_location (self, location):
         return location["x"] * (self.size[0]+.5) - self.size[0] / 2, (1 - (location["y"]-.5)) * self.size[1] - self.size[1] / 2
 
@@ -85,6 +94,9 @@ class Display:
             x = [self.convert_location(step["location"])[0] for step in trajectory if step["agent_name"] == agent_name]
             y = [self.convert_location(step["location"])[1] for step in trajectory if step["agent_name"] == agent_name]
             self.extras.append((x, y, color))
+
+    def add_agent(location, rotation, speed, marker, size, color, name):
+        self.agents.append((location, rotation, speed, marker, size, color, name))
 
     def show_trajectory(self, trajectory, agent_name, color="red"):
         if self.type == 0:

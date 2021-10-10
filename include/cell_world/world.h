@@ -9,6 +9,7 @@ namespace cell_world{
     struct World : json_cpp::Json_object{
         World();
         explicit World(std::string );
+        World(std::string, const World_configuration &, const Location_list &, const Cell_group_builder &);
         bool add(Cell&);
         unsigned int size() const;
         Cell &operator[](const unsigned int& );
@@ -24,9 +25,11 @@ namespace cell_world{
                          Add_member(name);
                          Add_member(connection_pattern);
                          Add_member(cells);
+                         Add_optional_member(cell_descriptor);
         })
         std::string name;
         Connection_pattern connection_pattern;
         Cell_list cells;
+        Cell_descriptor cell_descriptor;
     };
 }

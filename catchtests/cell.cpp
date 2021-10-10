@@ -12,7 +12,6 @@ TEST_CASE("cell>>1")
     Cell c0;
     s_stream >> c0;
     CHECK(c0.id==50);
-    CHECK(c0.cell_type==Square);
     CHECK(c0.coordinates==Coordinates{4,5});
     CHECK(c0.location==Location{41.5,-5.324});
     CHECK(c0.occluded);

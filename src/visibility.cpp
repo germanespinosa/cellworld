@@ -5,7 +5,7 @@ using namespace std;
 
 namespace cell_world {
 
-    Graph Visibility::create_graph(const Cell_group &cell_group) {
+    Graph Visibility::create_graph(const Cell_group &cell_group, const Cell_descriptor &descriptor) {
         if (cell_group.empty()) return {};
         Cell_group occlusions = cell_group.occluded_cells();
         Cell_group free_cells = cell_group.free_cells(); // filters occluded
@@ -18,8 +18,7 @@ namespace cell_world {
                 if (source!=destination) {
                     double dist = source.location.dist(destination.location); // distance between source & destination
                     for (const Cell &occlusion:occlusions) {
-                        if (occlusion.location.dist(source.location, destination.location) <=
-                               (occlusion.cell_type == Square ? .7072 : .5001) &&
+                        if (occlusion.location.dist(source.location, destination.location) <= descriptor.radius &&
                                 occlusion.location.dist(source.location) < dist &&
                                 occlusion.location.dist(destination.location) < dist) {
                             blocked = true;

@@ -71,4 +71,26 @@ namespace cell_world {
         }
         return g;
     }
+
+    World::World(
+            std::string name,
+            const World_configuration &world_configuration,
+            const Location_list &cell_locations,
+            const Cell_group_builder &occlusions):
+            name(name),
+            connection_pattern(world_configuration.connection_pattern),
+            cell_descriptor(world_configuration.cell_descriptor)
+    {
+        unsigned int id = 0;
+        for (auto &coord:world_configuration.cell_coordinates){
+            Cell cell;
+            cell.id = id;
+            cell.coordinates = coord;
+            cell.location = cell_locations[id];
+            id++;
+        }
+        for (auto &occlusion: occlusions){
+            cells[occlusion].occluded = true;
+        }
+    }
 }

@@ -27,10 +27,10 @@ struct Stateless_test_Agent : Stateless_agent {
 TEST_CASE("Model status")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{2,1},false);
-    Cell c3(Circle, {3,1},{3,1},false);
+    Cell c0({0,1},{0,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{2,1},false);
+    Cell c3({3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -73,10 +73,10 @@ TEST_CASE("Model status")
 TEST_CASE("Model reset")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{2,1},false);
-    Cell c3(Circle, {3,1},{3,1},false);
+    Cell c0({0,1},{0,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{2,1},false);
+    Cell c3({3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -163,10 +163,10 @@ struct Stateful_test_Agent : Stateful_agent<Test_state> {
 TEST_CASE("Model statefull reset")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{2,1},false);
-    Cell c3(Circle, {3,1},{3,1},false);
+    Cell c0({0,1},{0,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{2,1},false);
+    Cell c3({3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);

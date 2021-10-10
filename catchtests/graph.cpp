@@ -8,10 +8,10 @@ using namespace std;
 TEST_CASE("Network")
 {
     World w("test");
-    Cell c1(Circle, {0,1},{1,1},false);
-    Cell c2(Circle, {1,1},{1,1},false);
-    Cell c3(Circle, {2,1},{1,1},false);
-    Cell c4(Circle, {3,1},{1,1},false);
+    Cell c1({0,1},{1,1},false);
+    Cell c2({1,1},{1,1},false);
+    Cell c3({2,1},{1,1},false);
+    Cell c4({3,1},{1,1},false);
     w.add(c1);
     w.add(c2);
     w.add(c3);
@@ -28,11 +28,11 @@ TEST_CASE("Network")
 TEST_CASE("graph")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},false);
-    Cell c3(Circle, {3,1},{1,1},false);
-    Cell c4(Circle, {4,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},false);
+    Cell c3({3,1},{1,1},false);
+    Cell c4({4,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -53,11 +53,11 @@ TEST_CASE("graph")
 TEST_CASE("graph.invert")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},false);
-    Cell c3(Circle, {3,1},{1,1},false);
-    Cell c4(Circle, {4,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},false);
+    Cell c3({3,1},{1,1},false);
+    Cell c4({4,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -79,18 +79,19 @@ TEST_CASE("graph.invert")
 TEST_CASE("graph.invert.empty")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},false);
-    Cell c3(Circle, {3,1},{1,1},false);
-    Cell c4(Circle, {4,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},false);
+    Cell c3({3,1},{1,1},false);
+    Cell c4({4,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
     w.add(c3);
     w.add(c4);
     Cell_group cg = w.create_cell_group();
-    Graph g = Visibility::create_graph(cg).invert();
+    Cell_descriptor desc(6,.5001,0);
+    Graph g = Visibility::create_graph(cg,desc).invert();
     CHECK(g.size() == 5);
     CHECK(g[c0].size() == 0);
     CHECK(g[c1].size() == 0);
@@ -103,10 +104,10 @@ TEST_CASE("graph.invert.empty")
 TEST_CASE("Connections shortest path")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},false);
-    Cell c3(Circle, {3,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},false);
+    Cell c3({3,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -124,7 +125,7 @@ TEST_CASE("Connections shortest path")
 TEST_CASE("Sub graphs big") {
     World w("test");
     for (int8_t i = 0; i <=100; i++){
-        Cell c0(Circle, {i, i}, {(double)i, (double)i},false);
+        Cell c0({i, i}, {(double)i, (double)i},false);
         w.add(c0);
     }
     Cell_group cg1 = w.create_cell_group();
@@ -141,11 +142,11 @@ TEST_CASE("Sub graphs big") {
 
 TEST_CASE("Sub graphs disconnected") {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},true);
-    Cell c3(Circle, {3,1},{1,1},false);
-    Cell c4(Circle, {4,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},true);
+    Cell c3({3,1},{1,1},false);
+    Cell c4({4,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -174,11 +175,11 @@ TEST_CASE("Sub graphs disconnected") {
 TEST_CASE("Sub graphs options")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},false);
-    Cell c3(Circle, {3,1},{1,1},false);
-    Cell c4(Circle, {4,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},false);
+    Cell c3({3,1},{1,1},false);
+    Cell c4({4,1},{1,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
@@ -286,11 +287,11 @@ TEST_CASE("Sub graphs options")
 TEST_CASE("Sub graphs")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{1,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{1,1},false);
-    Cell c3(Circle, {3,1},{1,1},false);
-    Cell c4(Circle, {4,1},{1,1},false);
+    Cell c0({0,1},{1,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{1,1},false);
+    Cell c3({3,1},{1,1},false);
+    Cell c4({4,1},{1,1},false);
 
     w.add(c0);
     w.add(c1);
@@ -345,18 +346,18 @@ TEST_CASE("Sub graphs")
 
 TEST_CASE("shortest path") {
     World w("test");
-    Cell c00(Circle, {0, 0}, {0, 0}, false);
-    Cell c01(Circle, {0, 1}, {0, 1}, false);
-    Cell c02(Circle, {0, 2}, {0, 2}, false);
-    Cell c10(Circle, {1, 0}, {1, 0}, false);
-    Cell c11(Circle, {1, 1}, {1, 1}, true);
-    Cell c12(Circle, {1, 2}, {1, 2}, false);
-    Cell c20(Circle, {2, 0}, {2, 0}, true);
-    Cell c21(Circle, {2, 1}, {2, 1}, true);
-    Cell c22(Circle, {2, 2}, {2, 2}, false);
-    Cell c30(Circle, {3, 0}, {3, 0}, false);
-    Cell c31(Circle, {3, 1}, {3, 1}, false);
-    Cell c32(Circle, {3, 2}, {3, 2}, false);
+    Cell c00({0, 0}, {0, 0}, false);
+    Cell c01({0, 1}, {0, 1}, false);
+    Cell c02({0, 2}, {0, 2}, false);
+    Cell c10({1, 0}, {1, 0}, false);
+    Cell c11({1, 1}, {1, 1}, true);
+    Cell c12({1, 2}, {1, 2}, false);
+    Cell c20({2, 0}, {2, 0}, true);
+    Cell c21({2, 1}, {2, 1}, true);
+    Cell c22({2, 2}, {2, 2}, false);
+    Cell c30({3, 0}, {3, 0}, false);
+    Cell c31({3, 1}, {3, 1}, false);
+    Cell c32({3, 2}, {3, 2}, false);
     w.add(c00);
     w.add(c01);
     w.add(c02);

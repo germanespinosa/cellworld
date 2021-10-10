@@ -22,16 +22,17 @@ TEST_CASE("Histogram and Entropy")
 TEST_CASE("Visibility")
 {
     World w("test");
-    Cell c0(Circle, {0,1},{0,1},false);
-    Cell c1(Circle, {1,1},{1,1},false);
-    Cell c2(Circle, {2,1},{2,1},false);
-    Cell c3(Circle, {3,1},{3,1},false);
+    Cell c0({0,1},{0,1},false);
+    Cell c1({1,1},{1,1},false);
+    Cell c2({2,1},{2,1},false);
+    Cell c3({3,1},{3,1},false);
     w.add(c0);
     w.add(c1);
     w.add(c2);
     w.add(c3);
     auto cg = w.create_cell_group();
-    Graph vi = Visibility::create_graph(cg);
+    Cell_descriptor desc(6,.5001,0);
+    Graph vi = Visibility::create_graph(cg,desc);
     CHECK(vi.size() == 4);
     CHECK(vi[c0].size() == 4);
     CHECK(vi[c1].size() == 4);
