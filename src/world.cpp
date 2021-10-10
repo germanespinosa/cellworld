@@ -99,4 +99,13 @@ namespace cell_world {
             cells[occlusion].occluded = true;
         }
     }
+
+    void World::update_occlusions(const Cell_group_builder &occlusions) {
+        for (auto &cell: cells){
+            cell.occluded = false;
+        }
+        for (auto &occlusion: occlusions){
+            cells[occlusion].occluded = true;
+        }
+    }
 }
