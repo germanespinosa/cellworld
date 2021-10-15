@@ -25,11 +25,4 @@ namespace cell_world {
                                 Add_member(connection_pattern);
                             })
     };
-/*
-    struct Centrality {
-        static std::vector<double> get_eigen_centrality(Graph&, unsigned int, double) ;
-        static std::vector<double> get_eigen_centrality(Graph&) ;
-        static std::vector<double> get_betweenness_centrality(Graph&) ;
-    };
-    */
 }
