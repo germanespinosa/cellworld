@@ -81,3 +81,44 @@ TEST_CASE("is_occluding")
     CHECK(!Visibility::is_occluding({2,0},{3,0},p));
     CHECK(!Visibility::is_occluding({-2,0},{-3,0},p));
 }
+
+struct Tvr : json_cpp::Json_object {
+    Location destination;
+    bool visible;
+
+    Json_object_members(
+            Add_member(destination);
+            Add_member(visible);
+    )
+};
+
+struct Tv : json_cpp::Json_object {
+    Polygon occlusion;
+    Location source;
+    json_cpp::Json_vector<Tvr> records;
+    Json_object_members(
+            Add_member(source);
+            Add_member(occlusion);
+            Add_member(records);
+    )
+};
+
+Tv test_visibility(const Polygon &p) {
+    Tv tv;
+    tv.occlusion = p;
+    tv.source = p.center.move(0,p.radius * 2);
+    for (double i = 0; i < 360; i++){
+        double theta = Visibility::to_radians(i );
+        Tvr tvr;
+        tvr.destination = tv.source.move(theta, p.radius * 4);
+        tvr.visible = !Visibility::is_occluding( tv.source, tvr.destination, p);
+        tv.records.push_back(tvr);
+    }
+    return tv;
+}
+
+TEST_CASE("test_visibility"){
+    test_visibility(Polygon({0,0},3,1,60)).save("triangle.json");
+    test_visibility(Polygon({0,0},4,1,35)).save("square.json");
+    test_visibility(Polygon({0,0},6,1,0)).save("hexagon.json");
+}

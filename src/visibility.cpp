@@ -99,13 +99,18 @@ namespace cell_world {
         double dist_center = src.dist(occlusion.center);
         if (dist < dist_center - occlusion.radius ) return false;
         double theta_center = src.atan(occlusion.center);
+        auto diff_theta_center = Visibility::angle_difference(theta,theta_center);
         auto direction_center = Visibility::direction(theta, theta_center);
         for (auto &v: occlusion.vertices) {
             double vertex_distance = src.dist(v);
             if (vertex_distance < dist) {
                 double theta_vertex = src.atan(v);
                 auto direction_vertex = Visibility::direction(theta, theta_vertex);
-                if (direction_center == -direction_vertex) return true;
+                if (direction_center == -direction_vertex) {
+                    auto diff_theta_vertex = Visibility::angle_difference(theta,theta_vertex);
+                    if (diff_theta_center + diff_theta_vertex < M_PI)
+                        return true;
+                }
             }
         }
         return false;
