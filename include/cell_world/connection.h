@@ -15,14 +15,4 @@ namespace cell_world {
         Connection_pattern &operator=(const std::string &);
         Move random_move() const;
     };
-
-    struct World_configuration : json_cpp::Json_object{
-        Cell_descriptor cell_descriptor;
-        Coordinates_list cell_coordinates;
-        Connection_pattern connection_pattern;
-        Json_object_members({
-                                Add_member(cell_coordinates);
-                                Add_member(connection_pattern);
-                            })
-    };
 }

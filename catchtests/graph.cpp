@@ -90,8 +90,9 @@ TEST_CASE("graph.invert.empty")
     w.add(c3);
     w.add(c4);
     Cell_group cg = w.create_cell_group();
-    Cell_descriptor desc(6,.5001,0);
-    Graph g = Visibility::create_graph(cg,desc).invert();
+    Shape desc(6);
+    Transformation t (.5001,0);
+    Graph g = Coordinates_visibility::create_graph(cg, desc, t).invert();
     CHECK(g.size() == 5);
     CHECK(g[c0].size() == 0);
     CHECK(g[c1].size() == 0);

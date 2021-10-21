@@ -14,20 +14,6 @@
 namespace cell_world{
     const int Not_found = -1;
 
-    struct Cell_descriptor : json_cpp::Json_object{
-        Cell_descriptor ();
-        Cell_descriptor (int, double, double);
-        int sides;
-        double radius;
-        double rotation;
-        double theta() const;
-        Json_object_members({
-                                Add_member(sides);
-                                Add_member(radius);
-                                Add_member(rotation);
-                            })
-    };
-
     struct Coordinates : json_cpp::Json_object{
         Coordinates ();
         Coordinates (int x, int y);
@@ -77,7 +63,65 @@ namespace cell_world{
         })
     };
 
-    using Location_list = json_cpp::Json_vector<Location>;
+    struct Location_list : json_cpp::Json_vector<Location> {
+        json_cpp::Json_vector<double> get_x();
+        json_cpp::Json_vector<double> get_y();
+    };
+
+    struct Polygon : json_cpp::Json_object {
+        Polygon ();
+        Polygon (const Polygon &);
+        Polygon (const Location &, unsigned int, double, double);
+        Location center;
+        Location_list vertices;
+        double radius;
+        Polygon move(const Location&);
+        Polygon move(double, double);
+        Json_object_members({
+                                Add_member(vertices);
+                                Add_member(center);
+                                Add_member(radius);
+                            })
+        Polygon operator +=(const Location &);
+        Polygon & operator = (const Polygon &);
+    };
+
+    using Polygon_list = json_cpp::Json_vector<Polygon>;
+
+    struct Shape : json_cpp::Json_object{
+        Shape ();
+        Shape (int);
+        int sides{};
+        Json_object_members({
+                                Add_member(sides);
+                            })
+    };
+
+    struct Transformation : json_cpp::Json_object{
+        Transformation ();
+        Transformation (double, double);
+        double theta() const;
+        double size{};
+        double rotation{};
+        Json_object_members({
+                                Add_member(size);
+                                Add_member(rotation);
+                            })
+    };
+
+    struct Space : json_cpp::Json_object{
+        Space ();
+        Space (const Location &, const Shape &, const Transformation &);
+        Location center;
+        Shape shape;
+        Transformation transformation;
+        Json_object_members({
+                                Add_member(center);
+                                Add_member(shape);
+                                Add_member(transformation);
+                            })
+    };
+
 
     struct Cell : json_cpp::Json_object{
         Cell();

@@ -180,20 +180,16 @@ namespace cell_world {
     }
 
     Coordinates::Coordinates(int x, int y):
-        x(x),y(y){
-        Coordinates();
+        x(x),y(y){;
     }
 
-    Coordinates::Coordinates() {
-    }
+    Coordinates::Coordinates() = default;
 
     Location::Location(double x, double y) :
         x(x), y(y){
-        Location();
     }
 
-    Location::Location() {
-    }
+    Location::Location() = default;
 
     double Location::atan(const Location &l) const {
         auto v=l-*this;
@@ -204,18 +200,93 @@ namespace cell_world {
         return {x + sin(theta) * dist, y + cos(theta) * dist};
     }
 
-    Cell_descriptor::Cell_descriptor(int sides, double radius, double rotation):
-        sides(sides),
-        radius(radius),
-        rotation(rotation){
+    Shape::Shape(int sides):
+        sides(sides){
 
     }
 
-    Cell_descriptor::Cell_descriptor() {
+    Shape::Shape() = default;
 
-    }
-
-    double Cell_descriptor::theta() const {
+    double Transformation::theta() const {
         return rotation / 180 * M_PI;
+    }
+
+
+    cell_world::Transformation::Transformation() = default;
+
+    cell_world::Transformation::Transformation(double size, double rotation):
+    size(size), rotation(rotation){
+
+    }
+
+    Space::Space() = default;
+
+
+    Space::Space(const Location &center, const Shape &shape, const Transformation &transformation) :
+    center(center),
+    shape(shape),
+    transformation(transformation){
+
+    }
+
+    cell_world::Polygon::Polygon() = default;
+
+    cell_world::Polygon::Polygon(const Location &center, unsigned int sides, double radius, double rotation) :
+    center(center),
+    radius(radius){
+        double theta = rotation * M_PI / 180.0;
+        double inc = 2.0 * M_PI / sides;
+        for (unsigned int s = 0; s < sides; s++) {
+            auto c = center;
+            vertices.emplace_back(c.move(theta, radius));
+            theta += inc;
+        }
+    }
+
+    json_cpp::Json_vector<double> Location_list::get_x() {
+        auto x = json_cpp::Json_vector<double>();
+        for (auto &l:*this){
+            x.push_back(l.x);
+        }
+        return x;
+    }
+
+    json_cpp::Json_vector<double> Location_list::get_y() {
+        auto y = json_cpp::Json_vector<double>();
+        for (auto &l:*this){
+            y.push_back(l.y);
+        }
+        return y;
+    }
+
+    Polygon Polygon::move(const Location &dst) {
+        Polygon p;
+        p = *this;
+        auto dif = dst - center;
+        return p += dif;
+    }
+
+    Polygon Polygon::move(double theta, double dist) {
+        return move(center + Location().move(theta,dist));
+    }
+
+    Polygon Polygon::operator+=(const Location &dif) {
+        center = center + dif;
+        radius = radius;
+        for (auto &v: vertices){
+            v += dif;
+        }
+        return *this;
+    }
+
+    Polygon &Polygon::operator=(const Polygon &poly) {
+        center = poly.center;
+        radius = poly.radius;
+        vertices = poly.vertices;
+        return *this;
+    }
+
+    Polygon::Polygon(const Polygon &p) {
+        *this = p;
     }
 }

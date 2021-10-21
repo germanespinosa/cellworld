@@ -31,31 +31,53 @@ TEST_CASE("Visibility")
     w.add(c2);
     w.add(c3);
     auto cg = w.create_cell_group();
-    Cell_descriptor desc(6,.5001,0);
-    Graph vi = Visibility::create_graph(cg,desc);
+    Shape desc(6);
+    Transformation t(.5001,0);
+    Graph vi = Coordinates_visibility::create_graph(cg, desc, t);
     CHECK(vi.size() == 4);
     CHECK(vi[c0].size() == 4);
     CHECK(vi[c1].size() == 4);
     CHECK(vi[c2].size() == 4);
     CHECK(vi[c3].size() == 4);
 }
+
+
 TEST_CASE("Cone")
 {
-    CHECK(Visibility_cone::angle_difference(1,2) == 1);
-    CHECK(Visibility_cone::direction(1,2) == -1);
-    CHECK(Visibility_cone::angle_difference(2,1) == 1);
-    CHECK(Visibility_cone::direction(2,1) == 1);
-    CHECK(Visibility_cone::angle_difference(1,4) == 3);
-    CHECK(Visibility_cone::angle_difference(4,1) == 3);
-    CHECK(SIMILAR(Visibility_cone::angle_difference(1,5), 2.2831853072, .001));
-    CHECK(SIMILAR(Visibility_cone::angle_difference(5,1), 2.2831853072, .001));
-    CHECK(Visibility_cone::normalize(3*M_PI)==M_PI);
-    CHECK(Visibility_cone::normalize(-M_PI)==M_PI);
-    CHECK(Visibility_cone::normalize_degrees(360)==0);
-    CHECK(Visibility_cone::normalize_degrees(0)==0);
-    CHECK(Visibility_cone::normalize_degrees(181)==-179);
-    CHECK(Visibility_cone::to_radians(90)==3*M_PI/2);
-    CHECK(Visibility_cone::to_radians(-90)==M_PI/2);
-    CHECK(Visibility_cone::to_degrees(M_PI/2)==90);
-    CHECK(Visibility_cone::to_degrees(3*M_PI/2)==-90);
+    CHECK(Visibility::angle_difference(1, 2) == 1);
+    CHECK(Visibility::direction(1, 2) == -1);
+    CHECK(Visibility::angle_difference(2, 1) == 1);
+    CHECK(Visibility::direction(2, 1) == 1);
+    CHECK(Visibility::angle_difference(1, 4) == 3);
+    CHECK(Visibility::angle_difference(4, 1) == 3);
+    CHECK(SIMILAR(Visibility::angle_difference(1, 5), 2.2831853072, .001));
+    CHECK(SIMILAR(Visibility::angle_difference(5, 1), 2.2831853072, .001));
+    CHECK(Visibility::normalize(3 * M_PI) == M_PI);
+    CHECK(Visibility::normalize(-M_PI) == M_PI);
+    CHECK(Visibility::normalize_degrees(360) == 0);
+    CHECK(Visibility::normalize_degrees(0) == 0);
+    CHECK(Visibility::normalize_degrees(181) == -179);
+    CHECK(Visibility::to_radians(90) == 3 * M_PI / 2);
+    CHECK(Visibility::to_radians(-90) == M_PI / 2);
+    CHECK(Visibility::to_degrees(M_PI / 2) == 90);
+    CHECK(Visibility::to_degrees(3 * M_PI / 2) == -90);
+}
+
+
+TEST_CASE("is_occluding")
+{
+    Polygon p (Location (0,0), 4, 1 , 45);
+
+    CHECK(Visibility::is_occluding({-3,0},{3,0},p));
+
+    CHECK(Visibility::is_occluding({.7,-3},{.7,3},p));
+    CHECK(Visibility::is_occluding({-.7,-3},{-.7,3},p));
+    CHECK(!Visibility::is_occluding({.8,-3},{.8,3},p));
+    CHECK(!Visibility::is_occluding({-.8,-3},{-.8,3},p));
+    CHECK(!Visibility::is_occluding({-3,.8},{3,.8},p));
+    CHECK(!Visibility::is_occluding({-3,-.8},{3,-.8},p));
+    CHECK(Visibility::is_occluding({-3,.7},{3,.7},p));
+    CHECK(Visibility::is_occluding({-3,-.7},{3,-.7},p));
+    CHECK(!Visibility::is_occluding({2,0},{3,0},p));
+    CHECK(!Visibility::is_occluding({-2,0},{-3,0},p));
 }

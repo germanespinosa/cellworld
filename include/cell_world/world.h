@@ -5,10 +5,38 @@
 #include <cell_world/visibility.h>
 #include <cell_world/graph.h>
 #include<cell_world/paths.h>
+
 namespace cell_world{
+
+    struct World_configuration : json_cpp::Json_object{
+        World_configuration ();
+        World_configuration (const Shape &, const Coordinates_list &, const Connection_pattern &);
+        Shape cell_shape;
+        Coordinates_list cell_coordinates;
+        Connection_pattern connection_pattern;
+        Json_object_members({
+                                Add_member(cell_shape);
+                                Add_member(connection_pattern);
+                                Add_member(cell_coordinates);
+                            })
+    };
+
+    struct World_implementation : json_cpp::Json_object{
+        World_implementation ();
+        World_implementation (const Location_list &, const Space &, const Transformation &);
+        Location_list cell_locations;
+        Space space;
+        Transformation cell_transformation;
+        Json_object_members({
+                                Add_member(cell_locations);
+                                Add_member(space);
+                                Add_member(cell_transformation);
+                            })
+    };
+
     struct World : json_cpp::Json_object{
-        World();
-        explicit World(std::string );
+        World ();
+        explicit World (std::string );
         World(std::string, const World_configuration &, const Location_list &, const Cell_group_builder &);
         World(std::string, const World_configuration &, const Location_list &);
         bool add(Cell&);
@@ -27,11 +55,19 @@ namespace cell_world{
                          Add_member(name);
                          Add_member(connection_pattern);
                          Add_member(cells);
-                         Add_optional_member(cell_descriptor);
+                         Add_optional_member(cell_shape);
+                         Add_optional_member(cell_transformation);
+                         Add_optional_member(space_shape);
+                         Add_optional_member(space_transformation);
+                         Add_optional_member(center);
         })
         std::string name;
         Connection_pattern connection_pattern;
         Cell_list cells;
-        Cell_descriptor cell_descriptor;
+        Shape cell_shape;
+        Transformation cell_transformation;
+        Shape space_shape;
+        Transformation space_transformation;
+        Location center;
     };
 }

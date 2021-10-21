@@ -1,9 +1,5 @@
 #include <cell_world/world.h>
-#include <iostream>
-#include <fstream>
 #include <string>
-#include <algorithm>
-#include <utility>
 #include <any>
 using namespace std;
 
@@ -78,7 +74,7 @@ namespace cell_world {
             const Location_list &cell_locations):
             name(name),
             connection_pattern(world_configuration.connection_pattern),
-            cell_descriptor(world_configuration.cell_descriptor)
+            cell_shape(world_configuration.cell_shape)
     {
         unsigned int id = 0;
         for (auto &coord:world_configuration.cell_coordinates){
@@ -107,5 +103,29 @@ namespace cell_world {
         for (auto &occlusion: occlusions){
             cells[occlusion].occluded = true;
         }
+    }
+
+    World_configuration::World_configuration() = default;
+
+
+    World_configuration::World_configuration(const Shape &cell_shape,
+                                             const Coordinates_list &cell_coordinates,
+                                             const Connection_pattern & connection_pattern):
+            cell_shape(cell_shape),
+            cell_coordinates(cell_coordinates),
+            connection_pattern(connection_pattern){
+
+    }
+
+    cell_world::World_implementation::World_implementation() = default;
+
+
+    cell_world::World_implementation::World_implementation(const Location_list &cell_locations,
+                                                           const Space &space,
+                                                           const Transformation &cell_transformation):
+                                                           cell_locations(cell_locations),
+                                                           space(space),
+                                                           cell_transformation(cell_transformation){
+
     }
 }

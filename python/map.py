@@ -1,6 +1,6 @@
 import numpy as np
 
-class Map:
+class Cell_map:
     def __init__ (self, world):
         self.world = world
         self._index = -np.ones((world.dimensions["width"], world.dimensions["height"]), np.integer)

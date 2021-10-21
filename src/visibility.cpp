@@ -5,41 +5,34 @@ using namespace std;
 
 namespace cell_world {
 
-    Graph Visibility::create_graph(const Cell_group &cell_group, const Cell_descriptor &descriptor) {
+    Graph Coordinates_visibility::create_graph(const Cell_group &cell_group,
+                                               const Shape &shape,
+                                               const Transformation &transformation) {
         if (cell_group.empty()) return {};
         Cell_group occlusions = cell_group.occluded_cells();
+        Location_visibility lv = Location_visibility(occlusions, shape, transformation);
         Cell_group free_cells = cell_group.free_cells(); // filters occluded
         Graph vi(cell_group);
-        for (const Cell &source:free_cells) { //only not occluded
+        for (const Cell &source: free_cells) { //only not occluded
             vi[source].add(source); //cell is visible to itself
-            for (const Cell &destination:free_cells) { //only not occluded
-                if( destination.id < source.id) continue;
-                bool blocked = false;
-                if (source!=destination) {
-                    double dist = source.location.dist(destination.location); // distance between source & destination
-                    for (const Cell &occlusion:occlusions) {
-                        if (occlusion.location.dist(source.location, destination.location) <= descriptor.radius &&
-                                occlusion.location.dist(source.location) < dist &&
-                                occlusion.location.dist(destination.location) < dist) {
-                            blocked = true;
-                            break;
-                        }
+            for (const Cell &destination: free_cells) { //only not occluded
+                if (destination.id < source.id) continue;
+                if (source != destination) {
+                    if (lv.is_visible(source.location, destination.location)) {
+                        vi[source].add(destination);
+                        vi[destination].add(source);
                     }
-                }
-                if (!blocked) {
-                    vi[source].add(destination);
-                    vi[destination].add(source);
                 }
             }
         }
         return vi;
     }
 
-    Graph Visibility::invert(const Graph &vi) {
+    Graph Coordinates_visibility::invert(const Graph &vi) {
         Graph iv(vi.cells);
         Cell_group free_cells = iv.cells.free_cells();
-        for (auto &s:free_cells) {
-            for (auto &d:free_cells) {
+        for (auto &s: free_cells) {
+            for (auto &d: free_cells) {
                 if (!vi[s].contains(d)) {
                     iv[s].add(d);
                 }
@@ -48,7 +41,7 @@ namespace cell_world {
         return iv;
     }
 
-    double cell_world::Visibility_cone::angle_difference(double a1, double a2) {
+    double Visibility::angle_difference(double a1, double a2) {
         a1 = normalize(a1);
         a2 = normalize(a2);
         if (a1 > a2) {
@@ -62,7 +55,7 @@ namespace cell_world {
         }
     }
 
-    int Visibility_cone::direction(double a1, double a2) {
+    int Visibility::direction(double a1, double a2) {
         a1 = normalize(a1);
         a2 = normalize(a2);
         if (a1 > a2) {
@@ -76,46 +69,88 @@ namespace cell_world {
         }
     }
 
-    double cell_world::Visibility_cone::normalize(double angle) {
+    double Visibility::normalize(double angle) {
         while (angle < 0) angle += 2.0 * M_PI;
         while (angle > 2 * M_PI) angle -= 2.0 * M_PI;
         return angle;
     }
 
-    double cell_world::Visibility_cone::to_radians(double degrees) {
-        return normalize((degrees-180) / 360.0 * 2.0 * M_PI);
+    double Visibility::to_radians(double degrees) {
+        return normalize((degrees - 180) / 360.0 * 2.0 * M_PI);
     }
 
-    double cell_world::Visibility_cone::to_degrees(double radians) {
-        return normalize_degrees(radians *  360.0 / (2.0 * M_PI) );
+    double Visibility::to_degrees(double radians) {
+        return normalize_degrees(radians * 360.0 / (2.0 * M_PI));
     }
 
-    double cell_world::Visibility_cone::normalize_degrees(double angle) {
+    double Visibility::normalize_degrees(double angle) {
         while (angle < -180.0) angle += 360.0;
         while (angle > 180.0) angle -= 360.0;
         return angle;
     }
 
-    Cell_group cell_world::Visibility_cone::visible_cells(const Cell &src, double theta) {
+    bool Visibility::is_occluding(const Location &src, const Location &dst, const Polygon &occlusion) {
+        double theta = src.atan(dst);
+        double dist = src.dist(dst);
+        return is_occluding(src, theta, dist, occlusion);
+    }
+
+    bool Visibility::is_occluding(const Location &src, double theta, double dist, const Polygon &occlusion) {
+        double dist_center = src.dist(occlusion.center);
+        if (dist < dist_center - occlusion.radius ) return false;
+        double theta_center = src.atan(occlusion.center);
+        auto direction_center = Visibility::direction(theta, theta_center);
+        for (auto &v: occlusion.vertices) {
+            double vertex_distance = src.dist(v);
+            if (vertex_distance < dist) {
+                double theta_vertex = src.atan(v);
+                auto direction_vertex = Visibility::direction(theta, theta_vertex);
+                if (direction_center == -direction_vertex) return true;
+            }
+        }
+        return false;
+    }
+
+    Cell_group Coordinates_visibility_cone::visible_cells(const Cell &src, double theta) {
         Cell_group res;
         for (auto &dst: visibility[src]) {
-            if (is_visible(src,theta, dst)) {
+            if (is_visible(src, theta, dst)) {
                 res.add(dst);
             }
         }
         return res;
     }
 
-    bool cell_world::Visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) {
+    bool Coordinates_visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) {
         if (!visibility[src].contains(dst)) return false;
         auto angle = src.location.atan(dst.location);
-        auto theta_dif = angle_difference(angle, theta);
+        auto theta_dif = Visibility::angle_difference(angle, theta);
         return theta_dif <= visual_angle / 2;
     }
 
-    Visibility_cone::Visibility_cone(const Graph &visibility, double visual_angle):
-    visibility(visibility),
-    visual_angle(visual_angle){
+    Coordinates_visibility_cone::Coordinates_visibility_cone(const Graph &visibility, double visual_angle) :
+            visibility(visibility),
+            visual_angle(visual_angle) {
 
     }
+
+    Location_visibility::Location_visibility(const Cell_group &occluded_cells, const Shape &cell_shape,
+                                             const Transformation &cell_transformation) {
+        for (auto &cell: occluded_cells) {
+            occlusions.emplace_back(cell.get().location, cell_shape.sides, cell_transformation.size / 2,
+                                    Visibility::to_radians(cell_transformation.rotation));
+        }
+    }
+
+    bool cell_world::Location_visibility::is_visible(const Location &src, const Location &dst) {
+        double theta = src.atan(dst);
+        double dist = src.dist(dst);
+        for (auto &o: occlusions) {
+            if (Visibility::is_occluding(src,theta, dist,o)){
+                return false;
+            }
+        }
+        return true;
+    }
 }
+
