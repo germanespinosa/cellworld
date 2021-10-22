@@ -12,7 +12,6 @@ namespace cell_world {
         Graph(const cell_world::Graph&) = default;
         bool add(const Cell &);
         bool add(const Cell_group &);
-        bool remove(const Cell &);
         void connect (const Cell &, const Cell_group &);
         void connect (Graph &);
         std::vector<Coordinates> get_connectors (const Cell &);

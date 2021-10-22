@@ -16,8 +16,6 @@ namespace cell_world{
         Cell_group();
         Cell_group(const cell_world::Cell_group&) = default;
         bool add(const Cell &);
-        bool remove(const Cell &);
-        bool toggle(const Cell &);
         bool contains(unsigned int) const;
         bool contains(const Cell &) const;
         void clear();
@@ -46,7 +44,6 @@ namespace cell_world{
         const Cell &random_cell () const;
     private:
         std::vector<int> _id_index;
-        std::string _file_name;
         friend class World;
     };
 }

@@ -35,7 +35,7 @@ namespace cell_world {
 
     bool World::add(Cell cell) {
         cell.id = cells.size();
-        cells.emplace_back(cell);
+        cells.push_back(cell);
         return true;
     }
 
@@ -100,8 +100,19 @@ namespace cell_world {
     World::World(const World_configuration &world_configuration):
     connection_pattern(world_configuration.connection_pattern),
     cell_shape(world_configuration.cell_shape){
-        for(auto &c:world_configuration.cell_coordinates)
-            add (Cell(c));
+        for(auto &c:world_configuration.cell_coordinates) add(c);
+    }
+
+    World::World(const World_configuration &world_configuration, const World_implementation &world_implementation):
+    World(world_configuration){
+        for (Cell &cell: cells)
+            cell.location = world_implementation.cell_locations[cell.id];
+        cell_transformation = world_implementation.cell_transformation;
+        space = world_implementation.space;
+    }
+
+    bool World::add(Coordinates coordinates) {
+        return add(Cell(coordinates));
     }
 
 }

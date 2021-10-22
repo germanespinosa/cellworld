@@ -40,10 +40,10 @@ namespace cell_world{
         World(const World_configuration &, const World_implementation &);
         World(const World_configuration &, const World_implementation &, const Cell_group_builder &);
         bool add(Cell);
+        bool add(Coordinates);
         void set_occlusions(const Cell_group_builder &);
         unsigned int size() const;
         Cell &operator[](const unsigned int& );
-        void set_value(unsigned int, double);
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const Cell_group_builder &) const;
         Cell_group create_cell_group(const std::string&) const;
@@ -57,16 +57,12 @@ namespace cell_world{
                          Add_member(cells);
                          Add_optional_member(cell_shape);
                          Add_optional_member(cell_transformation);
-                         Add_optional_member(space_shape);
-                         Add_optional_member(space_transformation);
-                         Add_optional_member(center);
+                         Add_optional_member(space);
         })
         Connection_pattern connection_pattern;
         Cell_list cells;
         Shape cell_shape;
         Transformation cell_transformation;
-        Shape space_shape;
-        Transformation space_transformation;
-        Location center;
+        Space space;
     };
 }

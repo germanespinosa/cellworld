@@ -46,25 +46,6 @@ namespace cell_world {
         return *this;
     }
 
-    bool Cell_group::remove(const Cell &cell) {
-        auto cell_index = find(cell.id);
-        if ( cell_index == Not_found) return false;
-        erase(begin() + cell_index);
-        for (auto &i:_id_index) {
-            if (i<(int)cell.id) continue;
-            if (i==(int)cell.id) {
-                i = Not_found;
-            } else {
-                i --;
-            }
-        }
-        return true;
-    }
-
-    bool Cell_group::toggle(const Cell &cell) {
-        return remove(cell) ? true : add(cell);
-    }
-
     bool Cell_group::add(const Cell &cell) {
         if (contains(cell.id)) return false;
         while (_id_index.size() <= cell.id) _id_index.push_back(Not_found);
@@ -95,28 +76,18 @@ namespace cell_world {
 
     Cell_group Cell_group::operator-(const Cell_group &cg) {
         Cell_group ncg = *this;
-        for (unsigned int i = 0; i < cg.size(); i++) ncg.remove(cg[i]);
+        for (auto &c: *this) if (!cg.contains(c.get())) ncg.add(c.get());
         return ncg;
     }
 
     Cell_group Cell_group::operator-(const Cell &cell) {
         Cell_group ncg = *this;
-        ncg.remove(cell);
+        for (auto &c: *this) if (c.get()!=cell) ncg.add(c.get());
         return ncg;
     }
 
     Cell_group &Cell_group::operator+=(const Cell &cell) {
         add(cell);
-        return *this;
-    }
-
-    Cell_group &Cell_group::operator-=(const Cell &cell) {
-        remove(cell);
-        return *this;
-    }
-
-    Cell_group &Cell_group::operator-=(const Cell_group &cg) {
-        for (unsigned int i = 0; i < cg.size(); i++) remove(cg[i]);
         return *this;
     }
 

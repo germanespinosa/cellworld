@@ -27,11 +27,6 @@ TEST_CASE("cell_group")
     string s2;
     s2 << cg2;
     CHECK(s2 == "[0,1,2,3]");
-
-    cg2.remove(c2);
-    string s3;
-    s3 << cg2;
-    CHECK(s3 == "[0,1,3]");
 }
 
 TEST_CASE("cell_group 2")
@@ -46,13 +41,15 @@ TEST_CASE("cell_group 2")
     w.add(c2);
     w.add(c3);
     Cell_group cg;
-    cg.add(c0);
-    cg.add(c1);
-    cg.add(c2);
+    cg.add(w[0]);
+    cg.add(w[1]);
+    cg.add(w[2]);
+    CHECK(cg.to_json() == "[0,1,2]");
     Cell_group cg2;
-    cg2.add(c1);
-    cg2.add(c2);
-    cg2.add(c3);
+    cg2.add(w[1]);
+    cg2.add(w[2]);
+    cg2.add(w[3]);
+    CHECK(cg2.to_json() == "[1,2,3]");
     string s;
     s << (cg & cg2);
     CHECK(s == "[1,2]");

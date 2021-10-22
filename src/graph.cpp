@@ -38,7 +38,7 @@ namespace cell_world {
         Graph inv(cells);
         for (unsigned int i = 0; i < size(); i++) {
             const Cell_group &node = at(i);
-            for (unsigned int j = 0; j < at(i).size(); j++) {
+            for (unsigned int j = 0; j < node.size(); j++) {
                 inv[node[j]].add(cells[i]);
             }
         }
@@ -71,14 +71,6 @@ namespace cell_world {
         for (unsigned int i = 0; i < size(); i++) {
             if (at(i) != g[cells[i]]) return false;
         }
-        return true;
-    }
-
-    bool Graph::remove(const Cell &c) {
-        int index = cells.find(c);
-        if (index == Not_found) return false;
-        cells.remove(c);
-        erase(begin() + index);
         return true;
     }
 
