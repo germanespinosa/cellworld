@@ -7,7 +7,7 @@ using namespace std;
 
 TEST_CASE("euclidean")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{0,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{2,1},false);
@@ -31,7 +31,7 @@ TEST_CASE("euclidean")
 
 TEST_CASE("a_star")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{0,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{2,1},false);
@@ -55,7 +55,7 @@ TEST_CASE("a_star")
 
 TEST_CASE("euclidean_blocked")
 {
-    World w("test");
+    World w;
     Cell c00({0,0},{0,0},false);
     Cell c01({0,1},{0,1},false);
     Cell c02({0,2},{0,2},false);
@@ -104,7 +104,7 @@ TEST_CASE("euclidean_blocked")
 
 TEST_CASE("manhattan")
 {
-    World w("test");
+    World w;
     Cell c00({0,0},{0,0},false);
     Cell c01({0,1},{0,1},false);
     Cell c02({0,2},{0,2},false);
@@ -155,7 +155,7 @@ TEST_CASE("manhattan")
 
 TEST_CASE("astar")
 {
-    World w("test");
+    World w;
     Cell c00({0,0},{0,0},false);
     Cell c01({0,1},{0,1},false);
     Cell c02({0,2},{0,2},false);
@@ -206,7 +206,7 @@ TEST_CASE("astar")
 
 TEST_CASE("astar paths")
 {
-    World w("test");
+    World w;
     Cell c00({0,0},{0,0},false);
     Cell c01({0,1},{0,1},false);
     Cell c02({0,2},{0,2},false);
@@ -243,7 +243,7 @@ TEST_CASE("astar paths")
 
 TEST_CASE("path_save_shortest")
 {
-    World w("test");
+    World w;
     Cell c00({0,0},{0,0},false);
     Cell c01({0,1},{0,1},false);
     Cell c02({0,2},{0,2},false);
@@ -286,7 +286,7 @@ TEST_CASE("path_save_shortest")
 
 TEST_CASE("euclidean_blocked_save")
 {
-    World w("test");
+    World w;
     Cell c00({0,0},{0,0},false);
     Cell c01({0,1},{0,1},false);
     Cell c02({0,2},{0,2},false);

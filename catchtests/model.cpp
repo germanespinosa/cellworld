@@ -26,7 +26,7 @@ struct Stateless_test_Agent : Stateless_agent {
 };
 TEST_CASE("Model status")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{0,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{2,1},false);
@@ -72,7 +72,7 @@ TEST_CASE("Model status")
 
 TEST_CASE("Model reset")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{0,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{2,1},false);
@@ -162,7 +162,7 @@ struct Stateful_test_Agent : Stateful_agent<Test_state> {
 
 TEST_CASE("Model statefull reset")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{0,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{2,1},false);

@@ -7,7 +7,7 @@ using namespace std;
 
 TEST_CASE("Network")
 {
-    World w("test");
+    World w;
     Cell c1({0,1},{1,1},false);
     Cell c2({1,1},{1,1},false);
     Cell c3({2,1},{1,1},false);
@@ -27,7 +27,7 @@ TEST_CASE("Network")
 
 TEST_CASE("graph")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -52,7 +52,7 @@ TEST_CASE("graph")
 
 TEST_CASE("graph.invert")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -78,7 +78,7 @@ TEST_CASE("graph.invert")
 
 TEST_CASE("graph.invert.empty")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -104,7 +104,7 @@ TEST_CASE("graph.invert.empty")
 
 TEST_CASE("Connections shortest path")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -124,8 +124,8 @@ TEST_CASE("Connections shortest path")
 }
 
 TEST_CASE("Sub graphs big") {
-    World w("test");
-    for (int8_t i = 0; i <=100; i++){
+    World w;
+    for (int8_t i = 0; i <= 100; i++){
         Cell c0({i, i}, {(double)i, (double)i},false);
         w.add(c0);
     }
@@ -142,7 +142,7 @@ TEST_CASE("Sub graphs big") {
 }
 
 TEST_CASE("Sub graphs disconnected") {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},true);
@@ -175,7 +175,7 @@ TEST_CASE("Sub graphs disconnected") {
 
 TEST_CASE("Sub graphs options")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -287,7 +287,7 @@ TEST_CASE("Sub graphs options")
 
 TEST_CASE("Sub graphs")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -345,8 +345,9 @@ TEST_CASE("Sub graphs")
     CHECK(gates[c4].size()==1);
 }
 
+
 TEST_CASE("shortest path") {
-    World w("test");
+    World w;
     Cell c00({0, 0}, {0, 0}, false);
     Cell c01({0, 1}, {0, 1}, false);
     Cell c02({0, 2}, {0, 2}, false);

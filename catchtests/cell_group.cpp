@@ -6,7 +6,7 @@ using namespace cell_world;
 
 TEST_CASE("cell_group")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);
@@ -36,7 +36,7 @@ TEST_CASE("cell_group")
 
 TEST_CASE("cell_group 2")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{1,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{1,1},false);

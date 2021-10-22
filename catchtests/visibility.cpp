@@ -21,7 +21,7 @@ TEST_CASE("Histogram and Entropy")
 }
 TEST_CASE("Visibility")
 {
-    World w("test");
+    World w;
     Cell c0({0,1},{0,1},false);
     Cell c1({1,1},{1,1},false);
     Cell c2({2,1},{2,1},false);
@@ -93,19 +93,19 @@ struct Tvr : json_cpp::Json_object {
 };
 
 struct Tv : json_cpp::Json_object {
-    Polygon occlusion;
+    Polygon_list occlusions;
     Location source;
     json_cpp::Json_vector<Tvr> records;
     Json_object_members(
             Add_member(source);
-            Add_member(occlusion);
+            Add_member(occlusions);
             Add_member(records);
     )
 };
 
 Tv test_visibility(const Polygon &p) {
     Tv tv;
-    tv.occlusion = p;
+    tv.occlusions.push_back(p);
     tv.source = p.center.move(0,p.radius * 2);
     for (double i = 0; i < 360; i++){
         double theta = Visibility::to_radians(i );
@@ -121,4 +121,31 @@ TEST_CASE("test_visibility"){
     test_visibility(Polygon({0,0},3,1,60)).save("triangle.json");
     test_visibility(Polygon({0,0},4,1,35)).save("square.json");
     test_visibility(Polygon({0,0},6,1,0)).save("hexagon.json");
+}
+
+
+Tv test_location_visibility(const Location_visibility &lv, Location src, double radius) {
+    Tv tv;
+    tv.occlusions = lv.occlusions;
+    tv.source = src;
+    for (double i = 0; i < 360; i++){
+        double theta = Visibility::to_radians(i );
+        Tvr tvr;
+        tvr.destination = tv.source.move(theta, radius);
+        tvr.visible = lv.is_visible(tv.source, tvr.destination);
+        tv.records.push_back(tvr);
+    }
+    return tv;
+}
+
+TEST_CASE("test_location_visibility"){
+    Cell c0;
+    "{\"id\":1,\"coordinates\":{\"x\":0,\"y\":0},\"location\":{\"x\":0,\"y\":0},\"occluded\":1}" >> c0;
+    Cell c1;
+    "{\"id\":2,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":0,\"y\":4},\"occluded\":1}" >> c1;
+    Cell_group cg;
+    cg.add(c0);
+    cg.add(c1);
+    Location_visibility lv(cg, Shape(3), Transformation(1,0));
+    test_location_visibility(lv, {-3,2}, 4).save("multiple.json");
 }

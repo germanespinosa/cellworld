@@ -36,14 +36,13 @@ namespace cell_world{
 
     struct World : json_cpp::Json_object{
         World ();
-        explicit World (std::string );
-        World(std::string, const World_configuration &, const Location_list &, const Cell_group_builder &);
-        World(std::string, const World_configuration &, const Location_list &);
-        bool add(Cell&);
-        void update_occlusions(const Cell_group_builder &);
+        World(const World_configuration &);
+        World(const World_configuration &, const World_implementation &);
+        World(const World_configuration &, const World_implementation &, const Cell_group_builder &);
+        bool add(Cell);
+        void set_occlusions(const Cell_group_builder &);
         unsigned int size() const;
         Cell &operator[](const unsigned int& );
-        void set_occlusion(unsigned int, bool);
         void set_value(unsigned int, double);
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const Cell_group_builder &) const;
@@ -51,8 +50,9 @@ namespace cell_world{
         Graph create_graph() const;
         Graph create_graph(const Graph_builder &) const;
         Paths create_paths(const Path_builder &) const;
+        World_configuration get_configuration();
+        World_implementation get_implementation();
         Json_object_members({
-                         Add_member(name);
                          Add_member(connection_pattern);
                          Add_member(cells);
                          Add_optional_member(cell_shape);
@@ -61,7 +61,6 @@ namespace cell_world{
                          Add_optional_member(space_transformation);
                          Add_optional_member(center);
         })
-        std::string name;
         Connection_pattern connection_pattern;
         Cell_list cells;
         Shape cell_shape;

@@ -46,12 +46,8 @@ namespace cell_world {
         return id != c.id;
     }
 
-    Cell::Cell (Coordinates coordinates, Location location, bool occluded):
-            Cell(0,coordinates,location,occluded)
-            { }
-
     Cell::Cell():
-            Cell(0,{0,0}, {0,0},false){
+            Cell({0,0}, {0,0},false){
     }
 
     Cell &Cell::operator=(const Cell &c) {
@@ -63,16 +59,20 @@ namespace cell_world {
     }
 
     Cell &Cell::ghost_cell() {
-        static Cell c (100000, {100000,100000}, {100000,100000}, true);
+        static Cell c ({100000,100000}, {100000,100000}, true);
+        c.id = 100000;
         return c;
     }
 
-    Cell::Cell(unsigned int id, Coordinates coordinates, Location location, bool occluded) :
-            id(id),
+    Cell::Cell(Coordinates coordinates, Location location, bool occluded) :
+            id(0),
             coordinates(coordinates),
             location(location),
             occluded(occluded) { }
 
+    Cell::Cell(const Coordinates &coordinates):
+    Cell(coordinates,{0,0},false){
+    }
 
     double entropy(const std::vector<int>& histogram) {
         vector<double> prob;

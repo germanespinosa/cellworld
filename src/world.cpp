@@ -1,10 +1,39 @@
 #include <cell_world/world.h>
 #include <string>
-#include <any>
+
 using namespace std;
 
 namespace cell_world {
-    bool World::add(Cell &cell) {
+    World_configuration::World_configuration() = default;
+
+
+    World_configuration::World_configuration(const Shape &cell_shape,
+                                             const Coordinates_list &cell_coordinates,
+                                             const Connection_pattern & connection_pattern):
+            cell_shape(cell_shape),
+            cell_coordinates(cell_coordinates),
+            connection_pattern(connection_pattern){
+
+    }
+
+    cell_world::World_implementation::World_implementation() = default;
+
+
+    cell_world::World_implementation::World_implementation(const Location_list &cell_locations,
+                                                           const Space &space,
+                                                           const Transformation &cell_transformation):
+                                                           cell_locations(cell_locations),
+                                                           space(space),
+                                                           cell_transformation(cell_transformation){
+
+    }
+
+// World
+
+    World::World() = default;
+
+
+    bool World::add(Cell cell) {
         cell.id = cells.size();
         cells.emplace_back(cell);
         return true;
@@ -16,16 +45,6 @@ namespace cell_world {
 
     Cell &World::operator[](const unsigned int &id) {
         return cells[id];
-    }
-
-    void World::set_occlusion(unsigned int id, bool occluded) {
-        cells[id].occluded = occluded;
-    }
-
-    World::World(std::string name) : name(std::move(name)) {
-    }
-
-    World::World() : World(""){
     }
 
     Cell_group World::create_cell_group() const {
@@ -68,35 +87,8 @@ namespace cell_world {
         return g;
     }
 
-    World::World(
-            std::string name,
-            const World_configuration &world_configuration,
-            const Location_list &cell_locations):
-            name(name),
-            connection_pattern(world_configuration.connection_pattern),
-            cell_shape(world_configuration.cell_shape)
-    {
-        unsigned int id = 0;
-        for (auto &coord:world_configuration.cell_coordinates){
-            Cell cell;
-            cell.id = id;
-            cell.coordinates = coord;
-            cell.location = cell_locations[id];
-            id++;
-        }
-    }
 
-    World::World(std::string name,
-                 const World_configuration & world_configuration,
-                 const Location_list &cell_locations,
-                 const Cell_group_builder &occlusions):
-                 World(name, world_configuration, cell_locations){
-        for (auto &occlusion: occlusions){
-            cells[occlusion].occluded = true;
-        }
-    }
-
-    void World::update_occlusions(const Cell_group_builder &occlusions) {
+    void World::set_occlusions(const Cell_group_builder &occlusions) {
         for (auto &cell: cells){
             cell.occluded = false;
         }
@@ -105,27 +97,13 @@ namespace cell_world {
         }
     }
 
-    World_configuration::World_configuration() = default;
-
-
-    World_configuration::World_configuration(const Shape &cell_shape,
-                                             const Coordinates_list &cell_coordinates,
-                                             const Connection_pattern & connection_pattern):
-            cell_shape(cell_shape),
-            cell_coordinates(cell_coordinates),
-            connection_pattern(connection_pattern){
-
+    World::World(const World_configuration &world_configuration):
+    connection_pattern(world_configuration.connection_pattern),
+    cell_shape(world_configuration.cell_shape){
+        for(auto &c:world_configuration.cell_coordinates)
+            add (Cell(c));
     }
 
-    cell_world::World_implementation::World_implementation() = default;
-
-
-    cell_world::World_implementation::World_implementation(const Location_list &cell_locations,
-                                                           const Space &space,
-                                                           const Transformation &cell_transformation):
-                                                           cell_locations(cell_locations),
-                                                           space(space),
-                                                           cell_transformation(cell_transformation){
-
-    }
 }
+
+

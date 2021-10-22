@@ -7,7 +7,7 @@ using namespace cell_world;
 using namespace std;
 TEST_CASE("World")
 {
-    World w("test");
+    World w;
     "[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}]" >> w.connection_pattern;
     Cell c1({0,1},{1,1},false);
     Cell c2({1,1},{1,1},false);
@@ -23,9 +23,8 @@ TEST_CASE("World")
 TEST_CASE("World connections")
 {
     World w;
-    string s ("{\"name\":\"test\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0}]}");
+    string s ("{\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[{\"id\":0,\"cell_type\":0,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":2,\"cell_type\":0,\"coordinates\":{\"x\":2,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0},{\"id\":3,\"cell_type\":0,\"coordinates\":{\"x\":3,\"y\":1},\"location\":{\"x\":1,\"y\":1},\"occluded\":0}]}");
     s >> w;
-    CHECK(w.name=="test");
     CHECK(w.size()==4);
     CHECK(w.connection_pattern.size()==2);
 }
@@ -33,15 +32,14 @@ TEST_CASE("World connections")
 
 TEST_CASE("world>>1")
 {
-    string s = "{\"name\":\"w\",\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[";
+    string s = "{\"connection_pattern\":[{\"x\":-1,\"y\":0},{\"x\":1,\"y\":0}],\"cells\":[";
     s+="{\"id\":0,\"cell_type\":1,\"coordinates\":{\"x\":0,\"y\":1},\"location\":{\"x\":0.5,\"y\":1.5},\"occluded\":1},";
     s+="{\"id\":1,\"cell_type\":0,\"coordinates\":{\"x\":1,\"y\":2},\"location\":{\"x\":1.5,\"y\":2.5},\"occluded\":0},";
     s+="{\"id\":2,\"cell_type\":1,\"coordinates\":{\"x\":2,\"y\":3},\"location\":{\"x\":2.5,\"y\":3.5},\"occluded\":1},";
     s+="{\"id\":3,\"cell_type\":1,\"coordinates\":{\"x\":3,\"y\":4},\"location\":{\"x\":3.5,\"y\":4.5},\"occluded\":0}]}";
     stringstream s_stream(s);
-    World w("w");
+    World w;
     s_stream >> w;
-    CHECK(w.name=="w");
     CHECK(w.size()==4);
     CHECK(w.connection_pattern.size()==2);
     auto c0 = w[0];

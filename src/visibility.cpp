@@ -126,7 +126,7 @@ namespace cell_world {
         return res;
     }
 
-    bool Coordinates_visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) {
+    bool Coordinates_visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) const {
         if (!visibility[src].contains(dst)) return false;
         auto angle = src.location.atan(dst.location);
         auto theta_dif = Visibility::angle_difference(angle, theta);
@@ -147,7 +147,7 @@ namespace cell_world {
         }
     }
 
-    bool cell_world::Location_visibility::is_visible(const Location &src, const Location &dst) {
+    bool cell_world::Location_visibility::is_visible(const Location &src, const Location &dst) const {
         double theta = src.atan(dst);
         double dist = src.dist(dst);
         for (auto &o: occlusions) {

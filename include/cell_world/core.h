@@ -99,7 +99,7 @@ namespace cell_world{
 
     struct Transformation : json_cpp::Json_object{
         Transformation ();
-        Transformation (double, double);
+        Transformation (double size, double rotation);
         double theta() const;
         double size{};
         double rotation{};
@@ -125,9 +125,9 @@ namespace cell_world{
 
     struct Cell : json_cpp::Json_object{
         Cell();
-        Cell(const cell_world::Cell&) = default;
+        Cell(const Cell&) = default;
+        Cell(const Coordinates &);
         Cell(Coordinates, Location, bool);
-        Cell(unsigned int, Coordinates, Location, bool);
         unsigned int id;
         Coordinates coordinates;
         Location location;
