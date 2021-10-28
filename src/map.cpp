@@ -4,7 +4,7 @@ using namespace std;
 
 namespace cell_world{
     Map::Map(const Cell_group &group)
-            : cells(group) {
+            : _cells(group) {
         if (group.empty()) return;
         int max_x, min_x , min_y , max_y;
         max_x = min_x = group[0].coordinates.x;
@@ -17,13 +17,11 @@ namespace cell_world{
             if (y<min_y) min_y = y;
             if (y>max_y) max_y = y;
         }
-        coordinates.push_back({min_x,min_y});
-        coordinates.push_back({max_x,max_y});
         _base.x = min_x;
         _base.y = min_y;
-        columns = max_x-min_x + 1;
-        rows = max_y-min_y + 1;
-        _coordinate_index = vector<int>(columns * (rows),Not_found);
+        _columns = max_x-min_x + 1;
+        _rows = max_y-min_y + 1;
+        _coordinate_index = vector<int>(_columns * (_rows),Not_found);
         for (unsigned int i = 0; i < group.size(); i++) {
             _coordinate_index[_index(group[i].coordinates)] = i;
         }
@@ -36,14 +34,14 @@ namespace cell_world{
     }
 
     const Cell &Map::operator[](const Coordinates &c) const {
-        return cells[find(c)];
+        return _cells[find(c)];
     }
 
     int Map::_index(const Coordinates &c) const {
         int x = c.x - _base.x;
-        if (x<0 || x>=columns) return Not_found;
+        if (x<0 || x>=_columns) return Not_found;
         int y = c.y - _base.y;
-        if (y<0 || y>=rows) return Not_found;
-        return (x) + (y) * columns;
+        if (y<0 || y>=_rows) return Not_found;
+        return (x) + (y) * _columns;
     }
 }

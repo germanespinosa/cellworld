@@ -8,12 +8,12 @@ namespace cell_world{
         explicit Map(const Cell_group &);
         const Cell& operator [](const Coordinates &) const;
         int find (const Coordinates &) const;
-        Cell_group cells;
-        Coordinates_list coordinates;
     private:
+        Cell_group _cells;
         std::vector<int> _coordinate_index;
         Coordinates _base;
-        int columns, rows;
+        int _columns, _rows;
         int _index(const Coordinates &) const;
+        friend class Model;
     };
 }
