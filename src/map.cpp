@@ -4,7 +4,7 @@ using namespace std;
 
 namespace cell_world{
     Map::Map(const Cell_group &group)
-            : _cells(group) {
+            : cells(group) {
         if (group.empty()) return;
         int max_x, min_x , min_y , max_y;
         max_x = min_x = group[0].coordinates.x;
@@ -34,7 +34,7 @@ namespace cell_world{
     }
 
     const Cell &Map::operator[](const Coordinates &c) const {
-        return _cells[find(c)];
+        return cells[find(c)];
     }
 
     int Map::_index(const Coordinates &c) const {

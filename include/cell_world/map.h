@@ -8,8 +8,8 @@ namespace cell_world{
         explicit Map(const Cell_group &);
         const Cell& operator [](const Coordinates &) const;
         int find (const Coordinates &) const;
+        Cell_group cells;
     private:
-        Cell_group _cells;
         std::vector<int> _coordinate_index;
         Coordinates _base;
         int _columns, _rows;
