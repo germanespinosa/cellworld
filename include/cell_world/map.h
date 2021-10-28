@@ -14,6 +14,5 @@ namespace cell_world{
         Coordinates _base;
         int _columns, _rows;
         int _index(const Coordinates &) const;
-        friend class Model;
     };
 }
