@@ -371,5 +371,9 @@ namespace cell_world {
         while (angle > 180.0) angle -= 360.0;
         return angle;
     }
+
+    Polygon_list::Polygon_list(const Location_list &centers, const Shape &shape, const Transformation &transformation) {
+        for (auto &center:centers ) emplace_back(center, shape, transformation);
+    }
 }
 

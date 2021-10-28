@@ -110,7 +110,10 @@ namespace cell_world{
         Polygon & operator = (const Polygon &);
     };
 
-    using Polygon_list = json_cpp::Json_vector<Polygon>;
+    struct Polygon_list : json_cpp::Json_vector<Polygon> {
+        Polygon_list () = default;
+        Polygon_list (const Location_list &centers, const Shape &, const Transformation &);
+    };
 
     struct Space : json_cpp::Json_object{
         Space ();
