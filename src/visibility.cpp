@@ -41,81 +41,6 @@ namespace cell_world {
         return iv;
     }
 
-    double Visibility::angle_difference(double a1, double a2) {
-        a1 = normalize(a1);
-        a2 = normalize(a2);
-        if (a1 > a2) {
-            auto d = a1 - a2;
-            if (d < M_PI) return d;
-            else return a2 + M_PI * 2.0 - a1;
-        } else {
-            auto d = a2 - a1;
-            if (d < M_PI) return d;
-            else return a1 + M_PI * 2.0 - a2;
-        }
-    }
-
-    int Visibility::direction(double a1, double a2) {
-        a1 = normalize(a1);
-        a2 = normalize(a2);
-        if (a1 > a2) {
-            auto d = a1 - a2;
-            if (d < M_PI) return 1;
-            else return -1;
-        } else {
-            auto d = a2 - a1;
-            if (d < M_PI) return -1;
-            else return 1;
-        }
-    }
-
-    double Visibility::normalize(double angle) {
-        while (angle < 0) angle += 2.0 * M_PI;
-        while (angle > 2 * M_PI) angle -= 2.0 * M_PI;
-        return angle;
-    }
-
-    double Visibility::to_radians(double degrees) {
-        return normalize((degrees - 180) / 360.0 * 2.0 * M_PI);
-    }
-
-    double Visibility::to_degrees(double radians) {
-        return normalize_degrees(radians * 360.0 / (2.0 * M_PI));
-    }
-
-    double Visibility::normalize_degrees(double angle) {
-        while (angle < -180.0) angle += 360.0;
-        while (angle > 180.0) angle -= 360.0;
-        return angle;
-    }
-
-    bool Visibility::is_occluding(const Location &src, const Location &dst, const Polygon &occlusion) {
-        double theta = src.atan(dst);
-        double dist = src.dist(dst);
-        return is_occluding(src, theta, dist, occlusion);
-    }
-
-    bool Visibility::is_occluding(const Location &src, double theta, double dist, const Polygon &occlusion) {
-        double dist_center = src.dist(occlusion.center);
-        if (dist < dist_center - occlusion.radius ) return false;
-        double theta_center = src.atan(occlusion.center);
-        auto diff_theta_center = Visibility::angle_difference(theta,theta_center);
-        auto direction_center = Visibility::direction(theta, theta_center);
-        for (auto &v: occlusion.vertices) {
-            double vertex_distance = src.dist(v);
-            if (vertex_distance < dist) {
-                double theta_vertex = src.atan(v);
-                auto direction_vertex = Visibility::direction(theta, theta_vertex);
-                if (direction_center == -direction_vertex) {
-                    auto diff_theta_vertex = Visibility::angle_difference(theta,theta_vertex);
-                    if (diff_theta_center + diff_theta_vertex < M_PI)
-                        return true;
-                }
-            }
-        }
-        return false;
-    }
-
     Cell_group Coordinates_visibility_cone::visible_cells(const Cell &src, double theta) {
         Cell_group res;
         for (auto &dst: visibility[src]) {
@@ -129,7 +54,7 @@ namespace cell_world {
     bool Coordinates_visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) const {
         if (!visibility[src].contains(dst)) return false;
         auto angle = src.location.atan(dst.location);
-        auto theta_dif = Visibility::angle_difference(angle, theta);
+        auto theta_dif = angle_difference(angle, theta);
         return theta_dif <= visual_angle / 2;
     }
 
@@ -143,7 +68,7 @@ namespace cell_world {
                                              const Transformation &cell_transformation) {
         for (auto &cell: occluded_cells) {
             occlusions.emplace_back(cell.get().location, cell_shape.sides, cell_transformation.size / 2,
-                                    Visibility::to_radians(cell_transformation.rotation));
+                                    to_radians(cell_transformation.rotation));
         }
     }
 
@@ -151,7 +76,7 @@ namespace cell_world {
         double theta = src.atan(dst);
         double dist = src.dist(dst);
         for (auto &o: occlusions) {
-            if (Visibility::is_occluding(src,theta, dist,o)){
+            if (o.is_between(src,theta, dist)){
                 return false;
             }
         }

@@ -44,23 +44,23 @@ TEST_CASE("Visibility")
 
 TEST_CASE("Cone")
 {
-    CHECK(Visibility::angle_difference(1, 2) == 1);
-    CHECK(Visibility::direction(1, 2) == -1);
-    CHECK(Visibility::angle_difference(2, 1) == 1);
-    CHECK(Visibility::direction(2, 1) == 1);
-    CHECK(Visibility::angle_difference(1, 4) == 3);
-    CHECK(Visibility::angle_difference(4, 1) == 3);
-    CHECK(SIMILAR(Visibility::angle_difference(1, 5), 2.2831853072, .001));
-    CHECK(SIMILAR(Visibility::angle_difference(5, 1), 2.2831853072, .001));
-    CHECK(Visibility::normalize(3 * M_PI) == M_PI);
-    CHECK(Visibility::normalize(-M_PI) == M_PI);
-    CHECK(Visibility::normalize_degrees(360) == 0);
-    CHECK(Visibility::normalize_degrees(0) == 0);
-    CHECK(Visibility::normalize_degrees(181) == -179);
-    CHECK(Visibility::to_radians(90) == 3 * M_PI / 2);
-    CHECK(Visibility::to_radians(-90) == M_PI / 2);
-    CHECK(Visibility::to_degrees(M_PI / 2) == 90);
-    CHECK(Visibility::to_degrees(3 * M_PI / 2) == -90);
+    CHECK(angle_difference(1, 2) == 1);
+    CHECK(direction(1, 2) == -1);
+    CHECK(angle_difference(2, 1) == 1);
+    CHECK(direction(2, 1) == 1);
+    CHECK(angle_difference(1, 4) == 3);
+    CHECK(angle_difference(4, 1) == 3);
+    CHECK(SIMILAR(angle_difference(1, 5), 2.2831853072, .001));
+    CHECK(SIMILAR(angle_difference(5, 1), 2.2831853072, .001));
+    CHECK(normalize(3 * M_PI) == M_PI);
+    CHECK(normalize(-M_PI) == M_PI);
+    CHECK(normalize_degrees(360) == 0);
+    CHECK(normalize_degrees(0) == 0);
+    CHECK(normalize_degrees(181) == -179);
+    CHECK(to_radians(90) == 3 * M_PI / 2);
+    CHECK(to_radians(-90) == M_PI / 2);
+    CHECK(to_degrees(M_PI / 2) == 90);
+    CHECK(to_degrees(3 * M_PI / 2) == -90);
 }
 
 
@@ -68,18 +68,18 @@ TEST_CASE("is_occluding")
 {
     Polygon p (Location (0,0), 4, 1 , 45);
 
-    CHECK(Visibility::is_occluding({-3,0},{3,0},p));
+    CHECK(p.is_between({-3,0},{3,0}));
 
-    CHECK(Visibility::is_occluding({.7,-3},{.7,3},p));
-    CHECK(Visibility::is_occluding({-.7,-3},{-.7,3},p));
-    CHECK(!Visibility::is_occluding({.8,-3},{.8,3},p));
-    CHECK(!Visibility::is_occluding({-.8,-3},{-.8,3},p));
-    CHECK(!Visibility::is_occluding({-3,.8},{3,.8},p));
-    CHECK(!Visibility::is_occluding({-3,-.8},{3,-.8},p));
-    CHECK(Visibility::is_occluding({-3,.7},{3,.7},p));
-    CHECK(Visibility::is_occluding({-3,-.7},{3,-.7},p));
-    CHECK(!Visibility::is_occluding({2,0},{3,0},p));
-    CHECK(!Visibility::is_occluding({-2,0},{-3,0},p));
+    CHECK(p.is_between({.7,-3},{.7,3}));
+    CHECK(p.is_between({-.7,-3},{-.7,3}));
+    CHECK(!p.is_between({.8,-3},{.8,3}));
+    CHECK(!p.is_between({-.8,-3},{-.8,3}));
+    CHECK(!p.is_between({-3,.8},{3,.8}));
+    CHECK(!p.is_between({-3,-.8},{3,-.8}));
+    CHECK(p.is_between({-3,.7},{3,.7}));
+    CHECK(p.is_between({-3,-.7},{3,-.7}));
+    CHECK(!p.is_between({2,0},{3,0}));
+    CHECK(!p.is_between({-2,0},{-3,0}));
 }
 
 struct Tvr : json_cpp::Json_object {
@@ -108,10 +108,10 @@ Tv test_visibility(const Polygon &p) {
     tv.occlusions.push_back(p);
     tv.source = p.center.move(0,p.radius * 2);
     for (double i = 0; i < 360; i++){
-        double theta = Visibility::to_radians(i );
+        double theta = to_radians(i );
         Tvr tvr;
         tvr.destination = tv.source.move(theta, p.radius * 4);
-        tvr.visible = !Visibility::is_occluding( tv.source, tvr.destination, p);
+        tvr.visible = !p.is_between( tv.source, tvr.destination);
         tv.records.push_back(tvr);
     }
     return tv;
@@ -129,7 +129,7 @@ Tv test_location_visibility(const Location_visibility &lv, Location src, double 
     tv.occlusions = lv.occlusions;
     tv.source = src;
     for (double i = 0; i < 360; i++){
-        double theta = Visibility::to_radians(i );
+        double theta = to_radians(i );
         Tvr tvr;
         tvr.destination = tv.source.move(theta, radius);
         tvr.visible = lv.is_visible(tv.source, tvr.destination);

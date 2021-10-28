@@ -5,6 +5,7 @@ class Location:
         self.x = float(x)
         self.y = float(y)
 
+    @staticmethod
     def get(location):
         l = Location()
         l.x = location["x"]
@@ -37,7 +38,7 @@ class Location:
 
     def dist(self, loc):
         v = loc-self
-        return ( v.x ** 2 + v.y ** 2 ) ** .5
+        return (v.x ** 2 + v.y ** 2) ** .5
 
 
 class Locations_list:
@@ -47,6 +48,7 @@ class Locations_list:
     def __getitem__(self, index):
         return self.locations[index]
 
+    @staticmethod
     def get(location_list):
         ll = Locations_list()
         for location in location_list:
@@ -56,7 +58,7 @@ class Locations_list:
     def get_x(self):
         x = []
         for location in self.locations:
-            x.append(coordinates.x)
+            x.append(location.x)
         return x
 
     def get_y(self):

@@ -1,6 +1,7 @@
-from .location import Location
+from .location import Location, Locations_list
 from .util import *
 import math
+
 
 class Shape:
     def __init__(self, sides=6):
@@ -11,7 +12,7 @@ class Shape:
         return Shape(sides=shape["sides"])
 
     def __str__(self):
-        return '{"sides":%d}' % (self.sides, self.rotation)
+        return '{"sides":%d}' % self.sides
 
 
 class Transformation:
@@ -67,3 +68,62 @@ class Space:
         return '{"center":%s,"shape":%s,"transformation":%s}' % (self.center, self.shape, self.transformation)
 
 
+class Polygon:
+
+    def __init__(self, center, sides=0, radius=1.0, rotation=0, vertices=Locations_list()):
+        check_type(center, Location, "incorrect type for center")
+        check_type(sides, int, "incorrect type for sides")
+        check_type(vertices, Locations_list, "incorrect type for sides")
+        self.center = center
+        self.vertices = vertices
+        self.radius = float(radius)
+        if sides > 0:
+            if len(self.vertices.locations) != 0:
+                raise "cannot use sides and vertices together"
+            rotation = float(rotation)
+            if sides == 0:
+                raise "incorrect parameters"
+            theta = math.radians(rotation)
+            inc = 2.0 * math.pi / sides
+            for s in range(sides):
+                c = center
+                self.vertices.locations.append(c.move(theta, radius))
+                theta += inc
+        else:
+            if len(self.vertices.locations) == 0:
+                raise "must specify either sides or vertices"
+
+    def move(self, location=None, theta=None, dist=None):
+        check_type(location, Location, "incorrect type for location")
+        dif = Location(0, 0)
+        if location is None:
+            if theta is None or dist is None:
+                raise "incorrect parameters"
+            dif.move(theta, dist)
+        else:
+            dif = location - self.center
+        self.center = location
+        for v in self.vertices:
+            v = v + dif
+
+    @staticmethod
+    def get(polygon):
+        return Polygon(center=Location.get(polygon["center"]), vertices=Locations_list.get(polygon["vertices"]))
+
+
+class Polygon_list:
+    def __init__(self):
+        self.polygons = []
+
+    def __getitem__(self, index):
+        return self.polygons[index]
+
+    @staticmethod
+    def get(polygon_list):
+        pl = Polygon_list()
+        for polygon in polygon_list:
+            pl.polygons.append(Polygon.get(polygon))
+        return pl
+
+    def __str__(self):
+        return "[" + ",".join([str(x) for x in self.polygons]) + "]"

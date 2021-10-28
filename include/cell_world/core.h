@@ -75,8 +75,10 @@ namespace cell_world{
         Location center;
         Location_list vertices;
         double radius;
-        Polygon move(const Location&);
-        Polygon move(double, double);
+        Polygon move(const Location&) const;
+        Polygon move(double, double) const;
+        bool is_between (const Location &, const Location &) const;
+        bool is_between (const Location &, double, double ) const;
         Json_object_members({
                                 Add_member(vertices);
                                 Add_member(center);
@@ -156,4 +158,11 @@ namespace cell_world{
     std::vector<unsigned int> new_index(std::vector<double>, bool);
     double max(const std::vector<double> &);
     unsigned int sum(const std::vector<unsigned int>& );
+
+    double angle_difference(double, double);
+    int direction(double, double);
+    double to_radians(double);
+    double to_degrees(double);
+    double normalize(double);
+    double normalize_degrees(double);
 }

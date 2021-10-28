@@ -259,14 +259,14 @@ namespace cell_world {
         return y;
     }
 
-    Polygon Polygon::move(const Location &dst) {
+    Polygon Polygon::move(const Location &dst) const {
         Polygon p;
         p = *this;
         auto dif = dst - center;
         return p += dif;
     }
 
-    Polygon Polygon::move(double theta, double dist) {
+    Polygon Polygon::move(double theta, double dist) const {
         return move(center + Location().move(theta,dist));
     }
 
@@ -289,4 +289,81 @@ namespace cell_world {
     Polygon::Polygon(const Polygon &p) {
         *this = p;
     }
+
+    bool Polygon::is_between(const Location &src, const Location &dst) const {
+        double theta = src.atan(dst);
+        double dist = src.dist(dst);
+        return is_between(src, theta, dist);
+    }
+
+    bool Polygon::is_between(const Location &src, double theta, double dist) const {
+        double dist_center = src.dist(center);
+        if (dist < dist_center - radius ) return false;
+        double theta_center = src.atan(center);
+        auto diff_theta_center = angle_difference(theta,theta_center);
+        auto direction_center = direction(theta, theta_center);
+        for (auto &v: vertices) {
+            double vertex_distance = src.dist(v);
+            if (vertex_distance < dist) {
+                double theta_vertex = src.atan(v);
+                auto direction_vertex = direction(theta, theta_vertex);
+                if (direction_center == -direction_vertex) {
+                    auto diff_theta_vertex = angle_difference(theta,theta_vertex);
+                    if (diff_theta_center + diff_theta_vertex < M_PI)
+                        return true;
+                }
+            }
+        }
+        return false;
+    }
+
+
+    double angle_difference(double a1, double a2) {
+        a1 = normalize(a1);
+        a2 = normalize(a2);
+        if (a1 > a2) {
+            auto d = a1 - a2;
+            if (d < M_PI) return d;
+            else return a2 + M_PI * 2.0 - a1;
+        } else {
+            auto d = a2 - a1;
+            if (d < M_PI) return d;
+            else return a1 + M_PI * 2.0 - a2;
+        }
+    }
+
+    int direction(double a1, double a2) {
+        a1 = normalize(a1);
+        a2 = normalize(a2);
+        if (a1 > a2) {
+            auto d = a1 - a2;
+            if (d < M_PI) return 1;
+            else return -1;
+        } else {
+            auto d = a2 - a1;
+            if (d < M_PI) return -1;
+            else return 1;
+        }
+    }
+
+    double normalize(double angle) {
+        while (angle < 0) angle += 2.0 * M_PI;
+        while (angle > 2 * M_PI) angle -= 2.0 * M_PI;
+        return angle;
+    }
+
+    double to_radians(double degrees) {
+        return normalize((degrees - 180) / 360.0 * 2.0 * M_PI);
+    }
+
+    double to_degrees(double radians) {
+        return normalize_degrees(radians * 360.0 / (2.0 * M_PI));
+    }
+
+    double normalize_degrees(double angle) {
+        while (angle < -180.0) angle += 360.0;
+        while (angle > 180.0) angle -= 360.0;
+        return angle;
+    }
 }
+

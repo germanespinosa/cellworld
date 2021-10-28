@@ -29,7 +29,7 @@ center_coordinates.x = 0
 center_coordinates.y = 0
 
 
-src_space = cp.Space(center=cp.Location(0, 0), shape=cp.Shape(6), transformation=cp.Transformation(21.0 + 1.0 / 3.0, 30))
+src_space = cp.Space(center=cp.Location(0, 0), shape=cp.Shape(6), transformation=Transformation(21.0 + 1.0 / 3.0, 30))
 
 wi2 = cp.World_implementation.create(wc, center, center_coordinates, relative_locations_transformations=(6, -90, 1))
 

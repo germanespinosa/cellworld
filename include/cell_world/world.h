@@ -58,6 +58,7 @@ namespace cell_world{
                          Add_optional_member(cell_shape);
                          Add_optional_member(cell_transformation);
                          Add_optional_member(space);
+                         Ignore_member("name");
         })
         Connection_pattern connection_pattern;
         Cell_list cells;
