@@ -68,28 +68,6 @@ namespace cell_world{
         json_cpp::Json_vector<double> get_y();
     };
 
-    struct Polygon : json_cpp::Json_object {
-        Polygon ();
-        Polygon (const Polygon &);
-        Polygon (const Location &, unsigned int, double, double);
-        Location center;
-        Location_list vertices;
-        double radius;
-        Polygon move(const Location&) const;
-        Polygon move(double, double) const;
-        bool is_between (const Location &, const Location &) const;
-        bool is_between (const Location &, double, double ) const;
-        Json_object_members({
-                                Add_member(vertices);
-                                Add_member(center);
-                                Add_member(radius);
-                            })
-        Polygon operator +=(const Location &);
-        Polygon & operator = (const Polygon &);
-    };
-
-    using Polygon_list = json_cpp::Json_vector<Polygon>;
-
     struct Shape : json_cpp::Json_object{
         Shape ();
         Shape (int);
@@ -110,6 +88,29 @@ namespace cell_world{
                                 Add_member(rotation);
                             })
     };
+
+    struct Polygon : json_cpp::Json_object {
+        Polygon ();
+        Polygon (const Polygon &);
+        Polygon (const Location &, unsigned int sides, double radius, double rotation);
+        Polygon (const Location &,const Shape &, const Transformation &);
+        Location center;
+        Location_list vertices;
+        double radius;
+        Polygon move(const Location&) const;
+        Polygon move(double, double) const;
+        bool is_between (const Location &, const Location &) const;
+        bool is_between (const Location &, double, double ) const;
+        Json_object_members({
+                                Add_member(vertices);
+                                Add_member(center);
+                                Add_member(radius);
+                            })
+        Polygon operator +=(const Location &);
+        Polygon & operator = (const Polygon &);
+    };
+
+    using Polygon_list = json_cpp::Json_vector<Polygon>;
 
     struct Space : json_cpp::Json_object{
         Space ();

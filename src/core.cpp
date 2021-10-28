@@ -234,8 +234,8 @@ namespace cell_world {
     cell_world::Polygon::Polygon(const Location &center, unsigned int sides, double radius, double rotation) :
     center(center),
     radius(radius){
-        double theta = rotation * M_PI / 180.0;
-        double inc = 2.0 * M_PI / sides;
+        double theta = to_radians(rotation);
+        double inc = to_radians(360 / sides);
         for (unsigned int s = 0; s < sides; s++) {
             auto c = center;
             vertices.emplace_back(c.move(theta, radius));
@@ -315,6 +315,12 @@ namespace cell_world {
             }
         }
         return false;
+    }
+
+    Polygon::Polygon(const Location &center,const Shape &shape, const Transformation &transformation) :
+    Polygon(center, shape.sides, transformation.size, transformation.rotation)
+    {
+
     }
 
 
