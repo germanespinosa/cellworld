@@ -22,6 +22,7 @@ namespace cell_world{
         int find(unsigned int) const;
         int find(const Cell &) const;
         int find(const Location &) const;
+        int find(const Coordinates &) const;
         double distance(unsigned int, unsigned int) const;
         static double distance(const Cell&, const Cell&) ;
         std::vector<double> get_distances(const Cell &) const;

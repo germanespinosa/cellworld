@@ -168,6 +168,15 @@ namespace cell_world {
         return cell_id;
     }
 
+    int Cell_group::find(const Coordinates &coordinates) const {
+        for(unsigned i = 1;i < size();i++){
+            if (coordinates == (*this)[i].coordinates ){
+                return i;
+            }
+        }
+        return Not_found;
+    }
+
     Cell_reference::Cell_reference(const Cell &cell):
             std::reference_wrapper<const Cell>(cell){ }
 
