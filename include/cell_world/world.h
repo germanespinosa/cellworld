@@ -27,6 +27,7 @@ namespace cell_world{
         Location_list cell_locations;
         Space space;
         Transformation cell_transformation;
+        void transform(const Space &);
         Json_object_members({
                                 Add_member(cell_locations);
                                 Add_member(space);

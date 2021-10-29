@@ -155,9 +155,12 @@ namespace cell_world {
     }
 
     double Location::dist(const Location &l1, const Location &l2) const {
-        auto y_dif = l2.y - l1.y;
-        auto x_dif = l2.x - l1.x;
-        return abs(y_dif * x - (l2.x - l1.x) * y + l2.x * l1.y - l2.y * l1.x) / sqrt(y_dif * y_dif + x_dif * x_dif);
+        auto d = l2 - l1;
+        return d.dist();
+    }
+
+    double Location::dist() const {
+        return sqrt(x * x + y * y);
     }
 
     unsigned int Coordinates::manhattan(const Coordinates &c) const {
@@ -193,7 +196,7 @@ namespace cell_world {
 
     double Location::atan(const Location &l) const {
         auto v=l-*this;
-        return atan2(v.x,v.y);
+        return v.atan();
     }
 
     Location Location::move(double theta, double dist) const{
@@ -206,6 +209,19 @@ namespace cell_world {
         y = y + cos(theta) * transformation.size;
     }
 
+    Transformation Location::transformation() const {
+        return Transformation(dist(), to_degrees(atan()));
+    }
+
+    double Location::atan() const {
+        return atan2(x,y);
+    }
+
+    Transformation Location::transformation(const Location &l) const {
+        auto d = l - *this;
+        return d.transformation();
+    }
+
     Shape::Shape(int sides):
         sides(sides){
 
@@ -214,7 +230,7 @@ namespace cell_world {
     Shape::Shape() = default;
 
     double Transformation::theta() const {
-        return rotation / 180 * M_PI;
+        return to_radians(rotation);
     }
 
 

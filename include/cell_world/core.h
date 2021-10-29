@@ -48,7 +48,7 @@ namespace cell_world{
         Json_object_members({
                                 Add_member(size);
                                 Add_member(rotation);
-                            })
+                            });
     };
 
     struct Location : json_cpp::Json_object {
@@ -64,8 +64,12 @@ namespace cell_world{
         Location operator*(double) const;
         Location operator/(double) const;
         double mod() const;
+        double atan() const;
+        Transformation transformation() const;
+        Transformation transformation(const Location &) const;
         double atan(const Location &) const;
         double dist(const Location &) const;
+        double dist() const;
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
         Location move(double theta, double dist) const;

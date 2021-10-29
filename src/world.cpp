@@ -16,16 +16,31 @@ namespace cell_world {
 
     }
 
-    cell_world::World_implementation::World_implementation() = default;
+    World_implementation::World_implementation() = default;
 
 
-    cell_world::World_implementation::World_implementation(const Location_list &cell_locations,
+    World_implementation::World_implementation(const Location_list &cell_locations,
                                                            const Space &space,
                                                            const Transformation &cell_transformation):
                                                            cell_locations(cell_locations),
                                                            space(space),
                                                            cell_transformation(cell_transformation){
 
+    }
+
+    void World_implementation::transform(const Space &s) {
+        auto size_ratio = s.transformation.size / space.transformation.size;
+        auto rotation_dif = s.transformation.rotation - space.transformation.rotation;
+        cell_transformation.size =  cell_transformation.size * size_ratio;
+        cell_transformation.rotation = cell_transformation.rotation + rotation_dif;
+        for (auto &cell_location : cell_locations){
+            auto t = space.center.transformation(cell_location);
+            t.size *= size_ratio;
+            t.rotation += rotation_dif;
+            cell_location = s.center;
+            cell_location.transform(t);
+        }
+        space = s;
     }
 
 // World
