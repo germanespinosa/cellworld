@@ -249,6 +249,13 @@ namespace cell_world {
         }
     }
 
+    Polygon::Polygon(const Location &center,const Shape &shape, const Transformation &transformation) :
+            Polygon(center, shape.sides, transformation.size, transformation.rotation)
+    {
+
+    }
+
+
     json_cpp::Json_vector<double> Location_list::get_x() {
         auto x = json_cpp::Json_vector<double>();
         for (auto &l:*this){
@@ -323,13 +330,6 @@ namespace cell_world {
         return false;
     }
 
-    Polygon::Polygon(const Location &center,const Shape &shape, const Transformation &transformation) :
-    Polygon(center, shape.sides, transformation.size, transformation.rotation)
-    {
-
-    }
-
-
     double angle_difference(double a1, double a2) {
         a1 = normalize(a1);
         a2 = normalize(a2);
@@ -365,11 +365,11 @@ namespace cell_world {
     }
 
     double to_radians(double degrees) {
-        return normalize((degrees - 180) / 360.0 * 2.0 * M_PI);
+        return degrees / 360.0 * 2.0 * M_PI;
     }
 
     double to_degrees(double radians) {
-        return normalize_degrees(radians * 360.0 / (2.0 * M_PI));
+        return radians * 360.0 / (2.0 * M_PI);
     }
 
     double normalize_degrees(double angle) {
