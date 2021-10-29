@@ -266,7 +266,7 @@ namespace cell_world {
     }
 
     Polygon::Polygon(const Location &center,const Shape &shape, const Transformation &transformation) :
-            Polygon(center, shape.sides, transformation.size, transformation.rotation)
+            Polygon(center, shape.sides, transformation.size / 2, transformation.rotation)
     {
 
     }
