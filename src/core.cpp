@@ -200,6 +200,12 @@ namespace cell_world {
         return {x + sin(theta) * dist, y + cos(theta) * dist};
     }
 
+    void Location::transform(const Transformation &transformation) {
+        auto theta = to_radians(transformation.rotation);
+        x = x + sin(theta) * transformation.size;
+        y = y + cos(theta) * transformation.size;
+    }
+
     Shape::Shape(int sides):
         sides(sides){
 
@@ -235,7 +241,7 @@ namespace cell_world {
     center(center),
     radius(radius){
         double theta = to_radians(rotation);
-        double inc = to_radians(360 / sides);
+        double inc = to_radians(360.0 / double(sides));
         for (unsigned int s = 0; s < sides; s++) {
             auto c = center;
             vertices.emplace_back(c.move(theta, radius));

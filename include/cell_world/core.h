@@ -39,6 +39,18 @@ namespace cell_world{
 
     using Move_list = json_cpp::Json_vector<Move>;
 
+    struct Transformation : json_cpp::Json_object{
+        Transformation ();
+        Transformation (double size, double rotation);
+        double theta() const;
+        double size{};
+        double rotation{};
+        Json_object_members({
+                                Add_member(size);
+                                Add_member(rotation);
+                            })
+    };
+
     struct Location : json_cpp::Json_object {
         Location();
         Location(double x, double y);
@@ -57,6 +69,7 @@ namespace cell_world{
         double dist(const Location &, const Location &) const;
         double manhattan(const Location &) const;
         Location move(double theta, double dist) const;
+        void transform (const Transformation &);
         Json_object_members({
                          Add_member(x);
                          Add_member(y);
@@ -77,17 +90,6 @@ namespace cell_world{
                             })
     };
 
-    struct Transformation : json_cpp::Json_object{
-        Transformation ();
-        Transformation (double size, double rotation);
-        double theta() const;
-        double size{};
-        double rotation{};
-        Json_object_members({
-                                Add_member(size);
-                                Add_member(rotation);
-                            })
-    };
 
     struct Polygon : json_cpp::Json_object {
         Polygon ();
