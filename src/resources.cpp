@@ -1,4 +1,4 @@
-#include <cell_world/web_resource.h>
+#include <cell_world/resources.h>
 #include <string>
 #include <json_cpp.h>
 #include <chrono>
@@ -6,26 +6,26 @@
 using namespace std;
 
 namespace cell_world {
-    Web_resource Web_resource::from(const string resource) {
-        Web_resource wr;
+    Resources Resources::from(const string resource) {
+        Resources wr;
         wr._resource = resource;
         return wr;
     }
 
-    Web_resource &Web_resource::key(const string &k) {
+    Resources &Resources::key(const string &k) {
         _keys.push_back(k);
         return *this;
     }
 
-    Web_resource &Web_resource::key(int k) {
-        return key(to_string(k));
+    Resources &Resources::key(int k) {
+        return key(std::to_string(k));
     }
 
-    Web_resource &Web_resource::key(unsigned int k) {
-        return key(to_string(k));
+    Resources &Resources::key(unsigned int k) {
+        return key(std::to_string(k));
     }
 
-    Web_resource &Web_resource::key(const char *k) {
+    Resources &Resources::key(const char *k) {
         return key(string(k));
     }
 
@@ -36,7 +36,7 @@ namespace cell_world {
         return ss.str();
     }
 
-    std::istream &Web_resource::get() {
+    std::istream &Resources::get() {
         string cfn = cache_folder() + "/" + _resource + "." + _file_name();
         ifstream cache(cfn);
         if (cache.good()) {
@@ -53,13 +53,13 @@ namespace cell_world {
         return _resource_stream = ifstream(cfn);
     }
 
-    std::string Web_resource::url() {
+    std::string Resources::url() {
         string url = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/" + _resource + "/" +
                      _file_name();
         return url;
     }
 
-    std::string Web_resource::_file_name() {
+    std::string Resources::_file_name() {
         string fn;
         bool first = true;
         for (auto &k : _keys) {
@@ -70,8 +70,14 @@ namespace cell_world {
         return fn;
     }
 
-    std::string &Web_resource::cache_folder() {
+    std::string &Resources::cache_folder() {
         static string folder(std::getenv("CELLWORLD_CACHE")?std::getenv("CELLWORLD_CACHE"):".");
         return folder;
+    }
+
+    std::string Resources::to_string() {
+        stringstream ss;
+        ss << get().rdbuf();
+        return ss.str();
     }
 }

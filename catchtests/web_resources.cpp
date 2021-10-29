@@ -6,7 +6,7 @@ using namespace json_cpp;
 using namespace cell_world;
 
 TEST_CASE("key tests"){
-    auto wr = Web_resource::from("cell_group");
+    auto wr = Resources::from("cell_group");
     CHECK(wr.url() == "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/cell_group/");
     wr.key("hexagonal");
     CHECK(wr.url() == "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/cell_group/hexagonal");
@@ -15,20 +15,20 @@ TEST_CASE("key tests"){
 }
 
 TEST_CASE("get_world_configuration"){
-    CHECK_NOTHROW(Json_create<World_configuration>(Web_resource::from("world_configuration").key("hexagonal").get()));
+    CHECK_NOTHROW(Json_create<World_configuration>(Resources::from("world_configuration").key("hexagonal").get()));
 }
 
 TEST_CASE("get_cell_group"){
-    CHECK_NOTHROW(Json_create<Cell_group>(Web_resource::from("cell_group").key("hexagonal").key("10_05").key("occlusions").get()));
+    CHECK_NOTHROW(Json_create<Cell_group>(Resources::from("cell_group").key("hexagonal").key("10_05").key("occlusions").get()));
 }
 
 TEST_CASE("CACHE FOLDER"){
-    CHECK(!Web_resource::cache_folder().empty());
+    CHECK(!Resources::cache_folder().empty());
 }
 
 TEST_CASE("World_implementation transformation"){
-    auto wc =  Json_create<World_configuration>(Web_resource::from("world_configuration").key("hexagonal").get());
-    auto wi =  Json_create<World_implementation>(Web_resource::from("world_implementation").key("hexagonal").key("canonical").get());
+    auto wc =  Json_create<World_configuration>(Resources::from("world_configuration").key("hexagonal").get());
+    auto wi =  Json_create<World_implementation>(Resources::from("world_implementation").key("hexagonal").key("canonical").get());
 
     Space new_space;
     new_space.center = {250,250};
