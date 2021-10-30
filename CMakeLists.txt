@@ -28,7 +28,7 @@ set(cellworld_files
     src/paths.cpp
     src/state.cpp
     src/map.cpp
-        src/resources.cpp)
+        src/resources.cpp include/cell_world/experiment.h)
 
 add_library(cellworld ${cellworld_files})
 
