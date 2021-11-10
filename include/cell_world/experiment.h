@@ -11,6 +11,7 @@ namespace cell_world {
                 Add_member(coordinates);
                 Add_member(location);
                 Add_member(rotation);
+                Add_optional_member(data);
         );
         double time_stamp;
         std::string agent_name;
@@ -18,5 +19,6 @@ namespace cell_world {
         cell_world::Coordinates coordinates;
         cell_world::Location location;
         double rotation;
+        std::string data;
     };
 }
