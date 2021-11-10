@@ -177,4 +177,6 @@ namespace cell_world{
     double normalize_degrees(double);
 
     bool file_exists (const std::string &);
+    bool file_exists (const std::vector<std::string> &);
+
 }

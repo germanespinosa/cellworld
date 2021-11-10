@@ -403,5 +403,12 @@ namespace cell_world {
         struct stat buffer;
         return (stat (file_path.c_str(), &buffer) == 0);
     }
+
+    bool file_exists(const std::vector<std::string> &file_paths){
+        for (auto &file_path : file_paths) {
+            if (!file_exists(file_path)) return false;
+        }
+        return true;
+    }
 }
 
