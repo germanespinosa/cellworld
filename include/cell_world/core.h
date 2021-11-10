@@ -178,5 +178,6 @@ namespace cell_world{
 
     bool file_exists (const std::string &);
     bool file_exists (const std::vector<std::string> &);
+    bool file_exists (const std::string &, const std::vector<std::string> &);
 
 }
