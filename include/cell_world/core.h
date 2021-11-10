@@ -175,4 +175,6 @@ namespace cell_world{
     double to_degrees(double);
     double normalize(double);
     double normalize_degrees(double);
+
+    bool file_exists (const std::string &);
 }

@@ -1,6 +1,7 @@
 #include <cell_world/core.h>
 #include <algorithm>
 #include <cmath>
+#include <sys/stat.h>
 
 using namespace std;
 
@@ -396,6 +397,11 @@ namespace cell_world {
 
     Polygon_list::Polygon_list(const Location_list &centers, const Shape &shape, const Transformation &transformation) {
         for (auto &center:centers ) emplace_back(center, shape, transformation);
+    }
+
+    bool file_exists(const string &file_path){
+        stat buffer;
+        return (stat (file_path.c_str(), &buffer) == 0);
     }
 }
 
