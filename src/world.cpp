@@ -130,6 +130,12 @@ namespace cell_world {
         return add(Cell(coordinates));
     }
 
+    World::World(const World_configuration &world_configuration, const World_implementation &world_implementation, const Cell_group_builder &occlusions) :
+        World(world_configuration,world_implementation)
+    {
+        set_occlusions(occlusions);
+    }
+
 }
 
 
