@@ -21,4 +21,26 @@ namespace cell_world {
         double rotation;
         std::string data;
     };
+
+    using Trajectories = json_cpp::Json_vector<Step> ;
+
+    struct Episode : json_cpp::Json_object {
+        json_cpp::Json_date start_time;
+        double time_stamp;
+        json_cpp::Json_date end_time;
+        Trajectories trajectories;
+    };
+
+    using Episodes = json_cpp::Json_vector<Episode>;
+
+    struct Experiment : json_cpp::Json_object {
+        std::string name;
+        std::string world_configuration_name;
+        std::string world_implementation_name;
+        std::string occlusions;
+        unsigned int duration;
+        json_cpp::Json_date start_time;
+        Episodes episodes;
+    };
+
 }
