@@ -6,14 +6,14 @@ namespace cell_world {
         body << new_content;
     }
 
-    Message::Message(const std::string &title, const json_cpp::Json_base &body) :
-    title(title),
+    Message::Message(const std::string &header, const json_cpp::Json_base &body) :
+    header(header),
     body(body.to_json()){
 
     }
 
-    Message::Message(const std::string &title, const std::string &body) :
-    title(title),
+    Message::Message(const std::string &header, const std::string &body) :
+    header(header),
     body(body){
 
     }

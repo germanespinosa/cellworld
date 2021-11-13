@@ -6,7 +6,7 @@ using namespace cell_world;
 using namespace std;
 
 struct Stateless_test_Agent : Stateless_agent {
-    Stateless_test_Agent(unsigned int v, Cell &c): cell(c){
+    Stateless_test_Agent(unsigned int , Cell &c): cell(c){
 
     };
     Cell cell;
@@ -15,7 +15,7 @@ struct Stateless_test_Agent : Stateless_agent {
     const Cell &start_episode() override{
         return cell;
     };
-    Agent_status_code update_state(const Model_public_state &model_state) override{
+    Agent_status_code update_state(const Model_public_state &) override{
         return Agent_status_code::Running;
     };
     Move get_move(const Model_public_state &) override{
@@ -141,7 +141,7 @@ struct Test_state : json_cpp::Json_object {
 };
 
 struct Stateful_test_Agent : Stateful_agent<Test_state> {
-    Stateful_test_Agent(unsigned int v, Cell &c): cell(c){
+    Stateful_test_Agent(unsigned int , Cell &c): cell(c){
     };
     Cell cell;
     unsigned int index;
@@ -149,7 +149,7 @@ struct Stateful_test_Agent : Stateful_agent<Test_state> {
     const Cell &start_episode() override{
         return cell;
     };
-    Agent_status_code update_state(const Model_public_state &model_state) override{
+    Agent_status_code update_state(const Model_public_state &) override{
         internal_state().coordinates = public_state().cell.coordinates;
         return Agent_status_code::Running;
     };
@@ -179,7 +179,6 @@ TEST_CASE("Model statefull reset")
     m.add_agent(a);
     m.add_agent(b);
     CHECK_NOTHROW(m.start_episode());
-    auto &ts = a.internal_state();
     CHECK(a.public_state().cell.coordinates == Coordinates{0, 1});
     CHECK(b.public_state().cell.coordinates == Coordinates{0, 1});
     CHECK(a.internal_state().coordinates == Coordinates{0, 1});
@@ -216,7 +215,6 @@ TEST_CASE("Model statefull reset")
     m2.add_agent(b);
     m2.start_episode();
     m2.set_state(s);
-    auto &ts2 = a.internal_state();
     CHECK_NOTHROW(m2.update());
     CHECK(b.public_state().cell.coordinates == Coordinates{1, 1});
     CHECK_NOTHROW(m2.update());

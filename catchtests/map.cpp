@@ -15,7 +15,7 @@ TEST_CASE("Map") {
     w.add(c1);
     w.add(c2);
     w.add(c3);
-    cout << endl;
+    //cout << endl;
     Cell_group cg = w.create_cell_group();
     Map m(cg);
 }

@@ -8,9 +8,9 @@ project(cellworld
         LANGUAGES CXX)
 
 find_package( Json-cpp REQUIRED )
+find_package( Easy-tcp REQUIRED )
 
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fno-strict-aliasing")
-
+string(APPEND CMAKE_CXX_FLAGS "-fno-strict-aliasing ")
 ###
 ### MAIN LIBRARY SETUP
 ###
@@ -29,7 +29,8 @@ set(cellworld_files
     src/state.cpp
     src/map.cpp
     src/resources.cpp
-    src/message.cpp catchtests/message.cpp)
+    src/message.cpp
+    src/message_router.cpp )
 
 add_library(cellworld ${cellworld_files})
 
@@ -41,9 +42,9 @@ set_target_properties(cellworld
     VERSION ${PROJECT_VERSION})
 
 if(MSVC)
-    target_compile_options(cellworld PRIVATE /W4)
+    add_compile_options(/W4)
 else(MSVC)
-    target_compile_options(cellworld PRIVATE -Wall -Wextra -pedantic)
+    add_compile_options(-Wall -Wextra -pedantic)
 endif(MSVC)
 
 target_include_directories(cellworld
@@ -57,7 +58,8 @@ target_include_directories(cellworld
 
 target_link_libraries(cellworld
     PUBLIC
-    json-cpp)
+    json-cpp
+    easy-tcp)
 
 ###
 ### TESTS
@@ -89,5 +91,6 @@ install(EXPORT CellworldConfig
         EXPORT_LINK_INTERFACE_LIBRARIES)
 
 export(TARGETS cellworld FILE CellworldConfig.cmake)
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Easy-tcp REQUIRED)\n\") ")
 install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp)\n\") ")
+install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp easy-tcp)\n\") ")

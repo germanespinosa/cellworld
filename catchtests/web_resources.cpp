@@ -35,7 +35,7 @@ TEST_CASE("World_implementation transformation"){
     new_space.transformation.size = (double)500;
     new_space.transformation.rotation = wi.space.transformation.rotation;
     new_space.shape.sides = 6;
-    cout << wi.cell_locations.get_x() << "," << wi.cell_locations.get_y() << endl << endl;
+    //cout << wi.cell_locations.get_x() << "," << wi.cell_locations.get_y() << endl << endl;
     wi.transform(new_space);
-    cout << wi.cell_locations.get_x() << "," << wi.cell_locations.get_y() << endl;
+    //cout << wi.cell_locations.get_x() << "," << wi.cell_locations.get_y() << endl;
 }
