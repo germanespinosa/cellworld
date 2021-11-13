@@ -2,7 +2,7 @@
 #include <json_cpp.h>
 #include <cell_world/message.h>
 
-#define Add_route(HEADER,TYPE,DESTINATION) { if (_message.header == "#HEADER") { _routed = true; try { DESTINATION(json_cpp::Json_create<TYPE>(_message.body)); } catch (...) { failed_route(_message); } }}
+#define Add_route(HEADER,TYPE,DESTINATION) { if (_message.header == HEADER) { _routed = true; try { DESTINATION(json_cpp::Json_create<TYPE>(_message.body)); } catch (...) { failed_route(_message); } }}
 
 namespace cell_world {
     struct Message_router : easy_tcp::Service {

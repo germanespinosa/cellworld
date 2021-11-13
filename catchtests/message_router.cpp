@@ -8,11 +8,11 @@ using namespace std;
 struct Basic_message_router : Message_router {
 
     void new_coordinates(const Coordinates &coord){
-        cout << "new_coordinates" << coord << endl;
+        cout << "new_coordinates: " << coord << endl;
     }
 
     void routes() override {
-        Add_route(coordinates_message, Coordinates, new_coordinates);
+        Add_route("new_coordinates", Coordinates, new_coordinates);
     }
 };
 

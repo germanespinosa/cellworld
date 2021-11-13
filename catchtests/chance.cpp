@@ -6,10 +6,10 @@ using namespace std;
 
 TEST_CASE("Probabilities Pick index")
 {
-    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},0)==0);
-    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},10)==1);
-    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},20)==2);
-    CHECK(Chance::pick((vector< unsigned int>){10, 10, 10, 10},30)==3);
+    CHECK(Chance::pick(vector< unsigned int>{10, 10, 10, 10},0)==0);
+    CHECK(Chance::pick(vector< unsigned int>{10, 10, 10, 10},10)==1);
+    CHECK(Chance::pick(vector< unsigned int>{10, 10, 10, 10},20)==2);
+    CHECK(Chance::pick(vector< unsigned int>{10, 10, 10, 10},30)==3);
 }
 
 TEST_CASE("dice") {
