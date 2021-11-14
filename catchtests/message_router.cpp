@@ -5,6 +5,13 @@
 using namespace cell_world;
 using namespace std;
 
+int ne_c = 0;
+int nc_c = 0;
+int nl_c = 0;
+int ur_c = 0;
+int wf_c = 0;
+int bm_c = 0;
+
 struct Basic_message_router : Message_router {
 
     Routes(
@@ -21,6 +28,7 @@ Add_route("new_coordinates", new_coordinates, Coordinates);
 
     Message new_empty(){
         cout << "new_empty " <<endl;
+        ne_c ++ ;
         return {"HOLA","TWO"};
     }
 
@@ -47,11 +55,6 @@ Add_route("new_coordinates", new_coordinates, Coordinates);
         cout << "failed route " << m << endl;
     }
 
-    int nc_c = 0;
-    int nl_c = 0;
-    int ur_c = 0;
-    int wf_c = 0;
-    int bm_c = 0;
 };
 
 TEST_CASE("basic message_router"){
@@ -68,3 +71,14 @@ TEST_CASE("basic message_router"){
     bmr.on_incoming_data(message);
 }
 
+TEST_CASE("Client message routing") {
+    easy_tcp::Server<Basic_message_router> server;
+    CHECK(server.start(8500));
+    Message_client client;
+    CHECK(client.connect("127.0.0.1", 8500));
+    auto pne = ne_c;
+    client.send_message({"new_empty"});
+    while (pne == ne_c);
+    client.disconnect();
+    server.stop();
+}

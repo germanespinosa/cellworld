@@ -30,7 +30,8 @@ set(cellworld_files
     src/map.cpp
     src/resources.cpp
     src/message.cpp
-    src/message_router.cpp )
+    src/message_router.cpp
+    src/message_client.cpp)
 
 add_library(cellworld ${cellworld_files})
 

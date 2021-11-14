@@ -7,11 +7,11 @@ using namespace std;
 namespace cell_world{
 
     void Message_router::failed_route(const Message &m) {
-        cerr << "failed to route message " << m << endl;
+        cerr << "Server: failed to route message " << m << endl;
     }
 
     void Message_router::failed_message(const string &d) {
-        cerr << "failed parsing data '" << d << "' to message" << endl;
+        cerr << "Server: failed parsing data '" << d << "' to message" << endl;
     }
 
 
