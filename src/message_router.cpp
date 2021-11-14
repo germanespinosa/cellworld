@@ -1,5 +1,7 @@
 #include<cell_world/message_router.h>
 #include <iostream>
+#include <cell_world/message_router.h>
+
 
 using namespace std;
 namespace cell_world{
@@ -9,8 +11,9 @@ namespace cell_world{
     }
 
     void Message_router::failed_message(const string &d) {
-        cerr << "failed casting data '" << d << "' to message" << endl;
+        cerr << "failed parsing data '" << d << "' to message" << endl;
     }
+
 
     void Message_router::unrouted_message(const Message &) {
 
@@ -30,4 +33,7 @@ namespace cell_world{
         }
     }
 
+    bool Message_router::send_message(const Message &message) {
+        return send_data(message.to_json());
+    }
 }

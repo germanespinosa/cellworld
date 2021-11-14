@@ -15,8 +15,13 @@ Add_route("new_coordinates", new_coordinates, Coordinates);
         Add_route("new_empty", new_empty);
     )
 
-    void new_empty(){
+    Message new_message (){
+        return Message();
+    }
+
+    Message new_empty(){
         cout << "new_empty " <<endl;
+        return {"HOLA","TWO"};
     }
 
     void new_string (string m){
@@ -62,3 +67,4 @@ TEST_CASE("basic message_router"){
     message = Message("new_empty").to_json();
     bmr.on_incoming_data(message);
 }
+
