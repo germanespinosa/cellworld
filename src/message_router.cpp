@@ -18,16 +18,15 @@ namespace cell_world{
 
     void Message_router::on_incoming_data(const string &data) {
         bool msg_converted = false;
+        Message message;
         try {
-            data >> _message;
+            data >> message;
             msg_converted = true;
         } catch (...) {
             failed_message(data);
         }
         if (msg_converted) {
-            _routed = false;
-            routes();
-            if (!_routed) unrouted_message(_message);
+            if (!route(message)) unrouted_message(message);
         }
     }
 

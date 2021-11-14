@@ -7,9 +7,14 @@ namespace cell_world {
         Message (const std::string &header, const std::string &body = "");
         Message (const std::string &header, const json_cpp::Json_base &body);
         template <class T>
-        T get_body(){
-            static_assert(std::is_base_of<json_cpp::Json_base, T>::value, "Type must inherit from Json_base");
-            return json_cpp::Json_create<T>(body);
+        T get_body() const{
+            if constexpr (std::is_same_v<T, std::string>) {
+                return body;
+            }
+            T x;
+            json_cpp::Json_object_wrapper wx(x);
+            body >> wx;
+            return x;
         }
         void set_body(const json_cpp::Json_base &content);
         Json_object_members({
