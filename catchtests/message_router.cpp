@@ -20,10 +20,13 @@ Add_route("new_coordinates", new_coordinates, Coordinates);
         Add_route("new_counter", new_counter, int);
         Add_route("new_string", new_string, string);
         Add_route("new_empty", new_empty);
+        Add_route("new_request", new_request);
     )
 
-    Message new_message (){
-        return Message();
+
+
+    void new_request (){
+        send_message({"new_response"});
     }
 
     Message new_empty(){
@@ -76,9 +79,13 @@ TEST_CASE("Client message routing") {
     CHECK(server.start(8500));
     Message_client client;
     CHECK(client.connect("127.0.0.1", 8500));
-    auto pne = ne_c;
-    client.send_message({"new_empty"});
-    while (pne == ne_c);
+    client.send_message({"new_request"});
+    {
+        while (client.messages.empty());
+        auto m = client.messages.front();
+        cout << m << endl;
+        client.messages.pop();
+    }
     client.disconnect();
     server.stop();
 }
