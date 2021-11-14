@@ -8,11 +8,16 @@ using namespace std;
 struct Basic_message_router : Message_router {
 
     Routes(
-Add_route("new_coordinates", Coordinates, new_coordinates);
-        Add_route("new_location", Location, new_location);
-        Add_route("new_counter", int, new_counter);
-        Add_route("new_string", std::string, new_string);
+Add_route("new_coordinates", new_coordinates, Coordinates);
+        Add_route("new_location", new_location, Location);
+        Add_route("new_counter", new_counter, int);
+        Add_route("new_string", new_string, string);
+        Add_route("new_empty", new_empty);
     )
+
+    void new_empty(){
+        cout << "new_empty " <<endl;
+    }
 
     void new_string (string m){
         cout << "new_string: " << m << endl;
@@ -23,7 +28,7 @@ Add_route("new_coordinates", Coordinates, new_coordinates);
 
     }
 
-    void new_coordinates(const Coordinates &coord){
+    void new_coordinates(Coordinates coord){
         cout << "new_coordinates: " << coord << endl;
         nc_c += 1;
     }
@@ -53,5 +58,7 @@ TEST_CASE("basic message_router"){
     message = Message("new_counter","5").to_json();
     bmr.on_incoming_data(message);
     message = Message("new_string","LETS TRY THIS").to_json();
+    bmr.on_incoming_data(message);
+    message = Message("new_empty").to_json();
     bmr.on_incoming_data(message);
 }
