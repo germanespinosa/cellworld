@@ -29,12 +29,12 @@ namespace cell_world{
     }
 
     Message Message_client::get_message(const string &header) {
-        if (messages.empty()) throw std::runtime_error("message not found :" + header);
+        if (messages.empty()) throw std::runtime_error("message not found: " + header);
         auto header_match = [header](const Message& m)->size_t{
             return m.header == header;
         };
         auto it = find_if(messages.begin(), messages.end(), header_match);
-        if ( it == messages.end()) throw std::runtime_error("message not found :" + header);
+        if ( it == messages.end()) throw std::runtime_error("message not found: " + header);
         Message res_message = *it;
         messages.erase(it);
         return res_message;
