@@ -81,11 +81,11 @@ TEST_CASE("Client message routing") {
     CHECK(client.connect("127.0.0.1", 8500));
     client.send_message({"new_request"});
     {
-        while (client.messages.empty());
-        auto m = client.messages.front();
+        while (!client.contains("new_response"));
+        auto m = client["new_response"];
         cout << m << endl;
-        client.messages.pop();
     }
+    CHECK(client.messages.empty());
     client.disconnect();
     server.stop();
 }
