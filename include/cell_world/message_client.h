@@ -9,7 +9,7 @@ namespace cell_world {
         virtual void failed_message(const std::string &);
         bool contains(const std::string &header);
         bool send_message(const Message &);
-        Message operator [] (const std::string &header);
+        Message get_message (const std::string &header);
         std::deque<Message> messages;
     };
 }

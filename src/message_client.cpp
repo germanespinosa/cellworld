@@ -28,7 +28,7 @@ namespace cell_world{
         return false;
     }
 
-    Message Message_client::operator[](const string &header) {
+    Message Message_client::get_message(const string &header) {
         if (messages.empty()) throw std::runtime_error("message not found :" + header);
         auto header_match = [header](const Message& m)->size_t{
             return m.header == header;

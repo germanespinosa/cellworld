@@ -82,7 +82,7 @@ TEST_CASE("Client message routing") {
     client.send_message({"new_request"});
     {
         while (!client.contains("new_response"));
-        auto m = client["new_response"];
+        auto m = client.get_message("new_response");
         cout << m << endl;
     }
     CHECK(client.messages.empty());
