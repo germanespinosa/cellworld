@@ -10,6 +10,7 @@ namespace cell_world {
         bool contains(const std::string &header);
         bool send_message(const Message &);
         Message get_message (const std::string &header);
+        Message get_last_message (const std::string &header);
         std::deque<Message> messages;
     };
 }

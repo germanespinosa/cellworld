@@ -39,4 +39,11 @@ namespace cell_world{
         messages.erase(it);
         return res_message;
     }
+
+    Message Message_client::get_last_message(const string &header) {
+        if (!contains(header)) throw std::runtime_error("message not found: " + header);
+        Message message;
+        while  (contains(header)) message = get_message(header);
+        return message;
+    }
 }
