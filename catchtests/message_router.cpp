@@ -12,7 +12,7 @@ int ur_c = 0;
 int wf_c = 0;
 int bm_c = 0;
 
-struct Basic_message_router : Message_router {
+struct Basic_message_router : Message_service {
 
     Routes(
 Add_route("new_coordinates", new_coordinates, Coordinates);
@@ -75,7 +75,7 @@ TEST_CASE("basic message_router"){
 }
 
 TEST_CASE("Client message routing") {
-    easy_tcp::Server<Basic_message_router> server;
+    Message_server<Basic_message_router> server;
     CHECK(server.start(8500));
     Message_client client;
     CHECK(client.connect("127.0.0.1", 8500));

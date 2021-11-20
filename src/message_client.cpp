@@ -12,7 +12,9 @@ namespace cell_world{
 
     void Message_client::received_data(const std::string &data) {
         try {
-             messages.push_back(json_cpp::Json_create<Message>(data));
+            auto message = json_cpp::Json_create<Message>(data);
+            if (!route(message))
+                unrouted(message);
         } catch (...) {
             failed_message(data);
         }
@@ -45,5 +47,13 @@ namespace cell_world{
         Message message;
         while  (contains(header)) message = get_message(header);
         return message;
+    }
+
+    void Message_client::unrouted(const Message &message) {
+        messages.push_back(message);
+    }
+
+    bool Message_client::route(const Message &) {
+        return false;
     }
 }
