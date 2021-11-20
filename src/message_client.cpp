@@ -56,4 +56,8 @@ namespace cell_world{
     bool Message_client::route(const Message &) {
         return false;
     }
+
+    void Message_client::failed_route(const Message &) {
+
+    }
 }

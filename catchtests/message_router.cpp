@@ -21,9 +21,12 @@ Add_route("new_coordinates", new_coordinates, Coordinates);
         Add_route("new_string", new_string, string);
         Add_route("new_empty", new_empty);
         Add_route("new_request", new_request);
+        Add_route("client_route", client_route, string);
     )
 
-
+    void client_route(string r){
+        send_message("route" + r);
+    }
 
     void new_request (){
         send_message({"new_response"});
@@ -74,7 +77,7 @@ TEST_CASE("basic message_router"){
     bmr.on_incoming_data(message);
 }
 
-TEST_CASE("Client message routing") {
+TEST_CASE("Client server routing") {
     Message_server<Basic_message_router> server;
     CHECK(server.start(8500));
     Message_client client;
@@ -91,6 +94,42 @@ TEST_CASE("Client message routing") {
         auto m = client.get_message("new_response");
         cout << m << endl;
     }
+    CHECK(client.messages.empty());
+    client.disconnect();
+    server.stop();
+}
+
+struct Message_client_router: Message_client{
+    Routes(
+            Add_route("route1", route_1);
+            Add_route("route2", route_2);
+            Add_route("route3", route_3);
+    )
+    void route_1(){
+        send_message({"client_route", "2"});
+        r1++;
+    }
+    void route_2(){
+        send_message({"client_route", "3"});
+        r2++;
+    }
+    void route_3(){
+        r3++;
+    }
+    atomic<int> r1 = 0;
+    atomic<int> r2 = 0;
+    atomic<int> r3 = 0;
+};
+
+TEST_CASE("Client message routing") {
+    Message_server<Basic_message_router> server;
+    CHECK(server.start(8500));
+    Message_client_router client;
+    CHECK(client.connect("127.0.0.1", 8500));
+    client.send_message({"client_route", "1"});
+    while (client.r1 == 0);
+    while (client.r2 == 0);
+    while (client.r3 == 0);
     CHECK(client.messages.empty());
     client.disconnect();
     server.stop();
