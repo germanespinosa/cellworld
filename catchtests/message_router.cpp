@@ -21,7 +21,7 @@ Add_route("new_coordinates", new_coordinates, Coordinates);
         Add_route("new_string", new_string, string);
         Add_route("new_empty", new_empty);
         Add_route("new_request", new_request);
-        Add_route("client_route", client_route, string);
+        Add_route("(.*)(route)", client_route, string);
     )
 
     void client_route(string r){
@@ -122,6 +122,9 @@ struct Message_client_router: Message_client{
 };
 
 TEST_CASE("Client message routing") {
+//    string str ("mysoft");
+//    regex str_expr ("(.*)(soft)");
+//    auto m = regex_match (str,str_expr);
     Message_server<Basic_message_router> server;
     CHECK(server.start(8500));
     Message_client_router client;
