@@ -106,11 +106,11 @@ struct Message_client_router: Message_client{
             Add_route("route3", route_3);
     )
     void route_1(){
-        send_message({"client_route", "2"});
+        send_message({"client2_route", "2"});
         r1++;
     }
     void route_2(){
-        send_message({"client_route", "3"});
+        send_message({"client3_route", "3"});
         r2++;
     }
     void route_3(){
@@ -129,7 +129,7 @@ TEST_CASE("Client message routing") {
     CHECK(server.start(8500));
     Message_client_router client;
     CHECK(client.connect("127.0.0.1", 8500));
-    client.send_message({"client_route", "1"});
+    client.send_message({"client1_route", "1"});
     while (client.r1 == 0);
     while (client.r2 == 0);
     while (client.r3 == 0);
