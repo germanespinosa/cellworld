@@ -11,7 +11,7 @@
 
 #define SIMILAR(A,B,M) ((A-M < B) && (A+M > B))
 
-#define WAIT(EXPRESSION) while(!(EXPRESSION));
+#define WAIT_UNTIL(EXPRESSION) while(!(EXPRESSION));
 
 namespace cell_world{
     const int Not_found = -1;
