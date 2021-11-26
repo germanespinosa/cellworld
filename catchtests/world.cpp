@@ -63,3 +63,10 @@ TEST_CASE("world>>1")
     CHECK(c3.location==Location{3.5,4.5});
     CHECK(!c3.occluded);
 }
+
+
+//TEST_CASE("timer"){
+//    Timer t(3);
+//    while (!t.time_out())
+//        cout << t.to_seconds() << endl;
+//}
