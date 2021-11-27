@@ -6,7 +6,7 @@
 namespace cell_world {
     struct Message_client: easy_tcp::Client {
         virtual bool route(const cell_world::Message &);
-        virtual void unrouted(const cell_world::Message &);
+        virtual void unrouted_message(const cell_world::Message &);
         virtual void failed_route(const Message &);
         void received_data(const std::string &) override;
         virtual void failed_message(const std::string &);

@@ -16,5 +16,10 @@ namespace cell_world {
         std::chrono::time_point<std::chrono::high_resolution_clock> check_point;
         double time = 0;
         bool time_out() { return to_seconds() > time;}
+
+        static void wait(double t){
+            Timer ts(t);
+            while (!ts.time_out());
+        }
     };
 }

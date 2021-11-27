@@ -14,7 +14,7 @@ namespace cell_world{
         try {
             auto message = json_cpp::Json_create<Message>(data);
             if (!route(message))
-                unrouted(message);
+                unrouted_message(message);
         } catch (...) {
             failed_message(data);
         }
@@ -49,7 +49,7 @@ namespace cell_world{
         return message;
     }
 
-    void Message_client::unrouted(const Message &message) {
+    void Message_client::unrouted_message(const cell_world::Message &message) {
         messages.push_back(message);
     }
 
