@@ -155,9 +155,10 @@ namespace cell_world {
         return (*this - l).mod();
     }
 
-    double Location::dist(const Location &l1, const Location &l2) const {
-        auto d = l2 - l1;
-        return d.dist();
+    double Location::dist(const Location &line_start, const Location &line_end) const {
+        double normal_length = line_end.dist(line_start);
+        double distance = (double)((x - line_start.x) * (line_end.y - line_start.y) - (y - line_start.y) * (line_end.x - line_start.x)) / normal_length;
+        return abs(distance);
     }
 
     double Location::dist() const {
@@ -226,6 +227,32 @@ namespace cell_world {
     Shape::Shape(int sides):
         sides(sides){
 
+    }
+
+    bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
+    {
+        auto t1 = segment1_point1.atan(segment1_point2);
+        auto t11 = segment1_point1.atan(segment2_point1);
+        auto t12 = segment1_point1.atan(segment2_point2);
+        if (!angle_between(t1,t11,t12)) return false;
+        auto t2 = segment2_point1.atan(segment2_point2);
+        auto t21 = segment2_point1.atan(segment1_point1);
+        auto t22 = segment2_point1.atan(segment1_point2);
+        if (!angle_between(t2,t21,t22)) return false;
+        return true;
+    }
+
+    bool Polygon::contains(const Location &location) {
+        auto dist = center.dist(location);
+        if (dist>radius) return false;
+        auto inner_radius = center.dist(vertices[0],vertices[1]);
+        if (dist<inner_radius) return true;
+        for (int i=1; i<vertices.size(); i++)
+            if (segments_intersect(center,location,vertices[i],vertices[i-1]))
+                return false;
+        if (segments_intersect(center,location,vertices[vertices.size()-1],vertices[0]))
+            return false;
+        return true;
     }
 
     Shape::Shape() = default;
@@ -420,6 +447,11 @@ namespace cell_world {
         return true;
     }
 
-
+    bool angle_between(double v, double l1, double l2, bool inclusive){
+        if (inclusive) {
+            if (angle_difference(v,l1)==0 || angle_difference(v,l2)==0) return true;
+        }
+        return (direction(v,l1) + direction(v,l2)) == 0;
+    }
 }
 

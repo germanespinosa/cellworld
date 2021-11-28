@@ -11,9 +11,10 @@ find_package( Json-cpp REQUIRED )
 find_package( Easy-tcp REQUIRED )
 
 string(APPEND CMAKE_CXX_FLAGS "-fno-strict-aliasing ")
-###
-### MAIN LIBRARY SETUP
-###
+
+####
+#### MAIN LIBRARY SETUP
+####
 
 set(cellworld_files
     src/agent.cpp
@@ -43,6 +44,8 @@ set_target_properties(cellworld
     CXX_EXTENSIONS Off
     VERSION ${PROJECT_VERSION})
 
+
+
 if(MSVC)
     add_compile_options(/W4)
 else(MSVC)
@@ -63,15 +66,16 @@ target_link_libraries(cellworld
     json-cpp
     easy-tcp)
 
-###
-### TESTS
-###
+####
+#### TESTS
+####
+
 find_package(CatchTests CONFIG QUIET)
 
 
-###
-### LIBRARY INSTALLATION
-###
+####
+#### LIBRARY INSTALLATION
+####
 
 include(GNUInstallDirs)
 

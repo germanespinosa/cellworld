@@ -109,6 +109,7 @@ namespace cell_world{
         Polygon move(double, double) const;
         bool is_between (const Location &, const Location &) const;
         bool is_between (const Location &, double, double ) const;
+        bool contains(const Location &);
         Json_object_members({
                                 Add_member(vertices);
                                 Add_member(center);
@@ -173,13 +174,14 @@ namespace cell_world{
 
     double angle_difference(double, double);
     int direction(double, double);
+    bool angle_between(double value, double lim1, double lim2, bool inclusive = false);
     double to_radians(double);
     double to_degrees(double);
     double normalize(double);
     double normalize_degrees(double);
+    bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2);
 
     bool file_exists (const std::string &);
     bool file_exists (const std::vector<std::string> &);
     bool file_exists (const std::string &, const std::vector<std::string> &);
-
 }

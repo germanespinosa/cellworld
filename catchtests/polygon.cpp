@@ -1,3 +1,4 @@
+#include <random>
 #include<catch.h>
 #include<cell_world.h>
 #include<sstream>
@@ -17,3 +18,10 @@ TEST_CASE("polygon")
     //cout << Polygon({0,0},6,1,0).vertices.get_x()  << "," << Polygon({0,0},6,1,0).vertices.get_y() << endl;
 }
 
+TEST_CASE("polygon_ contains")
+{
+    Polygon p (Location (0,0), 6, 1 , 30);
+    for (int i=0; i<1000; i++) {
+        auto r = ((double) rand() / (RAND_MAX)) + 1;
+    }
+}

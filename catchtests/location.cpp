@@ -76,3 +76,21 @@ TEST_CASE("location atan")
     CHECK(round(c2.y,5) == c1.y);
 }
 
+TEST_CASE("distance to line") {
+    Location l1 ( 10,10);
+    Location l2 ( 20,20);
+    Location p ( 10,20);
+    CHECK(Location(10,20).dist(l1,l2) == Location(9,19).dist(l1,l2));
+}
+
+
+TEST_CASE("intersect") {
+    Location l11 ( 10,10);
+    Location l12 ( 20,20);
+
+    Location l21 ( 10,20);
+    Location l22 ( 20,10);
+
+    cout << "intersects? " << segments_intersect(l11,l12,l21,l22) << endl;
+
+}
