@@ -109,7 +109,7 @@ namespace cell_world{
         Polygon move(double, double) const;
         bool is_between (const Location &, const Location &) const;
         bool is_between (const Location &, double, double ) const;
-        bool contains(const Location &);
+        bool contains(const Location &) const;
         Json_object_members({
                                 Add_member(vertices);
                                 Add_member(center);

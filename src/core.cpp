@@ -242,7 +242,7 @@ namespace cell_world {
         return true;
     }
 
-    bool Polygon::contains(const Location &location) {
+    bool Polygon::contains(const Location &location) const {
         auto dist = center.dist(location);
         if (dist>radius) return false;
         auto inner_radius = center.dist(vertices[0],vertices[1]);
