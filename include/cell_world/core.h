@@ -122,6 +122,7 @@ namespace cell_world{
     struct Polygon_list : json_cpp::Json_vector<Polygon> {
         Polygon_list () = default;
         Polygon_list (const Location_list &centers, const Shape &, const Transformation &);
+        bool contains(const Location &) const;
     };
 
     struct Space : json_cpp::Json_object{

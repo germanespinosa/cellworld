@@ -20,8 +20,19 @@ TEST_CASE("polygon")
 
 TEST_CASE("polygon_ contains")
 {
-    Polygon p (Location (0,0), 6, 1 , 30);
+    auto wc = Resources::from("world_configuration").key("hexagonal").get_resource<World_configuration>();
+    auto wi = Resources::from("world_implementation").key("hexagonal").key("mice").get_resource<World_implementation>();
+    auto occlusions = Resources::from("cell_group").key("hexagonal").key("10_05").key("occlusions").get_resource<Cell_group_builder>();
+    World world(wc, wi, occlusions);
     for (int i=0; i<1000; i++) {
         auto r = ((double) rand() / (RAND_MAX)) + 1;
     }
+    Polygon_list cell_polygons;
+    cell_polygons.clear();
+    for (auto &cell:world.cells) {
+        cell_polygons.push_back(Polygon(cell.location,world.cell_shape, world.cell_transformation));
+    }
+
+
+
 }

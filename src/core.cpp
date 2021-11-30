@@ -435,6 +435,13 @@ namespace cell_world {
         for (auto &center:centers ) emplace_back(center, shape, transformation);
     }
 
+    bool Polygon_list::contains(const Location &location) const {
+        for (auto &p : *this){
+            if (p.contains(location)) return true;
+        }
+        return false;
+    }
+
     bool file_exists(const string &file_path){
         struct stat buffer;
         return (stat (file_path.c_str(), &buffer) == 0);
