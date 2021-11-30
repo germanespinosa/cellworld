@@ -279,6 +279,15 @@ namespace cell_world {
 
     }
 
+    Location Space::transform(const Location &location, const Space &src_space) const {
+        auto source_dist_center = src_space.center.dist(location);
+        auto source_theta = src_space.center.atan(location);
+        auto size_ratio = transformation.size / src_space.transformation.size;
+        auto rotation = to_radians(transformation.rotation - src_space.transformation.rotation);
+        auto new_location = center;
+        return new_location.move(rotation+source_theta, source_dist_center * size_ratio);
+    }
+
     cell_world::Polygon::Polygon() = default;
 
     cell_world::Polygon::Polygon(const Location &center, unsigned int sides, double radius, double rotation) :

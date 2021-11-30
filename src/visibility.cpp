@@ -64,8 +64,9 @@ namespace cell_world {
 
     }
 
-    Location_visibility::Location_visibility(const Cell_group &occluded_cells, const Shape &cell_shape,
+    Location_visibility::Location_visibility(const Cell_group &cells, const Shape &cell_shape,
                                              const Transformation &cell_transformation) {
+        auto occluded_cells = cells.occluded_cells();
         for (auto &cell: occluded_cells) {
             occlusions.emplace_back(cell.get().location, cell_shape.sides, cell_transformation.size / 2,
                                     to_radians(cell_transformation.rotation));

@@ -130,6 +130,7 @@ namespace cell_world{
         Location center;
         Shape shape;
         Transformation transformation;
+        Location transform(const Location &, const Space &) const;
         Json_object_members({
                                 Add_member(center);
                                 Add_member(shape);
