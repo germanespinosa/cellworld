@@ -436,9 +436,7 @@ namespace cell_world {
     }
 
     bool Polygon_list::contains(const Location &location) const {
-        for (auto &p : *this){
-            if (p.contains(location)) return true;
-        }
+        for (auto &p : *this) if (p.contains(location)) return true;
         return false;
     }
 
