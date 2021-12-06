@@ -1,9 +1,0 @@
-[submodule "dependencies/json-cpp"]
-	path = dependencies/json-cpp
-	url = https://github.com/germanespinosa/json-cpp
-[submodule "dependencies/date"]
-	path = dependencies/date
-	url = https://github.com/HowardHinnant/date
-[submodule "dependencies/easy-tcp"]
-	path = dependencies/easy-tcp
-	url = https://github.com/germanespinosa/easy-tcp
