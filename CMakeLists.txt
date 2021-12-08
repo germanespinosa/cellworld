@@ -7,12 +7,16 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
-include(dependencies.cmake)
+FILE(DOWNLOAD
+        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake
+        ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
+
+include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
 
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 install_dependency(https://github.com/germanespinosa/easy-tcp Easy-tcp)
-string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread ")
+string(APPEND CMAKE_CXX _FLAGS " -fno-strict-aliasing -pthread ")
 
 ####
 #### MAIN LIBRARY SETUP
