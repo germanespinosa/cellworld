@@ -8,8 +8,9 @@ project(cellworld
         LANGUAGES CXX)
 
 ### download and install dependency library
-FILE(DOWNLOAD
-        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake
+string(RANDOM v)
+file(DOWNLOAD
+        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake?${v}
         ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
