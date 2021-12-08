@@ -7,11 +7,13 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
+### download and install dependency library
 FILE(DOWNLOAD
         https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake
         ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
+###
 
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
