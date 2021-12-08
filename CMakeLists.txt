@@ -60,6 +60,7 @@ else(MSVC)
 endif(MSVC)
 
 dependency_include(include)
+dependency_include(dependencies/easy-tcp/include)
 
 target_include_directories(cellworld
     SYSTEM INTERFACE
