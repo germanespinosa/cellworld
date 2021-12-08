@@ -7,10 +7,12 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
-find_package( Json-cpp REQUIRED )
-find_package( Easy-tcp REQUIRED )
+include(dependencies.cmake)
 
-string(APPEND CMAKE_CXX_FLAGS "-fno-strict-aliasing ")
+
+install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
+install_dependency(https://github.com/germanespinosa/easy-tcp Easy-tcp)
+string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread ")
 
 ####
 #### MAIN LIBRARY SETUP
@@ -44,13 +46,13 @@ set_target_properties(cellworld
     CXX_EXTENSIONS Off
     VERSION ${PROJECT_VERSION})
 
-
-
 if(MSVC)
     add_compile_options(/W4)
 else(MSVC)
     add_compile_options(-Wall -Wextra -pedantic)
 endif(MSVC)
+
+dependency_include(include)
 
 target_include_directories(cellworld
     SYSTEM INTERFACE
@@ -70,7 +72,8 @@ target_link_libraries(cellworld
 #### TESTS
 ####
 
-find_package(CatchTests CONFIG QUIET)
+install_dependency(https://github.com/germanespinosa/catch CatchTests)
+test_library(cellworld)
 
 
 ####
