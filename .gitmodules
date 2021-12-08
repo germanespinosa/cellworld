@@ -1,6 +1,0 @@
-[submodule "dependencies/easy-tcp"]
-	path = dependencies/easy-tcp
-	url = https://github.com/germanespinosa/easy-tcp
-[submodule "dependencies/json-cpp"]
-	path = dependencies/json-cpp
-	url = https://github.com/germanespinosa/json-cpp
