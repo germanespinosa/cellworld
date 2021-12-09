@@ -31,6 +31,7 @@ set(cellworld_files
     src/cell_group.cpp
     src/connection.cpp
     src/core.cpp
+    src/shape.cpp
     src/model.cpp
     src/chance.cpp
     src/visibility.cpp

@@ -1,5 +1,6 @@
 #pragma once 
 #include<cell_world/core.h>
+#include<cell_world/shape.h>
 #include<cell_world/model.h>
 #include<cell_world/agent.h>
 #include<cell_world/world.h>
