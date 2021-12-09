@@ -71,7 +71,7 @@ namespace cell_world {
     }
 
     std::string &Resources::cache_folder() {
-        static string folder(std::getenv("CELLWORLD_CACHE")?std::getenv("CELLWORLD_CACHE"):".");
+        static string folder(std::getenv("CELLWORLD_CACHE")?std::getenv("CELLWORLD_CACHE"):"./.cache");
         return folder;
     }
 
