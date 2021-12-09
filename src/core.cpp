@@ -2,6 +2,7 @@
 #include <algorithm>
 #include <cmath>
 #include <sys/stat.h>
+#include <filesystem>
 
 using namespace std;
 
@@ -458,6 +459,16 @@ namespace cell_world {
         for (auto &file_name : file_names) {
             if (!file_exists(fixed_path + file_name)) return false;
         }
+        return true;
+    }
+
+    bool folder_exists(const string &path){
+        return filesystem::exists(path);
+    }
+
+    bool create_folder(const string &path){
+        if (filesystem::exists(path)) return false;
+        filesystem::create_directory(path);
         return true;
     }
 

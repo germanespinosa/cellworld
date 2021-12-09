@@ -2,6 +2,7 @@
 #include <string>
 #include <json_cpp.h>
 #include <chrono>
+#include <cell_world/core.h>
 
 using namespace std;
 
@@ -72,6 +73,7 @@ namespace cell_world {
 
     std::string &Resources::cache_folder() {
         static string folder(std::getenv("CELLWORLD_CACHE")?std::getenv("CELLWORLD_CACHE"):".cellworld_cache");
+        create_folder(folder);
         return folder;
     }
 
