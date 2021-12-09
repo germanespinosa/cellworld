@@ -186,6 +186,6 @@ namespace cell_world{
     bool file_exists (const std::string &);
     bool file_exists (const std::vector<std::string> &);
     bool file_exists (const std::string &, const std::vector<std::string> &);
-    bool folder_exists(const string &path);
-    bool create_folder(const string &path);
+    bool folder_exists(const std::string &path);
+    bool create_folder(const std::string &path);
 }
