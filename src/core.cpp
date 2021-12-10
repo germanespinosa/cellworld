@@ -8,6 +8,12 @@ using namespace std;
 
 namespace cell_world {
 
+    Coordinates::Coordinates(int x, int y):
+            x(x),y(y){;
+    }
+
+    Coordinates::Coordinates() = default;
+
     bool Coordinates::operator ==(const Coordinates &c) const {
         return c.x==x && c.y == y;
     }
@@ -38,6 +44,21 @@ namespace cell_world {
 
     int Coordinates::rotation() const {
         return (int)(atan2(x,-y) / 6.28 * 360.0);
+    }
+
+    unsigned int Coordinates::manhattan(const Coordinates &c) const {
+        return abs(c.x-x) + abs(c.y-y);
+    }
+
+    double Transformation::theta() const {
+        return to_radians(rotation);
+    }
+
+    cell_world::Transformation::Transformation() = default;
+
+    cell_world::Transformation::Transformation(double size, double rotation):
+            size(size), rotation(rotation){
+
     }
 
     bool Cell::operator == (const Cell& c) const {
@@ -74,44 +95,6 @@ namespace cell_world {
 
     Cell::Cell(const Coordinates &coordinates):
     Cell(coordinates,{0,0},false){
-    }
-
-    double entropy(const std::vector<int>& histogram) {
-        vector<double> prob;
-        int c = 0;
-        for (int h:histogram) c+=h;
-        for (int h:histogram) if ( h > 0 ) prob.push_back((double)h/(double)c);
-        double ent=0;
-        for (double p:prob) ent += p * log2(p);
-        return -ent;
-    }
-
-    vector<int> histogram(vector<int> values) {
-        if (values.empty()) {
-            vector<int> hist;
-            return hist;
-        } else {
-            int min = values[0];
-            int max = values[0];
-            for (int v:values) if ( min > v ) min = v; else if ( max < v ) max = v;
-            vector<int> hist(max - min + 1 );
-            for (int v:values) hist[v-min]++;
-            return hist;
-        }
-    }
-
-    vector<unsigned int> new_index(unsigned int n) {
-        std::vector<unsigned int> index(n);
-        for(unsigned int i=0;i<n;i++) index[i]=i;
-        return index;
-    }
-
-    vector<unsigned int> new_index(vector<double>values, bool ascending = true){
-        auto index = new_index(values.size()); // creates an index vector for the options
-        for (unsigned int i = 1; i < index.size(); i++) // sort the indexes of the options by expected reward descending
-            for (unsigned int j = i; j > 0 && (ascending?values[index[j - 1]] > values[index[j]]:values[index[j - 1]] < values[index[j]]); j--)
-                swap(index[j - 1], index[j]);
-        return index;
     }
 
     bool Location::operator==(const Location &l) const {
@@ -166,10 +149,6 @@ namespace cell_world {
         return sqrt(x * x + y * y);
     }
 
-    unsigned int Coordinates::manhattan(const Coordinates &c) const {
-        return abs(c.x-x) + abs(c.y-y);
-    }
-
     double Location::manhattan(const Location &l) const {
         return abs(l.x-x) + abs(l.y-y);
     }
@@ -184,12 +163,6 @@ namespace cell_world {
         for (auto &v:values) s+=v;
         return s;
     }
-
-    Coordinates::Coordinates(int x, int y):
-        x(x),y(y){;
-    }
-
-    Coordinates::Coordinates() = default;
 
     Location::Location(double x, double y) :
         x(x), y(y){
@@ -311,18 +284,6 @@ namespace cell_world {
         return (direction(v,l1) + direction(v,l2)) == 0;
     }
 
-    double Transformation::theta() const {
-        return to_radians(rotation);
-    }
-
-
-    cell_world::Transformation::Transformation() = default;
-
-    cell_world::Transformation::Transformation(double size, double rotation):
-            size(size), rotation(rotation){
-
-    }
-
     bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
     {
         auto t1 = segment1_point1.atan(segment1_point2);
@@ -351,5 +312,44 @@ namespace cell_world {
         }
         return y;
     }
+
+    double entropy(const std::vector<int>& histogram) {
+        vector<double> prob;
+        int c = 0;
+        for (int h:histogram) c+=h;
+        for (int h:histogram) if ( h > 0 ) prob.push_back((double)h/(double)c);
+        double ent=0;
+        for (double p:prob) ent += p * log2(p);
+        return -ent;
+    }
+
+    vector<int> histogram(vector<int> values) {
+        if (values.empty()) {
+            vector<int> hist;
+            return hist;
+        } else {
+            int min = values[0];
+            int max = values[0];
+            for (int v:values) if ( min > v ) min = v; else if ( max < v ) max = v;
+            vector<int> hist(max - min + 1 );
+            for (int v:values) hist[v-min]++;
+            return hist;
+        }
+    }
+
+    vector<unsigned int> new_index(unsigned int n) {
+        std::vector<unsigned int> index(n);
+        for(unsigned int i=0;i<n;i++) index[i]=i;
+        return index;
+    }
+
+    vector<unsigned int> new_index(vector<double>values, bool ascending = true){
+        auto index = new_index(values.size()); // creates an index vector for the options
+        for (unsigned int i = 1; i < index.size(); i++) // sort the indexes of the options by expected reward descending
+            for (unsigned int j = i; j > 0 && (ascending?values[index[j - 1]] > values[index[j]]:values[index[j - 1]] < values[index[j]]); j--)
+                swap(index[j - 1], index[j]);
+        return index;
+    }
+
 }
 
