@@ -322,5 +322,34 @@ namespace cell_world {
             size(size), rotation(rotation){
 
     }
+
+    bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
+    {
+        auto t1 = segment1_point1.atan(segment1_point2);
+        auto t11 = segment1_point1.atan(segment2_point1);
+        auto t12 = segment1_point1.atan(segment2_point2);
+        if (!angle_between(t1,t11,t12)) return false;
+        auto t2 = segment2_point1.atan(segment2_point2);
+        auto t21 = segment2_point1.atan(segment1_point1);
+        auto t22 = segment2_point1.atan(segment1_point2);
+        if (!angle_between(t2,t21,t22)) return false;
+        return true;
+    }
+
+    json_cpp::Json_vector<double> Location_list::get_x() {
+        auto x = json_cpp::Json_vector<double>();
+        for (auto &l:*this){
+            x.push_back(l.x);
+        }
+        return x;
+    }
+
+    json_cpp::Json_vector<double> Location_list::get_y() {
+        auto y = json_cpp::Json_vector<double>();
+        for (auto &l:*this){
+            y.push_back(l.y);
+        }
+        return y;
+    }
 }
 

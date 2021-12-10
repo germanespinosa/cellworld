@@ -1,62 +1,20 @@
 #include <cell_world/shape.h>
 
 namespace cell_world {
+    //SHAPE
+
+    Shape::Shape() = default;
+
     Shape::Shape(int sides):
             sides(sides){
 
     }
 
-    bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
-    {
-        auto t1 = segment1_point1.atan(segment1_point2);
-        auto t11 = segment1_point1.atan(segment2_point1);
-        auto t12 = segment1_point1.atan(segment2_point2);
-        if (!angle_between(t1,t11,t12)) return false;
-        auto t2 = segment2_point1.atan(segment2_point2);
-        auto t21 = segment2_point1.atan(segment1_point1);
-        auto t22 = segment2_point1.atan(segment1_point2);
-        if (!angle_between(t2,t21,t22)) return false;
-        return true;
-    }
+    //POLYGON
 
-    bool Polygon::contains(const Location &location) const {
-        auto dist = center.dist(location);
-        if (dist>radius) return false;
-        auto inner_radius = center.dist(vertices[0],vertices[1]);
-        if (dist<inner_radius) return true;
-        for (int i=1; i<vertices.size(); i++)
-            if (segments_intersect(center,location,vertices[i],vertices[i-1]))
-                return false;
-        if (segments_intersect(center,location,vertices[vertices.size()-1],vertices[0]))
-            return false;
-        return true;
-    }
+    Polygon::Polygon() = default;
 
-    Shape::Shape() = default;
-
-
-    Space::Space() = default;
-
-
-    Space::Space(const Location &center, const Shape &shape, const Transformation &transformation) :
-            center(center),
-            shape(shape),
-            transformation(transformation){
-
-    }
-
-    Location Space::transform(const Location &location, const Space &src_space) const {
-        auto source_dist_center = src_space.center.dist(location);
-        auto source_theta = src_space.center.atan(location);
-        auto size_ratio = transformation.size / src_space.transformation.size;
-        auto rotation = to_radians(transformation.rotation - src_space.transformation.rotation);
-        auto new_location = center;
-        return new_location.move(rotation+source_theta, source_dist_center * size_ratio);
-    }
-
-    cell_world::Polygon::Polygon() = default;
-
-    cell_world::Polygon::Polygon(const Location &center, unsigned int sides, double radius, double rotation) :
+    Polygon::Polygon(const Location &center, unsigned int sides, double radius, double rotation) :
             center(center),
             radius(radius){
         double theta = to_radians(rotation);
@@ -75,21 +33,19 @@ namespace cell_world {
     }
 
 
-    json_cpp::Json_vector<double> Location_list::get_x() {
-        auto x = json_cpp::Json_vector<double>();
-        for (auto &l:*this){
-            x.push_back(l.x);
-        }
-        return x;
+    bool Polygon::contains(const Location &location) const {
+        auto dist = center.dist(location);
+        if (dist>radius) return false;
+        auto inner_radius = center.dist(vertices[0],vertices[1]);
+        if (dist<inner_radius) return true;
+        for (int i=1; i<vertices.size(); i++)
+            if (segments_intersect(center,location,vertices[i],vertices[i-1]))
+                return false;
+        if (segments_intersect(center,location,vertices[vertices.size()-1],vertices[0]))
+            return false;
+        return true;
     }
 
-    json_cpp::Json_vector<double> Location_list::get_y() {
-        auto y = json_cpp::Json_vector<double>();
-        for (auto &l:*this){
-            y.push_back(l.y);
-        }
-        return y;
-    }
 
     Polygon Polygon::move(const Location &dst) const {
         Polygon p;
@@ -161,6 +117,8 @@ namespace cell_world {
         return false;
     }
 
+    //POLYGON LIST
+
     Polygon_list::Polygon_list(const Location_list &centers, const Shape &shape, const Transformation &transformation) {
         for (auto &center:centers ) emplace_back(center, shape, transformation);
     }
@@ -168,6 +126,26 @@ namespace cell_world {
     bool Polygon_list::contains(const Location &location) const {
         for (auto &p : *this) if (p.contains(location)) return true;
         return false;
+    }
+
+    //SPACE
+
+    Space::Space() = default;
+
+    Space::Space(const Location &center, const Shape &shape, const Transformation &transformation) :
+            center(center),
+            shape(shape),
+            transformation(transformation){
+
+    }
+
+    Location Space::transform(const Location &location, const Space &src_space) const {
+        auto source_dist_center = src_space.center.dist(location);
+        auto source_theta = src_space.center.atan(location);
+        auto size_ratio = transformation.size / src_space.transformation.size;
+        auto rotation = to_radians(transformation.rotation - src_space.transformation.rotation);
+        auto new_location = center;
+        return new_location.move(rotation+source_theta, source_dist_center * size_ratio);
     }
 
 }

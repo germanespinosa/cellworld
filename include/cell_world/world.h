@@ -1,10 +1,11 @@
 #pragma once
 #include <cell_world/core.h>
+#include <cell_world/shape.h>
 #include <cell_world/cell_group.h>
 #include <cell_world/connection.h>
 #include <cell_world/visibility.h>
 #include <cell_world/graph.h>
-#include<cell_world/paths.h>
+#include <cell_world/paths.h>
 
 namespace cell_world{
 
