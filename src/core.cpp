@@ -310,5 +310,17 @@ namespace cell_world {
         }
         return (direction(v,l1) + direction(v,l2)) == 0;
     }
+
+    double Transformation::theta() const {
+        return to_radians(rotation);
+    }
+
+
+    cell_world::Transformation::Transformation() = default;
+
+    cell_world::Transformation::Transformation(double size, double rotation):
+            size(size), rotation(rotation){
+
+    }
 }
 

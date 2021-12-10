@@ -34,17 +34,6 @@ namespace cell_world {
 
     Shape::Shape() = default;
 
-    double Transformation::theta() const {
-        return to_radians(rotation);
-    }
-
-
-    cell_world::Transformation::Transformation() = default;
-
-    cell_world::Transformation::Transformation(double size, double rotation):
-            size(size), rotation(rotation){
-
-    }
 
     Space::Space() = default;
 
@@ -157,6 +146,18 @@ namespace cell_world {
                 }
             }
         }
+        return false;
+    }
+
+    bool Polygon::contains(const Polygon &polygon) const {
+        for(auto &v:polygon.vertices)
+            if (!contains(v)) return false;
+        return true;
+    }
+
+    bool Polygon::overlaps(const Polygon &polygon) const {
+        for(auto &v:polygon.vertices)
+            if (contains(v)) return true;
         return false;
     }
 

@@ -3,18 +3,6 @@
 
 namespace cell_world{
 
-    struct Transformation : json_cpp::Json_object{
-        Transformation ();
-        Transformation (double size, double rotation);
-        double theta() const;
-        double size{};
-        double rotation{};
-        Json_object_members({
-                                Add_member(size);
-                                Add_member(rotation);
-                            });
-    };
-
     struct Shape : json_cpp::Json_object{
         Shape ();
         Shape (int);
@@ -23,7 +11,6 @@ namespace cell_world{
                                 Add_member(sides);
                             })
     };
-
 
     struct Polygon : json_cpp::Json_object {
         Polygon ();
@@ -38,6 +25,8 @@ namespace cell_world{
         bool is_between (const Location &, const Location &) const;
         bool is_between (const Location &, double, double ) const;
         bool contains(const Location &) const;
+        bool contains(const Polygon &) const;
+        bool overlaps(const Polygon &) const;
         Json_object_members({
                                 Add_member(vertices);
                                 Add_member(center);
