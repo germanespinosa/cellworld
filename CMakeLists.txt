@@ -10,7 +10,7 @@ project(cellworld
 ### download and install dependency library
 string(TIMESTAMP v)
 file(DOWNLOAD
-        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake?${v}
+        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake?23${v}
         ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
 
 include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
@@ -62,7 +62,7 @@ else(MSVC)
 endif(MSVC)
 
 dependency_include(include)
-dependency_include(dependencies/easy-tcp/include)
+dependency_include(${dependencies_folder}/easy-tcp/include)
 
 target_include_directories(cellworld
     SYSTEM INTERFACE
