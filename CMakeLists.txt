@@ -7,7 +7,7 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
-FIND_PACKAGE(Dependencies)
+find_package(Dependencies)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 install_dependency(https://github.com/germanespinosa/easy-tcp Easy-tcp)
