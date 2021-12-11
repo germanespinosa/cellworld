@@ -7,15 +7,7 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
-### download and install dependency library
-string(TIMESTAMP v)
-file(DOWNLOAD
-        https://raw.githubusercontent.com/germanespinosa/dependencies/main/dependencies.cmake?23${v}
-        ${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
-
-include(${CMAKE_CURRENT_BINARY_DIR}/dependencies.cmake)
-###
-
+FIND_PACKAGE(Dependencies)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 install_dependency(https://github.com/germanespinosa/easy-tcp Easy-tcp)
