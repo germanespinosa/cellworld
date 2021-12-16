@@ -25,6 +25,12 @@ namespace cell_world {
     using Trajectories = json_cpp::Json_vector<Step> ;
 
     struct Episode : json_cpp::Json_object {
+        Json_object_members(
+                Add_member(start_time);
+                Add_member(time_stamp);
+                Add_member(end_time);
+                Add_member(trajectories);
+        )
         json_cpp::Json_date start_time;
         double time_stamp;
         json_cpp::Json_date end_time;
@@ -34,6 +40,15 @@ namespace cell_world {
     using Episodes = json_cpp::Json_vector<Episode>;
 
     struct Experiment : json_cpp::Json_object {
+        Json_object_members(
+                Add_member(name);
+                Add_member(world_configuration_name);
+                Add_member(world_implementation_name);
+                Add_member(occlusions);
+                Add_member(duration);
+                Add_member(start_time);
+                Add_optional_member(episodes);
+        );
         std::string name;
         std::string world_configuration_name;
         std::string world_implementation_name;
