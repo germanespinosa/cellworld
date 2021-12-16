@@ -42,6 +42,7 @@ namespace cell_world {
     struct Experiment : json_cpp::Json_object {
         Json_object_members(
                 Add_member(name);
+                Add_member(subject_name);
                 Add_member(world_configuration_name);
                 Add_member(world_implementation_name);
                 Add_member(occlusions);
@@ -50,6 +51,7 @@ namespace cell_world {
                 Add_optional_member(episodes);
         );
         std::string name;
+        std::string subject_name;
         std::string world_configuration_name;
         std::string world_implementation_name;
         std::string occlusions;
