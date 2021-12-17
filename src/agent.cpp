@@ -11,4 +11,5 @@ namespace cell_world {
     void Agent_base::set_public_state(Agent_public_state *s) {
         _state = s;
     }
+
 }
