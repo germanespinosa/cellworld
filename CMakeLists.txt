@@ -10,7 +10,6 @@ project(cellworld
 find_package(Dependencies)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
-install_dependency(https://github.com/germanespinosa/easy-tcp Easy-tcp)
 
 string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread ")
 
@@ -33,10 +32,7 @@ set(cellworld_files
     src/state.cpp
     src/map.cpp
     src/resources.cpp
-    src/message.cpp
-    src/message_router.cpp
-    src/message_client.cpp
-    src/message_server.cpp )
+        )
 
 add_library(cellworld ${cellworld_files})
 
@@ -74,8 +70,8 @@ target_link_libraries(cellworld
 #### TESTS
 ####
 
-install_dependency(https://github.com/germanespinosa/catch CatchTests)
-test_library(cellworld)
+#install_dependency(https://github.com/germanespinosa/catch CatchTests)
+#test_library(cellworld)
 
 
 ####
