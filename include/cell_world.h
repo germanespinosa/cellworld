@@ -12,8 +12,4 @@
 #include<cell_world/map.h>
 #include<cell_world/resources.h>
 #include<cell_world/experiment.h>
-#include<cell_world/message.h>
-#include<cell_world/message_router.h>
-#include<cell_world/message_client.h>
-#include<cell_world/message_server.h>
 #include<cell_world/timer.h>
