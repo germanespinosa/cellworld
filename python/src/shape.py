@@ -24,17 +24,16 @@ class Transformation_list(JsonList):
 
 
 class Space(JsonObject):
-    def __init__(self, center=Location(), shape=Shape(), transformation=Transformation()):
-        check_type(center, Location, "incorrect type for center")
-        check_type(shape, Shape, "incorrect type for shape")
-        check_type(transformation, Transformation, "incorrect type for transformation")
-        self.center = center
-        self.shape = shape
-        self.transformation = transformation
+    def __init__(self,
+                 center: Location = None,
+                 shape: Shape = None,
+                 transformation: Transformation = None):
+        self.center = center if center else Location()
+        self.shape = shape if shape else Shape()
+        self.transformation = transformation if transformation else Transformation()
 
     @staticmethod
-    def transform_to(location, src_space, dst_space):
-        check_type(location, Location, "incorrect type for location")
+    def transform_to(location: Location, src_space, dst_space):
         check_type(src_space, Space, "incorrect type for src_space")
         check_type(dst_space, Space, "incorrect type for dst_space")
         size_ratio = dst_space.transformation.size / src_space.transformation.size
@@ -47,12 +46,14 @@ class Space(JsonObject):
 
 class Polygon:
 
-    def __init__(self, center, sides=0, radius=1.0, rotation=0, vertices=None):
+    def __init__(self,
+                 center: Location,
+                 sides: int = 0,
+                 radius: float = 1.0,
+                 rotation: float = 0.0,
+                 vertices: Location_list = None):
         if vertices is None:
             vertices = Location_list()
-        check_type(center, Location, "incorrect type for center")
-        check_type(sides, int, "incorrect type for sides")
-        check_type(vertices, Location_list, "incorrect type for sides")
         self.center = center
         self.vertices = vertices
         self.radius = float(radius)
@@ -72,8 +73,10 @@ class Polygon:
             if len(self.vertices) == 0:
                 raise "must specify either sides or vertices"
 
-    def move(self, location=None, theta=None, dist=None):
-        check_type(location, Location, "incorrect type for location")
+    def move(self,
+             location: Location = None,
+             theta: float = None,
+             dist: float = None):
         dif = Location(0, 0)
         if location is None:
             if theta is None or dist is None:
@@ -85,8 +88,7 @@ class Polygon:
         for v in self.vertices:
             v = v + dif
 
-    def contains(self, location):
-        check_type(location, Location, "incorrect type for location")
+    def contains(self, location: Location):
         dist = self.center.dist(location)
         if dist > self.radius:
             return False
@@ -100,10 +102,12 @@ class Polygon:
             return False
         return True
 
-    def is_between(self, src=None, dst=None, theta=None, dist=None):
-        check_type(src, Location, "incorrect type for src")
+    def is_between(self,
+                   src: Location = None,
+                   dst: Location = None,
+                   theta: float = None,
+                   dist: float = None):
         if dst is not None:
-            check_type(dst, Location, "incorrect type for dst")
             theta = src.atan(dst)
             dist = src.dist(dst)
         else:

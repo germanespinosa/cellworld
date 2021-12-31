@@ -5,7 +5,9 @@ import math
 
 class Location(JsonObject):
 
-    def __init__(self, x=0.0, y=0.0):
+    def __init__(self,
+                 x: float = 0.0,
+                 y: float = 0.0):
         self.x = float(x)
         self.y = float(y)
 
@@ -21,17 +23,17 @@ class Location(JsonObject):
         c.y = self.y - o.y
         return c
 
-    def move(self, theta, dist):
+    def move(self, theta: float, dist: float):
         self.x += math.sin(theta) * dist
         self.y += math.cos(theta) * dist
         return self
 
-    def atan(self, location):
+    def atan(self, location) -> float:
         check_type(location, Location, "incorrect type for location")
         v = location-self
         return math.atan2(v.x, v.y)
 
-    def dist(self, location=None, segment=None):
+    def dist(self, location=None, segment: tuple = None) -> float:
         if location:
             check_type(location, Location, "incorrect type for location")
             v = location-self
@@ -51,6 +53,7 @@ class Location(JsonObject):
     def __rmul__(self, multiplier):
         return Location(self.x * multiplier, self.y * multiplier)
 
+
 class Location_list(JsonList):
 
     def __init__(self, iterable=None):
@@ -69,15 +72,9 @@ class Location_list(JsonList):
         return y
 
 
-def segments_intersect(segment1, segment2):
-    check_type(segment1, tuple, "incorrect type for segment1")
-    check_type(segment2, tuple, "incorrect type for segment2")
+def segments_intersect(segment1: tuple, segment2: tuple):
     segment1_point1, segment1_point2 = segment1
     segment2_point1, segment2_point2 = segment2
-    check_type(segment1_point1, Location, "incorrect type for segment1_point1")
-    check_type(segment1_point2, Location, "incorrect type for segment1_point2")
-    check_type(segment2_point1, Location, "incorrect type for segment2_point1")
-    check_type(segment2_point2, Location, "incorrect type for segment2_point2")
     t1 = segment1_point1.atan(segment1_point2)
     t11 = segment1_point1.atan(segment2_point1)
     t12 = segment1_point1.atan(segment2_point2)

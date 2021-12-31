@@ -6,12 +6,21 @@ from matplotlib.transforms import Affine2D
 from .world import *
 from .experiment import *
 from .agent_markers import *
-from .util import Timer
 
 class Display:
 
-    def __init__(self, world, fig_size=(12, 10), padding=.1, show_axes=False, cell_color="white", occlusion_color="black", background_color="white", habitat_color="white", cell_edge_color="black", habitat_edge_color="black", animated=False):
-        check_type(world, World, "incorrect type for world")
+    def __init__(self,
+                 world: World,
+                 fig_size: tuple = (12, 10),
+                 padding: float = .1,
+                 show_axes: bool = False,
+                 cell_color="white",
+                 occlusion_color="black",
+                 background_color="white",
+                 habitat_color="white",
+                 cell_edge_color="black",
+                 habitat_edge_color="black",
+                 animated: bool = False):
         if animated:
             plt.ion()
         self.agents = dict()
@@ -24,7 +33,7 @@ class Display:
         self.ax = self.fig.add_subplot(111)
         self.ax.axes.xaxis.set_visible(show_axes)
         self.ax.axes.yaxis.set_visible(show_axes)
-        self.agents_trajectories = Trajectories
+        self.agents_trajectories = Trajectories()
         xcenter = world.implementation.space.center.x
         ycenter = world.implementation.space.center.y
 
@@ -56,8 +65,7 @@ class Display:
         self.ax.add_patch(RegularPolygon((xcenter, ycenter), ssides, ssize, facecolor=habitat_color, edgecolor=habitat_edge_color, orientation=srotation, zorder=-3))
         plt.tight_layout()
 
-    def add_trajectories(self, trajectories, colors={}):
-        check_type(trajectories, Trajectories, "wrong type for trajectories")
+    def add_trajectories(self, trajectories: Trajectories, colors={}):
         agents = trajectories.get_agent_names()
         for index, agent in enumerate(agents):
             locations = trajectories.get_agent_trajectory(agent).get("location")
@@ -74,31 +82,26 @@ class Display:
                     lcolor = color
                 self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=.5, linewidth=3)
 
-    def circle(self, location, radius, color):
+    def circle(self, location: Location, radius: float, color):
         circle_patch = plt.Circle((location.x, location.y), radius, color=color)
         return self.ax.add_patch(circle_patch)
 
-    def arrow(self, beginning, theta, dist, color, head_width=.02):
-        check_type(beginning, Location, "incorrect type for beginning")
+    def arrow(self, beginning: Location, theta: float, dist: float, color, head_width: float = .02):
         ending = beginning.copy().move(theta=theta, dist=dist)
         length = ending - beginning
         return self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True)
 
-    def agent(self, step=None, agent_name=None, location=None, rotation=None, color=None, size=40, show_trajectory=True):
+    def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0, show_trajectory: bool = True):
         if step:
-            check_type(step, Step, "incorrect type step")
             agent_name = step.agent_name
             location = step.location
             rotation = step.rotation
 
         if show_trajectory:
             self.agents_trajectories.append(step)
-            x = self.agents_trajectories.get_agent_trajectory(step.self, agent_name).get("x")
-            y = self.agents_trajectories.get_agent_trajectory(step.self, agent_name).get("y")
+            x = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("x")
+            y = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("y")
             self.agents[agent_name], = self.ax.plot(x, y, c=color)
-
-        check_type(location, Location, "incorrect type location")
-        check_type(rotation, float, "incorrect type rotation")
 
         if agent_name not in self.agents:
             self.agents[agent_name], = self.ax.plot(location.x, location.y, marker=Agent_markers.robot(), c=color, markersize=size)

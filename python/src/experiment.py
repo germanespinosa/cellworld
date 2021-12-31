@@ -5,9 +5,15 @@ from .location import *
 from .shape import Space
 from .world import World_implementation
 
-
 class Step(JsonObject):
-    def __init__(self, time_stamp=0.0, agent_name="", frame=0, coordinates=None, location=None, rotation=0.0, data=""):
+    def __init__(self,
+                 time_stamp: float = 0.0,
+                 agent_name: str = "",
+                 frame: int = 0,
+                 coordinates: Coordinates = None,
+                 location: Location = None,
+                 rotation: float = 0.0,
+                 data: str = ""):
         self.time_stamp = time_stamp
         self.agent_name = agent_name
         self.frame = frame
@@ -25,7 +31,7 @@ class Velocities(JsonList):
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=float)
 
-    def complementary_filter(self, a): # complementary filter
+    def complementary_filter(self, a: float):# complementary filter
         check_type(a, float, "wrong type for a")
         if a <= 0 or a >= 1:
             raise ArithmeticError("filter parameter should be > 0 and < 1")
@@ -37,22 +43,21 @@ class Velocities(JsonList):
             filtered.append(nv)
         return filtered
 
-    def outliers_filter(self, a):
-        check_type(a, float, "wrong type for a")
-        if a <= 0:
-            raise ArithmeticError("filter parameter should be > 0")
-        threshold = sum(self)/len(self) * a
+    def outliers_filter(self, threshold: float):
+        check_type(threshold, float, "wrong type for threshold")
+        if threshold <= 0:
+            raise ArithmeticError("threshold parameter should be > 0")
+        threshold = sum(self)/len(self) * threshold
         filtered = Velocities()
+        if len(self) == 0:
+            return filtered
         last = self[0]
-        next_good = False
         for v in self:
             if abs(v-last) <= threshold:
-                next_good = False
                 filtered.append(v)
                 last = v
             else:
                 filtered.append(last)
-                next_good = True
         return filtered
 
 
@@ -60,7 +65,7 @@ class Trajectories(JsonList):
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=Step)
 
-    def get_velocities(self):
+    def get_velocities(self) -> Velocities:
         velocities = {}
         last_locations = {}
         last_time_stamp = {}
@@ -76,7 +81,7 @@ class Trajectories(JsonList):
             last_time_stamp[s.agent_name] = s.time_stamp
         return velocities
 
-    def get_filtered_velocities(self, complementary=None, outliers=None):
+    def get_filtered_velocities(self, complementary: float=None, outliers: float=None) -> Velocities:
         avs = self.get_velocities()
         for agent_name in avs:
             if outliers:
@@ -95,19 +100,19 @@ class Trajectories(JsonList):
         return unique_steps
 
 
-    def get_agent_names(self):
+    def get_agent_names(self) -> list:
         agent_names = []
         for s in self:
             if s.agent_name not in agent_names:
                 agent_names.append(s.agent_name)
         return agent_names
 
-    def get_agent_trajectory(self, agent_name):
+    def get_agent_trajectory(self, agent_name: str):
         return self.where("agent_name", agent_name)
 
 
 class Episode(JsonObject):
-    def __init__(self, start_time="", time_stamp=0.0, end_time="", trajectories=None):
+    def __init__(self, start_time="", time_stamp: float = 0.0, end_time="", trajectories: Trajectories = None):
         self.start_time = start_time
         self.time_stamp = time_stamp
         self.end_time = end_time
@@ -122,7 +127,15 @@ class Episode_list(JsonList):
 
 
 class Experiment(JsonObject):
-    def __init__(self, name="", world_configuration_name="", world_implementation_name="", occlusions="", subject_name="", duration=0, start_time="", episodes=None):
+    def __init__(self,
+                 name: str = "",
+                 world_configuration_name: str = "",
+                 world_implementation_name: str = "",
+                 occlusions: str = "",
+                 subject_name: str = "",
+                 duration: str = 0,
+                 start_time: str = "",
+                 episodes: Episode_list = None):
         self.name = name
         self.world_configuration_name = world_configuration_name
         self.world_implementation_name = world_implementation_name
@@ -135,18 +148,18 @@ class Experiment(JsonObject):
         self.episodes = episodes
 
     @staticmethod
-    def get_from_file(file_name):
+    def get_from_file(file_name: str):
         e = Experiment.parse(open(file_name).read())
         check_type(e, Experiment, "")
         return e
 
     @staticmethod
-    def get_from_url(url):
+    def get_from_url(url: str):
         e = Experiment.parse(get_web_json(resource_uri=url))
         check_type(e, Experiment, "")
         return e
 
-    def transform(self, dst_space_name):
+    def transform(self, dst_space_name: str):
         check_type(dst_space_name, str, "incorrect type for dst_space")
 
         dst_space = World_implementation.get_from_name(self.world_configuration_name, dst_space_name).space

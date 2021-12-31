@@ -4,7 +4,7 @@ from matplotlib.path import Path
 class Agent_markers:
 
     @staticmethod
-    def robot(marker_size=1):
+    def robot(marker_size: float = 1.0):
         verts = [
             (-0.25 * marker_size, -1.0 * marker_size),
             (-0.25 * marker_size, 1.0 * marker_size),
@@ -69,7 +69,7 @@ class Agent_markers:
         return Path(verts, codes)
 
     @staticmethod
-    def mouse(marker_size=1.0):
+    def mouse(marker_size: float = 1.0):
         verts = [(-.8, .0), (-.3, -1.0), (.0, -1.5), (.3, -1.0), (.3, -1.0), (.8, .0),
                  (2, -.1), (.8, 2), (.6, .0),
                  (.3, .5), (-0.3, .5), (-.6, .0),

@@ -3,9 +3,12 @@ from .util import *
 from .location import Location
 from .coordinates import Coordinates, Coordinates_list
 
-
 class Cell(JsonObject):
-    def __init__(self, cell_id=0, coordinates=None, location=None, occluded=False):
+    def __init__(self,
+                 cell_id: int = 0,
+                 coordinates: Coordinates = None,
+                 location: Location = None,
+                 occluded: bool = False):
         if coordinates is None:
             coordinates = Coordinates()
         if location is None:
@@ -25,7 +28,7 @@ class Cell_group_builder(JsonList):
         JsonList.__init__(self, iterable, list_type=int)
 
     @staticmethod
-    def get_from_name(world_name, name, *argv):
+    def get_from_name(world_name: str, name: str, *argv):
         if not type(world_name) is str:
             raise "incorrect type for world_name"
         if not type(name) is str:
@@ -34,7 +37,9 @@ class Cell_group_builder(JsonList):
 
 
 class Cell_group(JsonList):
-    def __init__(self, iterable=None, world=None, cell_group_builder=None):
+    def __init__(self, iterable = None,
+                 world = None,
+                 cell_group_builder: Cell_group_builder = None):
         if cell_group_builder is None:
             cell_group_builder = []
         JsonList.__init__(self, iterable, list_type=Cell)
@@ -42,8 +47,7 @@ class Cell_group(JsonList):
             for cell_id in cell_group_builder:
                 self.append(world.cells[cell_id])
 
-    def find (self, location):
-        check_type(location, Location, "incorrect type for location")
+    def find(self, location: Location):
         closest = -1
         closest_distance = 0
         for index in range(len(self)):
@@ -67,8 +71,7 @@ class Cell_group(JsonList):
 
 
 class Cell_map:
-    def __init__(self, coordinates_list):
-        check_type(coordinates_list, Coordinates_list, "incorrect type for coordinates_list")
+    def __init__(self, coordinates_list: Coordinates_list):
         self.coordinates = coordinates_list
         x = self.coordinates.get_x()
         y = self.coordinates.get_x()
@@ -80,7 +83,6 @@ class Cell_map:
         for i, c in enumerate(coordinates_list):
             self.index[c.x][c.y] = i
 
-    def __getitem__(self, coordinates):
-        check_type(coordinates, Coordinates, "incorrect type for coordinates")
+    def __getitem__(self, coordinates: Coordinates) -> int:
         return self.index[coordinates.x][coordinates.y]
 

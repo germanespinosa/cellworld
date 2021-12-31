@@ -6,7 +6,8 @@ from datetime import datetime, timedelta
 
 cellworld_data_base_uri = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/"
 
-def get_resource(resource_type, key0, *argv):
+
+def get_resource(resource_type: str, key0, *argv):
     resource_uri = cellworld_data_base_uri + resource_type + "/" + key0
     for arg in argv:
         resource_uri += "." + arg
@@ -14,16 +15,16 @@ def get_resource(resource_type, key0, *argv):
     return json.loads(response.text)
 
 
-def get_web_json(resource_uri):
+def get_web_json(resource_uri: str):
     response = requests.get(resource_uri)
     return json.loads(response.text)
 
 
-def to_radians(rotation):
+def to_radians(rotation: float) -> float:
     return rotation / 180 * math.pi
 
 
-def to_degrees(theta):
+def to_degrees(theta: float) -> float:
     return theta * 180 / math.pi
 
 
@@ -39,14 +40,14 @@ class Timer:
         self.time = seconds
         self.check_point = datetime.now()
 
-    def to_seconds(self):
+    def to_seconds(self) -> float:
         delta=datetime.now() - self.check_point
         return delta.seconds
 
     def __bool__(self):
         return self.to_seconds() < self.time
 
-    def time_out(self):
+    def time_out(self) -> bool:
         return self.to_seconds() > self.time
 
 
@@ -64,7 +65,7 @@ def check_types(v, ts, m):
         raise TypeError(m)
 
 
-def normalize(angle):
+def normalize(angle: float) -> float:
     check_type(angle, float, "wrong type for angle")
     while angle < 0:
         angle += 2.0 * math.pi
@@ -73,7 +74,7 @@ def normalize(angle):
     return angle;
 
 
-def angle_difference(a1, a2):
+def angle_difference(a1: float, a2: float) -> float:
     a1 = normalize(a1)
     a2 = normalize(a2)
     if a1 > a2:
@@ -90,7 +91,7 @@ def angle_difference(a1, a2):
             return a1 + math.pi * 2.0 - a2, 1
 
 
-def angle_between(value, lim1, lim2, inclusive=False):
+def angle_between(value: float, lim1: float, lim2: float, inclusive: bool=False) -> bool:
     diff1, dir1 = angle_difference(value, lim1)
     diff2, dir2 = angle_difference(value, lim2)
     if inclusive:
