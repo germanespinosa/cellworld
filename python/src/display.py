@@ -97,17 +97,17 @@ class Display:
             location = step.location
             rotation = step.rotation
 
-        if show_trajectory:
-            self.agents_trajectories.append(step)
-            x = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("x")
-            y = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("y")
-            self.agents[agent_name], = self.ax.plot(x, y, c=color)
+        # if show_trajectory:
+        #     self.agents_trajectories.append(step)
+        #     x = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("x")
+        #     y = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("y")
+        #     self.agents[agent_name], = self.ax.plot(x, y, c=color)
 
         if agent_name not in self.agents:
             self.agents[agent_name], = self.ax.plot(location.x, location.y, marker=Agent_markers.robot(), c=color, markersize=size)
 
         t = Affine2D().rotate_deg_around(0, 0, -rotation)
-        self.agents[agent_name].set_marker(Agent_markers.robot().transformed(t))
+        self.agents[agent_name].set_marker(Agent_markers.robot(1.0).transformed(t))
         self.agents[agent_name].set_xdata(location.x)
         self.agents[agent_name].set_ydata(location.y)
 
