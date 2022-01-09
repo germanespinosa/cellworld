@@ -63,16 +63,14 @@ target_include_directories(cellworld
 
 target_link_libraries(cellworld
     PUBLIC
-    json-cpp
-    easy-tcp)
+    json-cpp)
 
 ####
 #### TESTS
 ####
 
-#install_dependency(https://github.com/germanespinosa/catch CatchTests)
-#test_library(cellworld)
-
+install_dependency(https://github.com/germanespinosa/catch CatchTests)
+test_library(cellworld)
 
 ####
 #### LIBRARY INSTALLATION
