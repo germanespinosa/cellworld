@@ -36,13 +36,12 @@ class Time_out:
         return self.end_time > datetime.now()
 
 class Timer:
-    def __init__(self, seconds=0):
+    def __init__(self, seconds:float =0):
         self.time = seconds
         self.check_point = datetime.now()
 
     def to_seconds(self) -> float:
-        delta=datetime.now() - self.check_point
-        return delta.seconds
+        return (datetime.now() - self.check_point).total_seconds()
 
     def __bool__(self):
         return self.to_seconds() < self.time
