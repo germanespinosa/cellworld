@@ -9,6 +9,17 @@
 
 namespace cell_world{
 
+    struct World_info : json_cpp::Json_object {
+        std::string world_configuration;
+        std::string world_implementation;
+        std::string occlusions;
+        Json_object_members(
+                Add_member(world_configuration);
+                Add_member(world_implementation);
+                Add_member(occlusions);
+        )
+    };
+
     struct World_configuration : json_cpp::Json_object{
         World_configuration ();
         World_configuration (const Shape &, const Coordinates_list &, const Connection_pattern &);
