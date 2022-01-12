@@ -4,10 +4,18 @@ from .location import Location, Location_list
 from .coordinates import Coordinates, Coordinates_list
 from .shape import Shape, Transformation, Space, Transformation_list
 from .cell import Cell, Cell_group_builder, Cell_group, Cell_map
-from .util import check_type
+
+
+class World_info(JsonObject):
+
+    def __init__(self, world_configuration: str = "", world_implementation: str = "", occlusions: str = ""):
+        self.world_configuration = world_configuration
+        self.world_implementation = world_implementation
+        self.occlusions = occlusions
 
 
 class World_configuration(JsonObject):
+
     def __init__(self):
         self.cell_shape = Shape()
         self.cell_coordinates = Coordinates_list()
