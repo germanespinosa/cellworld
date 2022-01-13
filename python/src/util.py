@@ -35,6 +35,7 @@ class Time_out:
     def __bool__(self):
         return self.end_time > datetime.now()
 
+
 class Timer:
     def __init__(self, seconds:float =0):
         self.time = seconds
@@ -48,6 +49,9 @@ class Timer:
 
     def time_out(self) -> bool:
         return self.to_seconds() > self.time
+
+    def reset(self):
+        self.check_point = datetime.now()
 
 
 def check_type(v, t, m):

@@ -4,6 +4,7 @@ from .coordinates import *
 from .location import *
 from .shape import Space
 from .world import World_implementation
+from datetime import datetime
 
 class Step(JsonObject):
     def __init__(self,
@@ -112,7 +113,9 @@ class Trajectories(JsonList):
 
 
 class Episode(JsonObject):
-    def __init__(self, start_time="", time_stamp: float = 0.0, end_time="", trajectories: Trajectories = None):
+    def __init__(self, start_time: datetime = None, time_stamp: float = 0.0, end_time: datetime = None, trajectories: Trajectories = None):
+        if not start_time:
+            start_time = datetime.now()
         self.start_time = start_time
         self.time_stamp = time_stamp
         self.end_time = end_time
@@ -133,8 +136,8 @@ class Experiment(JsonObject):
                  world_implementation_name: str = "",
                  occlusions: str = "",
                  subject_name: str = "",
-                 duration: str = 0,
-                 start_time: str = "",
+                 duration: int = 0,
+                 start_time: datetime = None,
                  episodes: Episode_list = None):
         self.name = name
         self.world_configuration_name = world_configuration_name
@@ -142,6 +145,8 @@ class Experiment(JsonObject):
         self.occlusions = occlusions
         self.subject_name = subject_name
         self.duration = duration
+        if start_time is None:
+            start_time = datetime.now()
         self.start_time = start_time
         if episodes is None:
             episodes = Episode_list()
