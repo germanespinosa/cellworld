@@ -118,6 +118,8 @@ class Episode(JsonObject):
             start_time = datetime.now()
         self.start_time = start_time
         self.time_stamp = time_stamp
+        if not end_time:
+            end_time = datetime.now()
         self.end_time = end_time
         if trajectories is None:
             trajectories = Trajectories()
