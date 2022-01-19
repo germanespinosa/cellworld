@@ -58,6 +58,10 @@ namespace cell_world {
         unsigned int duration;
         json_cpp::Json_date start_time;
         Episodes episodes;
+        void set_name(const std::string &prefix = "", const std::string &suffix = "") {
+            name = start_time.to_string("%Y%m%d_%OH%M_") + subject_name + "_" + occlusions;
+            if (!prefix.empty()) name = prefix + "_" + name;
+            if (!suffix.empty()) name = name + "_" + suffix;
+        };
     };
-
 }

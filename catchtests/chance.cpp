@@ -103,3 +103,13 @@ TEST_CASE("combine chances") {
 TEST_CASE("pick best") {
     CHECK(Chance::pick_best(1,{-99.9319,-100,-100})==0);
 }
+
+TEST_CASE("Experiment::set_name") {
+    Experiment experiment;
+    experiment.start_time = json_cpp::Json_date::now();
+    experiment.occlusions = "10_05";
+    experiment.subject_name = "SUBJECT";
+    experiment.set_name("PREFIX","SUFFIX");
+    cout << experiment << endl;
+    cout << experiment.start_time << endl;
+}
