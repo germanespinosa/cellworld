@@ -177,3 +177,9 @@ class Experiment(JsonObject):
                 step.location = Space.transform_to(step.location, src_space, dst_space)
         self.world_implementation_name = dst_space_name
 
+    def set_name(self, prefix: str = None, suffix: str = None):
+        self.name = self.start_time.strftime("%Y%m%d_%OH%M_") + self.subject_name + "_" + self.occlusions;
+        if prefix:
+            self.name = prefix + "_" + self.name
+        if suffix:
+            self.name = self.name + "_" + suffix
