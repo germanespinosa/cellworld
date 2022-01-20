@@ -120,12 +120,12 @@ class World:
     def get_from_parameters_names(
             world_configuration_name: str,
             world_implementation_name: str,
-            occlussions_name: str = None):
+            occlusions_name: str = None):
         wc = World_configuration.get_from_name(world_configuration_name)
         o = None
         wi = World_implementation.get_from_name(world_configuration_name, world_implementation_name)
-        if occlussions_name:
-            o = Cell_group_builder.get_from_name(world_configuration_name, occlussions_name, "occlusions")
+        if occlusions_name:
+            o = Cell_group_builder.get_from_name(world_configuration_name, occlusions_name, "occlusions")
         return World.get_from_parameters(wc, wi, o)
 
     @staticmethod
