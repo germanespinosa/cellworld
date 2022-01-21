@@ -143,6 +143,9 @@ class World:
                 w.cells[cell_id].occluded = True
         return w
 
+    def create_cell_group(self, cell_group_builder: Cell_group_builder):
+        return Cell_group(world=self, cell_group_builder=cell_group_builder)
+
     def __str__(self):
         return str(self.cells)
 

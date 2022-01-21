@@ -84,5 +84,8 @@ class Cell_map:
             self.index[c.x][c.y] = i
 
     def __getitem__(self, coordinates: Coordinates) -> int:
-        return self.index[coordinates.x][coordinates.y]
+        try:
+            return self.index[coordinates.x][coordinates.y]
+        except:
+            return -1
 

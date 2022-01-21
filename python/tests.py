@@ -1,16 +1,10 @@
 from src import *
-#
-# occlusions = "10_05"
-#
-# world = World.get_from_parameters_names("hexagonal", "cv", occlusions)
 
+occlusions = "10_05"
+world = World.get_from_parameters_names("hexagonal", "cv", occlusions)
 
-e = Experiment()
+graph = Graph.create_connection_graph(world)
 
+graph.to_nxgraph()
 
-e.occlusions = "10_05"
-e.start_time = datetime.now()
-e.subject_name = "subject"
-e.set_name("prefix", "suffix")
-
-print (e)
+print(world.create_cell_group(cell_group_builder=graph[world.cells[2]]))
