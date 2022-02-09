@@ -136,6 +136,25 @@ namespace cell_world {
         set_occlusions(occlusions);
     }
 
+    World_implementation World::get_implementation() {
+        World_implementation implementation;
+        for (auto &cell : cells) {
+            implementation.cell_locations.push_back(cell.location);
+        }
+        implementation.space = space;
+        implementation.cell_transformation = cell_transformation;
+        return implementation;
+    }
+
+    World_configuration World::get_configuration() {
+        World_configuration configuration;
+        for (auto &cell : cells) {
+            configuration.cell_coordinates.push_back(cell.coordinates);
+        }
+        configuration.cell_shape = cell_shape;
+        configuration.connection_pattern = connection_pattern;
+        return configuration;
+    }
 }
 
 
