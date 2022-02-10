@@ -21,7 +21,7 @@ namespace cell_world {
         cell_world::Location location;
         double rotation;
         std::string data;
-        Step convert(const Space &src, const Space &dst) {
+        Step convert(const Space &src, const Space &dst) const {
             Step converted = *this;
             converted.location = src.transform(location, dst);
             converted.rotation += dst.transformation.rotation - src.transformation.rotation;
