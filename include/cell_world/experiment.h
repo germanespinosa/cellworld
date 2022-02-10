@@ -1,6 +1,7 @@
 #pragma once
 #include <cell_world/core.h>
 #include <cell_world/cell_group.h>
+#include <cell_world/shape.h>
 
 namespace cell_world {
     struct Step : json_cpp::Json_object{
@@ -20,6 +21,12 @@ namespace cell_world {
         cell_world::Location location;
         double rotation;
         std::string data;
+        Step convert(const Space &src, const Space &dst) {
+            Step converted = *this;
+            converted.location = src.transform(location, dst);
+            converted.rotation += dst.transformation.rotation - src.transformation.rotation;
+            return converted;
+        };
     };
 
     using Trajectories = json_cpp::Json_vector<Step> ;
