@@ -23,7 +23,7 @@ namespace cell_world {
         std::string data;
         Step convert(const Space &src, const Space &dst) const {
             Step converted = *this;
-            converted.location = src.transform(location, dst);
+            converted.location = dst.transform(location, src);
             converted.rotation += dst.transformation.rotation - src.transformation.rotation;
             return converted;
         };
