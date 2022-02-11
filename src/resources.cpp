@@ -46,6 +46,8 @@ namespace cell_world {
         }
         { // time to download the resource
             auto uri = url() + _cache_invalidation();
+            auto json_uri = json_cpp::Json_URI(uri);
+            auto req = json_cpp::Json_web_request(json_uri).get_response();
             auto wr = Json_web_get(uri);
             ofstream cache_file;
             cache_file.open(cfn);
