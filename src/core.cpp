@@ -198,6 +198,10 @@ namespace cell_world {
         return d.transformation();
     }
 
+    Location Location::operator*(const Location & other) const {
+        return {x*other.x, y*other.y};
+    }
+
     double angle_difference(double a1, double a2) {
         a1 = normalize(a1);
         a2 = normalize(a2);

@@ -40,6 +40,7 @@ namespace cell_world{
         Space space;
         Transformation cell_transformation;
         void transform(const Space &);
+        void scale( const Scale & scale);
         Json_object_members({
                                 Add_member(cell_locations);
                                 Add_member(space);

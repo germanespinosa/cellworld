@@ -42,13 +42,20 @@ namespace cell_world{
         bool contains(const Location &) const;
     };
 
+    using Scale = Location;
+
     struct Space : json_cpp::Json_object{
+        enum Orientation{
+            Flipped = -1,
+            Not_flipped = 1
+        };
         Space ();
         Space (const Location &, const Shape &, const Transformation &);
         Location center;
         Shape shape;
         Transformation transformation;
         Location transform(const Location &, const Space &) const;
+        Location scale(const Location &location, const Scale &scale);
         Json_object_members({
                                 Add_member(center);
                                 Add_member(shape);

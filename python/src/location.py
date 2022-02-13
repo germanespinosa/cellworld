@@ -48,11 +48,18 @@ class Location(JsonObject):
             return abs(distance)
 
     def __mul__(self, multiplier):
+        if isinstance(multiplier, Location):
+            return Location(self.x*multiplier.x, self.y*multiplier.y)
         return Location(self.x * multiplier, self.y * multiplier)
 
     def __rmul__(self, multiplier):
+        if isinstance(multiplier, Location):
+            return Location(self.x*multiplier.x, self.y*multiplier.y)
         return Location(self.x * multiplier, self.y * multiplier)
 
+class Scale (Location):
+    def __init__(self):
+        pass
 
 class Location_list(JsonList):
 

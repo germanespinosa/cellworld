@@ -43,6 +43,11 @@ namespace cell_world {
         space = s;
     }
 
+    void World_implementation::scale(const Scale &scale) {
+        for (auto &location : cell_locations){
+            location  = space.scale(location, scale);
+        }
+    }
 // World
 
     World::World() = default;

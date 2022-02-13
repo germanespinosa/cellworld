@@ -1,6 +1,6 @@
 from json_cpp import JsonObject, JsonList
 from .util import *
-from .location import Location, Location_list
+from .location import Location, Location_list, Scale
 from .coordinates import Coordinates, Coordinates_list
 from .shape import Shape, Transformation, Space, Transformation_list
 from .cell import Cell, Cell_group_builder, Cell_group, Cell_map
@@ -101,6 +101,10 @@ class World_implementation(JsonObject):
             cell_transformation.rotation = self.cell_transformation.rotation + dst_space.transformation.rotation - self.space.transformation.rotation
         self.space = dst_space
         self.cell_transformation = cell_transformation
+
+    def scale(self, scale:Scale):
+        for cell_location in self.cell_locations:
+            cell_location = self.space.scale(scale)
 
 
 class World:

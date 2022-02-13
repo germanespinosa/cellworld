@@ -148,4 +148,8 @@ namespace cell_world {
         return new_location.move(rotation+source_theta, source_dist_center * size_ratio);
     }
 
+    Location Space::scale(const Location &location, const Scale &scale) {
+        return (location - center) * scale + center;
+    }
+
 }

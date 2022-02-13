@@ -1,5 +1,5 @@
 from json_cpp import JsonObject, JsonList
-from .location import Location, Location_list, segments_intersect
+from .location import Location, Location_list, segments_intersect, Scale
 from .util import *
 import math
 
@@ -43,6 +43,9 @@ class Space(JsonObject):
         new_location = Location(dst_space.center.x, dst_space.center.y)
         return new_location.move(theta + rotation, dist * size_ratio)
 
+    def scale(self, location:Location, scale: Scale):
+        new_location = (location - self.center) * scale + self.center
+        return new_location
 
 class Polygon:
 
