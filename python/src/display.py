@@ -50,10 +50,10 @@ class Display:
         self.ax.set_ylim(ymin=ymin, ymax=ymax)
         self.ax.set_facecolor(background_color)
         ssides = world.implementation.space.shape.sides
-        srotation = math.radians(0-world.implementation.space.transformation.rotation)
+        srotation = math.radians(0 - world.implementation.space.transformation.rotation)
 
         csides = world.configuration.cell_shape.sides
-        crotation = math.radians(0 - world.implementation.cell_transformation.rotation - srotation)
+        crotation = math.radians(0 - world.implementation.cell_transformation.rotation) - srotation
 
 
         csize = world.implementation.cell_transformation.size / 2

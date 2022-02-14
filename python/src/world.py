@@ -91,7 +91,7 @@ class World_implementation(JsonObject):
 
     def transform (self,
                    dst_space: Space,
-                   cell_transformation: Transformation=None):
+                   cell_transformation: Transformation = None):
         for index, location in enumerate(self.cell_locations):
             new_location = Space.transform_to(location, self.space, dst_space)
             self.cell_locations[index] = new_location
