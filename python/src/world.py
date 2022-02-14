@@ -98,7 +98,6 @@ class World_implementation(JsonObject):
         if cell_transformation is None:
             cell_transformation = Transformation()
             cell_transformation.size = self.cell_transformation.size * dst_space.transformation.size / self.space.transformation.size
-            cell_transformation.rotation = self.cell_transformation.rotation + dst_space.transformation.rotation - self.space.transformation.rotation
         self.space = dst_space
         self.cell_transformation = cell_transformation
 

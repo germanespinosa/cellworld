@@ -53,7 +53,7 @@ class Display:
         srotation = math.radians(0 - world.implementation.space.transformation.rotation)
 
         csides = world.configuration.cell_shape.sides
-        crotation = math.radians(0 - world.implementation.cell_transformation.rotation) - srotation
+        crotation = math.radians(0 - world.implementation.cell_transformation.rotation) + srotation
 
 
         csize = world.implementation.cell_transformation.size / 2
