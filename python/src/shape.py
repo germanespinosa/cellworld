@@ -44,7 +44,9 @@ class Space(JsonObject):
         return new_location.move(theta + rotation, dist * size_ratio)
 
     def scale(self, location:Location, scale: Scale):
-        new_location = (location - self.center) * scale + self.center
+        diff = (location - self.center)
+        scaled = diff * scale
+        new_location = scaled + self.center
         return new_location
 
 class Polygon:

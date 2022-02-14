@@ -96,14 +96,16 @@ class World_implementation(JsonObject):
             new_location = Space.transform_to(location, self.space, dst_space)
             self.cell_locations[index] = new_location
         if cell_transformation is None:
-            cell_transformation = Transformation()
+            cell_transformation = self.cell_transformation.copy()
             cell_transformation.size = self.cell_transformation.size * dst_space.transformation.size / self.space.transformation.size
         self.space = dst_space
         self.cell_transformation = cell_transformation
 
     def scale(self, scale:Scale):
+        new_cell_locations = Location_list()
         for cell_location in self.cell_locations:
-            cell_location = self.space.scale(scale)
+            new_cell_locations.append(self.space.scale(location=cell_location, scale=scale))
+        self.cell_locations = new_cell_locations
 
 
 class World:

@@ -58,8 +58,10 @@ class Location(JsonObject):
         return Location(self.x * multiplier, self.y * multiplier)
 
 class Scale (Location):
-    def __init__(self):
-        pass
+    def __init__(self,
+                 x: float = 0.0,
+                 y: float = 0.0):
+        Location.__init__(self, x=x, y=y)
 
 class Location_list(JsonList):
 
