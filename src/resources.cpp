@@ -38,7 +38,9 @@ namespace cell_world {
     }
 
     std::istream &Resources::get() {
-        string cfn = cache_folder() + "/" + _resource + "." + _file_name();
+        string folder = cache_folder() + "/" + _resource ;
+        create_folder(folder);
+        auto cfn = folder + "/" + _file_name();
         ifstream cache(cfn);
         if (cache.good()) {
             _resource_stream = std::move(cache);
@@ -46,9 +48,7 @@ namespace cell_world {
         }
         { // time to download the resource
             auto uri = url() + _cache_invalidation();
-            auto json_uri = json_cpp::Json_URI(uri);
-            auto req = json_cpp::Json_web_request(json_uri);
-            auto wr = req.get_response();
+            auto wr = Json_web_get(uri);
             //auto wr = Json_web_get(uri);
             ofstream cache_file;
             cache_file.open(cfn);
