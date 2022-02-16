@@ -10,13 +10,23 @@ from src import *
 # print(world.create_cell_group(cell_group_builder=graph[world.cells[2]]))
 #
 
-space = Space(Location(5, 5), Shape(6), Transformation(10, 0))
+# space = Space(Location(5, 5), Shape(6), Transformation(10, 0))
+#
+#
+# location = Location(10, 10)
+#
+# new_location = space.scale(location, Scale(-1, -1))
+#
+# print(new_location)
+#
+import matplotlib.pyplot as plt
+w = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
+d = Display(w)
+
+s = Step(time_stamp=0, agent_name="predator", location=Location(.5, .5), rotation=0)
+d.set_agent_marker("predator", Agent_markers.mouse())
+d.agent(s, size=30)
+d.update()
 
 
-location = Location(10, 10)
-
-new_location = space.scale(location, Scale(-1, -1))
-
-print(new_location)
-
-
+plt.show()

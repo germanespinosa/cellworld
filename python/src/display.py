@@ -2,6 +2,7 @@ import numpy
 from matplotlib.patches import RegularPolygon
 import matplotlib.pyplot as plt
 import matplotlib.colors
+from matplotlib.path import Path
 from matplotlib.transforms import Affine2D
 from .world import *
 from .experiment import *
@@ -34,6 +35,7 @@ class Display:
         self.ax.axes.xaxis.set_visible(show_axes)
         self.ax.axes.yaxis.set_visible(show_axes)
         self.agents_trajectories = Trajectories()
+        self.agents_markers = dict()
         xcenter = world.implementation.space.center.x
         ycenter = world.implementation.space.center.y
 
@@ -65,6 +67,9 @@ class Display:
         self.ax.add_patch(RegularPolygon((xcenter, ycenter), ssides, ssize, facecolor=habitat_color, edgecolor=habitat_edge_color, orientation=srotation, zorder=-3))
         plt.tight_layout()
 
+    def set_agent_marker(self, agent_name: str, marker: Path):
+        self.agents_markers[agent_name] = marker
+
     def add_trajectories(self, trajectories: Trajectories, colors={}):
         agents = trajectories.get_agent_names()
         for index, agent in enumerate(agents):
@@ -91,7 +96,7 @@ class Display:
         length = ending - beginning
         return self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True)
 
-    def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0, show_trajectory: bool = True):
+    def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0, show_trajectory: bool = True, marker: Path=None):
         if step:
             agent_name = step.agent_name
             location = step.location
@@ -103,11 +108,20 @@ class Display:
         #     y = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("y")
         #     self.agents[agent_name], = self.ax.plot(x, y, c=color)
 
+        if not marker:
+            if agent_name in self.agents_markers:
+                marker = self.agents_markers[agent_name]
+            else:
+                if agent_name == "predator":
+                    marker = Agent_markers.robot()
+                else:
+                    marker = Agent_markers.mouse()
+
         if agent_name not in self.agents:
-            self.agents[agent_name], = self.ax.plot(location.x, location.y, marker=Agent_markers.robot(), c=color, markersize=size)
+            self.agents[agent_name], = self.ax.plot(location.x, location.y, marker=marker, c=color, markersize=size)
 
         t = Affine2D().rotate_deg_around(0, 0, -rotation)
-        self.agents[agent_name].set_marker(Agent_markers.robot(1.0).transformed(t))
+        self.agents[agent_name].set_marker(marker.transformed(t))
         self.agents[agent_name].set_xdata(location.x)
         self.agents[agent_name].set_ydata(location.y)
 

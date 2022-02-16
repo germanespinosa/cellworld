@@ -69,6 +69,22 @@ class Agent_markers:
         return Path(verts, codes)
 
     @staticmethod
+    def arrow(marker_size: float = 1.0) -> Path:
+        verts = [(.0 * marker_size, .5 * marker_size),
+                 (.5 * marker_size, -.5 * marker_size),
+                 (.0 * marker_size, -.25 * marker_size),
+                 (-.5 * marker_size, -.5 * marker_size),
+                 (.0 * marker_size, .5 * marker_size)]
+        codes = [
+            Path.MOVETO,  # begin drawing
+            Path.LINETO,  # straight line
+            Path.LINETO,  # straight line
+            Path.LINETO,  # straight line
+            Path.CLOSEPOLY
+        ]
+        return Path(verts, codes)
+
+    @staticmethod
     def mouse(marker_size: float = 1.0) -> Path:
         verts = [(-.8 * marker_size, .0 * marker_size),
                  (-.3 * marker_size, -1.0 * marker_size),
