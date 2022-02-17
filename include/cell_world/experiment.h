@@ -37,11 +37,13 @@ namespace cell_world {
                 Add_member(time_stamp);
                 Add_member(end_time);
                 Add_member(trajectories);
+                Add_optional_member(captures);
         )
         json_cpp::Json_date start_time;
         double time_stamp;
         json_cpp::Json_date end_time;
         Trajectories trajectories;
+        json_cpp::Json_vector<unsigned int> captures;
     };
 
     using Episodes = json_cpp::Json_vector<Episode>;

@@ -113,7 +113,7 @@ class Trajectories(JsonList):
 
 
 class Episode(JsonObject):
-    def __init__(self, start_time: datetime = None, time_stamp: float = 0.0, end_time: datetime = None, trajectories: Trajectories = None):
+    def __init__(self, start_time: datetime = None, time_stamp: float = 0.0, end_time: datetime = None, trajectories: Trajectories = None, captures: JsonList = None):
         if not start_time:
             start_time = datetime.now()
         self.start_time = start_time
@@ -124,6 +124,9 @@ class Episode(JsonObject):
         if trajectories is None:
             trajectories = Trajectories()
         self.trajectories = trajectories
+        if captures is None:
+            captures = JsonList(list_type=int)
+        self.captures = captures
 
 
 class Episode_list(JsonList):
