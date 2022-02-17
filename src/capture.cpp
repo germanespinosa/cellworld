@@ -10,7 +10,7 @@ namespace cell_world {
 
     bool Capture::is_captured(const Location &predator_location, double predator_theta, const Location &prey_location) {
         if (predator_location.dist(prey_location) > dist_max) return false;
-        if (abs(predator_location.atan(prey_location) - predator_theta) > theta_diff_max) return false;
+        if (angle_difference(predator_location.atan(prey_location),predator_theta) > theta_diff_max) return false;
         return visibility.is_visible(predator_location, prey_location) ;
     }
 }

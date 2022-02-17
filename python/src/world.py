@@ -89,7 +89,7 @@ class World_implementation(JsonObject):
             cell_locations.append(cell_location)
         return cell_locations
 
-    def transform (self,
+    def transform(self,
                    dst_space: Space,
                    cell_transformation: Transformation = None):
         for index, location in enumerate(self.cell_locations):

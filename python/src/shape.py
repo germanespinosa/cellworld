@@ -138,3 +138,10 @@ class Polygon_list(JsonList):
 
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=Polygon)
+
+    @staticmethod
+    def get_polygons(centers: Location_list, sides: int, radius: float, rotation: float):
+        polygon_list = Polygon_list()
+        for center in centers:
+            polygon_list.append(Polygon(center,sides=sides, rotation=rotation, radius=radius))
+        return polygon_list

@@ -1,5 +1,5 @@
 from src import *
-
+from matplotlib.backend_bases import MouseButton
 # occlusions = "10_05"
 # world = World.get_from_parameters_names("hexagonal", "cv", occlusions)
 #
@@ -20,13 +20,37 @@ from src import *
 # print(new_location)
 #
 import matplotlib.pyplot as plt
-w = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
-d = Display(w)
+world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
 
-s = Step(time_stamp=0, agent_name="predator", location=Location(.5, .5), rotation=0)
-d.set_agent_marker("predator", Agent_markers.mouse())
-d.agent(s, size=30)
-d.update()
+predator_location = Location(.077, .45)
+prey_location = Location(.5, .5)
+predator_theta = predator_location.atan(prey_location)
+params = Capture_parameters(2, 90)
+capture = Capture(params, world)
 
 
-plt.show()
+def on_click(event):
+    global prey_location
+    global predator_theta
+    global predator_location
+    print(event.button)
+    if event.button == MouseButton.LEFT:
+        prey_location = Location(event.xdata, event.ydata)  # event.x, event.y
+    else:
+        predator_location = Location(event.xdata, event.ydata)  # event.x, event.y
+    predator_theta = predator_location.atan(prey_location)
+
+
+display = Display(world, fig_size=(9, 8), animated=True)
+display.set_agent_marker("predator", Agent_markers.arrow())
+display.set_agent_marker("prey", Agent_markers.mouse())
+cid = display.fig.canvas.mpl_connect('button_press_event', on_click)
+while True:
+    predator = predator_location
+    if capture.is_captured(predator_location=predator_location, predator_theta=predator_theta, prey_location=prey_location):
+        display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="red")
+    else:
+        display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="blue")
+
+    display.agent(location=prey_location, rotation=0, agent_name="prey", size=20, color="red")
+    display.update()

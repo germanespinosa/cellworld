@@ -124,6 +124,7 @@ class Display:
         self.agents[agent_name].set_marker(marker.transformed(t))
         self.agents[agent_name].set_xdata(location.x)
         self.agents[agent_name].set_ydata(location.y)
+        self.agents[agent_name].set_color(color)
 
     def update(self):
         if self.animated:
