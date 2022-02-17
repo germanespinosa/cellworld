@@ -4,6 +4,16 @@
 #include <cell_world/visibility.h>
 
 namespace cell_world {
+
+    struct Peeking_parameters : json_cpp::Json_object {
+        Json_object_members(
+                Add_member(margin);
+                Add_member(time_limit);
+        );
+        double margin;
+        double time_limit;
+    };
+
     struct Capture_parameters : json_cpp::Json_object {
         Json_object_members(
                 Add_member(distance);
