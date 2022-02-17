@@ -32,6 +32,7 @@ set(cellworld_files
     src/state.cpp
     src/map.cpp
     src/resources.cpp
+    src/capture.cpp
         )
 
 add_library(cellworld ${cellworld_files})
