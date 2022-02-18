@@ -9,7 +9,6 @@ namespace cell_world {
                 Add_member(time_stamp);
                 Add_member(agent_name);
                 Add_member(frame);
-                Add_member(coordinates);
                 Add_member(location);
                 Add_member(rotation);
                 Add_optional_member(data);
@@ -17,7 +16,6 @@ namespace cell_world {
         double time_stamp;
         std::string agent_name;
         unsigned int frame;
-        cell_world::Coordinates coordinates;
         cell_world::Location location;
         double rotation;
         std::string data;
