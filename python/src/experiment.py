@@ -11,18 +11,14 @@ class Step(JsonObject):
                  time_stamp: float = 0.0,
                  agent_name: str = "",
                  frame: int = 0,
-                 coordinates: Coordinates = None,
                  location: Location = None,
                  rotation: float = 0.0,
                  data: str = ""):
         self.time_stamp = time_stamp
         self.agent_name = agent_name
         self.frame = frame
-        if coordinates is None:
-            coordinates = Coordinates(0, 0)
         if location is None:
-            location = Location(0,0)
-        self.coordinates = coordinates
+            location = Location(0, 0)
         self.location = location
         self.rotation = rotation
         self.data = data
@@ -66,7 +62,7 @@ class Trajectories(JsonList):
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=Step)
 
-    def get_velocities(self) -> Velocities:
+    def get_velocities(self) -> {}:
         velocities = {}
         last_locations = {}
         last_time_stamp = {}
@@ -82,7 +78,7 @@ class Trajectories(JsonList):
             last_time_stamp[s.agent_name] = s.time_stamp
         return velocities
 
-    def get_filtered_velocities(self, complementary: float=None, outliers: float=None) -> Velocities:
+    def get_filtered_velocities(self, complementary: float=None, outliers: float=None) -> {}:
         avs = self.get_velocities()
         for agent_name in avs:
             if outliers:
