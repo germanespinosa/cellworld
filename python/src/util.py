@@ -37,7 +37,7 @@ class Time_out:
 
 
 class Timer:
-    def __init__(self, seconds:float =0):
+    def __init__(self, seconds: float = 0):
         self.time = seconds
         self.check_point = datetime.now()
 
