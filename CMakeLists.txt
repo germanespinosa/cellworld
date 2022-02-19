@@ -33,6 +33,7 @@ set(cellworld_files
     src/map.cpp
     src/resources.cpp
     src/capture.cpp
+    src/peeking.cpp
         )
 
 add_library(cellworld ${cellworld_files})
