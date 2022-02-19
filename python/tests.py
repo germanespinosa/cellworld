@@ -25,7 +25,7 @@ world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
 predator_location = Location(.077, .45)
 prey_location = Location(.5, .5)
 predator_theta = predator_location.atan(prey_location)
-params = Capture_parameters(2, 90)
+params = Capture_parameters(2, 90, .5)
 capture = Capture(params, world)
 
 
@@ -33,7 +33,6 @@ def on_click(event):
     global prey_location
     global predator_theta
     global predator_location
-    print(event.button)
     if event.button == MouseButton.LEFT:
         prey_location = Location(event.xdata, event.ydata)  # event.x, event.y
     else:
