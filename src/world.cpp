@@ -16,6 +16,12 @@ namespace cell_world {
 
     }
 
+    World_configuration::World_configuration(const World_configuration &wc):
+    cell_shape(wc.cell_shape),
+    cell_coordinates(wc.cell_coordinates),
+    connection_pattern(wc.connection_pattern){
+    }
+
     World_implementation::World_implementation() = default;
 
 
@@ -47,6 +53,12 @@ namespace cell_world {
         for (auto &location : cell_locations){
             location  = space.scale(location, scale);
         }
+    }
+
+    World_implementation::World_implementation(const World_implementation &wi):
+            cell_transformation(wi.cell_transformation),
+            cell_locations(wi.cell_locations),
+            space(wi.space){
     }
 // World
 

@@ -22,6 +22,7 @@ namespace cell_world{
 
     struct World_configuration : json_cpp::Json_object{
         World_configuration ();
+        World_configuration (const World_configuration &);
         World_configuration (const Shape &, const Coordinates_list &, const Connection_pattern &);
         Shape cell_shape;
         Coordinates_list cell_coordinates;
@@ -35,6 +36,7 @@ namespace cell_world{
 
     struct World_implementation : json_cpp::Json_object{
         World_implementation ();
+        World_implementation (const World_implementation &);
         World_implementation (const Location_list &, const Space &, const Transformation &);
         Location_list cell_locations;
         Space space;
