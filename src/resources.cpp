@@ -49,7 +49,6 @@ namespace cell_world {
         { // time to download the resource
             auto uri = url() + _cache_invalidation();
             auto wr = Json_web_get(uri);
-            //auto wr = Json_web_get(uri);
             ofstream cache_file;
             cache_file.open(cfn);
             cache_file << wr.get_string();

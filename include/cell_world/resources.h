@@ -12,7 +12,11 @@ namespace cell_world {
         static Resources from(const std::string);
         template <class T>
         T get_resource (){
-            return json_cpp::Json_create<T>(get());
+            try {
+                return json_cpp::Json_create<T>(get());
+            } catch(...){
+                throw std::logic_error("failed to load content from " + url() + " into variable of type " + typeid(T).name());
+            }
         }
         Resources &key(const std::string &);
         Resources &key(int);
