@@ -27,12 +27,13 @@ namespace cell_world {
             Add_member(moves);
             Add_member(steps);
         })
-        const Cell_group cells;
+        Cell_group cells;
         Move_list moves;
         json_cpp::Json_vector<int> steps;
         static Paths get_euclidean(const Graph &);
         static Paths get_manhattan(const Graph &);
         static Paths get_astar(const Graph &);
+        Paths& operator =(const Paths&);
     private:
         int _index(const Cell &, const Cell &) const;
         void _compute_steps();

@@ -188,4 +188,11 @@ namespace cell_world {
     Paths::Paths(const Paths &paths): cells(paths.cells), moves(paths.moves), steps(paths.steps){
 
     }
+
+    Paths &Paths::operator=(const Paths &other) {
+        cells = other.cells;
+        moves = other.moves;
+        steps = other.steps;
+        return *this;
+    }
 }
