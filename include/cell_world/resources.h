@@ -17,7 +17,7 @@ namespace cell_world {
                 T o = json_cpp::Json_create<T>(get());
                 return o;
             } catch(...){
-
+                remove_cache();
                 throw std::logic_error("failed to load content from " + url() + " into variable of type " + typeid(T).name());
             }
         }
