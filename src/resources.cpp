@@ -88,9 +88,11 @@ namespace cell_world {
     }
 
     void Resources::remove_cache() {
-        string folder = cache_folder() + "/" + _resource ;
-        create_folder(folder);
-        auto cfn = folder + "/" + _file_name();
-        remove(cfn.c_str());
+        if (_new_cache) {
+            string folder = cache_folder() + "/" + _resource;
+            create_folder(folder);
+            auto cfn = folder + "/" + _file_name();
+            remove(cfn.c_str());
+        }
     }
 }
