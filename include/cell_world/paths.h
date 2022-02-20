@@ -14,6 +14,7 @@ namespace cell_world {
 
     struct Paths : json_cpp::Json_object {
         explicit Paths(const Graph&);
+        Paths(const Paths &);
         Paths(const Graph&, Move_list );
         Paths(const Graph&, const Path_builder &);
         Move get_move(const Cell &, const Cell &) const;

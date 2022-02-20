@@ -184,4 +184,8 @@ namespace cell_world {
         }
         return moves;
     }
+
+    Paths::Paths(const Paths &paths): cells(paths.cells), moves(paths.moves), steps(paths.steps){
+
+    }
 }
