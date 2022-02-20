@@ -53,6 +53,7 @@ namespace cell_world {
             cache_file.open(cfn);
             cache_file << wr.get_string();
             cache_file.close();
+            _new_cache = true;
         }
         return _resource_stream = ifstream(cfn);
     }
@@ -84,5 +85,12 @@ namespace cell_world {
         stringstream ss;
         ss << get().rdbuf();
         return ss.str();
+    }
+
+    void Resources::remove_cache() {
+        string folder = cache_folder() + "/" + _resource ;
+        create_folder(folder);
+        auto cfn = folder + "/" + _file_name();
+        remove(cfn.c_str());
     }
 }

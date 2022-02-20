@@ -13,8 +13,11 @@ namespace cell_world {
         template <class T>
         T get_resource (){
             try {
-                return json_cpp::Json_create<T>(get());
+                _new_cache = false;
+                T o = json_cpp::Json_create<T>(get());
+                return o;
             } catch(...){
+
                 throw std::logic_error("failed to load content from " + url() + " into variable of type " + typeid(T).name());
             }
         }
@@ -32,7 +35,8 @@ namespace cell_world {
         std::string _resource;
         std::vector<std::string> _keys;
         std::ifstream _resource_stream;
-
+        bool _new_cache;
+        void remove_cache();
         Resources() = default;
     };
 }
