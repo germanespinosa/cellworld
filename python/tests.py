@@ -44,7 +44,13 @@ display = Display(world, fig_size=(9, 8), animated=True)
 display.set_agent_marker("predator", Agent_markers.arrow())
 display.set_agent_marker("prey", Agent_markers.mouse())
 cid = display.fig.canvas.mpl_connect('button_press_event', on_click)
+t = Timer(3)
+i = 0
 while True:
+    if t.time_out():
+        display.set_occlusions(Cell_group_builder.get_from_name("hexagonal", "10_0" + str(i), "occlusions"))
+        i += 1
+        t.reset()
     predator = predator_location
     if capture.is_captured(predator_location=predator_location, predator_theta=predator_theta, prey_location=prey_location):
         display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="red")

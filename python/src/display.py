@@ -36,36 +36,45 @@ class Display:
         self.ax.axes.yaxis.set_visible(show_axes)
         self.agents_trajectories = Trajectories()
         self.agents_markers = dict()
-        xcenter = world.implementation.space.center.x
-        ycenter = world.implementation.space.center.y
+        self.cells = []
+        self.occlusion_color = occlusion_color
+        self.habitat_color = habitat_color
+        self.habitat_edge_color = habitat_edge_color
+        self.cell_color = cell_color
+        self.cell_edge_color = cell_edge_color
+        self.xcenter = world.implementation.space.center.x
+        self.ycenter = world.implementation.space.center.y
 
         hsize = world.implementation.space.transformation.size / 2
         pad = hsize * padding
 
-        xmin = xcenter - hsize - pad
-        xmax = xcenter + hsize + pad
+        xmin = self.xcenter - hsize - pad
+        xmax = self.xcenter + hsize + pad
 
-        ymin = ycenter - hsize - pad
-        ymax = ycenter + hsize + pad
+        ymin = self.ycenter - hsize - pad
+        ymax = self.ycenter + hsize + pad
 
         self.ax.set_xlim(xmin=xmin, xmax=xmax)
         self.ax.set_ylim(ymin=ymin, ymax=ymax)
         self.ax.set_facecolor(background_color)
-        ssides = world.implementation.space.shape.sides
-        srotation = math.radians(0 - world.implementation.space.transformation.rotation)
+        self.habitat_theta = math.radians(0 - world.implementation.space.transformation.rotation)
+        self.cells_theta = math.radians(0 - world.implementation.cell_transformation.rotation) + self.habitat_theta
+        self.cells_size = world.implementation.cell_transformation.size / 2
+        self.habitat_size = hsize
 
-        csides = world.configuration.cell_shape.sides
-        crotation = math.radians(0 - world.implementation.cell_transformation.rotation) + srotation
-
-
-        csize = world.implementation.cell_transformation.size / 2
-        ssize = hsize
-
-        for cell in self.world.cells:
-            color = occlusion_color if cell.occluded else cell_color
-            self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), csides, csize, facecolor=color, edgecolor=cell_edge_color, orientation=crotation, zorder=-2, linewidth=1))
-        self.ax.add_patch(RegularPolygon((xcenter, ycenter), ssides, ssize, facecolor=habitat_color, edgecolor=habitat_edge_color, orientation=srotation, zorder=-3))
+        self._draw_cells__()
         plt.tight_layout()
+
+    def _draw_cells__(self):
+        [p.remove() for p in reversed(self.ax.patches)]
+        for cell in self.world.cells:
+            color = self.occlusion_color if cell.occluded else self.cell_color
+            self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1))
+        self.ax.add_patch(RegularPolygon((self.xcenter, self.ycenter), self.world.implementation.space.shape.sides, self.habitat_size, facecolor=self.habitat_color, edgecolor=self.habitat_edge_color, orientation=self.habitat_theta, zorder=-3))
+
+    def set_occlusions(self, occlusions: Cell_group_builder):
+        self.world.set_occlusions(occlusions)
+        self._draw_cells__()
 
     def set_agent_marker(self, agent_name: str, marker: Path):
         self.agents_markers[agent_name] = marker

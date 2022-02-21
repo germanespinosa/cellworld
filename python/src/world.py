@@ -151,6 +151,10 @@ class World:
     def create_cell_group(self, cell_group_builder: Cell_group_builder):
         return Cell_group(world=self, cell_group_builder=cell_group_builder)
 
+    def set_occlusions(self, occlusions: Cell_group_builder):
+        for cell in self.cells:
+            cell.occluded = cell.id in occlusions
+
     def __str__(self):
         return str(self.cells)
 
