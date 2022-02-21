@@ -20,7 +20,7 @@ if build:
 		repository = ""
 		if '-repository' in sys.argv:
 			repository = sys.argv[sys.argv.index('-repository')+1]
-		os.system('cd ' + build + '; twine upload dist/*' + ((' --repository-url  ' + repository) if username else '') + ((' -u ' + username) if username else '') + ((' -p ' + password) if password else ''))
+		os.system('cd ' + build + '; twine upload dist/*' + ((' --repository-url  ' + repository) if repository else '') + ((' -u ' + username) if username else '') + ((' -p ' + password) if password else ''))
 	else:
 		print('use twine upload --repository-url [pypi-repository-url] dist/* to upload the package')
 	if '-install' in sys.argv:
