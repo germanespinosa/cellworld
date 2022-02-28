@@ -1,9 +1,8 @@
-from .location import Location, Location_list
-from .shape import Polygon, Polygon_list
-from .world import World
-from .util import *
+from .location import Location
+from .shape import Polygon_list, Polygon
 from .cell import Cell_group
-from json_cpp import JsonList
+from .util import to_radians
+from .util import angle_difference
 
 
 class Location_visibility:
@@ -25,8 +24,8 @@ class Location_visibility:
         :return
         A list of all the visible cell ids
         """
-        free_cells = cells.free_cells() #.get("location")
-        visible_cells = JsonList()
+        free_cells = cells.free_cells()
+        visible_cells = Cell_group()
 
         for free_cell in free_cells:
             if self.is_visible(src, free_cell.location):
@@ -40,12 +39,12 @@ class Location_visibility:
         :return:
         A list of all the hidden cell ids
         """
-        hidden_cells = JsonList()
-        free_locations_set = set(cells.free_cells().get("id"))
-        visible_free_locations_set = set(self.visible_cells(src, cells).get('id'))
-        hidden_id_list = list(free_locations_set.difference(visible_free_locations_set))
-        for id in hidden_id_list:
-            hidden_cells.append(cells[id])
+        hidden_cells = Cell_group()
+        free_cells = cells.free_cells()
+        visible_cells_ids = self.visible_cells(src, cells).get('id')
+        for cell in free_cells:
+            if cell.id not in visible_cells_ids:
+                hidden_cells.append(cell)
 
         return hidden_cells
 

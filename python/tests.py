@@ -20,42 +20,60 @@ from matplotlib.backend_bases import MouseButton
 # print(new_location)
 #
 import matplotlib.pyplot as plt
+# world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
+#
+# predator_location = Location(.077, .45)
+# prey_location = Location(.5, .5)
+# predator_theta = predator_location.atan(prey_location)
+# params = Capture_parameters(2, 90, .5)
+# capture = Capture(params, world)
+#
+#
+# def on_click(event):
+#     global prey_location
+#     global predator_theta
+#     global predator_location
+#     if event.button == MouseButton.LEFT:
+#         prey_location = Location(event.xdata, event.ydata)  # event.x, event.y
+#     else:
+#         predator_location = Location(event.xdata, event.ydata)  # event.x, event.y
+#     predator_theta = predator_location.atan(prey_location)
+#
+#
+# display = Display(world, fig_size=(9, 8), animated=True)
+# display.set_agent_marker("predator", Agent_markers.arrow())
+# display.set_agent_marker("prey", Agent_markers.mouse())
+# cid = display.fig.canvas.mpl_connect('button_press_event', on_click)
+# t = Timer(3)
+# i = 0
+# while True:
+#     if t.time_out():
+#         display.set_occlusions(Cell_group_builder.get_from_name("hexagonal", "10_0" + str(i), "occlusions"))
+#         i += 1
+#         t.reset()
+#     predator = predator_location
+#     if capture.is_captured(predator_location=predator_location, predator_theta=predator_theta, prey_location=prey_location):
+#         display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="red")
+#     else:
+#         display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="blue")
+#
+#     display.agent(location=prey_location, rotation=0, agent_name="prey", size=20, color="red")
+#     display.update()
+#
+#
+
+
 world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
 
-predator_location = Location(.077, .45)
-prey_location = Location(.5, .5)
-predator_theta = predator_location.atan(prey_location)
-params = Capture_parameters(2, 90, .5)
-capture = Capture(params, world)
+plist = Polygon_list.get_polygons(world.cells.occluded_cells().get("location"), world.configuration.cell_shape.sides, world.implementation.cell_transformation.size/2, world.implementation.cell_transformation.rotation)
 
+visibility = Location_visibility(plist)
 
-def on_click(event):
-    global prey_location
-    global predator_theta
-    global predator_location
-    if event.button == MouseButton.LEFT:
-        prey_location = Location(event.xdata, event.ydata)  # event.x, event.y
-    else:
-        predator_location = Location(event.xdata, event.ydata)  # event.x, event.y
-    predator_theta = predator_location.atan(prey_location)
+vc = visibility.visible_cells(Location(.5, .5), world.cells)
 
-
-display = Display(world, fig_size=(9, 8), animated=True)
-display.set_agent_marker("predator", Agent_markers.arrow())
-display.set_agent_marker("prey", Agent_markers.mouse())
-cid = display.fig.canvas.mpl_connect('button_press_event', on_click)
-t = Timer(3)
-i = 0
-while True:
-    if t.time_out():
-        display.set_occlusions(Cell_group_builder.get_from_name("hexagonal", "10_0" + str(i), "occlusions"))
-        i += 1
-        t.reset()
-    predator = predator_location
-    if capture.is_captured(predator_location=predator_location, predator_theta=predator_theta, prey_location=prey_location):
-        display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="red")
-    else:
-        display.agent(location=predator_location, rotation=to_degrees(predator_theta), agent_name="predator", size=20, color="blue")
-
-    display.agent(location=prey_location, rotation=0, agent_name="prey", size=20, color="red")
-    display.update()
+d = Display(world,animated=True)
+from time import sleep
+while(True):
+    d.update()
+    sleep(1)
+    pass
