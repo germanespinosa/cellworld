@@ -1,4 +1,5 @@
 #include <cell_world/world.h>
+#include <cell_world/resources.h>
 #include <string>
 
 using namespace std;
@@ -175,6 +176,19 @@ namespace cell_world {
 
     Location_visibility World::create_location_visibility() const {
         return {create_cell_group(), cell_shape, cell_transformation};
+    }
+
+    World World::get_from_parameters_name(const std::string &configuration_name, const std::string &implementation_name, const std::string &occlusions_name) {
+        auto world = get_from_parameters_name(configuration_name, implementation_name);
+        auto occlusions = Resources::from("cell_group").key(configuration_name).key(occlusions_name + ".occlusions").get_resource<Cell_group_builder>();
+        world.set_occlusions(occlusions);
+        return world;
+    }
+
+    World World::get_from_parameters_name(const std::string &configuration_name, const std::string &implementation_name) {
+        auto configuration = Resources::from("world_configuration").key(configuration_name).get_resource<World_configuration>();
+        auto implementation = Resources::from("world_implementation").key(configuration_name).key(implementation_name).get_resource<World_implementation>();
+        return {configuration, implementation};
     }
 }
 

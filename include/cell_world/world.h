@@ -82,5 +82,7 @@ namespace cell_world{
         Shape cell_shape;
         Transformation cell_transformation;
         Space space;
+        static World get_from_parameters_name(const std::string &, const std::string &, const std::string &);
+        static World get_from_parameters_name(const std::string &, const std::string &);
     };
 }

@@ -65,8 +65,8 @@ TEST_CASE("world>>1")
 }
 
 
-//TEST_CASE("timer"){
-//    Timer t(3);
-//    while (!t.time_out())
-//        cout << t.to_seconds() << endl;
-//}
+TEST_CASE("from resources"){
+    cout << "from resources" << endl;
+    cout << World::get_from_parameters_name("hexagonal","canonical") << endl;
+    cout << World::get_from_parameters_name("hexagonal","canonical", "10_05") << endl;
+}
