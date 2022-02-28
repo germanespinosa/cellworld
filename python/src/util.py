@@ -3,16 +3,25 @@ import requests
 import json
 global cellworld_data_base_uri
 from datetime import datetime, timedelta
-
+import os
 cellworld_data_base_uri = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/"
+cellworld_cache_folder = os.environ.get("CELLWORLD_CACHE")
 
 
 def get_resource(resource_type: str, key0, *argv):
     resource_uri = cellworld_data_base_uri + resource_type + "/" + key0
+    file_path = cellworld_cache_folder + "/" + resource_type + "/" + key0
     for arg in argv:
         resource_uri += "." + arg
-    response = requests.get(resource_uri)
-    return json.loads(response.text)
+        file_path += "." + arg
+    if os.path.exists(file_path):
+        content = ""
+        with open(file_path, "r") as text_file:
+            content = text_file.read()
+        return json.loads(content)
+    else:
+        response = requests.get(resource_uri)
+        return json.loads(response.text)
 
 
 def get_web_json(resource_uri: str):
