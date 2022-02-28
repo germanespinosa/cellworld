@@ -2,6 +2,8 @@ from .location import Location, Location_list
 from .shape import Polygon, Polygon_list
 from .world import World
 from .util import *
+from .cell import Cell_group
+from json_cpp import JsonList
 
 
 class Location_visibility:
@@ -17,29 +19,35 @@ class Location_visibility:
                 return False
         return True
 
-    def visible_locations(self, loc, world):
+    def visible_cells(self, src: Location, cells: Cell_group) -> Cell_group:
         """
-        Finds all visible cells from specified location arg (loc)
+        Finds all visible cells from specified location
         :return
         A list of all the visible cell ids
         """
-        free_locations = world.cells.free_cells().get("location")
-        location_list = world.cells.get("location")
-        visible_id_list = []
-        for free_location in free_locations:
-            if self.is_visible(loc, free_location):
-                visible_id_list.append(location_list.index(free_location))
-        return visible_id_list
+        free_cells = cells.free_cells() #.get("location")
+        visible_cells = JsonList()
 
-    def invisible_locations(self, loc, world):
+        for free_cell in free_cells:
+            if self.is_visible(src, free_cell.location):
+                visible_cells.append(free_cell)
+
+        return visible_cells
+
+    def hidden_cells(self, src: Location, cells: Cell_group) -> Cell_group:
         """
         Finds all hidden cells from specified location arg (loc)
         :return:
         A list of all the hidden cell ids
         """
-        all_locations_set = set(world.cells.free_cells().get("id"))
-        free_locations_set = set(self.visible_locations(loc, world))
-        invisible_id_list = list(all_locations_set.difference(free_locations_set))
-        return invisible_id_list
+        hidden_cells = JsonList()
+        free_locations_set = set(cells.free_cells().get("id"))
+        visible_free_locations_set = set(self.visible_cells(src, cells).get('id'))
+        hidden_id_list = list(free_locations_set.difference(visible_free_locations_set))
+        for id in hidden_id_list:
+            hidden_cells.append(cells[id])
+
+        return hidden_cells
+
 
 
