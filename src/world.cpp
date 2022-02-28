@@ -172,6 +172,10 @@ namespace cell_world {
         configuration.connection_pattern = connection_pattern;
         return configuration;
     }
+
+    Location_visibility World::create_location_visibility() const {
+        return {create_cell_group(), cell_shape, cell_transformation};
+    }
 }
 
 

@@ -66,6 +66,7 @@ namespace cell_world{
         Graph create_graph() const;
         Graph create_graph(const Graph_builder &) const;
         Paths create_paths(const Path_builder &) const;
+        Location_visibility create_location_visibility() const;
         World_configuration get_configuration();
         World_implementation get_implementation();
         Json_object_members({
