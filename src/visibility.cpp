@@ -89,6 +89,7 @@ namespace cell_world {
 
     void Location_visibility::update_occlusions(const Cell_group &cells) {
         auto occluded_cells = cells.occluded_cells();
+        occlusions.clear();
         for (auto &cell: occluded_cells) {
             occlusions.emplace_back(cell.get().location,
                                     cell_shape.sides,
