@@ -23,6 +23,10 @@ namespace cell_world {
     connection_pattern(wc.connection_pattern){
     }
 
+    World_configuration World_configuration::get_from_parameters_name(const string &configuration_name) {
+        return Resources::from("world_configuration").key(configuration_name).get_resource<World_configuration>();
+    }
+
     World_implementation::World_implementation() = default;
 
 
@@ -60,6 +64,10 @@ namespace cell_world {
             cell_transformation(wi.cell_transformation),
             cell_locations(wi.cell_locations),
             space(wi.space){
+    }
+
+    World_implementation World_implementation::get_from_parameters_name(const string &configuration_name, const string &implementation_name) {
+        return Resources::from("world_implementation").key(configuration_name).key(implementation_name).get_resource<World_implementation>();
     }
 // World
 
@@ -180,14 +188,14 @@ namespace cell_world {
 
     World World::get_from_parameters_name(const std::string &configuration_name, const std::string &implementation_name, const std::string &occlusions_name) {
         auto world = get_from_parameters_name(configuration_name, implementation_name);
-        auto occlusions = Resources::from("cell_group").key(configuration_name).key(occlusions_name + ".occlusions").get_resource<Cell_group_builder>();
+        auto occlusions = Cell_group_builder::get_from_parameters_name(configuration_name, occlusions_name + ".occlusions");
         world.set_occlusions(occlusions);
         return world;
     }
 
     World World::get_from_parameters_name(const std::string &configuration_name, const std::string &implementation_name) {
-        auto configuration = Resources::from("world_configuration").key(configuration_name).get_resource<World_configuration>();
-        auto implementation = Resources::from("world_implementation").key(configuration_name).key(implementation_name).get_resource<World_implementation>();
+        auto configuration = World_configuration::get_from_parameters_name(configuration_name);
+        auto implementation = World_implementation::get_from_parameters_name(configuration_name, implementation_name);
         return {configuration, implementation};
     }
 }

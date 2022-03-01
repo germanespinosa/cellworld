@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <random>
 #include <cell_world/chance.h>
+#include <cell_world/resources.h>
 
 using namespace std;
 
@@ -182,5 +183,9 @@ namespace cell_world {
 
     void Cell_reference::json_write(ostream &o) const {
         o << this->get().id;
+    }
+
+    Cell_group_builder Cell_group_builder::get_from_parameters_name(const std::string &configuration_name, const std::string &cell_group_name) {
+        return Resources::from("cell_group").key(configuration_name).key(cell_group_name).get_resource<Cell_group_builder>();
     }
 }

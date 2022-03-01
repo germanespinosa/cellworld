@@ -4,7 +4,7 @@
 namespace cell_world{
 
     struct Cell_group_builder: json_cpp::Json_vector<unsigned int>{
-
+        static Cell_group_builder get_from_parameters_name(const std::string &, const std::string &);
     };
 
     struct Cell_reference : json_cpp::Json_base, std::reference_wrapper<const Cell>{

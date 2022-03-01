@@ -32,6 +32,7 @@ namespace cell_world{
                                 Add_member(connection_pattern);
                                 Add_member(cell_coordinates);
                             })
+        static World_configuration get_from_parameters_name(const std::string &);
     };
 
     struct World_implementation : json_cpp::Json_object{
@@ -48,6 +49,7 @@ namespace cell_world{
                                 Add_member(space);
                                 Add_member(cell_transformation);
                             })
+        static World_implementation get_from_parameters_name(const std::string &, const std::string &);
     };
 
     struct World : json_cpp::Json_object{
