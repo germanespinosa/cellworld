@@ -19,8 +19,12 @@ namespace cell_world{
     };
 
     struct Location_visibility{
+        Location_visibility(const Shape &, const Transformation &);
         Location_visibility(const Cell_group &, const Shape &, const Transformation &);
-        bool is_visible(const Location &, const Location &) const;
+        [[nodiscard]] bool is_visible(const Location &, const Location &) const;
+        void update_occlusions(const Cell_group &);
         Polygon_list occlusions;
+        Shape cell_shape;
+        Transformation cell_transformation;
     };
 }

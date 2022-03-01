@@ -65,12 +65,9 @@ namespace cell_world {
     }
 
     Location_visibility::Location_visibility(const Cell_group &cells, const Shape &cell_shape,
-                                             const Transformation &cell_transformation) {
-        auto occluded_cells = cells.occluded_cells();
-        for (auto &cell: occluded_cells) {
-            occlusions.emplace_back(cell.get().location, cell_shape.sides, cell_transformation.size / 2,
-                                    to_radians(cell_transformation.rotation));
-        }
+                                             const Transformation &cell_transformation):
+            Location_visibility(cell_shape, cell_transformation){
+        update_occlusions(cells);
     }
 
     bool cell_world::Location_visibility::is_visible(const Location &src, const Location &dst) const {
@@ -82,6 +79,23 @@ namespace cell_world {
             }
         }
         return true;
+    }
+
+    Location_visibility::Location_visibility(const Shape &cell_shape, const Transformation &cell_transformation):
+    cell_shape(cell_shape),
+    cell_transformation(cell_transformation){
+
+    }
+
+    void Location_visibility::update_occlusions(const Cell_group &cells) {
+        auto occluded_cells = cells.occluded_cells();
+        for (auto &cell: occluded_cells) {
+            occlusions.emplace_back(cell.get().location,
+                                    cell_shape.sides,
+                                    cell_transformation.size / 2,
+                                    to_radians(cell_transformation.rotation));
+        }
+
     }
 }
 
