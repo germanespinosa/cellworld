@@ -28,10 +28,14 @@ class Location(JsonObject):
         self.y += math.cos(theta) * dist
         return self
 
-    def atan(self, location) -> float:
-        check_type(location, Location, "incorrect type for location")
+    def atan(self, location = None) -> float:
+        if location is None:
+            return math.atan2(self.x, self.y)
         v = location-self
         return math.atan2(v.x, v.y)
+
+    def mod(self):
+        return (self.x ** 2 + self.y ** 2) ** .5
 
     def dist(self, location=None, segment: tuple = None) -> float:
         if location:
