@@ -79,7 +79,7 @@ class Display:
     def set_agent_marker(self, agent_name: str, marker: Path):
         self.agents_markers[agent_name] = marker
 
-    def add_trajectories(self, trajectories: Trajectories, colors={}):
+    def add_trajectories(self, trajectories: Trajectories, colors={}, alpha: float = 0.5):
         agents = trajectories.get_agent_names()
         for index, agent in enumerate(agents):
             locations = trajectories.get_agent_trajectory(agent).get("location")
@@ -94,16 +94,16 @@ class Display:
                     lcolor = color[i]
                 else:
                     lcolor = color
-                self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=.5, linewidth=3)
+                self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=alpha, linewidth=3)
 
-    def circle(self, location: Location, radius: float, color):
-        circle_patch = plt.Circle((location.x, location.y), radius, color=color)
+    def circle(self, location: Location, radius: float, color, alpha: float = 1.0):
+        circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha)
         return self.ax.add_patch(circle_patch)
 
-    def arrow(self, beginning: Location, theta: float, dist: float, color, head_width: float = .02):
+    def arrow(self, beginning: Location, theta: float, dist: float, color, head_width: float = .02, alpha: float = 1.0):
         ending = beginning.copy().move(theta=theta, dist=dist)
         length = ending - beginning
-        return self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True)
+        return self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True, alpha=alpha)
 
     def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0, show_trajectory: bool = True, marker: Path=None):
         if step:
