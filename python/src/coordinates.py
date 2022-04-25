@@ -1,6 +1,7 @@
 from json_cpp import JsonObject, JsonList
 from .util import *
 
+
 class Coordinates(JsonObject):
     def __init__(self,
                  x: int = 0,
@@ -12,6 +13,12 @@ class Coordinates(JsonObject):
         c = Coordinates()
         c.x = self.x + o.x
         c.y = self.y + o.y
+        return c
+
+    def __sub__(self, o):
+        c = Coordinates()
+        c.x = self.x - o.x
+        c.y = self.y - o.y
         return c
 
 

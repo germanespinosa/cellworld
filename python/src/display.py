@@ -96,6 +96,21 @@ class Display:
                     lcolor = color
                 self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=alpha, linewidth=3)
 
+    def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color="white"):
+        if cell is None:
+            if cell_id == -1:
+                if coordinates is None:
+                    raise RuntimeError("a cell, cell_id or coordinates must be provided")
+                for c in self.world.cells:
+                    if c.coordinates == coordinates:
+                        cell = c
+                        break
+                if cell is None:
+                    raise RuntimeError("cell coordinates not found")
+            else:
+                cell = self.world.cells[cell_id]
+        self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, linewidth=1))
+
     def circle(self, location: Location, radius: float, color, alpha: float = 1.0):
         circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha)
         return self.ax.add_patch(circle_patch)

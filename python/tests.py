@@ -72,6 +72,7 @@ visibility = Location_visibility(plist)
 vc = visibility.visible_cells(Location(.5, .5), world.cells)
 
 d = Display(world,animated=True)
+d.cell(cell_id=1,color="green")
 from time import sleep
 while(True):
     d.update()
