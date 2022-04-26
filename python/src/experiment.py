@@ -3,7 +3,7 @@ from .util import *
 from .coordinates import *
 from .location import *
 from .shape import Space
-from .world import World_implementation
+from .world import World_implementation, World
 from datetime import datetime
 
 class Step(JsonObject):
@@ -177,8 +177,64 @@ class Experiment(JsonObject):
         self.world_implementation_name = dst_space_name
 
     def set_name(self, prefix: str = None, suffix: str = None):
-        self.name = self.start_time.strftime("%Y%m%d_%OH%M_") + self.subject_name + "_" + self.occlusions;
+        self.name = self.start_time.strftime("%Y%m%d_%OH%M_") + self.subject_name + "_" + self.occlusions
         if prefix:
             self.name = prefix + "_" + self.name
         if suffix:
             self.name = self.name + "_" + suffix
+
+    def get_wrong_origin_episodes(self, origin: Coordinates = Coordinates(-20, 0), agent_name: str = "prey") -> JsonList:
+        world = World.get_from_parameters_names(self.world_configuration_name, "canonical")
+        wrong_origin_episodes = JsonList(list_type=int)
+        for i, episode in enumerate(self.episodes):
+            agent_trajectory = episode.trajectories.get_agent_trajectory(agent_name)
+            if len(agent_trajectory) == 0:
+                continue
+            episode_origin_location = agent_trajectory[0].location
+            episode_origin_index = world.cells.find(episode_origin_location)
+            episode_origin_coordinates = world.cells[episode_origin_index].coordinates
+            if not episode_origin_coordinates == origin:
+                wrong_origin_episodes.append(i)
+        return wrong_origin_episodes
+
+    def get_wrong_goal_episodes(self, goal: Coordinates = Coordinates(20, 0), agent_name: str = "prey") -> JsonList:
+        world = World.get_from_parameters_names(self.world_configuration_name, "canonical")
+        wrong_goal_episodes = JsonList(list_type=int)
+        for i, episode in enumerate(self.episodes):
+            agent_trajectory = episode.trajectories.get_agent_trajectory(agent_name)
+            if len(agent_trajectory) == 0:
+                continue
+            episode_goal_location = agent_trajectory[-1].location
+            episode_goal_index = world.cells.find(episode_goal_location)
+            episode_goal_coordinates = world.cells[episode_goal_index].coordinates
+            if not episode_goal_coordinates == goal:
+                wrong_goal_episodes.append(i)
+        return wrong_goal_episodes
+
+    def get_incomplete_episodes(self, threshold_step_count: int = 30, agent_name: str = "prey") -> JsonList:
+        incomplete_episodes = JsonList(list_type=int)
+        for i, episode in enumerate(self.episodes):
+            agent_trajectory = episode.trajectories.get_agent_trajectory(agent_name)
+            if len(agent_trajectory) == 0:
+                continue
+            if len(agent_trajectory) < threshold_step_count:
+                incomplete_episodes.append(i)
+        return incomplete_episodes
+
+    def get_broken_trajectory_episodes(self, threshold_distance: float = .1, agent_name: str = "prey") -> JsonList:
+        broken_trajectory_episodes = JsonList(list_type=int)
+        for i, episode in enumerate(self.episodes):
+            agent_trajectory = episode.trajectories.get_agent_trajectory(agent_name)
+            last_location = None
+            for step in agent_trajectory:
+                if last_location is not None:
+                    if last_location.dist(step.location) > threshold_distance:
+                        broken_trajectory_episodes.append(i)
+                        break
+                last_location = step.location
+        return broken_trajectory_episodes
+
+    def remove_episodes(self, episode_list: JsonList) ->None:
+        for episode_index in episode_list:
+            self.episodes[episode_index].trajectories = Trajectories()
+            self.episodes[episode_index].captures = JsonList(list_type=int)

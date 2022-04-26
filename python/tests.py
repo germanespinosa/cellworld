@@ -62,19 +62,41 @@ import matplotlib.pyplot as plt
 #
 #
 
+#
+# world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
+#
+# plist = Polygon_list.get_polygons(world.cells.occluded_cells().get("location"), world.configuration.cell_shape.sides, world.implementation.cell_transformation.size/2, world.implementation.cell_transformation.rotation)
+#
+# visibility = Location_visibility(plist)
+#
+# vc = visibility.visible_cells(Location(.5, .5), world.cells)
+#
+# d = Display(world, animated=True)
+# d.cell(cell_id=1, color="green")
+#
+# from time import sleep
+#
+# while(True):
+#     d.update()
+#     sleep(1)
+#     pass
 
-world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
 
-plist = Polygon_list.get_polygons(world.cells.occluded_cells().get("location"), world.configuration.cell_shape.sides, world.implementation.cell_transformation.size/2, world.implementation.cell_transformation.rotation)
+e = Experiment.get_from_file("test_experiment.json")
 
-visibility = Location_visibility(plist)
+to_clean = e.get_wrong_origin_episodes() + e.get_wrong_goal_episodes() + e.get_incomplete_episodes() + e.get_broken_trajectory_episodes()
 
-vc = visibility.visible_cells(Location(.5, .5), world.cells)
+print(" e.get_wrong_origin_episodes()",  e.get_wrong_origin_episodes())
+print(" e.get_wrong_goal_episodes()",  e.get_wrong_goal_episodes())
+print(" e.get_incomplete_episodes()",  e.get_incomplete_episodes())
+print(" e.get_broken_trajectory_episodes()",  e.get_broken_trajectory_episodes())
 
-d = Display(world,animated=True)
-d.cell(cell_id=1,color="green")
-from time import sleep
-while(True):
-    d.update()
-    sleep(1)
-    pass
+print(set(to_clean))
+
+print(to_clean)
+
+e.remove_episodes(to_clean)
+
+to_clean = e.get_wrong_origin_episodes() + e.get_wrong_goal_episodes() + e.get_incomplete_episodes() + e.get_broken_trajectory_episodes()
+
+print(to_clean)
