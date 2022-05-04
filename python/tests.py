@@ -62,8 +62,36 @@ import matplotlib.pyplot as plt
 #
 #
 
-#
-# world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
+
+print(-Coordinates(1,1))
+
+from time import sleep
+
+world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
+
+def show_heatmap(counters: list, upper_limit: int = 90, occlusions:str = "20_05"):
+    w = World.get_from_parameters_names("hexagonal", "canonical", occlusions)
+    d = Display(w, animated=True)
+    d.fig.suptitle("World " + occlusions, fontsize=50)
+    nv = [min([ve,upper_limit])/upper_limit for ve in counters]
+    cmap = plt.cm.Reds(nv)
+    for i, counter in enumerate(counters):
+        if not w.cells[i].occluded:
+            d.cell(cell_id=i, color=cmap[i])
+    while True:
+        d.update()
+        sleep(1)
+        pass
+
+
+
+centrality_derivative = world.get_centrality_derivative_product(depth=1)
+show_heatmap(centrality_derivative, upper_limit=.0001)
+
+
+
+
+
 #
 # plist = Polygon_list.get_polygons(world.cells.occluded_cells().get("location"), world.configuration.cell_shape.sides, world.implementation.cell_transformation.size/2, world.implementation.cell_transformation.rotation)
 #
@@ -82,21 +110,31 @@ import matplotlib.pyplot as plt
 #     pass
 
 
-e = Experiment.get_from_file("test_experiment.json")
+# e = Experiment.get_from_file("test_experiment.json")
+#
+# to_clean = e.get_wrong_origin_episodes() + e.get_wrong_goal_episodes() + e.get_incomplete_episodes() + e.get_broken_trajectory_episodes()
+#
+# print(" e.get_wrong_origin_episodes()",  e.get_wrong_origin_episodes())
+# print(" e.get_wrong_goal_episodes()",  e.get_wrong_goal_episodes())
+# print(" e.get_incomplete_episodes()",  e.get_incomplete_episodes())
+# print(" e.get_broken_trajectory_episodes()",  e.get_broken_trajectory_episodes())
+#
+# print(set(to_clean))
+#
+# print(to_clean)
+#
+# e.remove_episodes(to_clean)
+#
+# to_clean = e.get_wrong_origin_episodes() + e.get_wrong_goal_episodes() + e.get_incomplete_episodes() + e.get_broken_trajectory_episodes()
+#
+# print(to_clean)
 
-to_clean = e.get_wrong_origin_episodes() + e.get_wrong_goal_episodes() + e.get_incomplete_episodes() + e.get_broken_trajectory_episodes()
+# e = Experiment.get_from_file("test_experiment.json")
+#
+# for i, episode in enumerate(e.episodes):
+#     trajectory = episode.trajectories.get_agent_trajectory("prey")
+#     print ("episode", i, trajectory.get_stops())
 
-print(" e.get_wrong_origin_episodes()",  e.get_wrong_origin_episodes())
-print(" e.get_wrong_goal_episodes()",  e.get_wrong_goal_episodes())
-print(" e.get_incomplete_episodes()",  e.get_incomplete_episodes())
-print(" e.get_broken_trajectory_episodes()",  e.get_broken_trajectory_episodes())
 
-print(set(to_clean))
-
-print(to_clean)
-
-e.remove_episodes(to_clean)
-
-to_clean = e.get_wrong_origin_episodes() + e.get_wrong_goal_episodes() + e.get_incomplete_episodes() + e.get_broken_trajectory_episodes()
-
-print(to_clean)
+# world = World.get_from_parameters_names("hexagonal", "canonical", "21_05")
+# print(world.get_connection_pattern_pairs())

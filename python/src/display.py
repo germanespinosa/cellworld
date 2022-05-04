@@ -61,7 +61,8 @@ class Display:
         self.cells_theta = math.radians(0 - world.implementation.cell_transformation.rotation) + self.habitat_theta
         self.cells_size = world.implementation.cell_transformation.size / 2
         self.habitat_size = hsize
-
+        self.cell_polygons = []
+        self.habitat_polygon = None
         self._draw_cells__()
         plt.tight_layout()
 
@@ -69,8 +70,8 @@ class Display:
         [p.remove() for p in reversed(self.ax.patches)]
         for cell in self.world.cells:
             color = self.occlusion_color if cell.occluded else self.cell_color
-            self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1))
-        self.ax.add_patch(RegularPolygon((self.xcenter, self.ycenter), self.world.implementation.space.shape.sides, self.habitat_size, facecolor=self.habitat_color, edgecolor=self.habitat_edge_color, orientation=self.habitat_theta, zorder=-3))
+            self.cell_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1)))
+        self.habitat_polygon = self.ax.add_patch(RegularPolygon((self.xcenter, self.ycenter), self.world.implementation.space.shape.sides, self.habitat_size, facecolor=self.habitat_color, edgecolor=self.habitat_edge_color, orientation=self.habitat_theta, zorder=-3))
 
     def set_occlusions(self, occlusions: Cell_group_builder):
         self.world.set_occlusions(occlusions)
@@ -109,7 +110,8 @@ class Display:
                     raise RuntimeError("cell coordinates not found")
             else:
                 cell = self.world.cells[cell_id]
-        self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, linewidth=1))
+        self.cell_polygons[cell.id].set_facecolor(color)
+
 
     def circle(self, location: Location, radius: float, color, alpha: float = 1.0):
         circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha)

@@ -21,6 +21,12 @@ class Coordinates(JsonObject):
         c.y = self.y - o.y
         return c
 
+    def __neg__(self):
+        c = Coordinates()
+        c.x = -self.x
+        c.y = -self.y
+        return c
+
 
 class Coordinates_list (JsonList):
     def __init__(self, iterable=None):

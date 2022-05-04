@@ -158,6 +158,52 @@ class World:
     def __str__(self):
         return str(self.cells)
 
+    def get_centrality(self, depth: int = 1) -> JsonList:
+        cell_map = Cell_map(self.configuration.cell_coordinates)
+        counters = [1 for x in self.cells]
+        new_counters = [0 for x in self.cells]
+        for i in range(depth):
+            for cell_index, cell in enumerate(self.cells):
+                if cell.occluded:
+                    continue
+                for connection in self.configuration.connection_pattern:
+                    connection_index = cell_map[cell.coordinates + connection]
+                    if connection_index == -1 or self.cells[connection_index].occluded:
+                        continue
+                    new_counters[cell_index] += counters[connection_index]
+            counters = [x for x in new_counters]
+        return JsonList(iterable=[c/max(counters) for c in counters], list_type=float)
+
+    def get_centrality_derivative_product(self, depth: int = 1) -> JsonList:
+        centrality = self.get_centrality(depth=depth)
+        cell_map = Cell_map(self.configuration.cell_coordinates)
+        centrality_derivative_product = [0.0 for x in self.cells]
+        connection_pairs = self.get_connection_pattern_pairs()
+        for cell_index, cell in enumerate(self.cells):
+            if cell.occluded:
+                continue
+            centrality_derivative_product[cell_index] = 1
+            for connection, opposite in connection_pairs:
+                connection_index = cell_map[cell.coordinates + connection]
+                if connection_index == -1 or self.cells[connection_index].occluded:
+                    connection_value = 0
+                else:
+                    connection_value = centrality[connection_index]
+                opposite_index = cell_map[cell.coordinates + opposite]
+                if opposite_index == -1 or self.cells[opposite_index].occluded:
+                    opposite_value = 0
+                else:
+                    opposite_value = centrality[opposite_index]
+                centrality_derivative_product[cell_index] *= abs(connection_value-opposite_value)
+        return [d/2 for d in centrality_derivative_product]
+
+    def get_connection_pattern_pairs(self) -> list:
+        pairs = []
+        for connection in self.configuration.connection_pattern:
+            if (-connection, connection) in pairs:
+                continue
+            pairs.append((connection, -connection))
+        return pairs
 
 def set_location(
         location_list: Location_list,

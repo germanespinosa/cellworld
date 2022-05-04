@@ -78,6 +78,24 @@ class Trajectories(JsonList):
             last_time_stamp[s.agent_name] = s.time_stamp
         return velocities
 
+    def get_stops(self, distance_threshold: float = 0.01, stop_time: float = 0.5):
+        stops = []
+        future = 0
+        for current in range(len(self)):
+            if current < future:
+                continue
+            future = current
+            while future < len(self) and \
+                    self[current].location.dist(self[future].location) < distance_threshold:
+                future += 1
+            if future == len(self):
+                break
+            if self[current].time_stamp + stop_time < self[future].time_stamp:
+                stops.append((self[current].frame, self[future].frame))
+            else:
+                future = 0
+        return stops
+
     def get_filtered_velocities(self, complementary: float=None, outliers: float=None) -> {}:
         avs = self.get_velocities()
         for agent_name in avs:
@@ -234,7 +252,7 @@ class Experiment(JsonObject):
                 last_location = step.location
         return broken_trajectory_episodes
 
-    def remove_episodes(self, episode_list: JsonList) ->None:
+    def remove_episodes(self, episode_list: JsonList) -> None:
         for episode_index in episode_list:
             self.episodes[episode_index].trajectories = Trajectories()
             self.episodes[episode_index].captures = JsonList(list_type=int)
