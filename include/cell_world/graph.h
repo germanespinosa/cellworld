@@ -26,6 +26,7 @@ namespace cell_world {
         bool operator == (const Graph &) const;
         Cell_group cells;
         Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false) const;
+        json_cpp::Json_vector<float> get_centrality(int depth=1);
         json_cpp::Json_vector<Graph> get_sub_graphs();
         json_cpp::Json_vector<Graph> get_sub_graphs(Cell_group &);
         json_cpp::Json_vector<Graph> get_sub_graphs(Graph &);

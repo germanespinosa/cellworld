@@ -185,6 +185,10 @@ namespace cell_world {
         o << this->get().id;
     }
 
+    Cell_reference::operator const Cell &() const {
+        return this->get();
+    }
+
     Cell_group_builder Cell_group_builder::get_from_parameters_name(const std::string &configuration_name, const std::string &cell_group_name) {
         return Resources::from("cell_group").key(configuration_name).key(cell_group_name).get_resource<Cell_group_builder>();
     }

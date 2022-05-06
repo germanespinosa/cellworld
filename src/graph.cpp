@@ -215,4 +215,24 @@ namespace cell_world {
         }
         return graphs;
     }
+
+    json_cpp::Json_vector<float> Graph::get_centrality(int depth) {
+        json_cpp::Json_vector<float> centrality(cells.size(), 1);
+        for (int i=0; i<depth; i++){
+            vector<float> iteration_centrality(cells.size(), 0);
+            for (int cell_id=0; cell_id<cells.size(); cell_id ++){
+                for (const Cell &connection:(*this)[cell_id]) {
+                    iteration_centrality[cell_id] += centrality[connection.id];
+                }
+            }
+            float total = 0;
+
+            for (auto c:iteration_centrality) total += c;
+
+            for (int cell_id=0; cell_id<cells.size(); cell_id ++) {
+                centrality[cell_id] = iteration_centrality[cell_id] / total;
+            };
+        }
+        return centrality;
+    }
 }

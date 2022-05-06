@@ -10,6 +10,7 @@ namespace cell_world{
     struct Cell_reference : json_cpp::Json_base, std::reference_wrapper<const Cell>{
         explicit Cell_reference(const Cell &);
         virtual void json_write(std::ostream &o) const;
+        operator const Cell&() const;
     };
 
     struct Cell_group : json_cpp::Json_vector<Cell_reference>{
