@@ -14,6 +14,6 @@ namespace cell_world {
         static Connection_pattern get_pattern(Cell, Cell_group);
         Connection_pattern &operator=(const std::string &);
         Move random_move() const;
-        Json_vector<Connection_pattern> get_pairs(Connection_pattern &cp);
+        Json_vector<Connection_pattern> get_pairs();
     };
 }

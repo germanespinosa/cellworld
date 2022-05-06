@@ -48,9 +48,9 @@ namespace cell_world {
         return (*this)[Chance::dice(size())];
     }
 
-    json_cpp::Json_vector<Connection_pattern> Connection_pattern::get_pairs(Connection_pattern &cp) {
+    json_cpp::Json_vector<Connection_pattern> Connection_pattern::get_pairs() {
         json_cpp::Json_vector<Connection_pattern> pairs;
-        for (auto &cnn:cp){
+        for (auto &cnn:*this){
             bool present = false;
             for (auto &pair: pairs){
                 for (auto &c:pair) if (c==cnn) present = true;
