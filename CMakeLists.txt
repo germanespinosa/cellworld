@@ -74,7 +74,7 @@ target_link_libraries(cellworld
 install_dependency(https://github.com/germanespinosa/catch CatchTests)
 
 test_library(cellworld)
-test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
+#test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
 
 ####
 #### LIBRARY INSTALLATION
