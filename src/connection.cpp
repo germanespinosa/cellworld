@@ -47,4 +47,21 @@ namespace cell_world {
     Move Connection_pattern::random_move() const {
         return (*this)[Chance::dice(size())];
     }
+
+    json_cpp::Json_vector<Connection_pattern> Connection_pattern::get_pairs(Connection_pattern &cp) {
+        json_cpp::Json_vector<Connection_pattern> pairs;
+        for (auto &cnn:cp){
+            bool present = false;
+            for (auto &pair: pairs){
+                for (auto &c:pair) if (c==cnn) present = true;
+            }
+            if (!present) {
+                Connection_pattern pair;
+                pair.push_back(cnn);
+                pair.push_back(-cnn);
+                pairs.push_back(pair);
+            }
+        }
+        return pairs;
+    }
 }
