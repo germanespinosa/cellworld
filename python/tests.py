@@ -1,4 +1,37 @@
 from src import *
+from time import sleep
+from json_cpp import JsonObject, JsonList
+
+
+progress = JsonObject.load_from_file("belief_state.json")
+
+options = get_resource("graph", "hexagonal", "20_05", "cell_visibility")
+lppos = get_resource("cell_group", "hexagonal", "20_05", "lppo")
+world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
+
+
+def on_click(e):
+    cell_id = world.cells.find(Location(e.xdata, e.ydata))
+    print (world.cells[cell_id])
+    for cell in world.cells:
+        if not cell.occluded:
+            display.cell(cell=cell, color="white")
+    for lppo in lppos:
+        display.cell(cell_id=lppo, color="blue")
+    for option in options[cell_id]:
+        display.cell(cell_id=option, color="green")
+    display.cell(cell_id=cell_id, color="red")
+
+
+display = Display(world, animated=True)
+cid1 = display.fig.canvas.mpl_connect('button_press_event', on_click)
+for lppo in lppos:
+    display.cell(cell_id=lppo, color="blue")
+
+while True:
+    display.update()
+    pass
+
 from matplotlib.backend_bases import MouseButton
 # occlusions = "10_05"
 # world = World.get_from_parameters_names("hexagonal", "cv", occlusions)
@@ -19,7 +52,7 @@ from matplotlib.backend_bases import MouseButton
 #
 # print(new_location)
 #
-import matplotlib.pyplot as plt
+# import matplotlib.pyplot as plt
 # world = World.get_from_parameters_names("hexagonal", "canonical", "10_05")
 #
 # predator_location = Location(.077, .45)
@@ -62,31 +95,31 @@ import matplotlib.pyplot as plt
 #
 #
 
-
-print(-Coordinates(1,1))
-
-from time import sleep
-
-world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
-
-def show_heatmap(counters: list, upper_limit: int = 90, occlusions:str = "20_05"):
-    w = World.get_from_parameters_names("hexagonal", "canonical", occlusions)
-    d = Display(w, animated=True)
-    d.fig.suptitle("World " + occlusions, fontsize=50)
-    nv = [min([ve,upper_limit])/upper_limit for ve in counters]
-    cmap = plt.cm.Reds(nv)
-    for i, counter in enumerate(counters):
-        if not w.cells[i].occluded:
-            d.cell(cell_id=i, color=cmap[i])
-    while True:
-        d.update()
-        sleep(1)
-        pass
-
-
-
-centrality_derivative = world.get_centrality_derivative_product(depth=1)
-show_heatmap(centrality_derivative, upper_limit=.0001)
+#
+# print(-Coordinates(1,1))
+#
+# from time import sleep
+#
+# world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
+#
+# def show_heatmap(counters: list, upper_limit: int = 90, occlusions:str = "20_05"):
+#     w = World.get_from_parameters_names("hexagonal", "canonical", occlusions)
+#     d = Display(w, animated=True)
+#     d.fig.suptitle("World " + occlusions, fontsize=50)
+#     nv = [min([ve,upper_limit])/upper_limit for ve in counters]
+#     cmap = plt.cm.Reds(nv)
+#     for i, counter in enumerate(counters):
+#         if not w.cells[i].occluded:
+#             d.cell(cell_id=i, color=cmap[i])
+#     while True:
+#         d.update()
+#         sleep(1)
+#         pass
+#
+#
+#
+# centrality_derivative = world.get_centrality_derivative_product(depth=1)
+# show_heatmap(centrality_derivative, upper_limit=.0001)
 
 
 
