@@ -84,6 +84,7 @@ namespace cell_world {
         _state = ms;
         unsigned int agent_index = 0;
         for (Agent_base &agent:_agents){
+            agent.set_public_state(_state.public_state.agents_state.data() + agent_index);
             agent.set_internal_state(_state._agents_internal_state[agent_index],false);
             agent_index++;
         }
