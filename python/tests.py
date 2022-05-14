@@ -5,7 +5,7 @@ from json_cpp import JsonObject, JsonList
 
 progress = JsonObject.load_from_file("belief_state.json")
 
-options = get_resource("graph", "hexagonal", "20_05", "cell_visibility")
+options = get_resource("graph", "hexagonal", "20_05", "options")
 lppos = get_resource("cell_group", "hexagonal", "20_05", "lppo")
 world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
 
