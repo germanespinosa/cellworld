@@ -198,6 +198,13 @@ namespace cell_world {
         auto implementation = World_implementation::get_from_parameters_name(configuration_name, implementation_name);
         return {configuration, implementation};
     }
+
+    World World::get_from_world_info(const World_info &world_info) {
+        auto world = get_from_parameters_name(world_info.world_configuration, world_info.world_implementation);
+        auto occlusions = Cell_group_builder::get_from_parameters_name(world_info.world_configuration, world_info.occlusions + ".occlusions");
+        world.set_occlusions(occlusions);
+        return world;
+    }
 }
 
 

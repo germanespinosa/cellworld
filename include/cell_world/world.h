@@ -86,5 +86,6 @@ namespace cell_world{
         Space space;
         static World get_from_parameters_name(const std::string &, const std::string &, const std::string &);
         static World get_from_parameters_name(const std::string &, const std::string &);
+        static World get_from_world_info(const World_info &);
     };
 }
