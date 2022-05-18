@@ -97,7 +97,12 @@ class Display:
                     lcolor = color
                 self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=alpha, linewidth=3)
 
-    def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color="white"):
+
+    def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color=None, edge_color=None):
+        if color is None:
+            color = self.cell_color
+        if edge_color is None:
+            edge_color = self.cell_edge_color
         if cell is None:
             if cell_id == -1:
                 if coordinates is None:
@@ -111,6 +116,7 @@ class Display:
             else:
                 cell = self.world.cells[cell_id]
         self.cell_polygons[cell.id].set_facecolor(color)
+        self.cell_polygons[cell.id].set_edgecolor(edge_color)
 
 
     def circle(self, location: Location, radius: float, color, alpha: float = 1.0):
