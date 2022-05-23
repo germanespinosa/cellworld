@@ -176,4 +176,14 @@ namespace cell_world {
         }
         return chances;
     }
+
+    unsigned int weighted_random (const std::vector<float> &weights){
+        float s = 0;
+        for(auto f : weights) s += f;
+        auto r = Chance::dice_double(s);
+        s = 0;
+        unsigned int i=0;
+        for (; s+weights[i]<r; i++) s+=weights[i];
+        return i;
+    }
 }

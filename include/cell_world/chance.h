@@ -23,6 +23,7 @@ namespace cell_world{
         static std::vector<unsigned int> get_chances(const std::vector<double> &, double, double );
         static std::vector<unsigned int> invert_chances(std::vector<unsigned int>);
         static std::vector<unsigned int> combine_chances(const std::vector<unsigned int>&, const std::vector<unsigned int>&);
+        static unsigned int weighted_random(const std::vector<float> &);
         static bool coin_toss(double);
         static bool coin_toss(double, unsigned int);
         static double dice_double (double);
