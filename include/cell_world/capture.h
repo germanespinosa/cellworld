@@ -24,5 +24,6 @@ namespace cell_world {
 
         Location_visibility visibility;
         bool is_captured(const Location &predator_location, double predator_theta, const Location &prey_location);
+        bool is_captured(const Location &predator_location, const Location &prey_location);
     };
 }

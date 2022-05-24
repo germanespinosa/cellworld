@@ -20,4 +20,9 @@ namespace cell_world {
             return false;
         }
     }
+
+    bool Capture::is_captured(const Location &predator_location, const Location &prey_location) {
+        if (predator_location.dist(prey_location) > dist_max) return false;
+        return true;
+    }
 }
