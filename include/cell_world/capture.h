@@ -24,6 +24,12 @@ namespace cell_world {
 
         Location_visibility visibility;
         bool is_captured(const Location &predator_location, double predator_theta, const Location &prey_location);
-        bool is_captured(const Location &predator_location, const Location &prey_location);
+    };
+
+    struct Cell_capture {
+        Cell_capture (const Capture_parameters &, const Graph &);
+        const Graph &visibility;
+        unsigned int dist_max;
+        bool is_captured(const Cell &, const Cell &);
     };
 }

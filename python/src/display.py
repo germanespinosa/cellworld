@@ -123,10 +123,19 @@ class Display:
         circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha)
         return self.ax.add_patch(circle_patch)
 
-    def arrow(self, beginning: Location, theta: float, dist: float, color, head_width: float = .02, alpha: float = 1.0):
-        ending = beginning.copy().move(theta=theta, dist=dist)
+    def arrow(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", head_width: float = .02, alpha: float = 1.0, existing_arrow: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
+        if ending is None:
+            ending = beginning.copy().move(theta=theta, dist=dist)
         length = ending - beginning
-        return self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True, alpha=alpha)
+        if existing_arrow:
+            existing_arrow.set_data(x=beginning.x, y=beginning.y, dx=length.x, dy=length.y, head_width=head_width)
+            existing_arrow.set_color(color)
+            existing_arrow.set_alpha(alpha)
+            return existing_arrow
+        else:
+            new_arrow = self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True, alpha=alpha)
+            new_arrow.animated = self.animated
+            return new_arrow
 
     def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0, show_trajectory: bool = True, marker: Path=None):
         if step:

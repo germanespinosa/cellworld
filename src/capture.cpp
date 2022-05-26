@@ -21,8 +21,14 @@ namespace cell_world {
         }
     }
 
-    bool Capture::is_captured(const Location &predator_location, const Location &prey_location) {
-        if (predator_location.dist(prey_location) > dist_max) return false;
-        return true;
+    bool Cell_capture::is_captured (const Cell &predator_cell, const Cell &prey_cell) {
+        if (predator_cell.coordinates.manhattan(prey_cell.coordinates) > dist_max) return false;
+        if (visibility[predator_cell].contains(prey_cell)) return true;
+        return false;
+    }
+
+    Cell_capture::Cell_capture (const Capture_parameters &parameters, const Graph &visibility):
+            dist_max(parameters.distance * 2),
+            visibility(visibility){
     }
 }

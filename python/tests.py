@@ -12,7 +12,7 @@ world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
 
 def on_click(e):
     cell_id = world.cells.find(Location(e.xdata, e.ydata))
-    print (world.cells[cell_id])
+    print(world.cells[cell_id])
     for cell in world.cells:
         if not cell.occluded:
             display.cell(cell=cell, color="white")
@@ -28,9 +28,23 @@ cid1 = display.fig.canvas.mpl_connect('button_press_event', on_click)
 for lppo in lppos:
     display.cell(cell_id=lppo, color="blue")
 
+l1 = Location(.5, .5)
+l2 = Location(.6, .6)
+arrow = display.arrow(l1, ending=l2, color="orange")
+
+display.update()
+sleep(1)
+
+for i in range(10):
+    l2 += Location(.01,.01)
+    display.arrow(l1, ending=l2, color="orange", existing_arrow=arrow)
+    display.update()
+    sleep(.1)
+
+sleep(1)
 while True:
     display.update()
-    pass
+    sleep(1)
 
 from matplotlib.backend_bases import MouseButton
 # occlusions = "10_05"
