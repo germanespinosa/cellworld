@@ -27,6 +27,9 @@ class Coordinates(JsonObject):
         c.y = -self.y
         return c
 
+    def manhattan(self, o) -> int:
+        return abs(o.x - self.x) + abs(o.y - self.y)
+
 
 class Coordinates_list (JsonList):
     def __init__(self, iterable=None):
