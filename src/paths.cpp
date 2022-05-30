@@ -140,7 +140,7 @@ namespace cell_world {
     }
 
 
-    Cell_group cell_world::Paths::get_path(const Cell &source, const Cell &destination) {
+    Cell_group cell_world::Paths::get_path(const Cell &source, const Cell &destination) const {
         Map map (cells);
         Cell_group trajectory;
         Cell current = source;
@@ -168,7 +168,7 @@ namespace cell_world {
         return steps[_index(s,d)];
     }
 
-    Move_list Paths::get_moves(const Cell &source, const Cell &destination) {
+    Move_list Paths::get_moves(const Cell &source, const Cell &destination) const{
         Move_list moves;
         Map map (cells);
         Cell_group trajectory;
