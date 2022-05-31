@@ -134,6 +134,11 @@ class World:
         return World.get_from_parameters(wc, wi, o)
 
     @staticmethod
+    def get_from_world_info(world_info: World_info):
+        return World.get_from_parameters_names(world_configuration_name=world_info.world_configuration, world_implementation_name=world_info.world_implementation, occlusions_name=world_info.occlusions)
+
+
+    @staticmethod
     def get_from_parameters(
             world_configuration: World_configuration,
             world_implementation: World_implementation = None,
