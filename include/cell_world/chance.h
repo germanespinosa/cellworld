@@ -7,6 +7,7 @@
 
 namespace cell_world{
     struct Chance {
+        static void seed(unsigned int seed);
         static unsigned int dice();
         static unsigned int dice(unsigned int);
         static int dice( int,  int);
@@ -28,6 +29,8 @@ namespace cell_world{
         static bool coin_toss(double, unsigned int);
         static double dice_double (double);
         static double dice_double (double,double);
+    private:
+        static unsigned int random();
     };
 
 }

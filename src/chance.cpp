@@ -2,10 +2,17 @@
 #include <cell_world/core.h>
 #include <iostream>
 #include <utility>
+#include <mutex>
 
 using namespace std;
 
 namespace cell_world {
+
+    thread_local unsigned int rseq = 1;
+
+    void Chance::seed(unsigned int seed){
+        rseq = seed;
+    }
 
     unsigned int pick(std::vector<unsigned int> _chances, std::vector<double> &values, unsigned int dice) {
         auto indexes = new_index(values.size()); // creates an index vector for the options
@@ -39,8 +46,14 @@ namespace cell_world {
         return (dice() % (max - min + 1)) + min;
     }
 
+    mutex rmutex;
+
     unsigned int Chance::dice() {
-        return CELL_WORLD_CHANCE;
+        rmutex.lock();
+        srand(rseq);
+        rseq = rand();
+        rmutex.unlock();
+        return rseq;
     }
 
     double Chance::dice_double(double max) {
