@@ -90,8 +90,15 @@ class Trajectories(JsonList):
             if current < future:
                 continue
             future = current
+            last_future = future
             while future < len(self) and \
                     self[current].location.dist(self[future].location) < distance_threshold:
+                #in case of a big break between frames
+                if self[future].time_stamp - self[last_future].time_stamp > stop_time:
+                    #it repositions itself in the frame before the break and halts
+                    future = last_future
+                    break
+                last_future = future
                 future += 1
             if future == len(self):
                 break
