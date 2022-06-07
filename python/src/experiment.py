@@ -87,7 +87,7 @@ class Trajectories(JsonList):
         stops = []
         future = 0
         for current in range(len(self)):
-            if current < future:
+            if current <= future:
                 continue
             future = current
             last_future = future
