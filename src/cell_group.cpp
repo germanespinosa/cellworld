@@ -178,6 +178,12 @@ namespace cell_world {
         return Not_found;
     }
 
+    Cell_group_builder Cell_group::get_builder() const {
+        Cell_group_builder builder;
+        for (const Cell &cell:*this) builder.push_back(cell.id);
+        return builder;
+    }
+
     Cell_reference::Cell_reference(const Cell &cell):
             std::reference_wrapper<const Cell>(cell){ }
 

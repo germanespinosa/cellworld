@@ -30,6 +30,7 @@ namespace cell_world{
         Cell_group random_shuffle() const;
         Cell_group occluded_cells() const;
         Cell_group free_cells() const;
+        Cell_group_builder get_builder() const;
         Cell_group &operator = (const Cell_group &);
         Cell_group &operator += (const Cell_group &);
         Cell_group &operator += (const Cell &);
