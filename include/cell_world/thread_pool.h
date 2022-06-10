@@ -34,7 +34,7 @@ namespace cell_world {
             }
         }
         void wait(){
-            for (auto &w:workers) w.join();
+            for (auto &w:workers) if (w.joinable()) w.join();
         }
         std::vector<std::atomic<bool>> available_worker;
         std::vector<std::thread> workers;
