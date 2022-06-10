@@ -80,22 +80,30 @@ class Display:
     def set_agent_marker(self, agent_name: str, marker: Path):
         self.agents_markers[agent_name] = marker
 
-    def add_trajectories(self, trajectories: Trajectories, colors={}, alpha: float = 0.5):
+    def add_trajectories(self, trajectories: Trajectories, colors={}, alphas={}):
         agents = trajectories.get_agent_names()
         for index, agent in enumerate(agents):
             locations = trajectories.get_agent_trajectory(agent).get("location")
             x = locations.get("x")
             y = locations.get("y")
             color = list(matplotlib.colors.cnames.keys())[index]
+            alpha = 0.5
             if agent in colors:
                 color = colors[agent]
+            if agent in alphas:
+                alpha = alphas[agent]
             for i in range(len(x)-1):
                 lcolor = None
+                lalpha = None
+                if type(alpha) is list:
+                    lalpha = alpha[i]
+                else:
+                    lalpha = alpha
                 if type(color) is numpy.ndarray:
                     lcolor = color[i]
                 else:
                     lcolor = color
-                self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=alpha, linewidth=3)
+                self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=lalpha, linewidth=3)
 
 
     def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color=None, edge_color=None):
