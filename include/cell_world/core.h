@@ -119,6 +119,22 @@ namespace cell_world{
     double entropy(const std::vector<int>&);
     std::vector<unsigned int> new_index(unsigned int);
     std::vector<unsigned int> new_index(std::vector<double>, bool);
+
+    template<typename T>
+    T max(const std::vector<T> &values){
+        T m = values[0];
+        for (auto &v:values) m = v>m?v:m;
+        return m;
+    }
+
+    template<typename T>
+    T sum(const std::vector<T> &values){
+        T s{};
+        for (auto &v:values) s+=v;
+        return s;
+    }
+
+
     double max(const std::vector<double> &);
     unsigned int sum(const std::vector<unsigned int>& );
 

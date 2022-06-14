@@ -64,8 +64,12 @@ namespace cell_world {
         return (double) dice() * (max - min) / CELL_WORLD_CHANCE_MAX + min;
     }
 
-    unsigned int Chance::pick_best(double probability_best, const std::vector<double> &values) {
-        return pick_best(probability_best, values, Chance::dice());
+    float Chance::dice_float(float max) {
+        return (float) dice() * max / CELL_WORLD_CHANCE_MAX;
+    }
+
+    float Chance::dice_float(float min, float max) {
+        return (float) dice() * (max - min) / CELL_WORLD_CHANCE_MAX + min;
     }
 
     bool Chance::coin_toss(double probability) {
@@ -79,11 +83,30 @@ namespace cell_world {
         return (dice < (probability * CELL_WORLD_CHANCE_MAX));
     }
 
+    unsigned int Chance::pick_best(double probability_best, const std::vector<double> &values) {
+        return pick_best(probability_best, values, Chance::dice());
+    }
+
     unsigned int Chance::pick_best(double probability_best, const std::vector<double> &values, unsigned int dice) {
         if (values.empty()) throw logic_error("Chance::pick_best - can't pick from an empty set.");
         unsigned int size = values.size();
         if (coin_toss(probability_best, dice)) { // find one random item from the best values
             double m = max(values);
+            return Chance::pick_random_occurrence(values, m, dice);
+        } else { // return a random item
+            return dice % size;
+        }
+    }
+
+    unsigned int Chance::pick_best(float probability_best, const std::vector<float> &values) {
+        return pick_best(probability_best, values, Chance::dice());
+    }
+
+    unsigned int Chance::pick_best(float probability_best, const std::vector<float> &values, unsigned int dice) {
+        if (values.empty()) throw logic_error("Chance::pick_best - can't pick from an empty set.");
+        unsigned int size = values.size();
+        if (coin_toss(probability_best, dice)) { // find one random item from the best values
+            float m = max(values);
             return Chance::pick_random_occurrence(values, m, dice);
         } else { // return a random item
             return dice % size;
@@ -125,12 +148,30 @@ namespace cell_world {
 
     unsigned int Chance::pick_random_occurrence(const std::vector<double> &values, double value, unsigned int dice) {
         unsigned int occurrences = 0;
-        for (double v : values) if (v == value) occurrences++; //find how many times the same value appears
+        for (auto v : values) if (v == value) occurrences++; //find how many times the same value appears
         if (occurrences == 0) throw logic_error("Chance::pick_random_occurrence - value not found");
         unsigned int selected = dice % occurrences;
         unsigned int pick = 0;
         for (pick = 0; values[pick] != value || selected--; pick++); // find the correct repetition
         return pick;
+    }
+
+    unsigned int Chance::pick_random_occurrence(const std::vector<double> &values, double value) {
+        return Chance::pick_random_occurrence(values, value, Chance::dice());
+    }
+
+    unsigned int Chance::pick_random_occurrence(const std::vector<float> &values, float value, unsigned int dice) {
+        unsigned int occurrences = 0;
+        for (auto v : values) if (v == value) occurrences++; //find how many times the same value appears
+        if (occurrences == 0) throw logic_error("Chance::pick_random_occurrence - value not found");
+        unsigned int selected = dice % occurrences;
+        unsigned int pick = 0;
+        for (pick = 0; values[pick] != value || selected--; pick++); // find the correct repetition
+        return pick;
+    }
+
+    unsigned int Chance::pick_random_occurrence(const std::vector<float> &values, float value) {
+        return Chance::pick_random_occurrence(values, value, Chance::dice());
     }
 
     unsigned int
@@ -141,10 +182,6 @@ namespace cell_world {
         double selected_value = values[index[action]]; // this is the selected value
         return Chance::pick_random_occurrence(values, selected_value,
                                               dice); // find a random occurrence of the value in the vector
-    }
-
-    unsigned int Chance::pick_random_occurrence(const std::vector<double> &values, double value) {
-        return Chance::pick_random_occurrence(values, value, Chance::dice());
     }
 
     std::vector<unsigned int> Chance::get_chances(const std::vector<double> &values, double min, double max) {

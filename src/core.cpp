@@ -153,17 +153,6 @@ namespace cell_world {
         return abs(l.x-x) + abs(l.y-y);
     }
 
-    double max(const std::vector<double> &values){
-        double m = values[0];
-        for (auto &v:values) m = v>m?v:m;
-        return m;
-    }
-    unsigned int sum(const std::vector<unsigned int> &values){
-        unsigned int s = 0;
-        for (auto &v:values) s+=v;
-        return s;
-    }
-
     Location::Location(double x, double y) :
         x(x), y(y){
     }
