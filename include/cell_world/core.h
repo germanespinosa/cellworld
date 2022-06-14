@@ -134,10 +134,6 @@ namespace cell_world{
         return s;
     }
 
-
-    double max(const std::vector<double> &);
-    unsigned int sum(const std::vector<unsigned int>& );
-
     double angle_difference(double, double);
     int direction(double, double);
     bool angle_between(double value, double lim1, double lim2, bool inclusive = false);
