@@ -15,4 +15,3 @@
 #include<cell_world/timer.h>
 #include<cell_world/capture.h>
 #include<cell_world/peeking.h>
-#include<cell_world/thread_pool.h>
