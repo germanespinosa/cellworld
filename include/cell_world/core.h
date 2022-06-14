@@ -134,6 +134,13 @@ namespace cell_world{
         return s;
     }
 
+    template<typename T>
+    T min(const std::vector<T> &values){
+        T m = values[0];
+        for (auto &v:values) m = v<m?v:m;
+        return m;
+    }
+
     double angle_difference(double, double);
     int direction(double, double);
     bool angle_between(double value, double lim1, double lim2, bool inclusive = false);
