@@ -62,10 +62,20 @@ class Trajectories(JsonList):
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=Step)
 
+    def get_step_index_by_frame(self, frame):
+        if len(self) == 1:
+            return 0
+        m = len(self) // 2
+        if self[m].frame == frame:
+            return m
+        if frame > self[m].frame:
+            return m + Trajectories.get_step_index_by_frame(self[m:], frame)
+        else:
+            return Trajectories.get_step_index_by_frame(self[:m], frame)
+
     def get_step_by_frame(self, frame: int) -> Step:
-        for s in self:
-            if frame == s.frame:
-                return s
+        step_index = self.get_step_index_by_frame(frame)
+        return self[step_index]
 
     def get_velocities(self) -> {}:
         velocities = {}
