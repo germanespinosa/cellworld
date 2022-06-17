@@ -62,7 +62,22 @@ class Trajectories(JsonList):
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=Step)
 
-    def get_step_index_by_frame(self, frame):
+    def get_step_index_by_time_stamp(self, time_stamp: float) -> int:
+        if len(self) == 1:
+            return 0
+        m = len(self) // 2
+        if self[m].time_stamp == time_stamp:
+            return m
+        if time_stamp > self[m].time_stamp:
+            return m + Trajectories.get_step_index_by_time_stamp(self[m:], time_stamp)
+        else:
+            return Trajectories.get_step_index_by_time_stamp(self[:m], time_stamp)
+
+    def get_step_by_time_stamp(self, time_stamp: float) -> Step:
+        step_index = self.get_step_index_by_time_stamp(time_stamp)
+        return self[step_index]
+
+    def get_step_index_by_frame(self, frame: int) -> int:
         if len(self) == 1:
             return 0
         m = len(self) // 2
