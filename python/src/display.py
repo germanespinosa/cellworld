@@ -14,6 +14,7 @@ class Display:
                  world: World,
                  fig_size: tuple = (12, 10),
                  padding: float = .1,
+                 outline: float = .5,
                  show_axes: bool = False,
                  cell_color="white",
                  occlusion_color="black",
@@ -44,7 +45,7 @@ class Display:
         self.cell_edge_color = cell_edge_color
         self.xcenter = world.implementation.space.center.x
         self.ycenter = world.implementation.space.center.y
-
+        self.outline = outline
         hsize = world.implementation.space.transformation.size / 2
         pad = hsize * padding
 
@@ -62,6 +63,7 @@ class Display:
         self.cells_size = world.implementation.cell_transformation.size / 2
         self.habitat_size = hsize
         self.cell_polygons = []
+        self.cell_outline_polygons = []
         self.habitat_polygon = None
         self._draw_cells__()
         plt.tight_layout()
@@ -70,7 +72,8 @@ class Display:
         [p.remove() for p in reversed(self.ax.patches)]
         for cell in self.world.cells:
             color = self.occlusion_color if cell.occluded else self.cell_color
-            self.cell_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1)))
+            self.cell_outline_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1)))
+            self.cell_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size * self.outline, facecolor=color, orientation=self.cells_theta, zorder=-1, linewidth=1)))
         self.habitat_polygon = self.ax.add_patch(RegularPolygon((self.xcenter, self.ycenter), self.world.implementation.space.shape.sides, self.habitat_size, facecolor=self.habitat_color, edgecolor=self.habitat_edge_color, orientation=self.habitat_theta, zorder=-3))
 
     def set_occlusions(self, occlusions: Cell_group_builder):
@@ -105,8 +108,7 @@ class Display:
                     lcolor = color
                 self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=lalpha, linewidth=3)
 
-
-    def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color=None, edge_color=None):
+    def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color=None, outline_color=None, edge_color=None):
         if color is None:
             color = self.cell_color
         if edge_color is None:
@@ -123,8 +125,11 @@ class Display:
                     raise RuntimeError("cell coordinates not found")
             else:
                 cell = self.world.cells[cell_id]
+        if outline_color is None:
+            outline_color = color
         self.cell_polygons[cell.id].set_facecolor(color)
-        self.cell_polygons[cell.id].set_edgecolor(edge_color)
+        self.cell_outline_polygons[cell.id].set_edgecolor(edge_color)
+        self.cell_outline_polygons[cell.id].set_facecolor(outline_color)
 
 
     def circle(self, location: Location, radius: float, color, alpha: float = 1.0):

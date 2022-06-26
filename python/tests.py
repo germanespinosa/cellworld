@@ -17,7 +17,7 @@ def on_click(e):
         if not cell.occluded:
             display.cell(cell=cell, color="white")
     for lppo in lppos:
-        display.cell(cell_id=lppo, color="blue")
+        display.cell(cell_id=lppo, color="red", outline_color="blue")
     for option in options[cell_id]:
         display.cell(cell_id=option, color="green")
     display.cell(cell_id=cell_id, color="red")
@@ -26,7 +26,7 @@ def on_click(e):
 display = Display(world, animated=True)
 cid1 = display.fig.canvas.mpl_connect('button_press_event', on_click)
 for lppo in lppos:
-    display.cell(cell_id=lppo, color="blue")
+    display.cell(cell_id=lppo, color="red", outline_color="blue")
 
 l1 = Location(.5, .5)
 l2 = Location(.6, .6)
