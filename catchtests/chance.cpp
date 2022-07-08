@@ -56,9 +56,6 @@ TEST_CASE("coin toss") {
     CHECK(Chance::coin_toss(1));
     CHECK(!Chance::coin_toss(0));
     CHECK(Chance::coin_toss(.5,1));
-    CHECK(Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX/2-1));
-    CHECK(!Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX/2+1));
-    CHECK(!Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX-1));
     vector<float>p {.1,.2};
     CHECK(Chance::pick_best(1, p)==1);
     CHECK(Chance::pick_best(0, p,0)==0);

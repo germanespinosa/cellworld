@@ -52,13 +52,13 @@ TEST_CASE("Cone")
     CHECK(angle_difference(4, 1) == 3);
     CHECK(SIMILAR(angle_difference(1, 5), 2.2831853072, .001));
     CHECK(SIMILAR(angle_difference(5, 1), 2.2831853072, .001));
-    CHECK(normalize(3 * M_PI) == M_PI);
-    CHECK(normalize(-M_PI) == M_PI);
+    CHECK(SIMILAR(normalize(3 * M_PI), M_PI, .001));
+    CHECK(SIMILAR(normalize(-M_PI), M_PI, .001));
     CHECK(normalize_degrees(360) == 0);
     CHECK(normalize_degrees(0) == 0);
     CHECK(normalize_degrees(181) == -179);
-    CHECK(normalize(to_radians(90)) ==  M_PI / 2);
-    CHECK(normalize(to_radians(-90)) == 3 * M_PI / 2);
+    CHECK(SIMILAR(normalize(to_radians(90)), M_PI / 2, .001));
+    CHECK(SIMILAR(normalize(to_radians(-90)), 3 * M_PI / 2, .001));
     CHECK(to_degrees(M_PI / 2) == 90);
     CHECK(normalize_degrees(to_degrees(3 * M_PI / 2)) == -90);
 }
