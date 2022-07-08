@@ -14,11 +14,11 @@ namespace cell_world {
 
     Polygon::Polygon() = default;
 
-    Polygon::Polygon(const Location &center, unsigned int sides, double radius, double rotation) :
+    Polygon::Polygon(const Location &center, unsigned int sides, float radius, float rotation) :
             center(center),
             radius(radius){
-        double theta = to_radians(rotation);
-        double inc = to_radians(360.0 / double(sides));
+        float theta = to_radians(rotation);
+        float inc = to_radians(360.0 / float(sides));
         for (unsigned int s = 0; s < sides; s++) {
             auto c = center;
             vertices.emplace_back(c.move(theta, radius));
@@ -54,7 +54,7 @@ namespace cell_world {
         return p += dif;
     }
 
-    Polygon Polygon::move(double theta, double dist) const {
+    Polygon Polygon::move(float theta, float dist) const {
         return move(center + Location().move(theta,dist));
     }
 
@@ -79,21 +79,21 @@ namespace cell_world {
     }
 
     bool Polygon::is_between(const Location &src, const Location &dst) const {
-        double theta = src.atan(dst);
-        double dist = src.dist(dst);
+        float theta = src.atan(dst);
+        float dist = src.dist(dst);
         return is_between(src, theta, dist);
     }
 
-    bool Polygon::is_between(const Location &src, double theta, double dist) const {
-        double dist_center = src.dist(center);
+    bool Polygon::is_between(const Location &src, float theta, float dist) const {
+        float dist_center = src.dist(center);
         if (dist < dist_center - radius ) return false;
-        double theta_center = src.atan(center);
+        float theta_center = src.atan(center);
         auto diff_theta_center = angle_difference(theta,theta_center);
         auto direction_center = direction(theta, theta_center);
         for (auto &v: vertices) {
-            double vertex_distance = src.dist(v);
+            float vertex_distance = src.dist(v);
             if (vertex_distance < dist) {
-                double theta_vertex = src.atan(v);
+                float theta_vertex = src.atan(v);
                 auto direction_vertex = direction(theta, theta_vertex);
                 if (direction_center == -direction_vertex) {
                     auto diff_theta_vertex = angle_difference(theta,theta_vertex);

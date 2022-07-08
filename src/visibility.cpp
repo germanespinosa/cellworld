@@ -41,7 +41,7 @@ namespace cell_world {
         return iv;
     }
 
-    Cell_group Coordinates_visibility_cone::visible_cells(const Cell &src, double theta) {
+    Cell_group Coordinates_visibility_cone::visible_cells(const Cell &src, float theta) {
         Cell_group res;
         for (auto &dst: visibility[src]) {
             if (is_visible(src, theta, dst)) {
@@ -51,14 +51,14 @@ namespace cell_world {
         return res;
     }
 
-    bool Coordinates_visibility_cone::is_visible(const Cell &src, double theta, const Cell &dst) const {
+    bool Coordinates_visibility_cone::is_visible(const Cell &src, float theta, const Cell &dst) const {
         if (!visibility[src].contains(dst)) return false;
         auto angle = src.location.atan(dst.location);
         auto theta_dif = angle_difference(angle, theta);
         return theta_dif <= visual_angle / 2;
     }
 
-    Coordinates_visibility_cone::Coordinates_visibility_cone(const Graph &visibility, double visual_angle) :
+    Coordinates_visibility_cone::Coordinates_visibility_cone(const Graph &visibility, float visual_angle) :
             visibility(visibility),
             visual_angle(visual_angle) {
 
@@ -71,8 +71,8 @@ namespace cell_world {
     }
 
     bool cell_world::Location_visibility::is_visible(const Location &src, const Location &dst) const {
-        double theta = src.atan(dst);
-        double dist = src.dist(dst);
+        float theta = src.atan(dst);
+        float dist = src.dist(dst);
         for (auto &o: occlusions) {
             if (o.is_between(src,theta, dist)){
                 return false;

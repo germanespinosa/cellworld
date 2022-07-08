@@ -35,7 +35,7 @@ TEST_CASE("polygon_ contains")
     Location_list in_habitat;
     Location_list out_habitat;
     for (int i=0; i<10000; i++) {
-        auto point = wi.space.center.move(Chance::dice_double(0,6.28), Chance::dice_double(0,1.5));
+        auto point = wi.space.center.move(Chance::dice_float(0,6.28), Chance::dice_float(0,1.5));
         if (habitat_polygon.contains(point)) {
             if (cell_polygons.contains(point)) {
                 in_cell.push_back(point);

@@ -11,8 +11,8 @@ namespace cell_world {
                 Add_member(margin);
                 Add_member(time_limit);
         );
-        double margin{};
-        double time_limit{};
+        float margin{};
+        float time_limit{};
     };
 
     struct Peeking {

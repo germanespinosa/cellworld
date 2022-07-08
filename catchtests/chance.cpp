@@ -20,11 +20,11 @@ TEST_CASE("dice") {
     for ( unsigned int i = 0;i<10000;i++)
         CHECK(Chance::dice(-100,100)<=100);
     for ( unsigned int i = 0;i<10000;i++)
-        CHECK(Chance::dice_double(100)<=100);
+        CHECK(Chance::dice_float(100)<=100);
     for ( unsigned int i = 0;i<10000;i++)
-        CHECK(Chance::dice_double(-100,100)>=-100);
+        CHECK(Chance::dice_float(-100,100)>=-100);
     for ( unsigned int i = 0;i<10000;i++)
-        CHECK(Chance::dice_double(-100,100)<=100);
+        CHECK(Chance::dice_float(-100,100)<=100);
 }
 
 TEST_CASE("index") {

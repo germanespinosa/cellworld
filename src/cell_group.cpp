@@ -61,11 +61,11 @@ namespace cell_world {
         return contains(cell.id);
     }
 
-    double Cell_group::distance(const Cell &c0, const Cell &c1) {
+    float Cell_group::distance(const Cell &c0, const Cell &c1) {
         return sqrt(pow(c1.location.y - c0.location.y, 2) + pow(c1.location.x - c0.location.x, 2));
     }
 
-    double Cell_group::distance(const unsigned int s, const unsigned int d) const {
+    float Cell_group::distance(const unsigned int s, const unsigned int d) const {
         return distance((*this)[s], (*this)[d]);
     }
 
@@ -119,8 +119,8 @@ namespace cell_world {
         return cg;
     }
 
-    vector<double> Cell_group::get_distances(const Cell &bc) const {
-        vector<double> d;
+    vector<float> Cell_group::get_distances(const Cell &bc) const {
+        vector<float> d;
         for (auto &c:*this) d.push_back(bc.location.dist(c.get().location));
         return d;
     }
@@ -157,10 +157,10 @@ namespace cell_world {
 
     int Cell_group::find(const Location &location) const {
         if (empty()) return Not_found;
-        double min_d = location.dist((*this)[0].location);
+        float min_d = location.dist((*this)[0].location);
         int cell_id = 0;
         for(unsigned i = 1;i < size();i++){
-            double d = location.dist((*this)[i].location);
+            float d = location.dist((*this)[i].location);
             if (d < min_d) {
                 min_d = d;
                 cell_id = i;

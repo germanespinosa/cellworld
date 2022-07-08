@@ -43,10 +43,10 @@ namespace cell_world{
 
     struct Transformation : json_cpp::Json_object{
         Transformation ();
-        Transformation (double size, double rotation);
-        double theta() const;
-        double size{};
-        double rotation{};
+        Transformation (float size, float rotation);
+        float theta() const;
+        float size{};
+        float rotation{};
         Json_object_members({
                                 Add_member(size);
                                 Add_member(rotation);
@@ -55,27 +55,27 @@ namespace cell_world{
 
     struct Location : json_cpp::Json_object {
         Location();
-        Location(double x, double y);
-        double x{}, y{};
+        Location(float x, float y);
+        float x{}, y{};
         bool operator==(const Location &) const;
         bool operator!=(const Location &) const;
         Location operator+=(const Location &);
         Location operator+(const Location &) const;
         Location operator-(const Location &) const;
         Location operator-() const;
-        Location operator*(double) const;
+        Location operator*(float) const;
         Location operator*(const Location &) const;
-        Location operator/(double) const;
-        double mod() const;
-        double atan() const;
+        Location operator/(float) const;
+        float mod() const;
+        float atan() const;
         Transformation transformation() const;
         Transformation transformation(const Location &) const;
-        double atan(const Location &) const;
-        double dist(const Location &) const;
-        double dist() const;
-        double dist(const Location &, const Location &) const;
-        double manhattan(const Location &) const;
-        Location move(double theta, double dist) const;
+        float atan(const Location &) const;
+        float dist(const Location &) const;
+        float dist() const;
+        float dist(const Location &, const Location &) const;
+        float manhattan(const Location &) const;
+        Location move(float theta, float dist) const;
         void transform (const Transformation &);
         Json_object_members({
                          Add_member(x);
@@ -84,8 +84,8 @@ namespace cell_world{
     };
 
     struct Location_list : json_cpp::Json_vector<Location> {
-        json_cpp::Json_vector<double> get_x();
-        json_cpp::Json_vector<double> get_y();
+        json_cpp::Json_vector<float> get_x();
+        json_cpp::Json_vector<float> get_y();
     };
 
     struct Cell : json_cpp::Json_object{
@@ -116,9 +116,9 @@ namespace cell_world{
     using Cell_list = json_cpp::Json_vector<Cell>;
 
     std::vector<int> histogram(std::vector<int>);
-    double entropy(const std::vector<int>&);
+    float entropy(const std::vector<int>&);
     std::vector<unsigned int> new_index(unsigned int);
-    std::vector<unsigned int> new_index(std::vector<double>, bool);
+    std::vector<unsigned int> new_index(std::vector<float>, bool);
 
     template<typename T>
     T max(const std::vector<T> &values){
@@ -141,13 +141,13 @@ namespace cell_world{
         return m;
     }
 
-    double angle_difference(double, double);
-    int direction(double, double);
-    bool angle_between(double value, double lim1, double lim2, bool inclusive = false);
-    double to_radians(double);
-    double to_degrees(double);
-    double normalize(double);
-    double normalize_degrees(double);
+    float angle_difference(float, float);
+    int direction(float, float);
+    bool angle_between(float value, float lim1, float lim2, bool inclusive = false);
+    float to_radians(float);
+    float to_degrees(float);
+    float normalize(float);
+    float normalize_degrees(float);
     bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2);
 
     bool file_exists (const std::string &);

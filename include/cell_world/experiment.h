@@ -13,11 +13,11 @@ namespace cell_world {
                 Add_member(rotation);
                 Add_optional_member(data);
         );
-        double time_stamp;
+        float time_stamp;
         std::string agent_name;
         unsigned int frame;
         cell_world::Location location;
-        double rotation;
+        float rotation;
         std::string data;
         Step convert(const Space &src, const Space &dst) const {
             Step converted = *this;
@@ -38,7 +38,7 @@ namespace cell_world {
                 Add_optional_member(captures);
         )
         json_cpp::Json_date start_time;
-        double time_stamp;
+        float time_stamp;
         json_cpp::Json_date end_time;
         Trajectories trajectories;
         json_cpp::Json_vector<unsigned int> captures;

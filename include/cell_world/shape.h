@@ -15,15 +15,15 @@ namespace cell_world{
     struct Polygon : json_cpp::Json_object {
         Polygon ();
         Polygon (const Polygon &);
-        Polygon (const Location &, unsigned int sides, double radius, double rotation);
+        Polygon (const Location &, unsigned int sides, float radius, float rotation);
         Polygon (const Location &,const Shape &, const Transformation &);
         Location center;
         Location_list vertices;
-        double radius;
+        float radius;
         Polygon move(const Location&) const;
-        Polygon move(double, double) const;
+        Polygon move(float, float) const;
         bool is_between (const Location &, const Location &) const;
-        bool is_between (const Location &, double, double ) const;
+        bool is_between (const Location &, float, float ) const;
         bool contains(const Location &) const;
         bool contains(const Polygon &) const;
         bool overlaps(const Polygon &) const;

@@ -65,10 +65,10 @@ namespace cell_world {
                     if (s_connections.empty()) {
                         paths.set_move(s, d, {0, 0});
                     } else {
-                        double min_distance = s_connections[0].location.dist(d_location);
+                        float min_distance = s_connections[0].location.dist(d_location);
                         int best_option = 0;
                         for (unsigned int i = 1; i < s_connections.size(); i++) {
-                            double distance = s_connections[i].location.dist(d_location);
+                            float distance = s_connections[i].location.dist(d_location);
                             if (min_distance > distance) {
                                 best_option = i;
                                 min_distance = distance;
@@ -120,10 +120,10 @@ namespace cell_world {
                         paths.set_move(s, d, {0, 0});
                     } else {
                         unsigned int path_len = sp.size() - 1;
-                        double min_distance = -1;
+                        float min_distance = -1;
                         for (const Cell&a:g[s]){
                             if (g.get_shortest_path(a,d).size()==path_len){
-                                double a_distance = a.location.dist(d.location);
+                                float a_distance = a.location.dist(d.location);
                                 if (min_distance == -1 || a_distance < min_distance){
                                     min_distance = a_distance;
                                     Move move = a.coordinates - s_coordinates;

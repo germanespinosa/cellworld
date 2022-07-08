@@ -50,13 +50,13 @@ namespace cell_world {
         return abs(c.x-x) + abs(c.y-y);
     }
 
-    double Transformation::theta() const {
+    float Transformation::theta() const {
         return to_radians(rotation);
     }
 
     cell_world::Transformation::Transformation() = default;
 
-    cell_world::Transformation::Transformation(double size, double rotation):
+    cell_world::Transformation::Transformation(float size, float rotation):
             size(size), rotation(rotation){
 
     }
@@ -123,48 +123,48 @@ namespace cell_world {
         return {-x,-y};
     }
 
-    Location Location::operator*(double m) const {
+    Location Location::operator*(float m) const {
         return {x*m, y*m};
     }
 
-    Location Location::operator/(double d) const {
+    Location Location::operator/(float d) const {
         return {x/d, y/d};
     }
 
-    double Location::mod() const {
+    float Location::mod() const {
         return sqrt(y*y + x*x);
     }
 
-    double Location::dist(const Location &l) const {
+    float Location::dist(const Location &l) const {
         return (*this - l).mod();
     }
 
-    double Location::dist(const Location &line_start, const Location &line_end) const {
-        double normal_length = line_end.dist(line_start);
-        double distance = (double)((x - line_start.x) * (line_end.y - line_start.y) - (y - line_start.y) * (line_end.x - line_start.x)) / normal_length;
+    float Location::dist(const Location &line_start, const Location &line_end) const {
+        float normal_length = line_end.dist(line_start);
+        float distance = (float)((x - line_start.x) * (line_end.y - line_start.y) - (y - line_start.y) * (line_end.x - line_start.x)) / normal_length;
         return abs(distance);
     }
 
-    double Location::dist() const {
+    float Location::dist() const {
         return sqrt(x * x + y * y);
     }
 
-    double Location::manhattan(const Location &l) const {
+    float Location::manhattan(const Location &l) const {
         return abs(l.x-x) + abs(l.y-y);
     }
 
-    Location::Location(double x, double y) :
+    Location::Location(float x, float y) :
         x(x), y(y){
     }
 
     Location::Location() = default;
 
-    double Location::atan(const Location &l) const {
+    float Location::atan(const Location &l) const {
         auto v=l-*this;
         return v.atan();
     }
 
-    Location Location::move(double theta, double dist) const{
+    Location Location::move(float theta, float dist) const{
         return {x + sin(theta) * dist, y + cos(theta) * dist};
     }
 
@@ -178,7 +178,7 @@ namespace cell_world {
         return Transformation(dist(), to_degrees(atan()));
     }
 
-    double Location::atan() const {
+    float Location::atan() const {
         return atan2(x,y);
     }
 
@@ -191,7 +191,7 @@ namespace cell_world {
         return {x*other.x, y*other.y};
     }
 
-    double angle_difference(double a1, double a2) {
+    float angle_difference(float a1, float a2) {
         a1 = normalize(a1);
         a2 = normalize(a2);
         if (a1 > a2) {
@@ -205,7 +205,7 @@ namespace cell_world {
         }
     }
 
-    int direction(double a1, double a2) {
+    int direction(float a1, float a2) {
         a1 = normalize(a1);
         a2 = normalize(a2);
         if (a1 > a2) {
@@ -219,21 +219,21 @@ namespace cell_world {
         }
     }
 
-    double normalize(double angle) {
+    float normalize(float angle) {
         while (angle < 0) angle += 2.0 * M_PI;
         while (angle > 2 * M_PI) angle -= 2.0 * M_PI;
         return angle;
     }
 
-    double to_radians(double degrees) {
+    float to_radians(float degrees) {
         return degrees / 360.0 * 2.0 * M_PI;
     }
 
-    double to_degrees(double radians) {
+    float to_degrees(float radians) {
         return radians * 360.0 / (2.0 * M_PI);
     }
 
-    double normalize_degrees(double angle) {
+    float normalize_degrees(float angle) {
         while (angle < -180.0) angle += 360.0;
         while (angle > 180.0) angle -= 360.0;
         return angle;
@@ -270,7 +270,7 @@ namespace cell_world {
         return true;
     }
 
-    bool angle_between(double v, double l1, double l2, bool inclusive){
+    bool angle_between(float v, float l1, float l2, bool inclusive){
         if (inclusive) {
             if (angle_difference(v,l1)==0 || angle_difference(v,l2)==0) return true;
         }
@@ -290,29 +290,29 @@ namespace cell_world {
         return true;
     }
 
-    json_cpp::Json_vector<double> Location_list::get_x() {
-        auto x = json_cpp::Json_vector<double>();
+    json_cpp::Json_vector<float> Location_list::get_x() {
+        auto x = json_cpp::Json_vector<float>();
         for (auto &l:*this){
             x.push_back(l.x);
         }
         return x;
     }
 
-    json_cpp::Json_vector<double> Location_list::get_y() {
-        auto y = json_cpp::Json_vector<double>();
+    json_cpp::Json_vector<float> Location_list::get_y() {
+        auto y = json_cpp::Json_vector<float>();
         for (auto &l:*this){
             y.push_back(l.y);
         }
         return y;
     }
 
-    double entropy(const std::vector<int>& histogram) {
-        vector<double> prob;
+    float entropy(const std::vector<int>& histogram) {
+        vector<float> prob;
         int c = 0;
         for (int h:histogram) c+=h;
-        for (int h:histogram) if ( h > 0 ) prob.push_back((double)h/(double)c);
-        double ent=0;
-        for (double p:prob) ent += p * log2(p);
+        for (int h:histogram) if ( h > 0 ) prob.push_back((float)h/(float)c);
+        float ent=0;
+        for (float p:prob) ent += p * log2(p);
         return -ent;
     }
 
@@ -336,7 +336,7 @@ namespace cell_world {
         return index;
     }
 
-    vector<unsigned int> new_index(vector<double>values, bool ascending = true){
+    vector<unsigned int> new_index(vector<float>values, bool ascending = true){
         auto index = new_index(values.size()); // creates an index vector for the options
         for (unsigned int i = 1; i < index.size(); i++) // sort the indexes of the options by expected reward descending
             for (unsigned int j = i; j > 0 && (ascending?values[index[j - 1]] > values[index[j]]:values[index[j - 1]] < values[index[j]]); j--)

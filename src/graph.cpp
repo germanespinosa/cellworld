@@ -11,7 +11,7 @@ namespace cell_world {
     cells(cell_group){
     }
 
-    double Graph::get_entropy() {
+    float Graph::get_entropy() {
         vector<int> visible_cell_count;
         for (auto &node : *this) {
             visible_cell_count.push_back(node.size());
