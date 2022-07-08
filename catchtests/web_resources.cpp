@@ -43,9 +43,9 @@ TEST_CASE("World_implementation transformation"){
 #include <stdio.h>
 
 TEST_CASE("world_implementation"){
-    for (int i=0; i<100;i++) {
-        cout << i << endl;
-        cout << Resources::from("world_implementation").key("hexagonal").key("vr").get_resource<World_implementation>() << endl;
-    }
+//    for (int i=0; i<100;i++) {
+//        cout << i << endl;
+//        cout << Resources::from("world_implementation").key("hexagonal").key("vr").get_resource<World_implementation>() << endl;
+//    }
 
 }

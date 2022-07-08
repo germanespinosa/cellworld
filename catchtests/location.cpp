@@ -91,6 +91,6 @@ TEST_CASE("intersect") {
     Location l21 ( 10,20);
     Location l22 ( 20,10);
 
-    cout << "intersects? " << segments_intersect(l11,l12,l21,l22) << endl;
+    //cout << "intersects? " << segments_intersect(l11,l12,l21,l22) << endl;
 
 }

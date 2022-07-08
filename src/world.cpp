@@ -1,5 +1,7 @@
 #include <cell_world/world.h>
 #include <cell_world/resources.h>
+#include <cell_world/visibility.h>
+#include <cell_world/map.h>
 #include <string>
 
 using namespace std;
@@ -204,6 +206,89 @@ namespace cell_world {
         auto occlusions = Cell_group_builder::get_from_parameters_name(world_info.world_configuration, world_info.occlusions + ".occlusions");
         world.set_occlusions(occlusions);
         return world;
+    }
+
+    World_statistics World::get_statistics(unsigned int depth) {
+        World_statistics stats;
+        auto cg = this->create_cell_group();
+        auto map = Map(cg);
+        auto spatial = this->create_graph();
+        auto visual = Coordinates_visibility::create_graph(cg,this->cell_shape, this->cell_transformation);
+
+
+        stats.spatial_connections = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
+        stats.spatial_centrality = spatial.get_centrality(depth);
+
+        stats.visual_connections = json_cpp::Json_vector<unsigned int>(cg.size()), 0;
+        stats.visual_centrality = visual.get_centrality(depth);
+
+        for (const Cell &cell:cg){
+            stats.spatial_connections[cell.id] = spatial[cell].size();
+            stats.visual_connections[cell.id] = visual[cell].size();
+        }
+
+
+        stats.spatial_connections_derivative = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
+        stats.spatial_centrality_derivative = json_cpp::Json_vector<float>(cg.size(), 0);
+
+        stats.visual_connections_derivative = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
+        stats.visual_centrality_derivative = json_cpp::Json_vector<float>(cg.size(), 0);
+
+        auto pairs = this->connection_pattern.get_pairs();
+
+        for (const Cell &cell:cells){
+            if (cell.occluded) continue;
+            stats.spatial_connections_derivative[cell.id] = 1;
+            stats.spatial_centrality_derivative[cell.id] = 1;
+            stats.visual_connections_derivative[cell.id] = 1;
+            stats.visual_centrality_derivative[cell.id] = 1;
+
+            auto cell_coordinates = cell.coordinates;
+            for (auto &pair : pairs){
+                auto first_coordinates = cell_coordinates + pair[0];
+                auto first_cell_index = map.find(first_coordinates);
+
+                auto second_coordinates = cell_coordinates + pair[1];
+                auto second_cell_index = map.find(second_coordinates);
+
+                float first_spatial_connection = 0;
+                float first_spatial_centrality = 0;
+
+                float first_visual_connection = 0;
+                float first_visual_centrality = 0;
+
+                if (first_cell_index!=Not_found) {
+                    auto first_cell_id = cells[first_cell_index].id;
+
+                    first_spatial_connection = stats.spatial_connections[first_cell_id];
+                    first_spatial_centrality = stats.spatial_centrality[first_cell_id];
+
+                    first_visual_connection = stats.visual_connections[first_cell_id];
+                    first_visual_centrality = stats.visual_centrality[first_cell_id];
+                }
+
+                float second_spatial_connection = 0;
+                float second_spatial_centrality = 0;
+
+                float second_visual_connection = 0;
+                float second_visual_centrality = 0;
+
+                if (second_cell_index!=Not_found) {
+                    auto second_cell_id = cells[second_cell_index].id;
+                    second_spatial_connection = stats.spatial_connections[second_cell_id];
+                    second_spatial_centrality = stats.spatial_centrality[second_cell_id];
+
+                    second_visual_connection = stats.visual_connections[second_cell_id];
+                    second_visual_centrality = stats.visual_centrality[second_cell_id];
+                }
+                stats.spatial_connections_derivative[cell.id] *= abs(first_spatial_connection-second_spatial_connection);
+                stats.spatial_centrality_derivative[cell.id] *= abs(first_spatial_centrality-second_spatial_centrality);
+
+                stats.visual_connections_derivative[cell.id] *= abs(first_visual_connection-second_visual_connection);
+                stats.visual_centrality_derivative[cell.id] *= abs(first_visual_centrality-second_visual_centrality);
+            }
+        }
+        return stats;
     }
 }
 

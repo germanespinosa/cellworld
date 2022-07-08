@@ -52,6 +52,33 @@ namespace cell_world{
         static World_implementation get_from_parameters_name(const std::string &, const std::string &);
     };
 
+    struct World_statistics : json_cpp::Json_object{
+        World_statistics() = default;
+
+        Json_object_members(
+                Add_member(spatial_entropy);
+                Add_member(spatial_connections);
+                Add_member(spatial_connections_derivative);
+                Add_member(spatial_centrality);
+                Add_member(spatial_centrality_derivative);
+                Add_member(visual_entropy);
+                Add_member(visual_connections);
+                Add_member(visual_connections_derivative);
+                Add_member(visual_centrality);
+                Add_member(visual_centrality_derivative);
+        )
+        float spatial_entropy{};
+        json_cpp::Json_vector<unsigned int> spatial_connections{};
+        json_cpp::Json_vector<unsigned int> spatial_connections_derivative{};
+        json_cpp::Json_vector<float> spatial_centrality{};
+        json_cpp::Json_vector<float> spatial_centrality_derivative{};
+        float visual_entropy{};
+        json_cpp::Json_vector<unsigned int> visual_connections{};
+        json_cpp::Json_vector<unsigned int> visual_connections_derivative{};
+        json_cpp::Json_vector<float> visual_centrality{};
+        json_cpp::Json_vector<float> visual_centrality_derivative{};
+    };
+
     struct World : json_cpp::Json_object{
         World ();
         World(const World_configuration &);
@@ -84,6 +111,7 @@ namespace cell_world{
         Shape cell_shape;
         Transformation cell_transformation;
         Space space;
+        World_statistics get_statistics(unsigned int depth = 1);
         static World get_from_parameters_name(const std::string &, const std::string &, const std::string &);
         static World get_from_parameters_name(const std::string &, const std::string &);
         static World get_from_world_info(const World_info &);

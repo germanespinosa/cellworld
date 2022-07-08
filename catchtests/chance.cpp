@@ -109,7 +109,7 @@ TEST_CASE("Experiment::set_name") {
     experiment.occlusions = "10_05";
     experiment.subject_name = "SUBJECT";
     experiment.set_name("PREFIX","SUFFIX");
-    cout << experiment << endl;
-    cout << experiment.start_time << endl;
+//    cout << experiment << endl;
+//    cout << experiment.start_time << endl;
 }
 

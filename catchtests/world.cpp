@@ -66,7 +66,7 @@ TEST_CASE("world>>1")
 
 
 TEST_CASE("from resources"){
-    cout << "from resources" << endl;
-    cout << World::get_from_parameters_name("hexagonal","canonical") << endl;
-    cout << World::get_from_parameters_name("hexagonal","canonical", "10_05") << endl;
+//    cout << "from resources" << endl;
+//    cout << World::get_from_parameters_name("hexagonal","canonical") << endl;
+//    cout << World::get_from_parameters_name("hexagonal","canonical", "10_05") << endl;
 }
