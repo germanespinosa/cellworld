@@ -59,10 +59,11 @@ TEST_CASE("coin toss") {
     CHECK(Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX/2-1));
     CHECK(!Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX/2+1));
     CHECK(!Chance::coin_toss(.5,CELL_WORLD_CHANCE_MAX-1));
-    CHECK(Chance::pick_best(1, {.1,.2})==1);
-    CHECK(Chance::pick_best(0, {.1,.2},0)==0);
-    CHECK(Chance::pick_best(0, {.1,.2},1)==1);
-    CHECK(Chance::pick_best(0, {.1,.2},2)==0);
+    vector<float>p {.1,.2};
+    CHECK(Chance::pick_best(1, p)==1);
+    CHECK(Chance::pick_best(0, p,0)==0);
+    CHECK(Chance::pick_best(0, p,1)==1);
+    CHECK(Chance::pick_best(0, p,2)==0);
     CHECK_THROWS(Chance::coin_toss(1.2));
     CHECK_THROWS(Chance::pick_best(1.2, {.1,.2}));
 }
@@ -101,7 +102,8 @@ TEST_CASE("combine chances") {
 }
 
 TEST_CASE("pick best") {
-    CHECK(Chance::pick_best(1,{-99.9319,-100,-100})==0);
+    vector<float>p{-99.9319,-100,-100};
+    CHECK(Chance::pick_best(1,p)==0);
 }
 
 TEST_CASE("Experiment::set_name") {
