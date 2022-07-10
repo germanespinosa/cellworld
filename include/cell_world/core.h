@@ -115,8 +115,7 @@ namespace cell_world{
 
     using Cell_list = json_cpp::Json_vector<Cell>;
 
-    std::vector<int> histogram(std::vector<int>);
-    float entropy(const std::vector<int>&);
+    std::vector<unsigned int> histogram(std::vector<unsigned int>);
     std::vector<unsigned int> new_index(unsigned int);
     std::vector<unsigned int> new_index(std::vector<float>, bool);
 

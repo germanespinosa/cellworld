@@ -339,15 +339,15 @@ namespace cell_world {
         return -ent;
     }
 
-    vector<int> histogram(vector<int> values) {
+    vector<unsigned int> histogram(vector<unsigned int> values) {
         if (values.empty()) {
-            vector<int> hist;
+            vector<unsigned int> hist;
             return hist;
         } else {
             int min = values[0];
             int max = values[0];
             for (int v:values) if ( min > v ) min = v; else if ( max < v ) max = v;
-            vector<int> hist(max - min + 1 );
+            vector<unsigned int> hist(max - min + 1 );
             for (int v:values) hist[v-min]++;
             return hist;
         }

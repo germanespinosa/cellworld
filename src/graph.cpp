@@ -12,11 +12,11 @@ namespace cell_world {
     }
 
     float Graph::get_entropy() {
-        vector<int> visible_cell_count;
-        for (auto &node : *this) {
-            visible_cell_count.push_back(node.size());
+        vector<unsigned int> connection_counts(this->size(), 0);
+        for (unsigned int i=0; i<this->size(); i++){
+            connection_counts[i] = (*this)[i].size();
         }
-        return entropy(histogram(visible_cell_count));
+        return weights_entropy(connection_counts);
     }
 
     bool Graph::add(const Cell &cell) {
