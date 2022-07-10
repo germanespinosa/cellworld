@@ -227,6 +227,8 @@ namespace cell_world {
             stats.visual_connections[cell.id] = visual[cell].size();
         }
 
+        stats.spatial_entropy = weights_entropy(stats.spatial_connections);
+        stats.visual_entropy = weights_entropy(stats.visual_connections);
 
         stats.spatial_connections_derivative = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
         stats.spatial_centrality_derivative = json_cpp::Json_vector<float>(cg.size(), 0);

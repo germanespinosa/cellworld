@@ -155,4 +155,7 @@ namespace cell_world{
     bool file_exists (const std::string &, const std::vector<std::string> &);
     bool folder_exists(const std::string &path);
     bool create_folder(const std::string &path);
+
+    float entropy(std::vector<float> probabilities, float base = M_E);
+    float weights_entropy(std::vector<unsigned int> weights, float base = M_E);
 }

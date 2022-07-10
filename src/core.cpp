@@ -8,6 +8,29 @@ using namespace std;
 
 namespace cell_world {
 
+    float logb(float a, float b)
+    {
+        return log(a) / log(b);
+    }
+
+    float entropy(vector<float> probabilities, float base) {
+        if (probabilities.empty()) return 0;
+        float ent = 0;
+        for (auto p : probabilities){
+            if (p>0)  ent -= p * logb(p, base);
+        }
+        return ent / logb((float)probabilities.size(), base);
+    }
+
+    float weights_entropy(vector<unsigned int> weights, float base) {
+        if (weights.empty()) return 0;
+        auto total = sum(weights);
+        if (total == 0) return 0;
+        vector<float> probs(weights.size());
+        for (int i = 0 ; i < weights.size(); i++) probs[i] = (float)weights[i] / total ;
+        return entropy(probs);
+    }
+
     Coordinates::Coordinates(int x, int y):
             x(x),y(y){;
     }
