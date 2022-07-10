@@ -156,6 +156,15 @@ class World_statistics(JsonObject):
         else:
             self.visual_centrality_derivative = JsonList(iterable=int)
 
+    @staticmethod
+    def get_from_parameters_names(
+            world_configuration_name: str,
+            occlusions_name: str):
+        if not type(world_configuration_name) is str:
+            raise "incorrect type for world_configuration_name"
+        if not type(occlusions_name) is str:
+            raise "incorrect type for occlusions_name"
+        return World_configuration.parse(json_dictionary=get_resource("world_statistics", world_configuration_name, occlusions_name))
 
 class World:
     def __init__(self, world_configuration: World_configuration):
