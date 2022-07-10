@@ -101,11 +101,60 @@ class World_implementation(JsonObject):
         self.space = dst_space
         self.cell_transformation = cell_transformation
 
-    def scale(self, scale:Scale):
+    def scale(self, scale: Scale):
         new_cell_locations = Location_list()
         for cell_location in self.cell_locations:
             new_cell_locations.append(self.space.scale(location=cell_location, scale=scale))
         self.cell_locations = new_cell_locations
+
+
+class World_statistics(JsonObject):
+    def __init__(self,
+                 spatial_entropy: float = float(0),
+                 spatial_connections: JsonList = None,
+                 spatial_connections_derivative: JsonList = None,
+                 spatial_centrality: JsonList = None,
+                 spatial_centrality_derivative: JsonList = None,
+                 visual_entropy: float = float(0),
+                 visual_connections: JsonList = None,
+                 visual_connections_derivative: JsonList = None,
+                 visual_centrality: JsonList = None,
+                 visual_centrality_derivative: JsonList = None):
+        self.spatial_entropy = spatial_entropy
+        if spatial_connections:
+            self.spatial_connections = spatial_connections
+        else:
+            self.spatial_connections = JsonList(iterable=int)
+        if spatial_connections_derivative:
+            self.spatial_connections_derivative = spatial_connections_derivative
+        else:
+            self.spatial_connections_derivative = JsonList(iterable=int)
+        if spatial_centrality:
+            self.spatial_centrality = spatial_centrality
+        else:
+            self.spatial_centrality = JsonList(iterable=int)
+        if spatial_centrality_derivative:
+            self.spatial_centrality_derivative = spatial_centrality_derivative
+        else:
+            self.spatial_centrality_derivative = JsonList(iterable=int)
+
+        self.visual_entropy = visual_entropy
+        if visual_connections:
+            self.visual_connections = visual_connections
+        else:
+            self.visual_connections = JsonList(iterable=int)
+        if visual_connections_derivative:
+            self.visual_connections_derivative = visual_connections_derivative
+        else:
+            self.visual_connections_derivative = JsonList(iterable=int)
+        if visual_centrality:
+            self.visual_centrality = visual_centrality
+        else:
+            self.visual_centrality = JsonList(iterable=int)
+        if visual_centrality_derivative:
+            self.visual_centrality_derivative = visual_centrality_derivative
+        else:
+            self.visual_centrality_derivative = JsonList(iterable=int)
 
 
 class World:
