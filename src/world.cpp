@@ -292,6 +292,10 @@ namespace cell_world {
         }
         return stats;
     }
+
+    World_statistics World_statistics::get_from_parameters_name(const string &configuration, const string &occlusions) {
+        return Resources::from("world_statistics").key(configuration).key(occlusions).get_resource<World_statistics>();
+    }
 }
 
 

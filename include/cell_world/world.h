@@ -77,6 +77,7 @@ namespace cell_world{
         json_cpp::Json_vector<unsigned int> visual_connections_derivative{};
         json_cpp::Json_vector<float> visual_centrality{};
         json_cpp::Json_vector<float> visual_centrality_derivative{};
+        static World_statistics get_from_parameters_name(const std::string &, const std::string &);
     };
 
     struct World : json_cpp::Json_object{
