@@ -124,37 +124,37 @@ class World_statistics(JsonObject):
         if spatial_connections:
             self.spatial_connections = spatial_connections
         else:
-            self.spatial_connections = JsonList(iterable=int)
+            self.spatial_connections = JsonList(list_type=int)
         if spatial_connections_derivative:
             self.spatial_connections_derivative = spatial_connections_derivative
         else:
-            self.spatial_connections_derivative = JsonList(iterable=int)
+            self.spatial_connections_derivative = JsonList(list_type=int)
         if spatial_centrality:
             self.spatial_centrality = spatial_centrality
         else:
-            self.spatial_centrality = JsonList(iterable=int)
+            self.spatial_centrality = JsonList(list_type=float)
         if spatial_centrality_derivative:
             self.spatial_centrality_derivative = spatial_centrality_derivative
         else:
-            self.spatial_centrality_derivative = JsonList(iterable=int)
+            self.spatial_centrality_derivative = JsonList(list_type=float)
 
         self.visual_entropy = visual_entropy
         if visual_connections:
             self.visual_connections = visual_connections
         else:
-            self.visual_connections = JsonList(iterable=int)
+            self.visual_connections = JsonList(list_type=int)
         if visual_connections_derivative:
             self.visual_connections_derivative = visual_connections_derivative
         else:
-            self.visual_connections_derivative = JsonList(iterable=int)
+            self.visual_connections_derivative = JsonList(list_type=int)
         if visual_centrality:
             self.visual_centrality = visual_centrality
         else:
-            self.visual_centrality = JsonList(iterable=int)
+            self.visual_centrality = JsonList(list_type=float)
         if visual_centrality_derivative:
             self.visual_centrality_derivative = visual_centrality_derivative
         else:
-            self.visual_centrality_derivative = JsonList(iterable=int)
+            self.visual_centrality_derivative = JsonList(list_type=float)
 
     @staticmethod
     def get_from_parameters_names(
@@ -164,7 +164,7 @@ class World_statistics(JsonObject):
             raise "incorrect type for world_configuration_name"
         if not type(occlusions_name) is str:
             raise "incorrect type for occlusions_name"
-        return World_configuration.parse(json_dictionary=get_resource("world_statistics", world_configuration_name, occlusions_name))
+        return World_statistics.parse(json_dictionary=get_resource("world_statistics", world_configuration_name, occlusions_name))
 
 class World:
     def __init__(self, world_configuration: World_configuration):
