@@ -63,12 +63,12 @@ class Trajectories(JsonList):
         JsonList.__init__(self, iterable, list_type=Step)
 
     def filter_initial_bad_readings(self):
-        first_frame = 0
+        first_frame = 1
         for i, step in enumerate(self):
-            first_frame = i
-            if step.frame == 0:
+            if step.frame != 0:
                 break
-        del self[0:first_frame]
+            first_frame = i
+        del self[0:first_frame-1]
 
     def get_step_index_by_time_stamp(self, time_stamp: float) -> int:
         if len(self) == 1:
