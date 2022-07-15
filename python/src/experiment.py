@@ -116,7 +116,7 @@ class Trajectories(JsonList):
             last_time_stamp[s.agent_name] = s.time_stamp
         return velocities
 
-    def get_stops(self, distance_threshold: float = 0.01, stop_time: float = 0.5):
+    def get_stops_steps(self, distance_threshold: float = 0.01, stop_time: float = 0.5):
         stops = []
         future = 0
         for current in range(len(self)):
@@ -136,12 +136,15 @@ class Trajectories(JsonList):
             if future == len(self):
                 break
             if self[current].time_stamp + stop_time < self[future].time_stamp:
-                stops.append((self[current].frame, self[future].frame))
+                stops.append((self[current], self[future]))
             else:
                 future = 0
         return stops
 
-    def get_filtered_velocities(self, complementary: float=None, outliers: float=None) -> {}:
+    def get_stops(self, distance_threshold: float = 0.01, stop_time: float = 0.5):
+        return [(b.frame, e.frame) for b, e in self.get_stops_steps(distance_threshold, stop_time)]
+
+    def get_filtered_velocities(self, complementary: float = None, outliers: float = None) -> {}:
         avs = self.get_velocities()
         for agent_name in avs:
             if outliers:
