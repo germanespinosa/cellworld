@@ -7,7 +7,9 @@ from json_cpp import JsonObject, JsonList
 #
 # options = get_resource("graph", "hexagonal", "20_05", "options")
 # lppos = get_resource("cell_group", "hexagonal", "20_05", "lppo")
-# world = World.get_from_parameters_names("hexagonal", "canonical", "20_05")
+# world = World.get_from_parameters_names("hexagonal", "canonical", "21_05")
+world = World.get_from_parameters_names("hexagonal", "mice", "21_05" )
+ws = World_statistics.get_from_parameters_names("hexagonal", "21_05")
 #
 #
 # def on_click(e):
@@ -23,7 +25,7 @@ from json_cpp import JsonObject, JsonList
 #     display.cell(cell_id=cell_id, color="red")
 #
 #
-# display = Display(world, animated=True)
+display = Display(world, animated=True)
 # cid1 = display.fig.canvas.mpl_connect('button_press_event', on_click)
 # for lppo in lppos:
 #     display.cell(cell_id=lppo, color="red", outline_color="blue")
@@ -40,11 +42,11 @@ from json_cpp import JsonObject, JsonList
 #     display.arrow(l1, ending=l2, color="orange", existing_arrow=arrow)
 #     display.update()
 #     sleep(.1)
-#
-# sleep(1)
-# while True:
-#     display.update()
-#     sleep(1)
+
+display.heatmap(ws.visual_connections)
+while True:
+    display.update()
+    sleep(1)
 #
 # from matplotlib.backend_bases import MouseButton
 # # occlusions = "10_05"
@@ -186,7 +188,4 @@ from json_cpp import JsonObject, JsonList
 # # world = World.get_from_parameters_names("hexagonal", "canonical", "21_05")
 # # print(world.get_connection_pattern_pairs())
 
-
-w = World.get_from_parameters_names("hexagonal", "mice", "21_05" )
-
-ws = World_statistics.get_from_parameters_names("hexagonal", "21_05")
+#

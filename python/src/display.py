@@ -131,6 +131,19 @@ class Display:
         self.cell_outline_polygons[cell.id].set_edgecolor(edge_color)
         self.cell_outline_polygons[cell.id].set_facecolor(outline_color)
 
+    def heatmap(self, values: list, color_map=plt.cm.Reds, value_range: tuple = None) -> None:
+        if value_range:
+            minv, maxv = value_range
+        else:
+            minv, maxv = min(values), max(values)
+
+        if (minv == maxv):
+            return
+        adjusted_values = [(v-minv)/(maxv-minv) for v in values]
+        adjusted_cmap = color_map(adjusted_values)
+        for cell_id, color in enumerate(adjusted_cmap):
+            if not self.world.cells[cell_id].occluded:
+                self.cell(cell_id=cell_id, color=color)
 
     def circle(self, location: Location, radius: float, color, alpha: float = 1.0):
         circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha)
