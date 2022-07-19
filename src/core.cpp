@@ -14,7 +14,7 @@ namespace cell_world {
     }
 
     float entropy(vector<float> probabilities, float base) {
-        if (probabilities.empty()) return 0;
+        if (probabilities.size()<=1) return 0;
         float ent = 0;
         for (auto p : probabilities){
             if (p>0)  ent -= p * logb(p, base);
