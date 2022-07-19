@@ -111,16 +111,19 @@ class World_implementation(JsonObject):
 class World_statistics(JsonObject):
     def __init__(self,
                  spatial_entropy: float = float(0),
+                 spatial_espinometry: float = float(0),
                  spatial_connections: JsonList = None,
                  spatial_connections_derivative: JsonList = None,
                  spatial_centrality: JsonList = None,
                  spatial_centrality_derivative: JsonList = None,
                  visual_entropy: float = float(0),
+                 visual_espinometry: float = float(0),
                  visual_connections: JsonList = None,
                  visual_connections_derivative: JsonList = None,
                  visual_centrality: JsonList = None,
                  visual_centrality_derivative: JsonList = None):
         self.spatial_entropy = spatial_entropy
+        self.spatial_espinometry = spatial_espinometry
         if spatial_connections:
             self.spatial_connections = spatial_connections
         else:
@@ -139,6 +142,7 @@ class World_statistics(JsonObject):
             self.spatial_centrality_derivative = JsonList(list_type=float)
 
         self.visual_entropy = visual_entropy
+        self.visual_espinometry = visual_espinometry
         if visual_connections:
             self.visual_connections = visual_connections
         else:
@@ -165,6 +169,7 @@ class World_statistics(JsonObject):
         if not type(occlusions_name) is str:
             raise "incorrect type for occlusions_name"
         return World_statistics.parse(json_dictionary=get_resource("world_statistics", world_configuration_name, occlusions_name))
+
 
 class World:
     def __init__(self, world_configuration: World_configuration):
