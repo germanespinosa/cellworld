@@ -1,7 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
 #include<iostream>
-#include<sstream>
 
 using namespace cell_world;
 using namespace std;

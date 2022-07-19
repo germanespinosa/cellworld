@@ -74,6 +74,9 @@ target_link_libraries(cellworld
 install_dependency(https://github.com/germanespinosa/catch CatchTests)
 
 test_library(cellworld)
+
+test_library(cellworld catchtests/entropy.cpp)
+
 #test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
 
 ####

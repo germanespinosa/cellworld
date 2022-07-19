@@ -287,10 +287,10 @@ namespace cell_world {
                 stats.visual_centrality_derivative[cell.id] *= abs(first_visual_centrality-second_visual_centrality);
             }
         }
-        stats.spatial_entropy = weights_entropy(stats.spatial_connections);
-        stats.visual_entropy = weights_entropy(stats.visual_connections);
-        stats.spatial_espinometry = weights_entropy(stats.spatial_connections_derivative);
-        stats.visual_espinometry = weights_entropy(stats.spatial_connections_derivative);
+        stats.spatial_entropy = labels_entropy(stats.spatial_connections);
+        stats.visual_entropy = labels_entropy(stats.visual_connections);
+        stats.spatial_espinometry = labels_entropy(stats.spatial_connections_derivative);
+        stats.visual_espinometry = labels_entropy(stats.spatial_connections_derivative);
         return stats;
     }
 
