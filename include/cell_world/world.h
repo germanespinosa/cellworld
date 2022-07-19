@@ -57,24 +57,26 @@ namespace cell_world{
 
         Json_object_members(
                 Add_member(spatial_entropy);
+                Add_member(spatial_espinometry);
                 Add_member(spatial_connections);
                 Add_member(spatial_connections_derivative);
                 Add_member(spatial_centrality);
                 Add_member(spatial_centrality_derivative);
                 Add_member(visual_entropy);
+                Add_member(visual_espinometry);
                 Add_member(visual_connections);
                 Add_member(visual_connections_derivative);
                 Add_member(visual_centrality);
                 Add_member(visual_centrality_derivative);
         )
         float spatial_entropy{};
-        float spatial_derivative_entropy{};
+        float spatial_espinometry{};
         json_cpp::Json_vector<unsigned int> spatial_connections{};
         json_cpp::Json_vector<unsigned int> spatial_connections_derivative{};
         json_cpp::Json_vector<float> spatial_centrality{};
         json_cpp::Json_vector<float> spatial_centrality_derivative{};
         float visual_entropy{};
-        float visual_derivative_entropy{};
+        float visual_espinometry{};
         json_cpp::Json_vector<unsigned int> visual_connections{};
         json_cpp::Json_vector<unsigned int> visual_connections_derivative{};
         json_cpp::Json_vector<float> visual_centrality{};
