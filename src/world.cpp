@@ -290,7 +290,7 @@ namespace cell_world {
         stats.spatial_entropy = labels_entropy(stats.spatial_connections);
         stats.visual_entropy = labels_entropy(stats.visual_connections);
         stats.spatial_espinometry = labels_entropy(stats.spatial_connections_derivative);
-        stats.visual_espinometry = labels_entropy(stats.spatial_connections_derivative);
+        stats.visual_espinometry = labels_entropy(stats.visual_connections_derivative);
         return stats;
     }
 
