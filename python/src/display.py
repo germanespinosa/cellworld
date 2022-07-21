@@ -22,7 +22,9 @@ class Display:
                  habitat_color="white",
                  cell_edge_color="black",
                  habitat_edge_color="black",
-                 animated: bool = False):
+                 animated: bool = False,
+                 ax = None,
+                 fig = None):
         if animated:
             plt.ion()
         self.agents = dict()
@@ -31,8 +33,14 @@ class Display:
         self.agents_markers["prey"] = Agent_markers.mouse()
         self.animated = animated
         self.world = world
-        self.fig = plt.figure(figsize=fig_size)
-        self.ax = self.fig.add_subplot(111)
+        if not fig:
+            self.fig = plt.figure(figsize=fig_size)
+        else:
+            self.fig = fig
+        if not ax:
+            self.ax = self.fig.add_subplot(111)
+        else:
+            self.ax = ax
         self.ax.axes.xaxis.set_visible(show_axes)
         self.ax.axes.yaxis.set_visible(show_axes)
         self.agents_trajectories = Trajectories()
