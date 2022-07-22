@@ -36,10 +36,10 @@ namespace cell_world{
         Cell_group &operator += (const Cell &);
         Cell_group &operator -= (const Cell_group &);
         Cell_group &operator -= (const Cell &);
-        Cell_group operator + (const Cell_group &);
-        Cell_group operator + (const Cell &);
-        Cell_group operator - (const Cell_group &);
-        Cell_group operator - (const Cell &);
+        Cell_group operator + (const Cell_group &) const;
+        Cell_group operator + (const Cell &) const;
+        Cell_group operator - (const Cell_group &) const;
+        Cell_group operator - (const Cell &) const;
         bool operator == (const Cell_group &) const;
         bool operator != (const Cell_group &) const;
         Cell_group operator &(const Cell_group &) const;

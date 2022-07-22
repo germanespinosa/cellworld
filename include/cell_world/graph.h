@@ -31,5 +31,6 @@ namespace cell_world {
         json_cpp::Json_vector<Graph> get_sub_graphs(Cell_group &);
         json_cpp::Json_vector<Graph> get_sub_graphs(Graph &);
         json_cpp::Json_vector<Graph> get_sub_graphs(Graph &,Graph &);
+        bool is_connected(const Cell &,const Cell&) const;
     };
 }

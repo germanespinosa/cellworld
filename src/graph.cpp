@@ -235,4 +235,21 @@ namespace cell_world {
         }
         return centrality;
     }
+
+    bool Graph::is_connected(const Cell &src, const Cell &dst) const {
+        auto connections = &(*this)[src];
+        Cell_group visited;
+        Cell_group pending;
+        visited.add(src);
+        pending+=*connections;
+        while (!connections->contains(dst)){
+            if (pending.empty()) return false;
+            auto &next = pending[0];
+            pending.erase(pending.begin());
+            visited.add(next);
+            connections = &(*this)[next];
+            pending+= *connections - visited;
+        }
+        return true;
+    }
 }

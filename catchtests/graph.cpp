@@ -8,6 +8,7 @@ using namespace std;
 TEST_CASE("Centrality"){
     World w = World::get_from_parameters_name("hexagonal","canonical","10_05");
     auto g = w.create_graph();
+    CHECK(g.is_connected(w.cells[0], w.cells[330]));
 //    cout << g.get_centrality() << endl;
 //    cout << g.get_centrality(2) << endl;
 //    cout << g.get_centrality(3) << endl;

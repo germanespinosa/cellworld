@@ -69,19 +69,19 @@ namespace cell_world {
         return distance((*this)[s], (*this)[d]);
     }
 
-    Cell_group Cell_group::operator+(const Cell_group &cg) {
+    Cell_group Cell_group::operator+(const Cell_group &cg) const{
         Cell_group ncg = *this;
         ncg += cg;
         return ncg;
     }
 
-    Cell_group Cell_group::operator-(const Cell_group &cg) {
-        Cell_group ncg = *this;
+    Cell_group Cell_group::operator-(const Cell_group &cg) const{
+        Cell_group ncg;
         for (auto &c: *this) if (!cg.contains(c.get())) ncg.add(c.get());
         return ncg;
     }
 
-    Cell_group Cell_group::operator-(const Cell &cell) {
+    Cell_group Cell_group::operator-(const Cell &cell) const{
         Cell_group ncg = *this;
         for (auto &c: *this) if (c.get()!=cell) ncg.add(c.get());
         return ncg;
@@ -92,7 +92,7 @@ namespace cell_world {
         return *this;
     }
 
-    Cell_group Cell_group::operator+(const Cell &cg) {
+    Cell_group Cell_group::operator+(const Cell &cg) const{
         Cell_group ncg = *this;
         ncg.add(cg);
         return Cell_group();
