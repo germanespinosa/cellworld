@@ -13,6 +13,7 @@ namespace cell_world {
     };
 
     struct Paths : json_cpp::Json_object {
+        Paths() = default;
         explicit Paths(const Graph&);
         Paths(const Paths &);
         Paths(const Graph&, Move_list );
