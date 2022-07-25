@@ -191,12 +191,14 @@ class Episode(JsonObject):
         self.captures = captures
 
     def clean(self):
-        min_time_stamp = min(self.trajectories.get_agent_trajectory("predator").where("frame", 0).get("time_stamp"))
-        new_trajectories = Trajectories()
-        for step in self.trajectories:
-            if step.frame != 0 or step.agent_name != "predator" or step.time_stamp == min_time_stamp:
-                new_trajectories.append(step)
-        self.trajectories = new_trajectories
+        ts = self.trajectories.get_agent_trajectory("predator").where("frame", 0).get("time_stamp")
+        if len(ts) > 0:
+            min_time_stamp = min(ts)
+            new_trajectories = Trajectories()
+            for step in self.trajectories:
+                if step.frame != 0 or step.agent_name != "predator" or step.time_stamp == min_time_stamp:
+                    new_trajectories.append(step)
+            self.trajectories = new_trajectories
 
 
 
