@@ -70,7 +70,10 @@ namespace cell_world {
     }
 
     bool Chance::coin_toss(float probability, unsigned int dice) {
-        if (probability > 1) throw logic_error("Chance::coin_toss - probability can't be larger than 1");
+        if (probability == 1) return true;
+        if (probability == 0) return false;
+        if (probability > 1) throw logic_error("Chance::coin_toss - probability can't be higher than 1");
+        if (probability < 0) throw logic_error("Chance::coin_toss - probability can't be lower than 0");
         dice = dice % CELL_WORLD_CHANCE_MAX;
         return (dice < (probability * CELL_WORLD_CHANCE_MAX));
     }

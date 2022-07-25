@@ -140,6 +140,8 @@ namespace cell_world{
         return m;
     }
 
+    std::string get_variable(const std::string &, const std::string &);
+
     float angle_difference(float, float);
     int direction(float, float);
     bool angle_between(float value, float lim1, float lim2, bool inclusive = false);

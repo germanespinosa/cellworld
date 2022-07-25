@@ -3,10 +3,16 @@
 #include <cmath>
 #include <sys/stat.h>
 #include <filesystem>
+#include <stdlib.h>
 
 using namespace std;
 
 namespace cell_world {
+
+    string get_variable(const string &variable_name, const string &default_value = ""){
+        char * val = getenv( variable_name.c_str() );
+        return val == NULL ? default_value : std::string(val);
+    }
 
     float logb(float a, float b)
     {
