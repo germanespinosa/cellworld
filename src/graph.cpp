@@ -1,6 +1,7 @@
 #include <cell_world/graph.h>
 #include <cell_world/chance.h>
 #include <cmath>
+#include <queue>
 
 using namespace std;
 
@@ -237,18 +238,29 @@ namespace cell_world {
     }
 
     bool Graph::is_connected(const Cell &src, const Cell &dst) const {
-        auto connections = &(*this)[src];
-        Cell_group visited;
-        Cell_group pending;
-        visited.add(src);
-        pending+=*connections;
-        while (!connections->contains(dst)){
+        if (src==dst) {
+            return true;
+        }
+        vector<bool> visited(cells.size(), false);
+        queue<unsigned int> pending;
+        unsigned int src_index = cells.find(src.id);
+        visited[src_index] = true;
+        unsigned int current = src_index;
+        for (const Cell &c : (*this)[current]) {
+            pending.push(cells.find(c.id));
+        }
+        while (!(*this)[current].contains(dst)){
             if (pending.empty()) return false;
-            auto &next = pending[0];
-            pending.erase(pending.begin());
-            visited.add(next);
-            connections = &(*this)[next];
-            pending+= *connections - visited;
+            current = pending.front();
+            pending.pop();
+            auto &next = cells[current];
+            visited[current] = true;
+            for (const Cell &c : (*this)[current]) {
+                auto index = cells.find(c.id);
+                if (!visited[index]) {
+                    pending.push(cells.find(c.id));
+                }
+            }
         }
         return true;
     }
