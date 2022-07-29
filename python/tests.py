@@ -1,6 +1,13 @@
-from src import *
-from time import sleep
-from json_cpp import JsonObject, JsonList
+import requests
+from json_cpp import *
+
+uri = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/cell_group/hexagonal.05_05.occlusions"
+#req = requests.get(uri)
+a = JsonList(list_type=int).load_from_url(uri)
+
+# from src import *
+# from time import sleep
+# from json_cpp import JsonObject, JsonList
 #
 #
 # progress = JsonObject.load_from_file("belief_state.json")
@@ -8,8 +15,8 @@ from json_cpp import JsonObject, JsonList
 # options = get_resource("graph", "hexagonal", "20_05", "options")
 # lppos = get_resource("cell_group", "hexagonal", "20_05", "lppo")
 # world = World.get_from_parameters_names("hexagonal", "canonical", "21_05")
-world = World.get_from_parameters_names("hexagonal", "mice", "21_05" )
-ws = World_statistics.get_from_parameters_names("hexagonal", "21_05")
+# world = World.get_from_parameters_names("hexagonal", "mice", "21_05" )
+# ws = World_statistics.get_from_parameters_names("hexagonal", "21_05")
 #
 #
 # def on_click(e):
@@ -25,7 +32,7 @@ ws = World_statistics.get_from_parameters_names("hexagonal", "21_05")
 #     display.cell(cell_id=cell_id, color="red")
 #
 #
-display = Display(world, animated=True)
+# display = Display(world, animated=True)
 # cid1 = display.fig.canvas.mpl_connect('button_press_event', on_click)
 # for lppo in lppos:
 #     display.cell(cell_id=lppo, color="red", outline_color="blue")
@@ -43,10 +50,10 @@ display = Display(world, animated=True)
 #     display.update()
 #     sleep(.1)
 
-display.heatmap(ws.visual_connections)
-while True:
-    display.update()
-    sleep(1)
+# display.heatmap(ws.visual_connections)
+# while True:
+#     display.update()
+#     sleep(1)
 #
 # from matplotlib.backend_bases import MouseButton
 # # occlusions = "10_05"

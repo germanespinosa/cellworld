@@ -31,15 +31,22 @@ class Graph:
         while dst.id >= len(self._connections):
             self._connections.append(Cell_group_builder())
 
-        if not self.is_connected(src, dst):
+        if not dst.id in self._connections[src.id]:
             self._connections[src.id].append(dst.id)
-        if bi and not self.is_connected(dst, src):
+        if bi and not src.id in self._connections[dst.id]:
             self._connections[dst.id].append(src.id)
 
     def is_connected(self, src: Cell, dst: Cell):
-        if src.id >= len(self._connections):
-            return False
-        return dst.id in self._connections[src.id]
+        pending = [c for c in self[src]]
+        visited = [src.id]
+        while pending:
+            next = pending[0]
+            pending = pending[1:]
+            if dst.id in self._connections[next]:
+                return True
+            visited.append(next)
+            pending += [c for c in self._connections[next] if not c in visited and not c in pending]
+        return False
 
     def to_nxgraph (self):
         nxgraph = nx.Graph()
