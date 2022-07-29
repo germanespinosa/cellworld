@@ -77,14 +77,20 @@ class Cell_map:
         y = self.coordinates.get_x()
         self.base_x = min(x)
         self.base_y = min(y)
-        size_x = max(x) - self.base_x + 1
-        size_y = max(y) - self.base_y + 1
-        self.index = [[-1 for y in range(size_y)] for x in range(size_x)]
+        self.max_x = max(x)
+        self.max_y = max(y)
+        self.size_x = self.max_x - self.base_x + 1
+        self.size_y = self.max_y - self.base_y + 1
+        self.index = [[-1 for y in range(self.size_y)] for x in range(self.size_x)]
         for i, c in enumerate(coordinates_list):
             self.index[c.x][c.y] = i
 
     def __getitem__(self, coordinates: Coordinates) -> int:
         try:
+            if coordinates.x < self.base_x or coordinates.x > self.max_x:
+                return -1
+            if coordinates.y < self.base_y or coordinates.y > self.max_y:
+                return -1
             return self.index[coordinates.x][coordinates.y]
         except:
             return -1

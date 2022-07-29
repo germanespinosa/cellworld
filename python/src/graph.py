@@ -39,15 +39,15 @@ class Graph:
     def is_connected(self, src: Cell, dst: Cell) -> bool:
         if src.id == dst.id:
             return True
-        pending = [c for c in self[src]]
-        visited = [src.id]
+        pending = [src.id]
+        visited = []
         while pending:
-            next = pending[0]
-            pending = pending[1:]
-            if dst.id in self._connections[next]:
+            next_id = pending[0]
+            if dst.id in self._connections[next_id]:
                 return True
-            visited.append(next)
-            pending += [c for c in self._connections[next] if not c in visited and not c in pending]
+            visited.append(next_id)
+            pending = pending[1:]
+            pending += [c for c in self._connections[next_id] if not c in visited and not c in pending]
         return False
 
     def to_nxgraph (self):
