@@ -36,7 +36,9 @@ class Graph:
         if bi and not src.id in self._connections[dst.id]:
             self._connections[dst.id].append(src.id)
 
-    def is_connected(self, src: Cell, dst: Cell):
+    def is_connected(self, src: Cell, dst: Cell) -> bool:
+        if src.id == dst.id:
+            return True
         pending = [c for c in self[src]]
         visited = [src.id]
         while pending:
