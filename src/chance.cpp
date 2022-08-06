@@ -51,7 +51,7 @@ namespace cell_world {
     unsigned int Chance::dice() {
         //rmutex.lock();
         srand(rseq);
-        rseq = rand();
+        rseq = CELL_WORLD_CHANCE;
         //rmutex.unlock();
         return rseq;
     }
