@@ -46,13 +46,13 @@ namespace cell_world {
         return (dice() % (max - min + 1)) + min;
     }
 
-    mutex rmutex;
+    //mutex rmutex;
 
     unsigned int Chance::dice() {
-        rmutex.lock();
+        //rmutex.lock();
         srand(rseq);
         rseq = rand();
-        rmutex.unlock();
+        //rmutex.unlock();
         return rseq;
     }
 
