@@ -22,6 +22,7 @@ namespace cell_world{
         Location_visibility(const Shape &, const Transformation &);
         Location_visibility(const Cell_group &, const Shape &, const Transformation &);
         [[nodiscard]] bool is_visible(const Location &, const Location &) const;
+        bool is_visible(const Location &, float, float, const Location &) const;
         void update_occlusions(const Cell_group &);
         Polygon_list occlusions;
         Shape cell_shape;

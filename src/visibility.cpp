@@ -81,6 +81,18 @@ namespace cell_world {
         return true;
     }
 
+    bool cell_world::Location_visibility::is_visible(const Location &src, float src_theta, float src_cone, const Location &dst) const {
+        float theta = src.atan(dst);
+        if (angle_difference(src_theta,theta)>src_cone/2) return false;
+        float dist = src.dist(dst);
+        for (auto &o: occlusions) {
+            if (o.is_between(src,theta, dist)){
+                return false;
+            }
+        }
+        return true;
+    }
+
     Location_visibility::Location_visibility(const Shape &cell_shape, const Transformation &cell_transformation):
     cell_shape(cell_shape),
     cell_transformation(cell_transformation){
@@ -98,5 +110,6 @@ namespace cell_world {
         }
 
     }
+
 }
 
