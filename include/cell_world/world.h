@@ -96,7 +96,7 @@ namespace cell_world{
         Cell &operator[](const unsigned int& );
         Cell_group create_cell_group() const;
         Cell_group create_cell_group(const Cell_group_builder &) const;
-        Cell_group create_cell_group(const std::string&) const;
+        Cell_group create_cell_group(const std::string &) const;
         Graph create_graph() const;
         Graph create_graph(const Graph_builder &) const;
         Paths create_paths(const Path_builder &) const;

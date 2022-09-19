@@ -1,5 +1,6 @@
 #pragma once
 #include <chrono>
+#define WAIT_UNTIL(EXPRESSION) while(!(EXPRESSION));
 
 namespace cell_world {
     struct Timer {

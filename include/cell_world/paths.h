@@ -5,11 +5,12 @@
 namespace cell_world {
     struct Path_builder : json_cpp::Json_object {
         Move_list moves;
-        json_cpp::Json_vector<int> steps;
+        Json_int_vector steps;
         Json_object_members({
             Add_member(moves);
             Add_member(steps);
         })
+        static Path_builder get_from_parameters_name(const std::string &, const std::string &, const std::string &);
     };
 
     struct Paths : json_cpp::Json_object {
@@ -30,7 +31,7 @@ namespace cell_world {
         })
         Cell_group cells;
         Move_list moves;
-        json_cpp::Json_vector<int> steps;
+        Json_int_vector steps;
         static Paths get_euclidean(const Graph &);
         static Paths get_manhattan(const Graph &);
         static Paths get_astar(const Graph &);

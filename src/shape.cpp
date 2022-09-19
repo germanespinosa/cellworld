@@ -1,4 +1,5 @@
 #include <cell_world/shape.h>
+#include <cell_world/geometry.h>
 
 namespace cell_world {
     //SHAPE

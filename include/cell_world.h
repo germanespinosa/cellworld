@@ -1,5 +1,9 @@
 #pragma once 
 #include<cell_world/core.h>
+#include<cell_world/coordinates.h>
+#include<cell_world/geometry.h>
+#include<cell_world/location.h>
+#include<cell_world/cell.h>
 #include<cell_world/shape.h>
 #include<cell_world/model.h>
 #include<cell_world/agent.h>

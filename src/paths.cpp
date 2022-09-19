@@ -1,6 +1,6 @@
 #include <cell_world/paths.h>
 #include <cell_world/map.h>
-
+#include <cell_world/resources.h>
 #include <utility>
 using namespace std;
 
@@ -194,5 +194,9 @@ namespace cell_world {
         moves = other.moves;
         steps = other.steps;
         return *this;
+    }
+
+    Path_builder Path_builder::get_from_parameters_name(const std::string &configuration_name, const std::string &occlusions_name, const std::string &paths_name) {
+        return Resources::from("paths").key(configuration_name).key(occlusions_name).key(paths_name).get_resource<Path_builder>();
     }
 }

@@ -1,5 +1,6 @@
 #include<catch.h>
 #include<cell_world.h>
+#include <cell_world/geometry.h>
 
 using namespace cell_world;
 using namespace std;

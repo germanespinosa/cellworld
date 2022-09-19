@@ -1,13 +1,15 @@
 #pragma once
-#include <cell_world/core.h>
+#include <cell_world/cell.h>
 
 namespace cell_world{
 
     struct Cell_group_builder: json_cpp::Json_vector<unsigned int>{
         static Cell_group_builder get_from_parameters_name(const std::string &, const std::string &);
+        static Cell_group_builder get_from_parameters_name(const std::string &, const std::string &, const std::string &);
     };
 
     struct Cell_reference : json_cpp::Json_base, std::reference_wrapper<const Cell>{
+        Cell_reference() : Cell_reference(Cell()) {};
         explicit Cell_reference(const Cell &);
         virtual void json_write(std::ostream &o) const;
         operator const Cell&() const;

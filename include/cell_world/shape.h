@@ -1,5 +1,6 @@
 #pragma once
-#include <cell_world/core.h>
+#include <cell_world/transformation.h>
+#include <cell_world/location.h>
 
 namespace cell_world{
 
@@ -20,7 +21,7 @@ namespace cell_world{
         Location center;
         Location_list vertices;
         float radius;
-        Polygon move(const Location&) const;
+        Polygon move(const Location &) const;
         Polygon move(float, float) const;
         bool is_between (const Location &, const Location &) const;
         bool is_between (const Location &, float, float ) const;
@@ -38,7 +39,7 @@ namespace cell_world{
 
     struct Polygon_list : json_cpp::Json_vector<Polygon> {
         Polygon_list () = default;
-        Polygon_list (const Location_list &centers, const Shape &, const Transformation &);
+        Polygon_list (const Location_list &, const Shape &, const Transformation &);
         bool contains(const Location &) const;
     };
 

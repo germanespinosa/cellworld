@@ -1,5 +1,6 @@
 #include <cell_world/visibility.h>
 #include <math.h>
+#include <cell_world/geometry.h>
 
 using namespace std;
 

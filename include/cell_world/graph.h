@@ -22,7 +22,7 @@ namespace cell_world {
         const Cell_group &operator[](unsigned int) const;
         Cell_group &operator[](unsigned int);
         Graph operator !() const;
-        Graph &operator =(const Graph &);
+        Graph &operator = (const Graph &);
         bool operator == (const Graph &) const;
         Cell_group cells;
         Cell_group get_shortest_path(const Cell &, const Cell &, bool shuffle = false) const;

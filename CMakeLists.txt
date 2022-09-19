@@ -11,7 +11,7 @@ find_package(Dependencies)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 
-string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread ")
+string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread  -fPIC")
 
 ####
 #### MAIN LIBRARY SETUP
@@ -21,7 +21,12 @@ set(cellworld_files
     src/agent.cpp
     src/cell_group.cpp
     src/connection.cpp
+    src/coordinates.cpp
+    src/location.cpp
+    src/geometry.cpp
+    src/transformation.cpp
     src/core.cpp
+    src/cell.cpp
     src/shape.cpp
     src/model.cpp
     src/chance.cpp
@@ -34,6 +39,7 @@ set(cellworld_files
     src/resources.cpp
     src/capture.cpp
     src/peeking.cpp
+    src/python.cpp
         )
 
 add_library(cellworld ${cellworld_files})
@@ -48,7 +54,7 @@ set_target_properties(cellworld
 if(MSVC)
     add_compile_options(/W4)
 else(MSVC)
-    add_compile_options(-Wall -Wextra -pedantic)
+    add_compile_options(-Wall -Wextra -pedantic )
 endif(MSVC)
 
 dependency_include(include)
@@ -66,6 +72,52 @@ target_include_directories(cellworld
 target_link_libraries(cellworld
     PUBLIC
     json-cpp)
+
+
+####
+#### Python module
+####
+
+if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
+    FIND_PACKAGE(PythonInterp)
+    if (PYTHONINTERP_FOUND)
+        if (UNIX AND NOT APPLE)
+            if (PYTHON_VERSION_MAJOR EQUAL 3)
+                FIND_PACKAGE(Boost COMPONENTS python${PYTHON_VERSION_SUFFIX})
+                FIND_PACKAGE(PythonInterp 3)
+                FIND_PACKAGE(PythonLibs 3 REQUIRED)
+            else()
+                FIND_PACKAGE(Boost COMPONENTS python)
+                FIND_PACKAGE(PythonInterp)
+                FIND_PACKAGE(PythonLibs REQUIRED)
+            endif()
+        else()
+            if (PYTHON_VERSION_MAJOR EQUAL 3)
+                FIND_PACKAGE(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+                FIND_PACKAGE(PythonInterp 3)
+                FIND_PACKAGE(PythonLibs 3 REQUIRED)
+            else()
+                FIND_PACKAGE(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
+                FIND_PACKAGE(PythonInterp)
+                FIND_PACKAGE(PythonLibs REQUIRED)
+            endif()
+        endif()
+    else()
+        message("Python not found")
+    endif()
+    message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
+    message(STATUS "PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
+    message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
+    message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
+
+    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
+    LINK_LIBRARIES(${Boost_LIBRARIES} ${PYTHON_LIBRARIES}) # Deprecated but so convenient!
+
+    PYTHON_ADD_MODULE(cpp_cell_world ../src/python.cpp)
+
+    target_link_libraries(cpp_cell_world  cellworld)
+
+endif()
 
 ####
 #### TESTS

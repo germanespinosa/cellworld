@@ -198,4 +198,8 @@ namespace cell_world {
     Cell_group_builder Cell_group_builder::get_from_parameters_name(const std::string &configuration_name, const std::string &cell_group_name) {
         return Resources::from("cell_group").key(configuration_name).key(cell_group_name).get_resource<Cell_group_builder>();
     }
+
+    Cell_group_builder Cell_group_builder::get_from_parameters_name(const string &configuration_name, const string &occlusions_name, const string &cell_group_name) {
+        return Resources::from("cell_group").key(configuration_name).key(occlusions_name).key(cell_group_name).get_resource<Cell_group_builder>();
+    }
 }
