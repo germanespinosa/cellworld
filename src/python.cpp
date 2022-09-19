@@ -13,6 +13,7 @@
 #include <cell_world/cell_group.h>
 #include <cell_world/graph.h>
 #include <cell_world/map.h>
+#include <cell_world/timer.h>
 
 using namespace boost::python;
 using namespace json_cpp;
@@ -32,14 +33,74 @@ namespace cell_world {
         class_<Json_int_vector>("Json_int_vector")
                 .def(init<size_t>())
                 .def(init<size_t, int>())
+                .def("load", &Json_vector<Location>::load)
+                .def("save", &Json_vector<Location>::save)
+                .def("__str__", &Json_vector<Location>::to_json)
+                .def("to_json", &Json_vector<Location>::to_json)
+                .def("from_json", &Json_vector<Location>::from_json)
+                .def("__getitem__", &Json_vector<Location>::get_item_at)
+                .def("__setitem__", &Json_vector<Location>::set_item_at)
                 ;
+
+        class_<Json_bool_vector>("Json_bool_vector")
+                .def(init<size_t>())
+                .def(init<size_t, bool>())
+                .def("load", &Json_vector<Location>::load)
+                .def("save", &Json_vector<Location>::save)
+                .def("__str__", &Json_vector<Location>::to_json)
+                .def("to_json", &Json_vector<Location>::to_json)
+                .def("from_json", &Json_vector<Location>::from_json)
+                .def("__getitem__", &Json_vector<Location>::get_item_at)
+                .def("__setitem__", &Json_vector<Location>::set_item_at)
+                ;
+
         class_<Json_unsigned_int_vector>("Json_unsigned_int_vector")
                 .def(init<size_t>())
                 .def(init<size_t, unsigned int>())
+                .def("load", &Json_vector<Location>::load)
+                .def("save", &Json_vector<Location>::save)
+                .def("__str__", &Json_vector<Location>::to_json)
+                .def("to_json", &Json_vector<Location>::to_json)
+                .def("from_json", &Json_vector<Location>::from_json)
+                .def("__getitem__", &Json_vector<Location>::get_item_at)
+                .def("__setitem__", &Json_vector<Location>::set_item_at)
                 ;
+
         class_<Json_float_vector>("Json_float_vector")
                 .def(init<size_t>())
                 .def(init<size_t, float>())
+                .def("load", &Json_vector<Location>::load)
+                .def("save", &Json_vector<Location>::save)
+                .def("__str__", &Json_vector<Location>::to_json)
+                .def("to_json", &Json_vector<Location>::to_json)
+                .def("from_json", &Json_vector<Location>::from_json)
+                .def("__getitem__", &Json_vector<Location>::get_item_at)
+                .def("__setitem__", &Json_vector<Location>::set_item_at)
+                ;
+
+        class_<Json_vector<Location>, boost::noncopyable>("Json_location_vector")
+                .def(init<size_t>())
+                .def(init<size_t, Location>())
+                .def("load", &Json_vector<Location>::load)
+                .def("save", &Json_vector<Location>::save)
+                .def("__str__", &Json_vector<Location>::to_json)
+                .def("to_json", &Json_vector<Location>::to_json)
+                .def("from_json", &Json_vector<Location>::from_json)
+                .def("__getitem__", &Json_vector<Location>::get_item_at)
+                .def("__setitem__", &Json_vector<Location>::set_item_at)
+                ;
+
+
+        class_<Json_vector<Coordinates>, bases<Json_base>>("Coordinates_list")
+                .def(init<size_t>())
+                .def(init<size_t, Coordinates>())
+                .def("load", &Json_vector<Location>::load)
+                .def("save", &Json_vector<Location>::save)
+                .def("__str__", &Json_vector<Location>::to_json)
+                .def("to_json", &Json_vector<Location>::to_json)
+                .def("from_json", &Json_vector<Location>::from_json)
+                .def("__getitem__", &Json_vector<Location>::get_item_at)
+                .def("__setitem__", &Json_vector<Location>::set_item_at)
                 ;
 
         class_<Coordinates, bases<Json_base>>("Coordinates")
@@ -55,13 +116,6 @@ namespace cell_world {
                 .def(self == Coordinates())
                 .def(self != Coordinates())
                 .def(self += Coordinates())
-                ;
-
-        class_<Json_vector<Coordinates>, bases<Json_base>>("Coordinates_list")
-                .def(init<size_t>())
-                .def(init<size_t, Coordinates>())
-                .def("__getitem__", &Coordinates_list::get_item_at)
-                .def("__setitem__", &Coordinates_list::set_item_at)
                 ;
 
         float (Location::*location_atan_0)() const = &Location::atan;
@@ -99,11 +153,9 @@ namespace cell_world {
                 .def("dist", location_dist_2)
                 ;
 
-        class_<Json_vector<Location>, bases<Json_base>>("Location_list")
-                .def(init<size_t>())
-                .def(init<size_t, Location>())
-                .def("__getitem__", &Location_list::get_item_at)
-                .def("__setitem__", &Location_list::set_item_at)
+        class_<Location_list, bases<Json_vector<Location>>>("Location_list")
+                .def("get_x", &Location_list::get_x)
+                .def("get_y", &Location_list::get_y)
                 ;
 
         class_<Transformation, bases<Json_base>>("Transformation")
@@ -168,6 +220,16 @@ namespace cell_world {
                 .def("__getitem__", &Polygon_list::get_item_at)
                 .def("__setitem__", &Polygon_list::set_item_at)
                 .def("contains", &Polygon_list::contains)
+                ;
+
+        class_<Space, bases<Json_base>>("Space")
+                .def(init<>())
+                .def(init<const Location &, const Shape &, const Transformation &>())
+                .def_readwrite("center", &Space::center)
+                .def_readwrite("shape", &Space::shape)
+                .def_readwrite("transformation", &Space::transformation)
+                .def("transform", &Space::transform)
+                .def("scale", &Space::scale)
                 ;
 
         class_<World_info, bases<Json_base>>("World_info")
@@ -343,9 +405,7 @@ namespace cell_world {
                 .def("get_from_world_info", world_get_from_world_info_0)
                 ;
 
-        class_<Map>("Map")
-                .def(init<>())
-                .def(init<const cell_world::Cell_group&>())
+        class_<Map>("Map", init<const cell_world::Cell_group&>())
                 .def("__getitem__", +[](const Map& m, const Coordinates &c){return m[c];})
                 .def("__getitem__", +[](const Map& m, int x, int y){return m[Coordinates(x,y)];})
                 .def("find", &Map::find)
@@ -372,6 +432,32 @@ namespace cell_world {
                 .def("__getitem__", +[](const Map& m, const Coordinates &c){return m[c];})
                 .def("__getitem__", +[](const Map& m, int x, int y){return m[Coordinates(x,y)];})
                 .def("find", &Map::find)
+                ;
+
+        class_<Timer>("Timer")
+                .def(init<>())
+                .def(init<float>())
+                .def("reset", &Timer::reset)
+                .def("to_seconds", &Timer::to_seconds)
+                .def("time_out", &Timer::time_out)
+                .def("wait", &Timer::wait)
+                ;
+
+        class_<Coordinates_visibility>("Coordinates_visibility")
+                .def("create_graph", &Coordinates_visibility::create_graph)
+                .def("invert", &Coordinates_visibility::invert)
+                ;
+
+        class_<Coordinates_visibility_cone>("Coordinates_visibility_cone", init<const Graph &, float>())
+                .def("visible_cells", &Coordinates_visibility_cone::visible_cells)
+                .def("is_visible", &Coordinates_visibility_cone::is_visible)
+                ;
+
+        class_<Location_visibility>("Location_visibility", init<const Shape &, const Transformation &>())
+                .def(init<const Cell_group &, const Shape &, const Transformation &>())
+                .def("is_visible", +[](const Location_visibility& lv, const Location &src, const Location &dst){ return lv.is_visible(src, dst);})
+                .def("is_visible", +[](const Location_visibility& lv, const Location &src, float src_theta, float src_cone, const Location &dst){ return lv.is_visible(src, src_theta, src_cone, dst);})
+                .def("is_visible_multi", &Location_visibility::is_visible_multi)
                 ;
     }
 }

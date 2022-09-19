@@ -4,7 +4,6 @@
 
 namespace cell_world{
     struct Map{
-        Map() = default;
         explicit Map(const Cell_group &);
         const Cell& operator [](const Coordinates &) const;
         int find (const Coordinates &) const;

@@ -1,4 +1,5 @@
 #pragma once
+#include <cell_world/core.h>
 #include <cell_world/cell_group.h>
 #include <cell_world/graph.h>
 #include <cell_world/shape.h>
@@ -23,6 +24,7 @@ namespace cell_world{
         Location_visibility(const Cell_group &, const Shape &, const Transformation &);
         [[nodiscard]] bool is_visible(const Location &, const Location &) const;
         bool is_visible(const Location &, float, float, const Location &) const;
+        Json_bool_vector is_visible_multi(const Location &, float, float, const Location_list &) const;
         void update_occlusions(const Cell_group &);
         Polygon_list occlusions;
         Shape cell_shape;

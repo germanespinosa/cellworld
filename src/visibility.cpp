@@ -112,5 +112,12 @@ namespace cell_world {
 
     }
 
+    Json_bool_vector Location_visibility::is_visible_multi(const Location &src, float src_theta, float src_cone, const Location_list &dst_multi) const {
+        Json_bool_vector result(dst_multi.size(), false);
+        for (unsigned int i = 0; i < result.size(); i++){
+            result[i] = is_visible(src,src_theta,src_cone,dst_multi[i]);
+        }
+        return result;
+    }
 }
 
