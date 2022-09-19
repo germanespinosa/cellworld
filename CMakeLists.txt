@@ -39,7 +39,6 @@ set(cellworld_files
     src/resources.cpp
     src/capture.cpp
     src/peeking.cpp
-    src/python.cpp
         )
 
 add_library(cellworld ${cellworld_files})
