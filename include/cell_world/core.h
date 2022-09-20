@@ -56,7 +56,7 @@ namespace cell_world{
         auto total = sum(weights);
         if (total == 0) return 0;
         std::vector<float> probs(weights.size());
-        for (int i = 0 ; i < weights.size(); i++) probs[i] = (float)weights[i] / total ;
+        for (unsigned int i = 0 ; i < weights.size(); i++) probs[i] = (float)weights[i] / total ;
         return entropy(probs, base);
     }
 

@@ -221,7 +221,7 @@ namespace cell_world {
         json_cpp::Json_vector<float> centrality(cells.size(), 1);
         for (int i=0; i<depth; i++){
             vector<float> iteration_centrality(cells.size(), 0);
-            for (int cell_id=0; cell_id<cells.size(); cell_id ++){
+            for (unsigned int cell_id=0; cell_id<cells.size(); cell_id ++){
                 for (const Cell &connection:(*this)[cell_id]) {
                     iteration_centrality[cell_id] += centrality[connection.id];
                 }
@@ -230,7 +230,7 @@ namespace cell_world {
 
             for (auto c:iteration_centrality) total += c;
 
-            for (int cell_id=0; cell_id<cells.size(); cell_id ++) {
+            for (unsigned int cell_id=0; cell_id<cells.size(); cell_id ++) {
                 centrality[cell_id] = iteration_centrality[cell_id] / total;
             };
         }
@@ -253,7 +253,6 @@ namespace cell_world {
             if (pending.empty()) return false;
             current = pending.front();
             pending.pop();
-            auto &next = cells[current];
             visited[current] = true;
             for (const Cell &c : (*this)[current]) {
                 auto index = cells.find(c.id);

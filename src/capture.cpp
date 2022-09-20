@@ -6,8 +6,8 @@ namespace cell_world {
     Capture::Capture(const Capture_parameters &parameters, const World &world):
             dist_max (parameters.distance * world.cell_transformation.size),
             theta_diff_max(to_radians(parameters.angle / 2)),
-            visibility(world.create_cell_group() ,world.cell_shape, world.cell_transformation),
-            cool_down(parameters.cool_down){
+            cool_down(parameters.cool_down),
+            visibility(world.create_cell_group() ,world.cell_shape, world.cell_transformation){
     }
 
     bool Capture::is_captured(const Location &predator_location, float predator_theta, const Location &prey_location) {
@@ -29,7 +29,7 @@ namespace cell_world {
     }
 
     Cell_capture::Cell_capture (const Capture_parameters &parameters, const Graph &visibility):
-            dist_max(parameters.distance * 2),
-            visibility(visibility){
+            visibility(visibility),
+            dist_max(parameters.distance * 2){
     }
 }

@@ -21,7 +21,6 @@ namespace cell_world {
         float dist_max;
         float theta_diff_max;
         Timer cool_down;
-
         Location_visibility visibility;
         bool is_captured(const Location &predator_location, float predator_theta, const Location &prey_location);
     };

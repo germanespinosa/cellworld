@@ -9,11 +9,11 @@ project(cellworld
 
 find_package(Dependencies)
 
+install_dependency(https://github.com/pybind/pybind11)
+
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 
 install_dependency(https://github.com/germanespinosa/requests Requests)
-
-string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread  -fPIC")
 
 ####
 #### MAIN LIBRARY SETUP
@@ -38,12 +38,13 @@ set(cellworld_files
     src/paths.cpp
     src/state.cpp
     src/map.cpp
-    src/resources.cpp
     src/capture.cpp
     src/peeking.cpp
         )
 
-add_library(cellworld ${cellworld_files})
+add_library(cellworld STATIC
+        ${cellworld_files}
+        src/resources.cpp)
 
 set_target_properties(cellworld
     PROPERTIES
@@ -51,12 +52,6 @@ set_target_properties(cellworld
     CXX_STANDARD_REQUIRED On
     CXX_EXTENSIONS Off
     VERSION ${PROJECT_VERSION})
-
-if(MSVC)
-    add_compile_options(/W4)
-else(MSVC)
-    add_compile_options(-Wall -Wextra -pedantic )
-endif(MSVC)
 
 dependency_include(include)
 dependency_include(${dependencies_folder}/easy-tcp/include)
@@ -69,6 +64,8 @@ target_include_directories(cellworld
 target_include_directories(cellworld
     PRIVATE
     include )
+
+target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
 
 target_link_libraries(cellworld
     PUBLIC
@@ -112,15 +109,19 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
     message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
     message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
-    PYTHON_ADD_MODULE(core ../src/python.cpp)
+
+    PYTHON_ADD_MODULE(core ../src/python.cpp ${cellworld_files})
+
+    target_compile_options(core PRIVATE -static -fPIC)
 
     target_include_directories(core
-            PRIVATE
+            PUBLIC
             ${Boost_INCLUDE_DIRS}
             ${PYTHON_INCLUDE_DIRS})
 
     target_link_libraries(core
-            cellworld
+            PUBLIC
+            json-cpp
             ${Boost_LIBRARIES}
             ${PYTHON_LIBRARIES})
 

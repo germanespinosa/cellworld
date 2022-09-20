@@ -63,9 +63,9 @@ namespace cell_world {
     }
 
     World_implementation::World_implementation(const World_implementation &wi):
-            cell_transformation(wi.cell_transformation),
             cell_locations(wi.cell_locations),
-            space(wi.space){
+            space(wi.space),
+            cell_transformation(wi.cell_transformation){
     }
 
     World_implementation World_implementation::get_from_parameters_name(const string &configuration_name, const string &implementation_name) {
@@ -219,7 +219,7 @@ namespace cell_world {
         stats.spatial_connections = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
         stats.spatial_centrality = spatial.get_centrality(depth);
 
-        stats.visual_connections = json_cpp::Json_vector<unsigned int>(cg.size()), 0;
+        stats.visual_connections = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
         stats.visual_centrality = visual.get_centrality(depth);
 
         for (const Cell &cell:cg){

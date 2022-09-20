@@ -39,7 +39,7 @@ namespace cell_world {
         if (dist>radius) return false;
         auto inner_radius = center.dist(vertices[0],vertices[1]);
         if (dist<inner_radius) return true;
-        for (int i=1; i<vertices.size(); i++)
+        for (unsigned int i=1; i<vertices.size(); i++)
             if (segments_intersect(center,location,vertices[i],vertices[i-1]))
                 return false;
         if (segments_intersect(center,location,vertices[vertices.size()-1],vertices[0]))
