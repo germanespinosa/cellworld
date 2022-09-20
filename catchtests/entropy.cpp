@@ -24,9 +24,9 @@ float l_entropy(std::vector<string> labels, float base = M_E){
 
 TEST_CASE("entropy")
 {
-    cout << entropy(vector<float>{.25,.25,.25,.25}) << endl;
-    cout << entropy(vector<float>{1}) << endl;
-    cout << weights_entropy(vector<unsigned int>{1,1,1,1}) << endl;
-    cout << labels_entropy(vector<string>{"uno","dos","tres","cuatro"}) << endl;
-    cout << labels_entropy(vector<int>{331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331}) << endl;
+    CHECK(entropy(vector<float>{.25,.25,.25,.25})==1);
+    CHECK(entropy(vector<float>{1})==0);
+    CHECK(weights_entropy(vector<unsigned int>{1,1,1,1})==1);
+    CHECK(labels_entropy(vector<string>{"uno","dos","tres","cuatro"})==1);
+    CHECK(labels_entropy(vector<int>{331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331, 331})==0);
 }

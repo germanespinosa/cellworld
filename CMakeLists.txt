@@ -11,6 +11,8 @@ find_package(Dependencies)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 
+install_dependency(https://github.com/germanespinosa/requests Requests)
+
 string(APPEND CMAKE_CXX_FLAGS " -fno-strict-aliasing -pthread  -fPIC")
 
 ####
@@ -70,7 +72,8 @@ target_include_directories(cellworld
 
 target_link_libraries(cellworld
     PUBLIC
-    json-cpp)
+    json-cpp
+    requests)
 
 
 ####
@@ -109,13 +112,25 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
     message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
     message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
-    INCLUDE_DIRECTORIES(${Boost_INCLUDE_DIRS} ${PYTHON_INCLUDE_DIRS})
-    LINK_LIBRARIES(${Boost_LIBRARIES} ${PYTHON_LIBRARIES}) # Deprecated but so convenient!
+    PYTHON_ADD_MODULE(core ../src/python.cpp)
 
-    PYTHON_ADD_MODULE(cpp_cell_world ../src/python.cpp)
+    target_include_directories(core
+            PRIVATE
+            ${Boost_INCLUDE_DIRS}
+            ${PYTHON_INCLUDE_DIRS})
 
-    target_link_libraries(cpp_cell_world  cellworld)
+    target_link_libraries(core
+            cellworld
+            ${Boost_LIBRARIES}
+            ${PYTHON_LIBRARIES})
 
+    string(TOLOWER ${CMAKE_BUILD_TYPE} LBT)
+
+    add_custom_command(TARGET core POST_BUILD
+            COMMAND "${CMAKE_COMMAND}" -E copy
+            "$<TARGET_FILE:core>"
+            "${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}/$<TARGET_FILE_NAME:core>"
+            COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}")
 endif()
 
 ####

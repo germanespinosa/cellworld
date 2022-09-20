@@ -18,9 +18,9 @@ TEST_CASE("get_world_configuration"){
     CHECK_NOTHROW(Json_create<World_configuration>(Resources::from("world_configuration").key("hexagonal").get()));
 }
 
-TEST_CASE("get_cell_group"){
-    CHECK_NOTHROW(Json_create<Cell_group>(Resources::from("cell_group").key("hexagonal").key("10_05").key("occlusions").get()));
-}
+//TEST_CASE("get_cell_group"){
+//    CHECK_NOTHROW(Json_create<Cell_group>(Resources::from("cell_group").key("hexagonal").key("10_05").key("occlusions").get()));
+//}
 
 TEST_CASE("CACHE FOLDER"){
     CHECK(!Resources::cache_folder().empty());

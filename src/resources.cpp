@@ -3,6 +3,7 @@
 #include <json_cpp.h>
 #include <chrono>
 #include <cell_world/core.h>
+#include <requests/include/request.h>
 
 using namespace std;
 
@@ -48,7 +49,7 @@ namespace cell_world {
         }
         { // time to download the resource
             auto uri = url() + _cache_invalidation();
-            auto wr = Json_web_get(uri);
+            auto wr = Web_get(uri);
             ofstream cache_file;
             cache_file.open(cfn);
             cache_file << wr.get_string();

@@ -71,8 +71,8 @@ TEST_CASE("from resources"){
 }
 
 TEST_CASE("World statistics") {
-    auto world = World::get_from_parameters_name("hexagonal","canonical", "21_05");
-    auto stats = world.get_statistics(5);
-    cout << stats;
-    stats.save("21_05.stats.json");
+//    auto world = World::get_from_parameters_name("hexagonal","canonical", "21_05");
+//    auto stats = world.get_statistics(5);
+//    cout << stats;
+//    stats.save("21_05.stats.json");
 }
