@@ -1,0 +1,10 @@
+#!/bin/bash
+ldd build-release/core.so | while read line
+do
+   # do something with $line here
+  line_parts=($line)
+  if [[ ${#line_parts[@]} == 4 ]]
+  then
+    cp ${line_parts[2]} build-release/${line_parts[0]}
+  fi
+done
