@@ -9,7 +9,7 @@ project(cellworld
 
 find_package(Dependencies)
 
-install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
+install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp STATIC)
 
 dependency_include(include)
 
@@ -42,7 +42,7 @@ set(cellworld_files
 
 
 if (NOT "$ENV{BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
-    install_dependency(https://github.com/germanespinosa/requests Requests)
+    install_dependency(https://github.com/germanespinosa/requests Requests STATIC)
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
     add_library(cellworld STATIC
             ${cellworld_files_c})
@@ -75,7 +75,7 @@ if (NOT "$ENV{BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     #### TESTS
     ####
 
-    install_dependency(https://github.com/germanespinosa/catch CatchTests)
+    install_dependency(https://github.com/germanespinosa/catch CatchTests STATIC)
 
     test_library(cellworld)
 
@@ -95,12 +95,12 @@ if (NOT "$ENV{BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
             RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
     install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-    install(DIRECTORY scripts/ DESTINATION /bin)
-    install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
-    install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
-    install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
-    install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
-    install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
+#    install(DIRECTORY scripts/ DESTINATION /bin)
+#    install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
+#    install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
+#    install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
+#    install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
+#    install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
 
     install(EXPORT CellworldConfig
             DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
@@ -121,24 +121,9 @@ endif()
 
 if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
-    install_dependency(https://github.com/pybind/pybind11)
+    install_dependency(https://github.com/pybind/pybind11 NO_BUILD STATIC)
     add_subdirectory(cmake-dependencies/pybind11)
     include_directories(cmake-dependencies/pybind11/include)
-
-#    FIND_PACKAGE(PythonInterp 3)
-#    if (PYTHONINTERP_FOUND)
-#        if (UNIX AND NOT APPLE)
-#            FIND_PACKAGE(PythonLibs 3 REQUIRED)
-#        else()
-#            FIND_PACKAGE(PythonLibs 3 REQUIRED)
-#        endif()
-#    else()
-#        message("Python not found")
-#    endif()
-#    message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
-#    message(STATUS "PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
-#    message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
-#
 
     pybind11_add_module(core ../src/python.cpp ${cellworld_files})
 
