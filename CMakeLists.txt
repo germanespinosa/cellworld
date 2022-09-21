@@ -122,6 +122,7 @@ endif()
 if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     install_dependency(https://github.com/pybind/pybind11)
+    add_subdirectory(cmake-dependencies/pybind11)
     include_directories(cmake-dependencies/pybind11/include)
 
     FIND_PACKAGE(PythonInterp 3)
@@ -139,7 +140,7 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
     message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
 
 
-    PYTHON_ADD_MODULE(core ../src/python.cpp ${cellworld_files})
+    pybind11_add_module(core ../src/python.cpp ${cellworld_files})
 
     target_compile_options(core PRIVATE -static -fPIC)
 
