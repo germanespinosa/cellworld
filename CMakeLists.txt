@@ -9,8 +9,6 @@ project(cellworld
 
 find_package(Dependencies)
 
-install_dependency(https://github.com/pybind/pybind11)
-
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 
 install_dependency(https://github.com/germanespinosa/requests Requests)

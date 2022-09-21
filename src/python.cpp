@@ -1,6 +1,5 @@
 #include <json_cpp.h>
 #include <boost/python.hpp>
-#include <boost/python/list.hpp>
 #include <boost/python/extract.hpp>
 #include <cell_world/core.h>
 #include <cell_world/coordinates.h>
