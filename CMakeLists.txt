@@ -128,7 +128,6 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
     if (PYTHONINTERP_FOUND)
         if (UNIX AND NOT APPLE)
             if (PYTHON_VERSION_MAJOR EQUAL 3)
-                FIND_PACKAGE(Boost COMPONENTS python${PYTHON_VERSION_SUFFIX})
                 FIND_PACKAGE(PythonInterp 3)
                 FIND_PACKAGE(PythonLibs 3 REQUIRED)
             else()
@@ -138,11 +137,9 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
             endif()
         else()
             if (PYTHON_VERSION_MAJOR EQUAL 3)
-                FIND_PACKAGE(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
                 FIND_PACKAGE(PythonInterp 3)
                 FIND_PACKAGE(PythonLibs 3 REQUIRED)
             else()
-                FIND_PACKAGE(Boost COMPONENTS python${PYTHON_VERSION_MAJOR}${PYTHON_VERSION_MINOR})
                 FIND_PACKAGE(PythonInterp)
                 FIND_PACKAGE(PythonLibs REQUIRED)
             endif()
@@ -153,7 +150,6 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
     message(STATUS "PYTHON_LIBRARIES = ${PYTHON_LIBRARIES}")
     message(STATUS "PYTHON_EXECUTABLE = ${PYTHON_EXECUTABLE}")
     message(STATUS "PYTHON_INCLUDE_DIRS = ${PYTHON_INCLUDE_DIRS}")
-    message(STATUS "Boost_LIBRARIES = ${Boost_LIBRARIES}")
 
 
     PYTHON_ADD_MODULE(core ../src/python.cpp ${cellworld_files})
@@ -162,7 +158,6 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     target_include_directories(core
             PUBLIC
-            ${Boost_INCLUDE_DIRS}
             ${PYTHON_INCLUDE_DIRS})
 
     target_link_libraries(core
