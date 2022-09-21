@@ -11,7 +11,7 @@ find_package(Dependencies)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 
-install_dependency(https://github.com/germanespinosa/requests Requests)
+dependency_include(include)
 
 ####
 #### MAIN LIBRARY SETUP
@@ -40,36 +40,80 @@ set(cellworld_files
     src/peeking.cpp
         )
 
-add_library(cellworld STATIC
-        ${cellworld_files}
-        src/resources.cpp)
 
-set_target_properties(cellworld
-    PROPERTIES
-    CXX_STANDARD 20
-    CXX_STANDARD_REQUIRED On
-    CXX_EXTENSIONS Off
-    VERSION ${PROJECT_VERSION})
+if (NOT "$ENV{BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
+    install_dependency(https://github.com/germanespinosa/requests Requests)
+    set(cellworld_files_c ${cellworld_files} src/resources.cpp )
+    add_library(cellworld STATIC
+            ${cellworld_files_c})
 
-dependency_include(include)
-dependency_include(${dependencies_folder}/easy-tcp/include)
+    set_target_properties(cellworld
+            PROPERTIES
+            CXX_STANDARD 20
+            CXX_STANDARD_REQUIRED On
+            CXX_EXTENSIONS Off
+            VERSION ${PROJECT_VERSION})
 
-target_include_directories(cellworld
-    SYSTEM INTERFACE
-    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-    $<INSTALL_INTERFACE:include>)
 
-target_include_directories(cellworld
-    PRIVATE
-    include )
+    target_include_directories(cellworld
+            SYSTEM INTERFACE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>)
 
-target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
+    target_include_directories(cellworld
+            PRIVATE
+            include )
 
-target_link_libraries(cellworld
-    PUBLIC
-    json-cpp
-    requests)
+    target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
 
+    target_link_libraries(cellworld
+            PUBLIC
+            json-cpp
+            requests)
+
+    ####
+    #### TESTS
+    ####
+
+    install_dependency(https://github.com/germanespinosa/catch CatchTests)
+
+    test_library(cellworld)
+
+    test_library(cellworld catchtests/entropy.cpp)
+
+    #test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
+
+    ####
+    #### LIBRARY INSTALLATION
+    ####
+
+    include(GNUInstallDirs)
+
+    install(TARGETS cellworld EXPORT CellworldConfig
+            ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
+            RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
+
+    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+    install(DIRECTORY scripts/ DESTINATION /bin)
+    install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
+    install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
+
+    install(EXPORT CellworldConfig
+            DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
+            EXPORT_LINK_INTERFACE_LIBRARIES)
+
+    export(TARGETS cellworld FILE CellworldConfig.cmake)
+    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Easy-tcp REQUIRED)\n\") ")
+    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
+    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp easy-tcp)\n\") ")
+
+else()
+    set(cellworld_files_c ${cellworld_files} )
+endif()
 
 ####
 #### Python module
@@ -131,43 +175,3 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
             "${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}/$<TARGET_FILE_NAME:core>"
             COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}")
 endif()
-
-####
-#### TESTS
-####
-
-install_dependency(https://github.com/germanespinosa/catch CatchTests)
-
-test_library(cellworld)
-
-test_library(cellworld catchtests/entropy.cpp)
-
-#test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
-
-####
-#### LIBRARY INSTALLATION
-####
-
-include(GNUInstallDirs)
-
-install(TARGETS cellworld EXPORT CellworldConfig
-        ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-        RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-install(DIRECTORY scripts/ DESTINATION /bin)
-install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
-install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
-
-install(EXPORT CellworldConfig
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
-        EXPORT_LINK_INTERFACE_LIBRARIES)
-
-export(TARGETS cellworld FILE CellworldConfig.cmake)
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Easy-tcp REQUIRED)\n\") ")
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
-install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp easy-tcp)\n\") ")
