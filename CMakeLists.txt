@@ -120,6 +120,10 @@ endif()
 ####
 
 if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
+
+    install_dependency(https://github.com/pybind/pybind11)
+    include_directories(cmake-dependencies/pybind11/include)
+
     FIND_PACKAGE(PythonInterp)
     if (PYTHONINTERP_FOUND)
         if (UNIX AND NOT APPLE)
