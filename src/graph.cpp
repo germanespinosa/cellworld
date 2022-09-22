@@ -59,7 +59,7 @@ namespace cell_world {
         return g;
     }
 
-    void Graph::connect(Graph &graph) {
+    void Graph::connect(const Graph &graph) {
         for (unsigned int i = 0; i < size(); i++) {
             connect(cells[i], graph.at(i));
         }

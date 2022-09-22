@@ -7,7 +7,15 @@ project(cellworld
         DESCRIPTION "Agent cell world simulation framework"
         LANGUAGES CXX)
 
-find_package(Dependencies)
+####
+#### DEPENDENCIES
+####
+
+if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+endif()
+set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+find_package (Dependencies REQUIRED)
 
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp STATIC)
 
@@ -41,7 +49,7 @@ set(cellworld_files
         )
 
 
-if (NOT "$ENV{BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
+if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     install_dependency(https://github.com/germanespinosa/requests Requests STATIC)
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
     add_library(cellworld STATIC
@@ -122,21 +130,22 @@ endif()
 if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     install_dependency(https://github.com/pybind/pybind11 NO_BUILD STATIC)
-    add_subdirectory(cmake-dependencies/pybind11)
+
     include_directories(cmake-dependencies/pybind11/include)
+    add_subdirectory(cmake-dependencies/pybind11)
 
-    pybind11_add_module(core ../src/python.cpp ${cellworld_files})
+    pybind11_add_module(core src/python.cpp ${cellworld_files})
 
-    target_compile_options(core PUBLIC)
+
+    target_compile_options(core PRIVATE)
 
     target_include_directories(core
             PUBLIC
             ${PYTHON_INCLUDE_DIRS})
 
     target_link_libraries(core
-            PUBLIC
+            PRIVATE
             json-cpp
-            ${Boost_LIBRARIES}
             ${PYTHON_LIBRARIES})
 
     string(TOLOWER ${CMAKE_BUILD_TYPE} LBT)

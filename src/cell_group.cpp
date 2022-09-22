@@ -61,15 +61,7 @@ namespace cell_world {
         return contains(cell.id);
     }
 
-    float Cell_group::distance(const Cell &c0, const Cell &c1) {
-        return sqrt(pow(c1.location.y - c0.location.y, 2) + pow(c1.location.x - c0.location.x, 2));
-    }
-
-    float Cell_group::distance(const unsigned int s, const unsigned int d) const {
-        return distance((*this)[s], (*this)[d]);
-    }
-
-    Cell_group Cell_group::operator+(const Cell_group &cg) const{
+     Cell_group Cell_group::operator+(const Cell_group &cg) const{
         Cell_group ncg = *this;
         ncg += cg;
         return ncg;

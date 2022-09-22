@@ -12,6 +12,7 @@
 #include <cell_world/graph.h>
 #include <cell_world/map.h>
 #include <cell_world/timer.h>
+#include <cell_world/experiment.h>
 
 using namespace json_cpp;
 using namespace std;
@@ -28,6 +29,7 @@ PYBIND11_MODULE(core, m)
     json_object_binding<Transformation>(m,"Transformation");
 
     json_object_binding<Location>(m,"Location")
+            .def(pybind11::init<float,float>())
             .def("mod",  &Location::mod)
             .def("move",  &Location::move)
             .def("transform",  &Location::transform)
@@ -48,318 +50,304 @@ PYBIND11_MODULE(core, m)
             .def(self * float())
             .def(self / float())
             ;
-
     json_vector_binding<Location>(m,"Location_list");
-    json_object_binding<Coordinates>(m,"Coordinates");
+
+    json_object_binding<Coordinates>(m,"Coordinates")
+            .def(pybind11::init<int,int>());
+
     json_vector_binding<Coordinates>(m,"Coordinates_list");
 
-//    class_<Location_list, bases<Json_vector<Location>>>("Location_list")
-//            .def("get_x", &Location_list::get_x)
-//            .def("get_y", &Location_list::get_y)
-//            ;
-//
-//    class_<Transformation, bases<Json_base>>("Transformation")
-//            .def(init<float, float>())
-//            .def_readwrite("size", &Transformation::size)
-//            .def_readwrite("rotation", &Transformation::rotation)
-//            .def("theta",&Transformation::theta)
-//            ;
-//
-//    class_<Cell, bases<Json_base>>("Cell")
-//            .def(init<>())
-//            .def(init<const Coordinates &>())
-//            .def(init<Coordinates, Location, bool>())
-//            .def(init<const Cell &>())
-//            .def_readwrite("id", &Cell::id)
-//            .def_readwrite("coordinates", &Cell::coordinates)
-//            .def_readwrite("location", &Cell::location)
-//            .def_readwrite("occluded", &Cell::occluded)
-//            .def(self == Cell())
-//            .def(self != Cell())
-//            ;
-//
-//
-//    class_<Json_vector<Cell>, bases<Json_base>>("Cell_list")
-//            .def(init<size_t>())
-//            .def(init<size_t, Cell>())
-//            .def("__getitem__", &Cell_list::get_item_at)
-//            .def("__setitem__", &Cell_list::set_item_at)
-//            ;
-//
-//    class_<Shape, bases<Json_base>>("Shape")
-//            .def(init<>())
-//            .def(init<int>())
-//            .def_readwrite("sides", &Shape::sides)
-//            ;
-//
-//    bool (Polygon::*polygon_contains_0)(const Location &) const = &Polygon::contains;
-//    bool (Polygon::*polygon_contains_1)(const Polygon &) const = &Polygon::contains;
-//
-//    Polygon (Polygon::*polygon_move_0)(const Location &) const = &Polygon::move;
-//    Polygon (Polygon::*polygon_move_1)(float, float) const = &Polygon::move;
-//
-//    class_<Polygon, bases<Json_base>>("Polygon")
-//            .def(init<>())
-//            .def(init<const Polygon &>())
-//            .def(init<const Location, unsigned int, float, float >())
-//            .def(init<const Location &,const Shape &, const Transformation &>())
-//            .def_readwrite("vertices", &Polygon::vertices)
-//            .def_readwrite("center", &Polygon::center)
-//            .def_readwrite("radius", &Polygon::radius)
-//            .def("contains", polygon_contains_0)
-//            .def("contains", polygon_contains_1)
-//            .def("overlaps", &Polygon::overlaps)
-//            .def("contains", polygon_move_0)
-//            .def("contains", polygon_move_1)
-//            .def(self += Location())
-//            ;
-//
-//    class_<Polygon_list, bases<Json_base>>("Polygon_list")
-//            .def(init<>())
-//            .def(init<const Location_list &, const Shape &, const Transformation &>())
-//            .def("__getitem__", &Polygon_list::get_item_at)
-//            .def("__setitem__", &Polygon_list::set_item_at)
-//            .def("contains", &Polygon_list::contains)
-//            ;
-//
-//    class_<Space, bases<Json_base>>("Space")
-//            .def(init<>())
-//            .def(init<const Location &, const Shape &, const Transformation &>())
-//            .def_readwrite("center", &Space::center)
-//            .def_readwrite("shape", &Space::shape)
-//            .def_readwrite("transformation", &Space::transformation)
-//            .def("transform", &Space::transform)
-//            .def("scale", &Space::scale)
-//            ;
-//
-//    class_<World_info, bases<Json_base>>("World_info")
-//            .def(init<>())
-//            .def_readwrite("world_configuration", &World_info::world_configuration)
-//            .def_readwrite("world_implementation", &World_info::world_implementation)
-//            .def_readwrite("occlusions", &World_info::occlusions)
-//            ;
-//
-//    class_<World_configuration, bases<Json_base>>("World_configuration")
-//            .def(init<>())
-//            .def(init<const World_configuration &>())
-//            .def(init<const Shape &, const Coordinates_list &, const Connection_pattern &>())
-//            .def_readwrite("cell_shape", &World_configuration::cell_shape)
-//            .def_readwrite("cell_coordinates", &World_configuration::cell_coordinates)
-//            .def_readwrite("connection_pattern", &World_configuration::connection_pattern)
+    json_object_binding<Transformation>(m,"Transformation")
+            .def(init<float, float>())
+            .def_readwrite("size", &Transformation::size)
+            .def_readwrite("rotation", &Transformation::rotation)
+            .def("theta",&Transformation::theta)
+            ;
+
+    json_object_binding<Cell>(m,"Cell")
+            .def(init<const Coordinates &>())
+            .def(init<Coordinates, Location, bool>())
+            .def(init<const Cell &>())
+            .def_readwrite("id", &Cell::id)
+            .def_readwrite("coordinates", &Cell::coordinates)
+            .def_readwrite("location", &Cell::location)
+            .def_readwrite("occluded", &Cell::occluded)
+            .def(self == Cell())
+            .def(self != Cell())
+            ;
+
+    json_vector_binding<Cell>(m,"Cell_list");
+
+    json_object_binding<Shape>(m,"Shape")
+            .def(init<int>())
+            .def_readwrite("sides", &Shape::sides)
+            ;
+
+    json_object_binding<Polygon>(m,"Polygon")
+            .def(init<const Polygon &>())
+            .def(init<const Location, unsigned int, float, float >())
+            .def(init<const Location &,const Shape &, const Transformation &>())
+            .def_readwrite("vertices", &Polygon::vertices)
+            .def_readwrite("center", &Polygon::center)
+            .def_readwrite("radius", &Polygon::radius)
+            .def("contains", +[](const Polygon &p, const Location &l){return p.contains(l);})
+            .def("contains", +[](const Polygon &p, const Polygon &l){return p.contains(l);})
+            .def("overlaps", &Polygon::overlaps)
+            .def("move",  +[](const Polygon &p, const Location &l){return p.move(l);})
+            .def("move",  +[](const Polygon &p, float t, float d){return p.move(t,d);})
+            .def(self += Location())
+            ;
+
+    json_object_binding<Polygon_list>(m,"Polygon_list")
+            .def(init<>())
+            .def(init<const Location_list &, const Shape &, const Transformation &>())
+            .def("__getitem__", &Polygon_list::get_item_at)
+            .def("__setitem__", &Polygon_list::set_item_at)
+            .def("contains", &Polygon_list::contains)
+            ;
+
+    json_object_binding<Space>(m,"Space")
+            .def(init<const Location &, const Shape &, const Transformation &>())
+            .def_readwrite("center", &Space::center)
+            .def_readwrite("shape", &Space::shape)
+            .def_readwrite("transformation", &Space::transformation)
+            .def("transform", &Space::transform)
+            .def("scale", &Space::scale)
+            ;
+
+    json_object_binding<World_info>(m,"World_info")
+            .def_readwrite("world_configuration", &World_info::world_configuration)
+            .def_readwrite("world_implementation", &World_info::world_implementation)
+            .def_readwrite("occlusions", &World_info::occlusions)
+            ;
+
+    json_object_binding<World_configuration>(m,"World_configuration")
+            .def(init<const World_configuration &>())
+            .def(init<const Shape &, const Coordinates_list &, const Connection_pattern &>())
+            .def_readwrite("cell_shape", &World_configuration::cell_shape)
+            .def_readwrite("cell_coordinates", &World_configuration::cell_coordinates)
+            .def_readwrite("connection_pattern", &World_configuration::connection_pattern)
 //            .def("get_from_parameters_name", &World_configuration::get_from_parameters_name).staticmethod("get_from_parameters_name")
-//            ;
-//
-//    class_<World_implementation, bases<Json_base>>("World_implementation")
-//            .def(init<>())
-//            .def(init<const World_implementation &>())
-//            .def(init<const Location_list &, const Space &, const Transformation &>())
-//            .def_readwrite("cell_locations", &World_implementation::cell_locations)
-//            .def_readwrite("space", &World_implementation::space)
-//            .def_readwrite("cell_transformation", &World_implementation::cell_transformation)
-//            .def("transform",&World_implementation::transform)
-//            .def("scale",&World_implementation::scale)
+            ;
+
+    json_object_binding<World_implementation>(m,"World_implementation")
+            .def(init<const World_implementation &>())
+            .def(init<const Location_list &, const Space &, const Transformation &>())
+            .def_readwrite("cell_locations", &World_implementation::cell_locations)
+            .def_readwrite("space", &World_implementation::space)
+            .def_readwrite("cell_transformation", &World_implementation::cell_transformation)
+            .def("transform",&World_implementation::transform)
+            .def("scale",&World_implementation::scale)
 //            .def("get_from_parameters_name", &World_implementation::get_from_parameters_name).staticmethod("get_from_parameters_name")
-//            ;
-//
-//    class_<World_statistics, bases<Json_base>>("World_statistics")
-//            .def(init<>())
-//            .def_readwrite("spatial_entropy", &World_statistics::spatial_entropy)
-//            .def_readwrite("spatial_espinometry", &World_statistics::spatial_espinometry)
-//            .def_readwrite("spatial_connections", &World_statistics::spatial_connections)
-//            .def_readwrite("spatial_connections_derivative", &World_statistics::spatial_connections_derivative)
-//            .def_readwrite("spatial_centrality", &World_statistics::spatial_centrality)
-//            .def_readwrite("spatial_centrality_derivative", &World_statistics::spatial_centrality_derivative)
-//            .def_readwrite("visual_entropy", &World_statistics::visual_entropy)
-//            .def_readwrite("visual_espinometry", &World_statistics::visual_espinometry)
-//            .def_readwrite("visual_connections", &World_statistics::visual_connections)
-//            .def_readwrite("visual_connections_derivative", &World_statistics::visual_connections_derivative)
-//            .def_readwrite("visual_centrality", &World_statistics::visual_centrality)
-//            .def_readwrite("visual_centrality_derivative", &World_statistics::visual_centrality_derivative)
+            ;
+
+    json_object_binding<World_statistics>(m,"World_statistics")
+            .def_readwrite("spatial_entropy", &World_statistics::spatial_entropy)
+            .def_readwrite("spatial_espinometry", &World_statistics::spatial_espinometry)
+            .def_readwrite("spatial_connections", &World_statistics::spatial_connections)
+            .def_readwrite("spatial_connections_derivative", &World_statistics::spatial_connections_derivative)
+            .def_readwrite("spatial_centrality", &World_statistics::spatial_centrality)
+            .def_readwrite("spatial_centrality_derivative", &World_statistics::spatial_centrality_derivative)
+            .def_readwrite("visual_entropy", &World_statistics::visual_entropy)
+            .def_readwrite("visual_espinometry", &World_statistics::visual_espinometry)
+            .def_readwrite("visual_connections", &World_statistics::visual_connections)
+            .def_readwrite("visual_connections_derivative", &World_statistics::visual_connections_derivative)
+            .def_readwrite("visual_centrality", &World_statistics::visual_centrality)
+            .def_readwrite("visual_centrality_derivative", &World_statistics::visual_centrality_derivative)
 //            .def("get_from_parameters_name", &World_statistics::get_from_parameters_name)
-//            ;
-//
-//    def("angle_difference", angle_difference);
-//    def("direction", direction);
-//    def("to_radians", to_radians);
-//    def("to_degrees", to_degrees);
-//    def("normalize", normalize);
-//    def("normalize_degrees", normalize_degrees);
-//    def("segments_intersect", segments_intersect);
-//    def("angle_between", angle_between);
-//
-//
-//    class_<Cell_group_builder, bases<Json_base>>("Cell_group_builder")
-//            .def(init<>())
-//            .def("__getitem__", &Cell_group_builder::get_item_at)
-//            .def("__setitem__", &Cell_group_builder::set_item_at)
-//            .def("get_from_parameters_name", +[](const string &configuration, const string &occlusions, const string &name){return Cell_group_builder::get_from_parameters_name(configuration, occlusions, name);})
-//            .def("get_from_parameters_name", +[](const string &configuration, const string &name){return Cell_group_builder::get_from_parameters_name(configuration, name);})
-//            ;
-//
-//
-//
-//    bool (Cell_group::*cell_group_contains_0)(unsigned int) const = &Cell_group::contains;
-//    bool (Cell_group::*cell_group_contains_1)(const Cell &) const = &Cell_group::contains;
-//
-//    int (Cell_group::*Cell_group_find_0)(unsigned int) const = &Cell_group::find;
-//    int (Cell_group::*Cell_group_find_1)(const Cell &) const = &Cell_group::find;
-//    int (Cell_group::*Cell_group_find_2)(const Location &) const = &Cell_group::find;
-//    int (Cell_group::*Cell_group_find_3)(const Coordinates &) const = &Cell_group::find;
-//
-//    float (Cell_group::*Cell_group_distance_0)(unsigned int, unsigned int) const = &Cell_group::distance;
-//    static float (*Cell_group_distance_1)(const Cell&, const Cell&) = &Cell_group::distance;
-//
-//
-//    class_<Cell_group, bases<Json_base>>("Cell_group")
-//            .def(init<>())
-//            .def(init<const cell_world::Cell_group&>())
-//            .def("__getitem__", +[](const Cell_group& cg, size_t i){return cg[i];})
-//            .def("contains", cell_group_contains_0)
-//            .def("contains", cell_group_contains_1)
-//            .def("clear", &Cell_group::clear)
-//            .def("find", Cell_group_find_0)
-//            .def("find", Cell_group_find_1)
-//            .def("find", Cell_group_find_2)
-//            .def("find", Cell_group_find_3)
-//            .def("distance", Cell_group_distance_0)
-//            .def("distance", Cell_group_distance_1)
-//            .def("get_distances", &Cell_group::get_distances)
-//            .def("random_shuffle", &Cell_group::random_shuffle)
-//            .def("occluded_cells", &Cell_group::occluded_cells)
-//            .def("free_cells", &Cell_group::free_cells)
-//            .def("get_builder", &Cell_group::get_builder)
-//            .def("random_cell", &Cell_group::get_builder)
-//            .def(self + Cell_group())
-//            .def(self - Cell_group())
-//            .def(self - Cell())
-//            .def(self + Cell())
-//            .def(self == Cell_group())
-//            .def(self != Cell_group())
-//            ;
-//
-//    bool (Graph::*graph_add_0)(const Cell&) = &Graph::add;
-//    bool (Graph::*graph_add_1)(const Cell_group &) = &Graph::add;
-//
-//    void (Graph::*graph_connect_0)(const Cell&, const Cell_group &) = &Graph::connect;
-//    void (Graph::*graph_connect_1)(Graph &) = &Graph::connect;
-//
-//    class_<Graph, bases<Json_base>>("Graph")
-//            .def(init<>())
-//            .def(init<const cell_world::Cell_group&>())
-//            .def(init<const cell_world::Graph&>())
-//            .def("add", graph_add_0)
-//            .def("add", graph_add_1)
-//            .def("connect", graph_connect_0)
-//            .def("connect", graph_connect_1)
-//            .def("get_connectors", &Graph::get_connectors)
-//            .def("get_entropy", &Graph::get_entropy)
-//            .def("invert", &Graph::invert)
-//            .def("get_shortest_path", &Graph::get_shortest_path)
-//            .def("get_centrality", &Graph::get_centrality)
-//            .def("is_connected", &Graph::is_connected)
-//            .def(!self)
-//            .def(self == Graph())
-//            .def("__getitem__", +[](const Graph& cg, size_t i){return cg[i];})
-//            .def("__getitem__", +[](const Graph& cg, const Cell &c){return cg[c.id];})
-//            ;
-//
-//    bool (World::*world_add_0)(Cell) = &World::add;
-//    bool (World::*world_add_1)(Coordinates) = &World::add;
-//
-//    Cell_group (World::*world_create_cell_group_0)() const = &World::create_cell_group;
-//    Cell_group (World::*world_create_cell_group_1)(const Cell_group_builder &) const = &World::create_cell_group;
-//    Cell_group (World::*world_create_cell_group_2)(const std::string &) const = &World::create_cell_group;
-//
-//    Graph (World::*world_create_graph_0)() const = &World::create_graph;
-//    Graph (World::*world_create_graph_1)(const Graph_builder &) const = &World::create_graph;
+            ;
+
+    m.def("angle_difference", &angle_difference);
+    m.def("direction", &direction);
+    m.def("to_radians", &to_radians);
+    m.def("to_degrees", &to_degrees);
+    m.def("normalize", &normalize);
+    m.def("normalize_degrees", &normalize_degrees);
+    m.def("segments_intersect", &segments_intersect);
+    m.def("angle_between", &angle_between);
+
+    json_object_binding<Cell_group_builder>(m,"Cell_group_builder")
+        .def("__getitem__", &Cell_group_builder::get_item_at)
+        .def("__setitem__", &Cell_group_builder::set_item_at)
+//        .def("get_from_parameters_name", +[](const string &configuration, const string &occlusions, const string &name){return Cell_group_builder::get_from_parameters_name(configuration, occlusions, name);})
+//        .def("get_from_parameters_name", +[](const string &configuration, const string &name){return Cell_group_builder::get_from_parameters_name(configuration, name);})
+        ;
+
+    json_object_binding<Cell_group>(m,"Cell_group")
+            .def(init<const cell_world::Cell_group&>())
+            .def("__getitem__", +[](const Cell_group& cg, size_t i){return cg[i];})
+            .def("contains", +[](const Cell_group& cg, unsigned int i){return cg.contains(i);})
+            .def("contains", +[](const Cell_group& cg, const Cell &c){return cg.contains(c);})
+            .def("clear", &Cell_group::clear)
+            .def("find", +[](const Cell_group& cg, unsigned int i){return cg.find(i);})
+            .def("find", +[](const Cell_group& cg, const Cell &c){return cg.find(c);})
+            .def("find", +[](const Cell_group& cg, const Location &l){return cg.find(l);})
+            .def("find", +[](const Cell_group& cg, const Coordinates &c){return cg.find(c);})
+            .def("get_distances", &Cell_group::get_distances)
+            .def("random_shuffle", &Cell_group::random_shuffle)
+            .def("occluded_cells", &Cell_group::occluded_cells)
+            .def("free_cells", &Cell_group::free_cells)
+            .def("get_builder", &Cell_group::get_builder)
+            .def("random_cell", &Cell_group::get_builder)
+            .def(self + Cell_group())
+            .def(self - Cell_group())
+            .def(self - Cell())
+            .def(self + Cell())
+            .def(self == Cell_group())
+            .def(self != Cell_group())
+            ;
+
+    json_object_binding<Graph>(m,"Graph")
+            .def(init<const cell_world::Cell_group&>())
+            .def(init<const cell_world::Graph&>())
+            .def("add", +[](Graph& g, const Cell&c){return g.add(c);})
+            .def("add", +[](Graph& g, const Cell_group &cg){return g.add(cg);})
+            .def("connect",  +[](Graph& g, const Cell& c, const Cell_group &cg){return g.connect(c, cg);})
+            .def("connect",  +[](Graph& g, const Graph& cg){return g.connect(cg);})
+            .def("get_connectors", &Graph::get_connectors)
+            .def("get_entropy", &Graph::get_entropy)
+            .def("invert", &Graph::invert)
+            .def("get_shortest_path", &Graph::get_shortest_path)
+            .def("get_centrality", &Graph::get_centrality)
+            .def("is_connected", &Graph::is_connected)
+            .def(!self)
+            .def(self == Graph())
+            .def("__getitem__", +[](const Graph& cg, size_t i){return cg[i];})
+            .def("__getitem__", +[](const Graph& cg, const Cell &c){return cg[c.id];})
+            ;
+
 //
 //    World (*world_get_from_parameters_name_0)(const std::string &, const std::string &, const std::string &) = &World::get_from_parameters_name;
 //    World (*world_get_from_parameters_name_1)(const std::string &, const std::string &) = &World::get_from_parameters_name;
 //    World (*world_get_from_world_info_0)(const World_info &) = &World::get_from_world_info;
 //
-//    class_<World, bases<Json_base>>("World")
-//            .def(init<>())
-//            .def(init<const World_configuration &>())
-//            .def(init<const World_configuration &, const World_implementation &>())
-//            .def(init<const World_configuration &, const World_implementation &, const Cell_group_builder &>())
-//            .def_readwrite("connection_pattern", &World::connection_pattern)
-//            .def_readwrite("cells", &World::cells)
-//            .def_readwrite("cell_shape", &World::cell_shape)
-//            .def_readwrite("cell_transformation", &World::cell_transformation)
-//            .def("add", world_add_0)
-//            .def("add", world_add_1)
-//            .def("create_cell_group", world_create_cell_group_0)
-//            .def("create_cell_group", world_create_cell_group_1)
-//            .def("create_cell_group", world_create_cell_group_2)
-//            .def("create_graph", world_create_graph_0)
-//            .def("create_graph", world_create_graph_1)
-//            .def("create_paths", &World::create_paths)
-//            .def("set_occlusions", &World::set_occlusions)
-//            .def("size", &World::size)
-//            .def("create_location_visibility", &World::create_location_visibility)
-//            .def("get_configuration", &World::get_configuration)
-//            .def("get_implementation", &World::get_implementation)
-//            .def("get_statistics", &World::get_statistics)
+    json_object_binding<World>(m,"World")
+            .def(init<const World_configuration &>())
+            .def(init<const World_configuration &, const World_implementation &>())
+            .def(init<const World_configuration &, const World_implementation &, const Cell_group_builder &>())
+            .def_readwrite("connection_pattern", &World::connection_pattern)
+            .def_readwrite("cells", &World::cells)
+            .def_readwrite("cell_shape", &World::cell_shape)
+            .def_readwrite("cell_transformation", &World::cell_transformation)
+            .def("add", +[](World& g, Cell c){return g.add(c);})
+            .def("add", +[](World& g, Coordinates c){return g.add(c);})
+            .def("create_cell_group", +[](World& g){return g.create_cell_group();})
+            .def("create_cell_group", +[](World& g, const Cell_group_builder &cgb){return g.create_cell_group(cgb);})
+            .def("create_cell_group", +[](World& g, const std::string &cgb){return g.create_cell_group(cgb);})
+            .def("create_graph", +[](World& g){return g.create_graph();})
+            .def("create_graph", +[](World& g, const Graph_builder &cgb){return g.create_graph(cgb);})
+            .def("create_paths", &World::create_paths)
+            .def("set_occlusions", &World::set_occlusions)
+            .def("size", &World::size)
+            .def("create_location_visibility", &World::create_location_visibility)
+            .def("get_configuration", &World::get_configuration)
+            .def("get_implementation", &World::get_implementation)
+            .def("get_statistics", &World::get_statistics)
 //            .def("get_from_parameters_name", world_get_from_parameters_name_0)
 //            .def("get_from_parameters_name", world_get_from_parameters_name_1)
 //            .def("get_from_world_info", world_get_from_world_info_0)
-//            ;
-//
-//    class_<Map>("Map", init<const cell_world::Cell_group&>())
-//            .def("__getitem__", +[](const Map& m, const Coordinates &c){return m[c];})
-//            .def("__getitem__", +[](const Map& m, int x, int y){return m[Coordinates(x,y)];})
-//            .def("find", &Map::find)
-//            .def_readwrite("cells", &Map::cells)
-//            ;
-//
-//    class_<Path_builder>("Path_builder")
-//            .def(init<>())
-//            .def_readwrite("moves", &Path_builder::moves)
-//            .def_readwrite("steps", &Path_builder::steps)
-//            .def("get_from_parameters_name", &Path_builder::get_from_parameters_name)
-//            ;
-//
-//    class_<Paths>("Paths")
-//            .def(init<>())
-//            .def(init<const Graph&, Move_list >())
-//            .def(init<const Graph&, const Path_builder &>())
-//            .def("get_move", &Paths::get_move)
-//            .def("get_steps", &Paths::get_steps)
-//            .def("get_steps", &Paths::get_steps)
-//            .def("get_path", &Paths::get_path)
-//            .def("get_moves", &Paths::get_moves)
-//            .def("set_move", &Paths::set_move)
-//            .def("__getitem__", +[](const Map& m, const Coordinates &c){return m[c];})
-//            .def("__getitem__", +[](const Map& m, int x, int y){return m[Coordinates(x,y)];})
-//            .def("find", &Map::find)
-//            ;
-//
-//    class_<Timer>("Timer")
-//            .def(init<>())
-//            .def(init<float>())
-//            .def("reset", &Timer::reset)
-//            .def("to_seconds", &Timer::to_seconds)
-//            .def("time_out", &Timer::time_out)
-//            .def("wait", &Timer::wait)
-//            ;
-//
-//    class_<Coordinates_visibility>("Coordinates_visibility")
-//            .def("create_graph", &Coordinates_visibility::create_graph)
-//            .def("invert", &Coordinates_visibility::invert)
-//            ;
-//
-//    class_<Coordinates_visibility_cone>("Coordinates_visibility_cone", init<const Graph &, float>())
-//            .def("visible_cells", &Coordinates_visibility_cone::visible_cells)
-//            .def("is_visible", &Coordinates_visibility_cone::is_visible)
-//            ;
-//
-//    class_<Location_visibility>("Location_visibility", init<const Shape &, const Transformation &>())
-//            .def(init<const Cell_group &, const Shape &, const Transformation &>())
-//            .def("is_visible", +[](const Location_visibility& lv, const Location &src, const Location &dst){ return lv.is_visible(src, dst);})
-//            .def("is_visible", +[](const Location_visibility& lv, const Location &src, float src_theta, float src_cone, const Location &dst){ return lv.is_visible(src, src_theta, src_cone, dst);})
-//            .def("is_visible_multi", &Location_visibility::is_visible_multi)
-//            ;
+            ;
+
+
+    class_<Map>(m, "Map")
+            .def(init<const Cell_group &>())
+            .def("__getitem__", +[](const Map& m, const Coordinates &c){return m[c];})
+            .def("__getitem__", +[](const Map& m, int x, int y){return m[Coordinates(x,y)];})
+            .def("find", &Map::find)
+            .def_readwrite("cells", &Map::cells)
+            ;
+
+    json_object_binding<Path_builder>(m,"Path_builder")
+            .def_readwrite("moves", &Path_builder::moves)
+            .def_readwrite("steps", &Path_builder::steps)
+            .def("get_from_parameters_name", &Path_builder::get_from_parameters_name)
+            ;
+
+    json_object_binding<Paths>(m,"Paths")
+            .def(init<const Graph&, Move_list >())
+            .def(init<const Graph&, const Path_builder &>())
+            .def("get_move", &Paths::get_move)
+            .def("get_steps", &Paths::get_steps)
+            .def("get_steps", &Paths::get_steps)
+            .def("get_path", &Paths::get_path)
+            .def("get_moves", &Paths::get_moves)
+            .def("set_move", &Paths::set_move)
+            .def("__getitem__", +[](const Map& m, const Coordinates &c){return m[c];})
+            .def("__getitem__", +[](const Map& m, int x, int y){return m[Coordinates(x,y)];})
+            .def_readwrite("cells", &Paths::cells)
+            .def_readwrite("moves", &Paths::moves)
+            .def_readwrite("steps", &Paths::steps)
+            .def("get_euclidean",  &Paths::get_euclidean)
+            .def("get_manhattan",  &Paths::get_manhattan)
+            .def("get_astar",  &Paths::get_astar)
+            ;
+
+    class_<Timer>(m, "Timer")
+            .def(init<>())
+            .def(init<float>())
+            .def("reset", &Timer::reset)
+            .def("to_seconds", &Timer::to_seconds)
+            .def("time_out", &Timer::time_out)
+            .def("wait", &Timer::wait)
+            ;
+
+    class_<Coordinates_visibility>(m, "Coordinates_visibility")
+            .def("create_graph", &Coordinates_visibility::create_graph)
+            .def("invert", &Coordinates_visibility::invert)
+            ;
+
+    class_<Coordinates_visibility_cone>(m,"Coordinates_visibility_cone")
+            .def(init<const Graph &, float>())
+            .def("visible_cells", &Coordinates_visibility_cone::visible_cells)
+            .def("is_visible", &Coordinates_visibility_cone::is_visible)
+            ;
+
+    class_<Location_visibility>(m, "Location_visibility")
+            .def(init<const Shape &, const Transformation &>())
+            .def(init<const Cell_group &, const Shape &, const Transformation &>())
+            .def("is_visible", +[](const Location_visibility& lv, const Location &src, const Location &dst){ return lv.is_visible(src, dst);})
+            .def("is_visible", +[](const Location_visibility& lv, const Location &src, float src_theta, float src_cone, const Location &dst){ return lv.is_visible(src, src_theta, src_cone, dst);})
+            .def("is_visible_multi", &Location_visibility::is_visible_multi)
+            ;
+
+    json_object_binding<Step>(m,"Step")
+            .def_readwrite("time_stamp", &Step::time_stamp)
+            .def_readwrite("agent_name", &Step::agent_name)
+            .def_readwrite("frame", &Step::frame)
+            .def_readwrite("location", &Step::location)
+            .def_readwrite("rotation", &Step::rotation)
+            .def_readwrite("data", &Step::data)
+            .def("convert", &Step::convert)
+            .def(self == self)
+            ;
+
+
+    json_vector_binding<Step>(m,"Trajectories");
+
+    json_object_binding<Episode>(m,"Episode")
+            .def_readwrite("start_time", &Episode::start_time)
+            .def_readwrite("time_stamp", &Episode::time_stamp)
+            .def_readwrite("end_time", &Episode::end_time)
+            .def_readwrite("trajectories", &Episode::trajectories)
+            .def_readwrite("captures", &Episode::captures)
+            .def(self == self)
+            ;
+
+    json_vector_binding<Episode>(m,"Episodes");
+
+    json_object_binding<Experiment>(m,"Experiment")
+            .def_readwrite("name", &Experiment::name)
+            .def_readwrite("subject_name", &Experiment::subject_name)
+            .def_readwrite("world_configuration_name", &Experiment::world_configuration_name)
+            .def_readwrite("world_implementation_name", &Experiment::world_implementation_name)
+            .def_readwrite("occlusions", &Experiment::occlusions)
+            .def_readwrite("duration", &Experiment::duration)
+            .def_readwrite("start_time", &Experiment::start_time)
+            .def_readwrite("episodes", &Experiment::episodes)
+            .def("set_name", &Experiment::set_name)
+            ;
 }
+
 
 namespace cell_world {
     Resources Resources::from(const string resource) {

@@ -7,6 +7,7 @@ template<typename T>
 pybind11::class_<T> json_object_binding(pybind11::handle module, const char *class_name){
     static_assert(std::is_base_of<json_cpp::Json_base, T>::value, "Must inherit from Json_base");
     return pybind11::class_<T>(module, class_name)
+            .def(pybind11::init<>())
             .def("load", &json_cpp::Json_object::load)
             .def("save", &json_cpp::Json_object::save)
             .def("__str__", &json_cpp::Json_object::to_json)

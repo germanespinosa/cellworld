@@ -32,9 +32,6 @@ namespace cell_world {
         })
     };
 
-    struct Location_list : json_cpp::Json_vector<Location> {
-        json_cpp::Json_vector<float> get_x();
-        json_cpp::Json_vector<float> get_y();
-    };
+    using Location_list = json_cpp::Json_vector<Location>;
 
 }

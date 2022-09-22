@@ -1,10 +1,12 @@
 #!/bin/bash
-ldd build-release/core.so | while read line
+
+ldd $1 | while read line
 do
    # do something with $line here
   line_parts=($line)
+  echo ${line_parts[2]} ${line_parts[0]}
   if [[ ${#line_parts[@]} == 4 ]]
   then
-    cp ${line_parts[2]} build-release/${line_parts[0]}
+    cp ${line_parts[2]} $2/${line_parts[0]}
   fi
 done

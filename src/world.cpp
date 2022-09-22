@@ -130,7 +130,6 @@ namespace cell_world {
         return g;
     }
 
-
     void World::set_occlusions(const Cell_group_builder &occlusions) {
         for (auto &cell: cells){
             cell.occluded = false;
@@ -243,6 +242,8 @@ namespace cell_world {
             stats.visual_centrality_derivative[cell.id] = 1;
 
             auto cell_coordinates = cell.coordinates;
+            int min_shared_visibility = -1;
+            stats.ITOR_direction[cell.id] = Coordinates(0,0);
             for (auto &pair : pairs){
                 auto first_coordinates = cell_coordinates + pair[0];
                 auto first_cell_index = map.find(first_coordinates);
@@ -258,6 +259,11 @@ namespace cell_world {
 
                 if (first_cell_index!=Not_found) {
                     auto first_cell_id = cells[first_cell_index].id;
+                    int shared_visibility = (visual[first_cell_id] & visual[cell.id]).size();
+                    if (min_shared_visibility == -1 || shared_visibility < min_shared_visibility){
+                        min_shared_visibility = shared_visibility;
+                        stats.ITOR_direction[cell.id] = cells[first_cell_id].coordinates;
+                    }
 
                     first_spatial_connection = stats.spatial_connections[first_cell_id];
                     first_spatial_centrality = stats.spatial_centrality[first_cell_id];
@@ -274,6 +280,12 @@ namespace cell_world {
 
                 if (second_cell_index!=Not_found) {
                     auto second_cell_id = cells[second_cell_index].id;
+                    int shared_visibility = (visual[second_cell_id] & visual[cell.id]).size();
+                    if (min_shared_visibility == -1 || shared_visibility < min_shared_visibility){
+                        min_shared_visibility = shared_visibility;
+                        stats.ITOR_direction[cell.id] = cells[second_cell_id].coordinates;
+                    }
+
                     second_spatial_connection = stats.spatial_connections[second_cell_id];
                     second_spatial_centrality = stats.spatial_centrality[second_cell_id];
 
@@ -286,6 +298,7 @@ namespace cell_world {
                 stats.visual_connections_derivative[cell.id] *= abs(first_visual_connection-second_visual_connection);
                 stats.visual_centrality_derivative[cell.id] *= abs(first_visual_centrality-second_visual_centrality);
             }
+            stats.ITOR_potential[cell.id] = ((float)stats.visual_connections[cell.id] - (float)min_shared_visibility) / (float)stats.visual_connections[cell.id];
         }
         stats.spatial_entropy = labels_entropy(stats.spatial_connections);
         stats.visual_entropy = labels_entropy(stats.visual_connections);

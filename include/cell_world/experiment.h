@@ -25,6 +25,14 @@ namespace cell_world {
             converted.rotation += dst.transformation.rotation - src.transformation.rotation;
             return converted;
         };
+        bool operator==(const Step &s) const {
+            return this->location == s.location &&
+                   this->rotation == s.rotation &&
+                   this->data == s.data &&
+                   this->agent_name == s.agent_name &&
+                   this->frame == s.frame &&
+                   this->time_stamp == s.time_stamp;
+        }
     };
 
     using Trajectories = json_cpp::Json_vector<Step> ;
@@ -42,6 +50,11 @@ namespace cell_world {
         json_cpp::Json_date end_time;
         Trajectories trajectories;
         json_cpp::Json_vector<unsigned int> captures;
+        bool operator==(const Episode &s) const {
+            return this->start_time == s.start_time &&
+                   this->time_stamp == s.time_stamp &&
+                   this->end_time == s.end_time;
+        }
     };
 
     using Episodes = json_cpp::Json_vector<Episode>;

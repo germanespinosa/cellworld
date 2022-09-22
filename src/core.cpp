@@ -81,22 +81,6 @@ namespace cell_world {
         return true;
     }
 
-    json_cpp::Json_vector<float> Location_list::get_x() {
-        auto x = json_cpp::Json_vector<float>();
-        for (auto &l:*this){
-            x.push_back(l.x);
-        }
-        return x;
-    }
-
-    json_cpp::Json_vector<float> Location_list::get_y() {
-        auto y = json_cpp::Json_vector<float>();
-        for (auto &l:*this){
-            y.push_back(l.y);
-        }
-        return y;
-    }
-
     float entropy(const std::vector<int>& histogram) {
         vector<float> prob;
         int c = 0;

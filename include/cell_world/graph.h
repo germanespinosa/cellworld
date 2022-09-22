@@ -13,7 +13,7 @@ namespace cell_world {
         bool add(const Cell &);
         bool add(const Cell_group &);
         void connect (const Cell &, const Cell_group &);
-        void connect (Graph &);
+        void connect (const Graph &);
         std::vector<Coordinates> get_connectors (const Cell &);
         float get_entropy();
         Graph invert() const;

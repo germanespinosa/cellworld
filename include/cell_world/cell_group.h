@@ -26,8 +26,6 @@ namespace cell_world{
         int find(const Cell &) const;
         int find(const Location &) const;
         int find(const Coordinates &) const;
-        float distance(unsigned int, unsigned int) const;
-        static float distance(const Cell&, const Cell&) ;
         std::vector<float> get_distances(const Cell &) const;
         Cell_group random_shuffle() const;
         Cell_group occluded_cells() const;

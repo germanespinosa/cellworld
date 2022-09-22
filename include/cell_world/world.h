@@ -67,7 +67,9 @@ namespace cell_world{
                 Add_member(visual_connections);
                 Add_member(visual_connections_derivative);
                 Add_member(visual_centrality);
-                Add_member(visual_centrality_derivative);
+                Add_member(visual_centrality_derivative);;
+                Add_optional_member(ITOR_potential);
+                Add_optional_member(ITOR_direction);
         )
         float spatial_entropy{};
         float spatial_espinometry{};
@@ -81,6 +83,8 @@ namespace cell_world{
         json_cpp::Json_vector<unsigned int> visual_connections_derivative{};
         json_cpp::Json_vector<float> visual_centrality{};
         json_cpp::Json_vector<float> visual_centrality_derivative{};
+        json_cpp::Json_vector<float> ITOR_potential{};
+        json_cpp::Json_vector<Coordinates> ITOR_direction{};
         static World_statistics get_from_parameters_name(const std::string &, const std::string &);
     };
 

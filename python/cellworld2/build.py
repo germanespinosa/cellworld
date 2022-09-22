@@ -1,7 +1,7 @@
 #!/bin/python3
 import sys
 from easy_pack import EasyPackModule
-from os import path
+from os import path, popen
 from glob import glob
 from sys import argv
 
@@ -15,10 +15,20 @@ if '-version' in sys.argv:
 module.package_data[""].clear()
 module.files.clear()
 folder = "build-" + version
+s = popen("rm dependencies/*")
+s.read()
 for f in glob(folder + "/*"):
-	dependency_file = f.replace(folder + "/", "")
+	module_file = f.replace(folder + "/", "")
+	module.package_data[""].append(module_file)
+	module.files.append("../" + folder + "/" + module_file)
+	s = popen("./pbuild " + f + " dependencies")
+	s.read()
+
+for f in glob("dependencies/*"):
+	dependency_file = f.replace("dependencies/", "")
 	module.package_data[""].append(dependency_file)
-	module.files.append("../" + folder + "/" + dependency_file)
+	module.files.append("../dependencies/" + dependency_file)
+
 
 if not path.exists('setup/setup.py') or path.getctime('__info__.py') > path.getctime('setup/setup.py'):
 	print('package info file has changed, rebuilding setup')
