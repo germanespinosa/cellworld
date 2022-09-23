@@ -121,7 +121,9 @@ class World_statistics(JsonObject):
                  visual_connections: JsonList = None,
                  visual_connections_derivative: JsonList = None,
                  visual_centrality: JsonList = None,
-                 visual_centrality_derivative: JsonList = None):
+                 visual_centrality_derivative: JsonList = None,
+                 ITOR_potential: JsonList = None,
+                 ITOR_direction: JsonList = None):
         self.spatial_entropy = spatial_entropy
         self.spatial_espinometry = spatial_espinometry
         if spatial_connections:
@@ -159,6 +161,15 @@ class World_statistics(JsonObject):
             self.visual_centrality_derivative = visual_centrality_derivative
         else:
             self.visual_centrality_derivative = JsonList(list_type=float)
+        if ITOR_potential:
+            self.ITOR_potential = ITOR_potential
+        else:
+            self.ITOR_potential = JsonList(list_type=float)
+        if ITOR_direction:
+            self.ITOR_direction = ITOR_direction
+        else:
+            self.ITOR_direction = JsonList(list_type=Coordinates)
+
 
     @staticmethod
     def get_from_parameters_names(

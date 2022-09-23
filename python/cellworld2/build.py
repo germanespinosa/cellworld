@@ -15,14 +15,14 @@ if '-version' in sys.argv:
 module.package_data[""].clear()
 module.files.clear()
 folder = "build-" + version
-s = popen("rm dependencies/*")
-s.read()
+# s = popen("rm dependencies/*")
+# s.read()
 for f in glob(folder + "/*"):
 	module_file = f.replace(folder + "/", "")
 	module.package_data[""].append(module_file)
 	module.files.append("../" + folder + "/" + module_file)
-	s = popen("./pbuild " + f + " dependencies")
-	s.read()
+	# s = popen("./pbuild " + f + " dependencies")
+	# s.read()
 
 for f in glob("dependencies/*"):
 	dependency_file = f.replace("dependencies/", "")

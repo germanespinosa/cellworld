@@ -13,7 +13,7 @@ pybind11::class_<T> json_object_binding(pybind11::handle module, const char *cla
             .def("__str__", &json_cpp::Json_object::to_json)
             .def("__repr__", &json_cpp::Json_object::to_json)
             .def("to_json", &json_cpp::Json_object::to_json)
-            .def("from_json", &json_cpp::Json_object::from_json)
+            .def_static("from_json", +[](const std::string &json){ T o; o.from_json(json); return o;})
             ;
 }
 

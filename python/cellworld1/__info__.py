@@ -1,5 +1,5 @@
 def __module_version__():
-	return 0, 0, 115 
+	return 0, 0, 116 
 
 
 def __module_name__():
@@ -60,5 +60,9 @@ def __root_folder__():
 
 def __description__():
 	return 'Maciver Lab computational biology research package' 
+
+
+def __package_data__():
+	return {} 
 
 
