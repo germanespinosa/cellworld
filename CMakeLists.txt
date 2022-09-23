@@ -11,13 +11,13 @@ project(cellworld
 #### DEPENDENCIES
 ####
 
-if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
-    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
-endif()
-set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
+#if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+#    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
+#endif()
+#set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp STATIC)
+install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
 
 dependency_include(include)
 
@@ -50,7 +50,7 @@ set(cellworld_files
 
 
 if (NOT ${BUILD_PYTHON_MODULE_ONLY})
-    install_dependency(https://github.com/germanespinosa/requests Requests STATIC)
+    install_dependency(https://github.com/germanespinosa/requests Requests)
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
     add_library(cellworld STATIC
             ${cellworld_files_c})
@@ -83,7 +83,7 @@ if (NOT ${BUILD_PYTHON_MODULE_ONLY})
     #### TESTS
     ####
 
-    install_dependency(https://github.com/germanespinosa/catch CatchTests STATIC)
+    install_dependency(https://github.com/germanespinosa/catch CatchTests)
 
     test_library(cellworld)
 
