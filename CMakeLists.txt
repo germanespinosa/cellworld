@@ -53,7 +53,7 @@ set(cellworld_files
         )
 
 
-if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
+if (NOT ${BUILD_PYTHON_MODULE_ONLY})
     install_dependency(https://github.com/germanespinosa/requests Requests STATIC)
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
     add_library(cellworld STATIC
@@ -131,7 +131,7 @@ endif()
 #### Python module
 ####
 
-if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
+if (NOT ${BUILD_AS_DEPENDENCY})
 
     install_dependency(https://github.com/pybind/pybind11 NO_BUILD STATIC)
 
