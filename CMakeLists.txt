@@ -17,10 +17,6 @@ endif()
 set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-####
-####
-####
-
 install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp STATIC)
 
 dependency_include(include)
@@ -158,11 +154,5 @@ if (NOT ${BUILD_AS_DEPENDENCY})
             COMMAND "${CMAKE_COMMAND}" -E copy
             "$<TARGET_FILE:core>"
             "${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}/$<TARGET_FILE_NAME:core>"
-            COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}")
-
-    add_custom_command(TARGET core POST_BUILD
-            COMMAND "${CMAKE_COMMAND}" -E copy
-            "$<TARGET_FILE:core>"
-            "${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/src/$<TARGET_FILE_NAME:core>"
             COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}")
 endif()

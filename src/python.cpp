@@ -19,31 +19,14 @@ using namespace std;
 using namespace pybind11;
 using namespace cell_world;
 
-
-//resource_uri = cellworld_data_base_uri + resource_type + "/" + key0
-//file_path = ""
-//if cellworld_cache_folder:
-//file_path = cellworld_cache_folder + "/" + resource_type + "/" + key0
-//for arg in argv:
-//resource_uri += "." + arg
-//if cellworld_cache_folder:
-//file_path += "." + arg
-//if cellworld_cache_folder and os.path.exists(file_path):
-//content = ""
-//with open(file_path, "r") as text_file:
-//content = text_file.read()
-//return json.loads(content)
-//else:
-//response = requests.get(resource_uri)
-//return json.loads(response.text)
-
 PYBIND11_MODULE(core, m)
 {
-
     json_vector_binding<int>(m,"Int_list");
     json_vector_binding<bool>(m,"Bool_list");
     json_vector_binding<unsigned int>(m,"Unsigned_int_list");
     json_vector_binding<float>(m,"Float_list");
+
+    json_object_binding<Transformation>(m,"Transformation");
 
     json_object_binding<Location>(m,"Location")
             .def(pybind11::init<float,float>())
@@ -144,14 +127,7 @@ PYBIND11_MODULE(core, m)
             .def_readwrite("cell_shape", &World_configuration::cell_shape)
             .def_readwrite("cell_coordinates", &World_configuration::cell_coordinates)
             .def_readwrite("connection_pattern", &World_configuration::connection_pattern)
-            .def_static("get_from_parameters_name",+[](const string &name){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                World_configuration wc;
-                str response = requests_get("world_configuration",name);
-                wc.from_json(response);
-                return wc;
-            })
+//            .def("get_from_parameters_name", &World_configuration::get_from_parameters_name).staticmethod("get_from_parameters_name")
             ;
 
     json_object_binding<World_implementation>(m,"World_implementation")
@@ -162,14 +138,7 @@ PYBIND11_MODULE(core, m)
             .def_readwrite("cell_transformation", &World_implementation::cell_transformation)
             .def("transform",&World_implementation::transform)
             .def("scale",&World_implementation::scale)
-            .def_static("get_from_parameters_name",+[](const string &configuration, const string &name){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                World_implementation wc;
-                str response = requests_get("world_implementation", configuration, name);
-                wc.from_json(response);
-                return wc;
-            })
+//            .def("get_from_parameters_name", &World_implementation::get_from_parameters_name).staticmethod("get_from_parameters_name")
             ;
 
     json_object_binding<World_statistics>(m,"World_statistics")
@@ -185,16 +154,7 @@ PYBIND11_MODULE(core, m)
             .def_readwrite("visual_connections_derivative", &World_statistics::visual_connections_derivative)
             .def_readwrite("visual_centrality", &World_statistics::visual_centrality)
             .def_readwrite("visual_centrality_derivative", &World_statistics::visual_centrality_derivative)
-            .def_readwrite("ITOR_potential", &World_statistics::ITOR_potential)
-            .def_readwrite("ITOR_direction", &World_statistics::ITOR_direction)
-            .def_static("get_from_parameters_name",+[](const string &configuration, const string &name){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                World_statistics wc;
-                str response = requests_get("world_statistics", configuration, name);
-                wc.from_json(response);
-                return wc;
-            })
+//            .def("get_from_parameters_name", &World_statistics::get_from_parameters_name)
             ;
 
     m.def("angle_difference", &angle_difference);
@@ -209,22 +169,8 @@ PYBIND11_MODULE(core, m)
     json_object_binding<Cell_group_builder>(m,"Cell_group_builder")
         .def("__getitem__", &Cell_group_builder::get_item_at)
         .def("__setitem__", &Cell_group_builder::set_item_at)
-            .def_static("get_from_parameters_name",+[](const string &configuration, const string &occlusions, const string &name){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                Cell_group_builder wc;
-                str response = requests_get("cell_group", configuration, occlusions, name);
-                wc.from_json(response);
-                return wc;
-            })
-        .def_static("get_from_parameters_name",+[](const string &configuration, const string &name){
-            object requests = module_::import("cellworld2");
-            object requests_get = requests.attr("get_resource");
-            Cell_group_builder wc;
-            str response = requests_get("cell_group", configuration, name);
-            wc.from_json(response);
-            return wc;
-        })
+//        .def("get_from_parameters_name", +[](const string &configuration, const string &occlusions, const string &name){return Cell_group_builder::get_from_parameters_name(configuration, occlusions, name);})
+//        .def("get_from_parameters_name", +[](const string &configuration, const string &name){return Cell_group_builder::get_from_parameters_name(configuration, name);})
         ;
 
     json_object_binding<Cell_group>(m,"Cell_group")
@@ -270,6 +216,11 @@ PYBIND11_MODULE(core, m)
             .def("__getitem__", +[](const Graph& cg, const Cell &c){return cg[c.id];})
             ;
 
+//
+//    World (*world_get_from_parameters_name_0)(const std::string &, const std::string &, const std::string &) = &World::get_from_parameters_name;
+//    World (*world_get_from_parameters_name_1)(const std::string &, const std::string &) = &World::get_from_parameters_name;
+//    World (*world_get_from_world_info_0)(const World_info &) = &World::get_from_world_info;
+//
     json_object_binding<World>(m,"World")
             .def(init<const World_configuration &>())
             .def(init<const World_configuration &, const World_implementation &>())
@@ -292,47 +243,11 @@ PYBIND11_MODULE(core, m)
             .def("get_configuration", &World::get_configuration)
             .def("get_implementation", &World::get_implementation)
             .def("get_statistics", &World::get_statistics)
-            .def_static("get_from_parameters_name",+[](const string &configuration, const string &implementation){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                World_configuration wc;
-                World_implementation wi;
-                Cell_group_builder o;
-                str response = requests_get("world_configuration", configuration);
-                wc.from_json(response);
-                response = requests_get("world_implementation", configuration, implementation);
-                wi.from_json(response);
-                return World(wc, wi);
-            })
-            .def_static("get_from_parameters_name",+[](const string &configuration, const string &implementation, const string &name){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                World_configuration wc;
-                World_implementation wi;
-                Cell_group_builder o;
-                str response = requests_get("world_configuration", configuration);
-                wc.from_json(response);
-                response = requests_get("world_implementation", configuration, implementation);
-                wi.from_json(response);
-                response = requests_get("cell_group", configuration, name, "occlusions");
-                o.from_json(response);
-                return World(wc, wi, o);
-            })
-            .def_static("get_from_world_info",+[](const World_info &world_info){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                World_configuration wc;
-                World_implementation wi;
-                Cell_group_builder o;
-                str response = requests_get("world_configuration", world_info.world_configuration);
-                wc.from_json(response);
-                response = requests_get("world_implementation", world_info.world_configuration, world_info.world_implementation);
-                wi.from_json(response);
-                response = requests_get("cell_group", world_info.world_configuration, world_info.occlusions);
-                o.from_json(response);
-                return World(wc, wi, o);
-            })
+//            .def("get_from_parameters_name", world_get_from_parameters_name_0)
+//            .def("get_from_parameters_name", world_get_from_parameters_name_1)
+//            .def("get_from_world_info", world_get_from_world_info_0)
             ;
+
 
     class_<Map>(m, "Map")
             .def(init<const Cell_group &>())
@@ -345,14 +260,7 @@ PYBIND11_MODULE(core, m)
     json_object_binding<Path_builder>(m,"Path_builder")
             .def_readwrite("moves", &Path_builder::moves)
             .def_readwrite("steps", &Path_builder::steps)
-            .def_static("get_from_parameters_name",+[](const string &configuration, const string &occlusions, const string &name){
-                object requests = module_::import("cellworld2");
-                object requests_get = requests.attr("get_resource");
-                Path_builder wc;
-                str response = requests_get("paths", configuration, occlusions, name);
-                wc.from_json(response);
-                return wc;
-            })
+            .def("get_from_parameters_name", &Path_builder::get_from_parameters_name)
             ;
 
     json_object_binding<Paths>(m,"Paths")
@@ -473,7 +381,23 @@ namespace cell_world {
     }
 
     std::istream &Resources::get() {
-        return _resource_stream = ifstream("cfn");
+        string folder = cache_folder() + "/" + _resource ;
+        create_folder(folder);
+        auto cfn = folder + "/" + _file_name();
+        ifstream cache(cfn);
+        if (cache.good()) {
+            _resource_stream = std::move(cache);
+            return _resource_stream;
+        }
+        { // time to download the resource
+            auto uri = url() + _cache_invalidation();
+            ofstream cache_file;
+            cache_file.open(cfn);
+            cache_file << "MUST DOWNLOAD";
+            cache_file.close();
+            _new_cache = true;
+        }
+        return _resource_stream = ifstream(cfn);
     }
 
     std::string Resources::url() {
@@ -494,8 +418,9 @@ namespace cell_world {
     }
 
     std::string &Resources::cache_folder() {
-        static string cache_folder="./cellworld_cache";
-        return cache_folder;
+        static string folder(std::getenv("CELLWORLD_CACHE")?std::getenv("CELLWORLD_CACHE"):".cellworld_cache");
+        create_folder(folder);
+        return folder;
     }
 
     std::string Resources::to_string() {
@@ -505,5 +430,11 @@ namespace cell_world {
     }
 
     void Resources::remove_cache() {
+        if (_new_cache) {
+            string folder = cache_folder() + "/" + _resource;
+            create_folder(folder);
+            auto cfn = folder + "/" + _file_name();
+            remove(cfn.c_str());
+        }
     }
 }
