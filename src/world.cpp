@@ -305,7 +305,13 @@ namespace cell_world {
                 stats.visual_connections_derivative[cell.id] *= abs(first_visual_connection-second_visual_connection);
                 stats.visual_centrality_derivative[cell.id] *= abs(first_visual_centrality-second_visual_centrality);
             }
-            stats.ITOR_potential[cell.id] = ((float)stats.visual_connections[cell.id] - (float)min_shared_visibility) / (float)stats.visual_connections[cell.id];
+            if(cells[cell.id].occluded) {
+                stats.ITOR_potential[cell.id] = 0;
+            } else {
+                stats.ITOR_potential[cell.id] =
+                        ((float) stats.visual_connections[cell.id] - (float) min_shared_visibility) /
+                        (float) stats.visual_connections[cell.id];
+            }
         }
         stats.spatial_entropy = labels_entropy(stats.spatial_connections);
         stats.visual_entropy = labels_entropy(stats.visual_connections);
