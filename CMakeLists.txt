@@ -19,6 +19,8 @@ find_package (Dependencies REQUIRED)
 
 install_dependency(https://github.com/germanespinosa/json-cpp PUBLIC VERBOSE CONNECTED PACKAGES Json-cpp TARGETS json_cpp)
 
+include_directories(${DEPENDENCIES_FOLDER}/json-cpp/include)
+
 ####
 #### MAIN LIBRARY SETUP
 ####
