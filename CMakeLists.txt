@@ -118,7 +118,7 @@ endif()
 #### Python module
 ####
 
-if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
+if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     install_dependency(https://github.com/pybind/pybind11 NO_BUILD PRIVATE)
 
