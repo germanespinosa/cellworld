@@ -19,15 +19,6 @@ find_package (Dependencies REQUIRED)
 
 install_dependency(https://github.com/germanespinosa/json-cpp PUBLIC VERBOSE CONNECTED PACKAGES Json-cpp TARGETS json_cpp)
 
-#test_arg_parse( https://github.com/germanespinosa/json-cpp Unqualified_package1 Unqualified_package2
-#        PACKAGES Package1 Package2 Package3
-#        STATIC
-#        NO_BUILD
-#        CONNECTED
-#        BRANCH "my branch"
-#        TAG "this tag"
-#        CMAKE_OPTIONS "-DOPTION1=4 -DOPTION2=3")
-
 ####
 #### MAIN LIBRARY SETUP
 ####
