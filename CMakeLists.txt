@@ -10,47 +10,54 @@ project(cellworld
 ####
 #### DEPENDENCIES
 ####
-
+#
 #if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
 #    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
 #endif()
 #set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/germanespinosa/json-cpp Json-cpp)
+install_dependency(https://github.com/germanespinosa/json-cpp PUBLIC VERBOSE CONNECTED PACKAGES Json-cpp TARGETS json_cpp)
 
-dependency_include(include)
+#test_arg_parse( https://github.com/germanespinosa/json-cpp Unqualified_package1 Unqualified_package2
+#        PACKAGES Package1 Package2 Package3
+#        STATIC
+#        NO_BUILD
+#        CONNECTED
+#        BRANCH "my branch"
+#        TAG "this tag"
+#        CMAKE_OPTIONS "-DOPTION1=4 -DOPTION2=3")
 
 ####
 #### MAIN LIBRARY SETUP
 ####
 
 set(cellworld_files
-    src/agent.cpp
-    src/cell_group.cpp
-    src/connection.cpp
-    src/coordinates.cpp
-    src/location.cpp
-    src/geometry.cpp
-    src/transformation.cpp
-    src/core.cpp
-    src/cell.cpp
-    src/shape.cpp
-    src/model.cpp
-    src/chance.cpp
-    src/visibility.cpp
-    src/world.cpp
-    src/graph.cpp
-    src/paths.cpp
-    src/state.cpp
-    src/map.cpp
-    src/capture.cpp
-    src/peeking.cpp
+        src/agent.cpp
+        src/cell_group.cpp
+        src/connection.cpp
+        src/coordinates.cpp
+        src/location.cpp
+        src/geometry.cpp
+        src/transformation.cpp
+        src/core.cpp
+        src/cell.cpp
+        src/shape.cpp
+        src/model.cpp
+        src/chance.cpp
+        src/visibility.cpp
+        src/world.cpp
+        src/graph.cpp
+        src/paths.cpp
+        src/state.cpp
+        src/map.cpp
+        src/capture.cpp
+        src/peeking.cpp
         )
 
 
-if (NOT ${BUILD_PYTHON_MODULE_ONLY})
-    install_dependency(https://github.com/germanespinosa/requests Requests)
+if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
+    install_dependency(https://github.com/germanespinosa/requests Requests PUBLIC)
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
     add_library(cellworld STATIC
             ${cellworld_files_c})
@@ -83,7 +90,10 @@ if (NOT ${BUILD_PYTHON_MODULE_ONLY})
     #### TESTS
     ####
 
-    install_dependency(https://github.com/germanespinosa/catch CatchTests)
+    install_dependency(https://github.com/germanespinosa/catch
+            PACKAGES
+            CatchTests
+            PUBLIC VERBOSE)
 
     test_library(cellworld)
 
@@ -103,22 +113,12 @@ if (NOT ${BUILD_PYTHON_MODULE_ONLY})
             RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
 
     install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-#    install(DIRECTORY scripts/ DESTINATION /bin)
-#    install(CODE "execute_process(COMMAND chmod +777 /bin/worker)")
-#    install(CODE "execute_process(COMMAND chmod +777 /bin/params)")
-#    install(CODE "execute_process(COMMAND chmod +777 /bin/gauge)")
-#    install(CODE "execute_process(COMMAND chmod +777 /bin/json)")
-#    install(CODE "execute_process(COMMAND chmod +777 /bin/unique)")
 
     install(EXPORT CellworldConfig
             DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
             EXPORT_LINK_INTERFACE_LIBRARIES)
 
     export(TARGETS cellworld FILE CellworldConfig.cmake)
-    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Easy-tcp REQUIRED)\n\") ")
-    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"find_package(Json-cpp REQUIRED)\n\") ")
-    install(CODE "FILE(APPEND ${CMAKE_INSTALL_FULL_DATADIR}/cmake/Cellworld/CellworldConfig.cmake \"set(CELLWORLD_LIBRARIES cellworld json-cpp easy-tcp)\n\") ")
-
 else()
     set(cellworld_files_c ${cellworld_files} )
 endif()
@@ -127,15 +127,17 @@ endif()
 #### Python module
 ####
 
-if (NOT ${BUILD_AS_DEPENDENCY})
+if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
-    install_dependency(https://github.com/pybind/pybind11 NO_BUILD STATIC)
+    install_dependency(https://github.com/pybind/pybind11 NO_BUILD PRIVATE)
 
-    include_directories(cmake-dependencies/pybind11/include)
     add_subdirectory(cmake-dependencies/pybind11)
 
     pybind11_add_module(core src/python.cpp ${cellworld_files})
 
+    target_include_directories(core PRIVATE cmake-dependencies/pybind11/include)
+
+    target_include_directories(core PRIVATE include )
 
     target_compile_options(core PRIVATE)
 
