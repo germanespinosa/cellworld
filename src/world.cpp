@@ -232,6 +232,9 @@ namespace cell_world {
         stats.visual_connections_derivative = json_cpp::Json_vector<unsigned int>(cg.size(), 0);
         stats.visual_centrality_derivative = json_cpp::Json_vector<float>(cg.size(), 0);
 
+        stats.ITOR_direction = json_cpp::Json_vector<Coordinates>(cg.size());
+        stats.ITOR_potential = json_cpp::Json_vector<float>(cg.size(), 0);
+
         auto pairs = this->connection_pattern.get_pairs();
 
         for (const Cell &cell:cells){
@@ -259,10 +262,12 @@ namespace cell_world {
 
                 if (first_cell_index!=Not_found) {
                     auto first_cell_id = cells[first_cell_index].id;
-                    int shared_visibility = (visual[first_cell_id] & visual[cell.id]).size();
-                    if (min_shared_visibility == -1 || shared_visibility < min_shared_visibility){
-                        min_shared_visibility = shared_visibility;
-                        stats.ITOR_direction[cell.id] = cells[first_cell_id].coordinates;
+                    if (!cells[cell.id].occluded && !cells[first_cell_id].occluded) {
+                        int shared_visibility = (visual[first_cell_id] & visual[cell.id]).size();
+                        if (min_shared_visibility == -1 || shared_visibility < min_shared_visibility) {
+                            min_shared_visibility = shared_visibility;
+                            stats.ITOR_direction[cell.id] = cells[first_cell_id].coordinates;
+                        }
                     }
 
                     first_spatial_connection = stats.spatial_connections[first_cell_id];
@@ -280,10 +285,12 @@ namespace cell_world {
 
                 if (second_cell_index!=Not_found) {
                     auto second_cell_id = cells[second_cell_index].id;
-                    int shared_visibility = (visual[second_cell_id] & visual[cell.id]).size();
-                    if (min_shared_visibility == -1 || shared_visibility < min_shared_visibility){
-                        min_shared_visibility = shared_visibility;
-                        stats.ITOR_direction[cell.id] = cells[second_cell_id].coordinates;
+                    if (!cells[cell.id].occluded && !cells[second_cell_id].occluded) {
+                        int shared_visibility = (visual[second_cell_id] & visual[cell.id]).size();
+                        if (min_shared_visibility == -1 || shared_visibility < min_shared_visibility) {
+                            min_shared_visibility = shared_visibility;
+                            stats.ITOR_direction[cell.id] = cells[second_cell_id].coordinates;
+                        }
                     }
 
                     second_spatial_connection = stats.spatial_connections[second_cell_id];
