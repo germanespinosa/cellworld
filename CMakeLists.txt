@@ -122,7 +122,7 @@ if (NOT "$ENV{BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     install_dependency(https://github.com/pybind/pybind11 NO_BUILD PRIVATE)
 
-    add_subdirectory(cmake-dependencies/pybind11)
+    add_subdirectory(${DEPENDENCIES_FOLDER}/pybind11)
 
     pybind11_add_module(core src/python.cpp ${cellworld_files})
 

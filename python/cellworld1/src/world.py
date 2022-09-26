@@ -168,7 +168,7 @@ class World_statistics(JsonObject):
         if ITOR_direction:
             self.ITOR_direction = ITOR_direction
         else:
-            self.ITOR_direction = JsonList(list_type=Coordinates())
+            self.ITOR_direction = JsonList(list_type=Coordinates)
 
     @staticmethod
     def get_from_parameters_names(
