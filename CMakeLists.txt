@@ -17,9 +17,12 @@ project(cellworld
 #set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_dependency(https://github.com/germanespinosa/json-cpp PUBLIC VERBOSE CONNECTED PACKAGES Json-cpp TARGETS json_cpp)
-
-include_directories(${DEPENDENCIES_FOLDER}/json-cpp/include)
+install_git_dependency( https://github.com/germanespinosa/json-cpp
+        CMAKE_PROJECT
+        CONNECTED
+        PRIVATE
+        IMPORT_TARGETS
+            json-cpp )
 
 ####
 #### MAIN LIBRARY SETUP
@@ -50,8 +53,15 @@ set(cellworld_files
 
 
 if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
-    install_dependency(https://github.com/germanespinosa/requests Requests PUBLIC)
+
+    install_git_dependency(https://github.com/germanespinosa/requests
+            CMAKE_PROJECT
+            PRIVATE
+            PACKAGES
+                Requests)
+
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
+
     add_library(cellworld STATIC
             ${cellworld_files_c})
 
@@ -75,7 +85,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
 
     target_link_libraries(cellworld
-            PUBLIC
+            PRIVATE
             json-cpp
             requests)
 
@@ -122,13 +132,12 @@ endif()
 
 if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
-    install_dependency(https://github.com/pybind/pybind11 NO_BUILD PRIVATE)
-
-    add_subdirectory(${DEPENDENCIES_FOLDER}/pybind11)
+    install_git_dependency(https://github.com/pybind/pybind11
+            ADD_SUBDIRECTORY
+            INCLUDE_DIRECTORIES
+            include )
 
     pybind11_add_module(core src/python.cpp ${cellworld_files})
-
-    target_include_directories(core PRIVATE cmake-dependencies/pybind11/include)
 
     target_include_directories(core PRIVATE include )
 
