@@ -93,10 +93,11 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     #### TESTS
     ####
 
-    install_dependency(https://github.com/germanespinosa/catch
+    install_git_dependency(https://github.com/germanespinosa/catch
+            CMAKE_PROJECT
             PACKAGES
             CatchTests
-            PUBLIC VERBOSE)
+            PUBLIC)
 
     test_library(cellworld)
 
