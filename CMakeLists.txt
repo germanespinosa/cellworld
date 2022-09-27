@@ -17,7 +17,8 @@ project(cellworld
 #set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
 find_package (Dependencies REQUIRED)
 
-install_git_dependency( https://github.com/germanespinosa/json-cpp
+install_git_dependency( Json-cpp
+        https://github.com/germanespinosa/json-cpp
         CMAKE_PROJECT
         CONNECTED
         PRIVATE
@@ -54,7 +55,8 @@ set(cellworld_files
 
 if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
-    install_git_dependency(https://github.com/germanespinosa/requests
+    install_git_dependency( Requests
+            https://github.com/germanespinosa/requests
             CMAKE_PROJECT
             PRIVATE
             PACKAGES
@@ -93,10 +95,11 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     #### TESTS
     ####
 
-    install_git_dependency(https://github.com/germanespinosa/catch
+    install_git_dependency( Catch
+            https://github.com/germanespinosa/catch
             CMAKE_PROJECT
             PACKAGES
-            CatchTests
+                CatchTests
             PUBLIC)
 
     test_library(cellworld)
@@ -133,7 +136,8 @@ endif()
 
 if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
-    install_git_dependency(https://github.com/pybind/pybind11
+    install_git_dependency( Pybind11
+            https://github.com/pybind/pybind11
             ADD_SUBDIRECTORY
             INCLUDE_DIRECTORIES
             include )
