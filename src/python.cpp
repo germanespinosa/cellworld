@@ -1,3 +1,4 @@
+#include <json_cpp/json_builder.h>
 #include <cell_world/python.h>
 #include <cell_world/core.h>
 #include <cell_world/resources.h>
@@ -19,23 +20,25 @@ using namespace std;
 using namespace pybind11;
 using namespace cell_world;
 
+struct Python_json_object :  Json_builder {
 
-//resource_uri = cellworld_data_base_uri + resource_type + "/" + key0
-//file_path = ""
-//if cellworld_cache_folder:
-//file_path = cellworld_cache_folder + "/" + resource_type + "/" + key0
-//for arg in argv:
-//resource_uri += "." + arg
-//if cellworld_cache_folder:
-//file_path += "." + arg
-//if cellworld_cache_folder and os.path.exists(file_path):
-//content = ""
-//with open(file_path, "r") as text_file:
-//content = text_file.read()
-//return json.loads(content)
-//else:
-//response = requests.get(resource_uri)
-//return json.loads(response.text)
+    vector<void*> pointers;
+
+    template<typename T>
+    T& create_member(T &v){
+        void* pointer = new T();
+        pointers.push_back(pointer);
+        T *t_pointer = (T *)pointer;
+        *t_pointer = v;
+        return *t_pointer;
+    }
+
+    ~Python_json_object(){
+        for(auto pointer:pointers){
+            free(pointer);
+        }
+    }
+};
 
 PYBIND11_MODULE(core, m)
 {
@@ -437,6 +440,21 @@ PYBIND11_MODULE(core, m)
             .def_readwrite("start_time", &Experiment::start_time)
             .def_readwrite("episodes", &Experiment::episodes)
             .def("set_name", &Experiment::set_name)
+            ;
+
+    json_object_binding<Python_json_object>(m, "Json_builder")
+            .def("add_member",+[](Python_json_object &jb, const string &name, bool mandatory, int &variable){
+                jb.json_add_member(name,mandatory,std::move(Json_wrap_object(jb.create_member(variable)).get_unique_ptr()));
+            })
+            .def("add_member",+[](Python_json_object &jb, const string &name, bool mandatory, bool &variable){
+                jb.json_add_member(name,mandatory,std::move(Json_wrap_object(jb.create_member(variable)).get_unique_ptr()));
+            })
+            .def("add_member",+[](Python_json_object &jb, const string &name, bool mandatory, float &variable){
+                jb.json_add_member(name,mandatory,std::move(Json_wrap_object(jb.create_member(variable)).get_unique_ptr()));
+            })
+            .def("add_member",+[](Python_json_object &jb, const string &name, bool mandatory, string &variable){
+                jb.json_add_member(name,mandatory,std::move(Json_wrap_object(jb.create_member(variable)).get_unique_ptr()));
+            })
             ;
 }
 

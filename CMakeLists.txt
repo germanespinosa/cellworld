@@ -137,6 +137,8 @@ if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     pybind11_add_module(core src/python.cpp ${cellworld_files})
 
+    target_compile_options(core PRIVATE -Wextra -pedantic -Wall -static)
+
     target_include_directories(core PRIVATE include )
 
     target_compile_options(core PRIVATE)
