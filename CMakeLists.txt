@@ -19,11 +19,11 @@ find_package (Dependencies REQUIRED)
 
 install_git_dependency( Json-cpp
         https://github.com/germanespinosa/json-cpp
-        CMAKE_PROJECT
-        CONNECTED
         PRIVATE
+        CMAKE_PROJECT
         IMPORT_TARGETS
-            json-cpp )
+        json-cpp )
+
 
 ####
 #### MAIN LIBRARY SETUP
@@ -52,20 +52,28 @@ set(cellworld_files
         src/peeking.cpp
         )
 
-
 if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
-
-    install_git_dependency( Requests
-            https://github.com/germanespinosa/requests
-            CMAKE_PROJECT
-            PRIVATE
-            PACKAGES
-                Requests)
 
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
 
     add_library(cellworld STATIC
             ${cellworld_files_c})
+
+    target_include_directories(cellworld
+            SYSTEM INTERFACE
+            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+            $<INSTALL_INTERFACE:include>)
+
+    target_link_libraries(cellworld PRIVATE json-cpp)
+
+
+    install_git_dependency( Requests
+            https://github.com/germanespinosa/requests
+            PRIVATE
+            CMAKE_PROJECT
+            TARGET
+                cellworld )
+
 
     set_target_properties(cellworld
             PROPERTIES
@@ -76,20 +84,10 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
 
     target_include_directories(cellworld
-            SYSTEM INTERFACE
-            $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-            $<INSTALL_INTERFACE:include>)
-
-    target_include_directories(cellworld
             PRIVATE
             include )
 
-    target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
-
-    target_link_libraries(cellworld
-            PRIVATE
-            json-cpp
-            requests)
+    target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall -static)
 
     ####
     #### TESTS
@@ -97,14 +95,11 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
     install_git_dependency( Catch
             https://github.com/germanespinosa/catch
-            CMAKE_PROJECT
-            PACKAGES
-                CatchTests
-            PUBLIC)
+            ADD_SUBDIRECTORY)
 
     test_library(cellworld)
 
-    test_library(cellworld catchtests/entropy.cpp)
+    #    test_library(cellworld catchtests/entropy.cpp)
 
     #test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
 
