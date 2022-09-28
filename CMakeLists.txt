@@ -87,7 +87,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
             PRIVATE
             include )
 
-    target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall -static)
+    target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
 
     ####
     #### TESTS
