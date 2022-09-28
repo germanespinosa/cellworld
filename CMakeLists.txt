@@ -83,9 +83,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
             VERSION ${PROJECT_VERSION})
 
 
-    include_directories(cellworld
-            PRIVATE
-            include )
+    include_directories(cellworld  include )
 
     target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
 
