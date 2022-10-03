@@ -69,6 +69,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
     install_git_dependency( Requests
             https://github.com/germanespinosa/requests
+            CONNECTED
             PRIVATE
             CMAKE_PROJECT
             TARGET
@@ -91,11 +92,11 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     #### TESTS
     ####
 
-    install_git_dependency( Catch
-            https://github.com/germanespinosa/catch
-            ADD_SUBDIRECTORY)
-
-    test_library(cellworld)
+#    install_git_dependency( Catch
+#            https://github.com/germanespinosa/catch
+#            ADD_SUBDIRECTORY)
+#
+#    test_library(cellworld)
 
     #    test_library(cellworld catchtests/entropy.cpp)
 
