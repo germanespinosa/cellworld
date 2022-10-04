@@ -69,7 +69,6 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
     install_git_dependency( Requests
             https://github.com/germanespinosa/requests
-            CONNECTED
             PRIVATE
             CMAKE_PROJECT
             TARGET
