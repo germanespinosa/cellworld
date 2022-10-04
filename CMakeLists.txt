@@ -10,12 +10,20 @@ project(cellworld
 ####
 #### DEPENDENCIES
 ####
-#
-#if (NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
-#    file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_SOURCE_DIR}/DependenciesConfig.cmake)
-#endif()
-#set(Dependencies_DIR "${CMAKE_CURRENT_SOURCE_DIR}")
-find_package (Dependencies REQUIRED)
+
+find_package (Dependencies QUIET)
+
+if (NOT ${Dependencies_FOUND})
+    if (NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
+        file(DOWNLOAD https://raw.githubusercontent.com/germanespinosa/dependencies/main/DependenciesConfig.cmake ${CMAKE_CURRENT_BINARY_DIR}/DependenciesConfig.cmake)
+    endif()
+    set(Dependencies_DIR "${CMAKE_CURRENT_BINARY_DIR}")
+    find_package (Dependencies REQUIRED)
+endif()
+
+####
+#### END DEPENDENCIES
+####
 
 install_git_dependency( Json-cpp
         https://github.com/germanespinosa/json-cpp
