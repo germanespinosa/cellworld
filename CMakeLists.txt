@@ -79,6 +79,8 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
             https://github.com/germanespinosa/requests
             PRIVATE
             CMAKE_PROJECT
+            IMPORT_TARGETS
+            requests
             TARGET
                 cellworld )
 
