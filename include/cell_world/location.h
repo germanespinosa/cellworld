@@ -23,6 +23,7 @@ namespace cell_world {
         float dist(const Location &) const;
         float dist() const;
         float dist(const Location &, const Location &) const;
+        Location orthogonal(const Location &, const Location &) const;
         float manhattan(const Location &) const;
         Location move(float theta, float dist) const;
         void transform (const Transformation &);

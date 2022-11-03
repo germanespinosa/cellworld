@@ -96,4 +96,10 @@ namespace cell_world{
         return {x*other.x, y*other.y};
     }
 
+    Location Location::orthogonal(const Location &line_start, const Location &line_ends) const {
+        auto line_theta = line_start.atan(line_ends);
+        auto orthogonal_theta = line_theta + M_PI / 2;
+        auto segment_length = dist(line_start,line_ends);
+        return move(orthogonal_theta, segment_length);
+    }
 }
