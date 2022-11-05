@@ -69,6 +69,7 @@ namespace cell_world {
                 Add_member(duration);
                 Add_member(start_time);
                 Add_optional_member(episodes);
+                Add_optional_member(episode_count);
         );
         std::string name;
         std::string subject_name;
@@ -78,6 +79,7 @@ namespace cell_world {
         unsigned int duration;
         json_cpp::Json_date start_time;
         Episodes episodes;
+        unsigned int episode_count;
         void set_name(const std::string &prefix = "", const std::string &suffix = "") {
             name = start_time.to_string("%Y%m%d_%OH%M_") + subject_name + "_" + occlusions;
             if (!prefix.empty()) name = prefix + "_" + name;

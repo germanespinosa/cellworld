@@ -217,7 +217,8 @@ class Experiment(JsonObject):
                  subject_name: str = "",
                  duration: int = 0,
                  start_time: datetime = None,
-                 episodes: Episode_list = None):
+                 episodes: Episode_list = None,
+                 episode_count: int = 0):
         self.name = name
         self.world_configuration_name = world_configuration_name
         self.world_implementation_name = world_implementation_name
@@ -230,6 +231,7 @@ class Experiment(JsonObject):
         if episodes is None:
             episodes = Episode_list()
         self.episodes = episodes
+        self.episode_count = episode_count
 
     def clean_all_episodes (self):
         for episode in self.episodes:
