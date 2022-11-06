@@ -79,7 +79,7 @@ namespace cell_world {
         unsigned int duration;
         json_cpp::Json_date start_time;
         Episodes episodes;
-        unsigned int episode_count;
+        unsigned int episode_count{0};
         void set_name(const std::string &prefix = "", const std::string &suffix = "") {
             name = start_time.to_string("%Y%m%d_%OH%M_") + subject_name + "_" + occlusions;
             if (!prefix.empty()) name = prefix + "_" + name;
