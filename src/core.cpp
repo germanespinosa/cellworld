@@ -44,7 +44,7 @@ namespace cell_world {
 
     bool file_exists(const std::string &path, const std::vector<std::string> &file_names){
         string fixed_path = path;
-        if (!fixed_path.ends_with('/')) fixed_path += '/';
+        if (!fixed_path.empty() && fixed_path[fixed_path.size()-1] != '/') fixed_path += '/';
         for (auto &file_name : file_names) {
             if (!file_exists(fixed_path + file_name)) return false;
         }
