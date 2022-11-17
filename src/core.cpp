@@ -61,13 +61,6 @@ namespace cell_world {
         return true;
     }
 
-    bool angle_between(float v, float l1, float l2, bool inclusive){
-        if (inclusive) {
-            if (angle_difference(v,l1)==0 || angle_difference(v,l2)==0) return true;
-        }
-        return (direction(v,l1) + direction(v,l2)) == 0;
-    }
-
     bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
     {
         auto t1 = segment1_point1.atan(segment1_point2);
