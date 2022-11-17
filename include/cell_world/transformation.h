@@ -4,7 +4,6 @@
 #include <cinttypes>
 #include <string>
 #include <vector>
-#include <cell_world/coordinates.h>
 
 namespace cell_world {
     struct Transformation : json_cpp::Json_object {

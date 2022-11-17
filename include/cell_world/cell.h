@@ -4,6 +4,7 @@
 #include <cinttypes>
 #include <string>
 #include <vector>
+#include <cell_world/coordinates.h>
 #include <cell_world/location.h>
 
 namespace cell_world {
