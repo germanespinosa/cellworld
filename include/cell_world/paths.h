@@ -1,5 +1,5 @@
 #pragma once
-#include <cell_world/core.h>
+#include <cell_world/types.h>
 #include <cell_world/graph.h>
 
 namespace cell_world {

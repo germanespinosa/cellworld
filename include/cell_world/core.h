@@ -1,4 +1,5 @@
 #pragma once
+#include <cell_world/types.h>
 #include <json_cpp.h>
 #include <iostream>
 #include <cinttypes>
@@ -8,13 +9,6 @@
 #define SIMILAR(A,B,M) ((A-M < B) && (A+M > B))
 
 namespace cell_world{
-    const int Not_found = -1;
-
-    using Json_int_vector = json_cpp::Json_vector<int>;
-    using Json_bool_vector = json_cpp::Json_vector<bool>;
-    using Json_float_vector = json_cpp::Json_vector<float>;
-    using Json_unsigned_int_vector = json_cpp::Json_vector<unsigned int>;
-
     std::vector<unsigned int> histogram(std::vector<unsigned int>);
     std::vector<unsigned int> new_index(unsigned int);
     std::vector<unsigned int> new_index(std::vector<float>, bool);
