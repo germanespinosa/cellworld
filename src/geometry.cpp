@@ -15,6 +15,19 @@ namespace cell_world{
         }
     }
 
+    bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
+    {
+        auto t1 = segment1_point1.atan(segment1_point2);
+        auto t11 = segment1_point1.atan(segment2_point1);
+        auto t12 = segment1_point1.atan(segment2_point2);
+        if (!angle_between(t1,t11,t12)) return false;
+        auto t2 = segment2_point1.atan(segment2_point2);
+        auto t21 = segment2_point1.atan(segment1_point1);
+        auto t22 = segment2_point1.atan(segment1_point2);
+        if (!angle_between(t2,t21,t22)) return false;
+        return true;
+    }
+
     bool angle_between(float v, float l1, float l2, bool inclusive){
         if (inclusive) {
             if (angle_difference(v,l1)==0 || angle_difference(v,l2)==0) return true;

@@ -61,19 +61,6 @@ namespace cell_world {
         return true;
     }
 
-    bool segments_intersect(const Location &segment1_point1, const Location &segment1_point2, const Location &segment2_point1, const Location &segment2_point2)
-    {
-        auto t1 = segment1_point1.atan(segment1_point2);
-        auto t11 = segment1_point1.atan(segment2_point1);
-        auto t12 = segment1_point1.atan(segment2_point2);
-        if (!angle_between(t1,t11,t12)) return false;
-        auto t2 = segment2_point1.atan(segment2_point2);
-        auto t21 = segment2_point1.atan(segment1_point1);
-        auto t22 = segment2_point1.atan(segment1_point2);
-        if (!angle_between(t2,t21,t22)) return false;
-        return true;
-    }
-
     float entropy(const std::vector<int>& histogram) {
         vector<float> prob;
         int c = 0;
