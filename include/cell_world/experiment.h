@@ -1,5 +1,4 @@
 #pragma once
-#include <cell_world/core.h>
 #include <cell_world/cell_group.h>
 #include <cell_world/shape.h>
 

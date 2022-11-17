@@ -1,5 +1,4 @@
 #pragma once
-#include <cell_world/core.h>
 #include <cell_world/world.h>
 #include <cell_world/agent.h>
 #include <cell_world/visibility.h>

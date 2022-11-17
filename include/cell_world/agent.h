@@ -1,5 +1,4 @@
 #pragma once
-#include <cell_world/core.h>
 #include <cell_world/state.h>
 #include <cell_world/chance.h>
 #include <cell_world/connection.h>

@@ -1,3 +1,4 @@
+#include <cell_world/core.h>
 #include <cell_world/map.h>
 
 using namespace std;
