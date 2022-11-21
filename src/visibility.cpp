@@ -103,11 +103,13 @@ namespace cell_world {
     void Location_visibility::update_occlusions(const Cell_group &cells) {
         auto occluded_cells = cells.occluded_cells();
         occlusions.clear();
-        for (auto &cell: occluded_cells) {
-            occlusions.emplace_back(cell.get().location,
+        cell_locations.clear();
+        for (const Cell &cell: occluded_cells) {
+            occlusions.emplace_back(cell.location,
                                     cell_shape.sides,
                                     cell_transformation.size / 2,
                                     to_radians(cell_transformation.rotation));
+            cell_locations.push_back(cell.location);
         }
 
     }
@@ -115,7 +117,37 @@ namespace cell_world {
     Json_bool_vector Location_visibility::is_visible_multi(const Location &src, float src_theta, float src_cone, const Location_list &dst_multi) const {
         Json_bool_vector result(dst_multi.size(), false);
         for (unsigned int i = 0; i < result.size(); i++){
-            result[i] = is_visible(src,src_theta,src_cone,dst_multi[i]);
+            result[i] = is_visible(src, src_theta, src_cone, dst_multi[i]);
+        }
+        return result;
+    }
+
+    Location_list Location_visibility::get_visible_locations(const Location &src, float src_theta, float src_cone) const {
+        return get_visible_locations(src, src_theta, src_cone, cell_locations);
+    }
+
+    Location_list Location_visibility::get_visible_locations(const Location &src, float src_theta, float src_cone, const Location_list &dst_multi) const {
+        Location_list result;
+        for (auto &dst:dst_multi){
+            if (is_visible(src, src_theta, src_cone, dst))
+            {
+                result.push_back(dst);
+            }
+        }
+        return result;
+    }
+
+    Location_list Location_visibility::get_visible_locations(const Location &src) const {
+        return get_visible_locations(src, cell_locations);
+    }
+
+    Location_list Location_visibility::get_visible_locations(const Location &src, const Location_list &dst_multi) const {
+        Location_list result;
+        for (auto &dst:dst_multi){
+            if (is_visible(src, dst))
+            {
+                result.push_back(dst);
+            }
         }
         return result;
     }

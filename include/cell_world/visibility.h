@@ -29,5 +29,10 @@ namespace cell_world{
         Polygon_list occlusions;
         Shape cell_shape;
         Transformation cell_transformation;
+        Location_list cell_locations;
+        Location_list get_visible_locations(const Location &, float, float) const;
+        Location_list get_visible_locations(const Location &, float, float, const Location_list &) const;
+        Location_list get_visible_locations(const Location &) const;
+        Location_list get_visible_locations(const Location &, const Location_list &) const;
     };
 }
