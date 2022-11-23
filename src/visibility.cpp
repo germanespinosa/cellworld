@@ -75,7 +75,7 @@ namespace cell_world {
         float theta = src.atan(dst);
         float dist = src.dist(dst);
         for (auto &o: occlusions) {
-            if (o.is_between(src,theta, dist)){
+            if (o.is_between(src, theta, dist)){
                 return false;
             }
         }
@@ -84,10 +84,10 @@ namespace cell_world {
 
     bool cell_world::Location_visibility::is_visible(const Location &src, float src_theta, float src_cone, const Location &dst) const {
         float theta = src.atan(dst);
-        if (angle_difference(src_theta,theta)>src_cone/2) return false;
+        if (angle_difference(src_theta, theta) > src_cone / 2) return false;
         float dist = src.dist(dst);
         for (auto &o: occlusions) {
-            if (o.is_between(src,theta, dist)){
+            if (o.is_between(src, theta, dist)){
                 return false;
             }
         }

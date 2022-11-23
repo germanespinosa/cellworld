@@ -87,9 +87,13 @@ namespace cell_world {
 
     bool Polygon::is_between(const Location &src, float theta, float dist) const {
         float dist_center = src.dist(center);
-        if (dist < dist_center - radius ) return false;
+        if (dist < dist_center - radius ) return false; // destination closer than the polygon
+
+        float polygon_shade_angle = atan2(dist_center,  radius);
         float theta_center = src.atan(center);
-        auto diff_theta_center = angle_difference(theta,theta_center);
+        auto diff_theta_center = angle_difference(theta, theta_center);
+        if (diff_theta_center > polygon_shade_angle) return false; // outside the circular shade
+
         auto direction_center = direction(theta, theta_center);
         for (auto &v: vertices) {
             float vertex_distance = src.dist(v);
