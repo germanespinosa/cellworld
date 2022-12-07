@@ -58,6 +58,7 @@ set(cellworld_files
         src/map.cpp
         src/capture.cpp
         src/peeking.cpp
+        src/pose.cpp
         )
 
 if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
