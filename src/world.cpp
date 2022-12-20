@@ -324,6 +324,13 @@ namespace cell_world {
     World_statistics World_statistics::get_from_parameters_name(const string &configuration, const string &occlusions) {
         return Resources::from("world_statistics").key(configuration).key(occlusions).get_resource<World_statistics>();
     }
+
+    World_info::World_info(const std::string &configuration_name, const std::string &implementation_name, const std::string &occlusions_name):
+    world_configuration(configuration_name),
+    world_implementation(implementation_name),
+    occlusions(occlusions_name){
+
+    }
 }
 
 

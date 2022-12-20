@@ -9,6 +9,8 @@
 namespace cell_world{
 
     struct World_info : json_cpp::Json_object {
+        World_info() = default;
+        World_info(const std::string &, const std::string &, const std::string &);
         std::string world_configuration;
         std::string world_implementation;
         std::string occlusions;
