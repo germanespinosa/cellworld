@@ -1,5 +1,5 @@
 def __module_version__():
-	return 0, 0, 120 
+	return 0, 0, 122 
 
 
 def __module_name__():
@@ -43,7 +43,7 @@ def __package_name__():
 
 
 def __files__():
-	return ['cell.py', 'graph.py', 'agent_markers.py', 'coordinates.py', 'display.py', 'experiment.py', 'location.py', 'shape.py', 'util.py', 'visibility.py', 'world.py', 'capture.py'] 
+	return ['cell.py', 'frame.py', 'graph.py', 'agent_markers.py', 'coordinates.py', 'display.py', 'experiment.py', 'location.py', 'shape.py', 'util.py', 'visibility.py', 'world.py', 'capture.py'] 
 
 
 def __setup_py__():

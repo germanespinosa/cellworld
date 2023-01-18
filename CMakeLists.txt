@@ -38,6 +38,7 @@ install_git_dependency( Json-cpp
 ####
 
 set(cellworld_files
+        src/frame.cpp
         src/agent.cpp
         src/cell_group.cpp
         src/connection.cpp
