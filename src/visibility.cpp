@@ -151,5 +151,14 @@ namespace cell_world {
         }
         return result;
     }
+
+    Json_unsigned_int_vector
+    Location_visibility::is_visible_multi_index(const Location &src, float src_theta, float src_cone, const Location_list &dst_multi) const {
+        Json_unsigned_int_vector result;
+        for (unsigned int i = 0; i < dst_multi.size(); i++){
+            if(is_visible(src, src_theta, src_cone, dst_multi[i])) result.push_back(i);
+        }
+        return result;
+    }
 }
 

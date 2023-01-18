@@ -3,7 +3,7 @@
 
 namespace cell_world{
 
-    struct Cell_group_builder: json_cpp::Json_vector<unsigned int>{
+    struct Cell_group_builder: Json_unsigned_int_vector {
         static Cell_group_builder get_from_parameters_name(const std::string &, const std::string &);
         static Cell_group_builder get_from_parameters_name(const std::string &, const std::string &, const std::string &);
     };

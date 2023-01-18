@@ -25,6 +25,7 @@ namespace cell_world{
         [[nodiscard]] bool is_visible(const Location &, const Location &) const;
         bool is_visible(const Location &, float, float, const Location &) const;
         Json_bool_vector is_visible_multi(const Location &, float, float, const Location_list &) const;
+        Json_unsigned_int_vector is_visible_multi_index(const Location &, float, float, const Location_list &) const;
         void update_occlusions(const Cell_group &);
         Polygon_list occlusions;
         Shape cell_shape;

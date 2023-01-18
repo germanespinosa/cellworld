@@ -100,6 +100,7 @@ namespace cell_world{
         unsigned int size() const;
         Cell &operator[](const unsigned int& );
         Cell_group create_cell_group() const;
+        Cell_group create_cell_group(const Json_unsigned_int_vector &) const;
         Cell_group create_cell_group(const Cell_group_builder &) const;
         Cell_group create_cell_group(const std::string &) const;
         Graph create_graph() const;

@@ -98,9 +98,7 @@ namespace cell_world {
     }
 
     Cell_group World::create_cell_group(const Cell_group_builder &cell_ids) const {
-        Cell_group cg;
-        for (auto id : cell_ids) cg.add(cells[id]);
-        return cg;
+        return create_cell_group((Json_unsigned_int_vector &) cell_ids);
     }
 
     Cell_group World::create_cell_group(const std::string &file_path) const {
@@ -330,6 +328,12 @@ namespace cell_world {
     world_implementation(implementation_name),
     occlusions(occlusions_name){
 
+    }
+
+    Cell_group World::create_cell_group(const Json_unsigned_int_vector &cell_ids) const {
+        Cell_group cg;
+        for (auto id : cell_ids) cg.add(cells[id]);
+        return cg;
     }
 }
 
