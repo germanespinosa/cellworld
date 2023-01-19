@@ -70,35 +70,44 @@ class Trajectories(JsonList):
             first_frame = i
         del self[0:first_frame-1]
 
-    def get_step_index_by_time_stamp(self, time_stamp: float) -> int:
+    def get_step_index_by_time_stamp(self, time_stamp: float, exact: bool = False) -> int:
         if len(self) == 1:
-            return 0
+            if self[0].time_stamp != time_stamp and exact:
+                raise RuntimeError("Time_stamp %i not found", time_stamp)
+            else:
+                return 0
         m = len(self) // 2
         if self[m].time_stamp == time_stamp:
             return m
         if time_stamp > self[m].time_stamp:
-            return m + Trajectories.get_step_index_by_time_stamp(self[m:], time_stamp)
+            return m + Trajectories.get_step_index_by_time_stamp(self[m:], time_stamp, exact)
         else:
-            return Trajectories.get_step_index_by_time_stamp(self[:m], time_stamp)
+            return Trajectories.get_step_index_by_time_stamp(self[:m], time_stamp, exact)
 
-    def get_step_by_time_stamp(self, time_stamp: float) -> Step:
-        step_index = self.get_step_index_by_time_stamp(time_stamp)
+    def get_step_by_time_stamp(self, time_stamp: float, exact: bool = False) -> Step:
+        step_index = self.get_step_index_by_time_stamp(time_stamp, exact)
         return self[step_index]
 
-    def get_step_index_by_frame(self, frame: int) -> int:
+    def get_step_index_by_frame(self, frame: int, exact: bool = True) -> int:
         if len(self) == 1:
-            return 0
+            if self[0].frame != frame and exact:
+                raise RuntimeError("Frame %i not found", frame)
+            else:
+                return 0
         m = len(self) // 2
         if self[m].frame == frame:
             return m
         if frame > self[m].frame:
-            return m + Trajectories.get_step_index_by_frame(self[m:], frame)
+            return m + Trajectories.get_step_index_by_frame(self[m:], frame, exact)
         else:
-            return Trajectories.get_step_index_by_frame(self[:m], frame)
+            return Trajectories.get_step_index_by_frame(self[:m], frame, exact)
 
-    def get_step_by_frame(self, frame: int) -> Step:
-        step_index = self.get_step_index_by_frame(frame)
-        return self[step_index]
+    def get_step_by_frame(self, frame: int, exact: bool = True) -> Step:
+        try:
+            step_index = self.get_step_index_by_frame(frame, exact)
+            return self[step_index]
+        except:
+            return None
 
     def get_velocities(self) -> {}:
         velocities = {}

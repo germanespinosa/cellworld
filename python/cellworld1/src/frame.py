@@ -52,7 +52,7 @@ class Frame_list(JsonList):
         for frame_number in range(last_frame + 1):
             frame = Frame()
             frame.frame_number = frame_number
-            prey_steps = prey_trajectories.where("frame", frame_number)
+            prey_steps = prey_trajectories.get_step_by_frame(frame_number)
             if len(prey_steps) > 0:
                 frame.prey_detection = True
                 frame.time_stamp = prey_steps[0].time_stamp
@@ -62,7 +62,7 @@ class Frame_list(JsonList):
             else:
                 frame.prey_detection = False
 
-            predator_steps = predator_trajectories.where("frame", frame_number)
+            predator_steps = predator_trajectories.get_step_by_frame(frame_number)
             if len(predator_steps) > 0:
                 frame.predator_detection = True
                 if frame.prey_detection and frame.time_stamp != predator_steps[0].time_stamp:
