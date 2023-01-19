@@ -52,24 +52,22 @@ class Frame_list(JsonList):
         for frame_number in range(last_frame + 1):
             frame = Frame()
             frame.frame_number = frame_number
-            prey_steps = prey_trajectories.get_step_by_frame(frame_number)
-            if len(prey_steps) > 0:
+            prey_step = prey_trajectories.get_step_by_frame(frame_number)
+            if prey_step:
                 frame.prey_detection = True
-                frame.time_stamp = prey_steps[0].time_stamp
-                frame.prey_location = prey_steps[0].location
-                frame.prey_rotation = prey_steps[0].rotation
-                frame.prey_data = prey_steps[0].data
+                frame.time_stamp = prey_step.time_stamp
+                frame.prey_location = prey_step.location
+                frame.prey_rotation = prey_step.rotation
+                frame.prey_data = prey_step.data
             else:
                 frame.prey_detection = False
 
-            predator_steps = predator_trajectories.get_step_by_frame(frame_number)
-            if len(predator_steps) > 0:
+            predator_step = predator_trajectories.get_step_by_frame(frame_number)
+            if predator_step:
                 frame.predator_detection = True
-                if frame.prey_detection and frame.time_stamp != predator_steps[0].time_stamp:
-                    raise Exception("Prey and predator time_stamps differ on frame " + str(frame_number))
-                frame.predator_location = predator_steps[0].location
-                frame.predator_rotation = predator_steps[0].rotation
-                frame.predator_data = predator_steps[0].data
+                frame.predator_location = predator_step.location
+                frame.predator_rotation = predator_step.rotation
+                frame.predator_data = predator_step.data
             else:
                 frame.predator_detection = False
             frame_list.append(frame)
