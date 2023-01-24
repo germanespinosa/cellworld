@@ -34,7 +34,12 @@ namespace cell_world {
         }
     };
 
-    using Trajectories = json_cpp::Json_vector<Step> ;
+    struct Trajectories : json_cpp::Json_vector<Step> {
+        size_t get_step_index_by_frame(unsigned int frame, bool exact = true);
+        size_t get_step_index_by_time_stamp(float time_stamp, bool exact = false);
+        Step &get_step_by_frame(unsigned int frame, bool exact = true);
+        Step &get_step_by_time_stamp(float time_stamp, bool exact = true);
+    };
 
     struct Episode : json_cpp::Json_object {
         Json_object_members(
