@@ -8,7 +8,7 @@ namespace cell_world{
         size_t e = size()-1;
         size_t m = (b+e) / 2;
 
-        while (e-b > 1){
+        while (e-b > 0){
             unsigned int f=(*this)[m].frame;
             if ( f == frame){
                 return m;
@@ -19,7 +19,9 @@ namespace cell_world{
             if ( f > frame){
                 e = m - 1;
             }
-            m = (b+e) / 2;
+            size_t nm = (b+e) / 2;
+            if (nm == m) break;
+            m = nm;
         }
         if ((*this)[m].frame != frame && exact){
             throw std::runtime_error("frame not found");
@@ -32,7 +34,7 @@ namespace cell_world{
         size_t e = size()-1;
         size_t m = (b+e) / 2;
 
-        while (e-b > 1){
+        while (e-b > 0){
             float f=(*this)[m].time_stamp;
             if ( f == time_stamp){
                 return m;
@@ -43,7 +45,9 @@ namespace cell_world{
             if ( f > time_stamp){
                 e = m - 1;
             }
-            m = (b+e) / 2;
+            size_t nm = (b+e) / 2;
+            if (nm == m) break;
+            m = nm;
         }
         if ((*this)[m].time_stamp != time_stamp && exact){
             throw std::runtime_error("time_stamp not found");
