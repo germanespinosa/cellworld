@@ -1,0 +1,47 @@
+Copyright (c) 2023 German Espinosa
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+1. License Grant.
+German Espinosa grants to Licensee a non-exclusive, non-transferable, and 
+revocable license to use, copy, and distribute the Software, 
+subject to the terms and conditions of this Agreement.
+
+2. Limitations.
+The license granted herein is solely for non-commercial purposes. 
+Licensee may not use the Software for any commercial purpose, including 
+without limitation, selling, licensing, or distributing the Software 
+for profit, except as provided in Section 4.
+
+3. Copyright Notice and Attribution.
+Licensee shall include a copyright notice and attribution to 
+Licensor in any publication or presentation of research findings that is based 
+on the Software. Such attribution shall be in the form of authorship, 
+or with explicit permission from German Espinosa, with aknowledgement in the 
+following form: "This work was made possible by the use of Cellworld source code, 
+which was provided by German Espinosa."
+
+4. Acknowledgment for Commercial Applications.
+If Licensee uses the Software for commercial purposes, Licensee shall include 
+a visible legend on screen when the application starts that acknowledges German Espinosa's 
+ownership of the Software, in the following form: "This application uses Cellworld source code, 
+which was provided by German Espinosa."
+
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+No Warranty.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
