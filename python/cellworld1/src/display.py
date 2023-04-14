@@ -4,15 +4,29 @@ import matplotlib.pyplot as plt
 import matplotlib.colors
 from matplotlib.path import Path
 from matplotlib.transforms import Affine2D
+import matplotlib.colors as mcolors
 from .world import *
 from .experiment import *
 from .agent_markers import *
+from .QuickBundles import *
+
+
+def adjust_color_brightness(color, amount:float=1):
+    import matplotlib.colors as mc
+    import colorsys
+    try:
+        c = mc.cnames[color]
+    except:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], 1 - amount * (1 - c[1]), c[2])
+
 
 class Display:
 
     def __init__(self,
                  world: World,
-                 fig_size: tuple = (12, 10),
+                 fig_size: tuple = (10, 10),
                  padding: float = .1,
                  outline: float = .5,
                  show_axes: bool = False,
@@ -20,11 +34,11 @@ class Display:
                  occlusion_color="black",
                  background_color="white",
                  habitat_color="white",
-                 cell_edge_color="black",
-                 habitat_edge_color="black",
+                 cell_edge_color="lightgray",
+                 habitat_edge_color="gray",
                  animated: bool = False,
-                 ax = None,
-                 fig = None):
+                 ax=None,
+                 fig=None):
         if animated:
             plt.ion()
         self.agents = dict()
@@ -116,6 +130,7 @@ class Display:
                     lcolor = color
                 self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=lalpha, linewidth=3)
 
+
     def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color=None, outline_color=None, edge_color=None):
         if color is None:
             color = self.cell_color
@@ -153,21 +168,36 @@ class Display:
             if not self.world.cells[cell_id].occluded:
                 self.cell(cell_id=cell_id, color=color)
 
-    def circle(self, location: Location, radius: float, color, alpha: float = 1.0):
-        circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha)
+    def circle(self, location: Location, radius: float, color, alpha: float = 1.0, zorder=None):
+        circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha, zorder=zorder)
         return self.ax.add_patch(circle_patch)
 
-    def arrow(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", head_width: float = .02, alpha: float = 1.0, existing_arrow: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
+    def arrow(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", head_width: float = .02, alpha: float = 1.0, line_width: float = 0.001, existing_arrow: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
         if ending is None:
             ending = beginning.copy().move(theta=theta, dist=dist)
         length = ending - beginning
         if existing_arrow:
-            existing_arrow.set_data(x=beginning.x, y=beginning.y, dx=length.x, dy=length.y, head_width=head_width)
+            existing_arrow.set_data(x=beginning.x, y=beginning.y, dx=length.x, dy=length.y, head_width=head_width, width=line_width)
             existing_arrow.set_color(color)
             existing_arrow.set_alpha(alpha)
             return existing_arrow
         else:
-            new_arrow = self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True, alpha=alpha)
+            new_arrow = self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=head_width, length_includes_head=True, alpha=alpha, width=line_width)
+            new_arrow.animated = self.animated
+            return new_arrow
+
+    def line(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", alpha: float = 1.0, line_width: float = 0.001, existing_line: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
+        head_width = 0
+        if ending is None:
+            ending = beginning.copy().move(theta=theta, dist=dist)
+        length = ending - beginning
+        if existing_line:
+            existing_line.set_data(x=beginning.x, y=beginning.y, dx=length.x, dy=length.y, head_width=0, head_length=0, alpha=alpha, width=line_width)
+            existing_line.set_color(color)
+            existing_line.set_alpha(alpha)
+            return existing_line
+        else:
+            new_arrow = self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=0, alpha=alpha, head_length=0, length_includes_head=False, width=line_width)
             new_arrow.animated = self.animated
             return new_arrow
 
@@ -200,6 +230,31 @@ class Display:
         self.agents[agent_name].set_xdata(location.x)
         self.agents[agent_name].set_ydata(location.y)
         self.agents[agent_name].set_color(color)
+
+    def plot_clusters(self, clusters, colors: list=["blue", "red"], show_centroids: bool = True, use_alpha: bool = True):
+        for sl in clusters.unclustered:
+            self.ax.plot([s.x for s in sl], [s.y for s in sl], c="gray", linewidth=2, alpha=.5)
+
+        for cn, cluster in enumerate(clusters):
+            distances = cluster.get_distances()
+            max_distance = max(distances)
+            if use_alpha:
+                alpha_values = [1 if max_distance == 0 else (max_distance - d) / max_distance / 2 for d in distances]
+            else:
+                alpha_values = [1 for d in distances]
+            color = adjust_color_brightness(colors[cn % len(colors)], .8)
+            for i, sl in enumerate(cluster):
+                self.ax.plot([s.x for s in sl], [s.y for s in sl], c=color, linewidth=2, alpha=alpha_values[i])
+
+        if show_centroids:
+            for cn, cluster in enumerate(clusters):
+                color = adjust_color_brightness(colors[cn % len(colors)], 1.2)
+                cluster_size = .005 + .01 * (len(cluster) / clusters.streamline_count())
+                for s in cluster.centroid:
+                    self.circle(s, radius=cluster_size + .003, color="lightgray", alpha=1, zorder=500)
+                for s in cluster.centroid:
+                    self.circle(s, radius=cluster_size, color=color, alpha=1, zorder=500)
+
 
     def update(self):
         if self.animated:

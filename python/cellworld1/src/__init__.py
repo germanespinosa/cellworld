@@ -11,5 +11,5 @@ from .graph import *
 from .capture import *
 from .visibility import *
 from .frame import *
-
+from .QuickBundles import *
 
