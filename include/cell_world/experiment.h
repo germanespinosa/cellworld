@@ -49,12 +49,16 @@ namespace cell_world {
                 Add_member(end_time);
                 Add_member(trajectories);
                 Add_optional_member(captures);
+                Add_optional_member(rewards_sequence);
+                Add_optional_member(rewards_time_stamps);
         )
         json_cpp::Json_date start_time;
         float time_stamp;
         json_cpp::Json_date end_time;
         Trajectories trajectories;
         json_cpp::Json_vector<unsigned int> captures;
+        Cell_group_builder rewards_sequence;
+        Json_float_vector rewards_time_stamps;
         bool operator==(const Episode &s) const {
             return this->start_time == s.start_time &&
                    this->time_stamp == s.time_stamp &&
@@ -75,12 +79,16 @@ namespace cell_world {
                 Add_member(start_time);
                 Add_optional_member(episodes);
                 Add_optional_member(episode_count);
+                Add_optional_member(rewards_cells);
+                Add_optional_member(rewards_orientations);
         );
         std::string name;
         std::string subject_name;
         std::string world_configuration_name;
         std::string world_implementation_name;
         std::string occlusions;
+        Cell_group_builder rewards_cells;
+        Json_int_vector rewards_orientations;
         unsigned int duration;
         json_cpp::Json_date start_time;
         Episodes episodes;

@@ -4,6 +4,7 @@ from .coordinates import *
 from .location import *
 from .shape import Space
 from .world import World_implementation, World
+from .cell import Cell_group_builder
 from datetime import datetime
 
 class Step(JsonObject):
@@ -171,7 +172,6 @@ class Trajectories(JsonList):
             last_locations[s.agent_name] = s.location
         return unique_steps
 
-
     def get_agent_names(self) -> list:
         agent_names = []
         for s in self:
@@ -184,7 +184,14 @@ class Trajectories(JsonList):
 
 
 class Episode(JsonObject):
-    def __init__(self, start_time: datetime = None, time_stamp: float = 0.0, end_time: datetime = None, trajectories: Trajectories = None, captures: JsonList = None):
+    def __init__(self,
+                 start_time: datetime = None,
+                 time_stamp: float = 0.0,
+                 end_time: datetime = None,
+                 trajectories: Trajectories = None,
+                 captures: JsonList = None,
+                 rewards_sequence: Cell_group_builder = None,
+                 rewards_time_stamps: JsonList = None):
         if not start_time:
             start_time = datetime.now()
         self.start_time = start_time
@@ -198,6 +205,14 @@ class Episode(JsonObject):
         if captures is None:
             captures = JsonList(list_type=int)
         self.captures = captures
+        if rewards_sequence:
+            self.rewards_sequence = rewards_sequence
+        else:
+            self.rewards_sequence = Cell_group_builder()
+        if rewards_time_stamps:
+            self.rewards_time_stamps = rewards_time_stamps
+        else:
+            self.rewards_time_stamps = JsonList(list_type=float)
 
     def clean(self):
         ts = self.trajectories.get_agent_trajectory("predator").where("frame", 0).get("time_stamp")
@@ -208,8 +223,6 @@ class Episode(JsonObject):
                 if step.frame != 0 or step.agent_name != "predator" or step.time_stamp == min_time_stamp:
                     new_trajectories.append(step)
             self.trajectories = new_trajectories
-
-
 
 
 class Episode_list(JsonList):
@@ -227,7 +240,9 @@ class Experiment(JsonObject):
                  duration: int = 0,
                  start_time: datetime = None,
                  episodes: Episode_list = None,
-                 episode_count: int = 0):
+                 episode_count: int = 0,
+                 rewards_cells: Cell_group_builder = [],
+                 rewards_orientations: JsonList = []):
         self.name = name
         self.world_configuration_name = world_configuration_name
         self.world_implementation_name = world_implementation_name
@@ -241,6 +256,14 @@ class Experiment(JsonObject):
             episodes = Episode_list()
         self.episodes = episodes
         self.episode_count = episode_count
+        if rewards_cells:
+            self.rewards_cells = rewards_cells
+        else:
+            self.rewards_cells = Cell_group_builder()
+        if rewards_orientations:
+            self.rewards_orientations = rewards_orientations
+        else:
+            self.rewards_orientations = JsonList(list_type=int)
 
     def clean_all_episodes (self):
         for episode in self.episodes:

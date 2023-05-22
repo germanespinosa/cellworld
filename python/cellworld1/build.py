@@ -1,6 +1,6 @@
 import sys
 from easy_pack import EasyPackModule
-from os import path
+from os import path, system
 
 module = EasyPackModule.read('.')
 if not path.exists('setup/setup.py') or path.getctime('__info__.py') > path.getctime('setup/setup.py'):
@@ -24,7 +24,7 @@ if build:
 	else:
 		print('use twine upload --repository-url [pypi-repository-url] dist/* to upload the package')
 	if '-install' in sys.argv:
-		os.system('cd ' + build + '; pip install .')
+		system('cd ' + build + '; pip install .')
 	module.save('.')
 else:
 	print('build failed')
