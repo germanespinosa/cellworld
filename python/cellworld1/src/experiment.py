@@ -29,8 +29,7 @@ class Velocities(JsonList):
     def __init__(self, iterable=None):
         JsonList.__init__(self, iterable, list_type=float)
 
-    def complementary_filter(self, a: float):# complementary filter
-        check_type(a, float, "wrong type for a")
+    def complementary_filter(self, a: float): #complementary filter
         if a <= 0 or a >= 1:
             raise ArithmeticError("filter parameter should be > 0 and < 1")
         filtered = Velocities()
@@ -42,7 +41,6 @@ class Velocities(JsonList):
         return filtered
 
     def outliers_filter(self, threshold: float):
-        check_type(threshold, float, "wrong type for threshold")
         if threshold <= 0:
             raise ArithmeticError("threshold parameter should be > 0")
         threshold = sum(self)/len(self) * threshold
@@ -56,6 +54,19 @@ class Velocities(JsonList):
                 last = v
             else:
                 filtered.append(last)
+        return filtered
+
+    def moving_average_filter(self, window_length: int = 2):
+        if window_length <= 0:
+            raise ArithmeticError("window length parameter should be > 0")
+        filtered = Velocities()
+        if len(self) == 0:
+            return filtered
+        le = len(self) - window_length
+        for i in range(le):
+            b = i - window_length if i > window_length else 0
+            e = i + window_length if i < le else len(self)
+            filtered.append(sum(self[b:e])/(e-b))
         return filtered
 
 

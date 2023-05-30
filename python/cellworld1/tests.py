@@ -1,9 +1,19 @@
 import requests
 from json_cpp import *
 
-uri = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/cell_group/hexagonal.05_05.occlusions"
-#req = requests.get(uri)
-a = JsonList(list_type=int).load_from_url(uri)
+from src import Velocities
+
+v = Velocities(iterable=range(10))
+
+print (list(range(10)))
+print(v.moving_average_filter(1))
+print(v.moving_average_filter(2))
+print(v.moving_average_filter(3))
+
+
+# uri = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/cell_group/hexagonal.05_05.occlusions"
+# #req = requests.get(uri)
+# a = JsonList(list_type=int).load_from_url(uri)
 
 # from src import *
 # from time import sleep
