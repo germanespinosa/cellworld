@@ -1,9 +1,19 @@
+import random
+
 from json_cpp import JsonObject, JsonList
 from .util import *
 from .location import Location, Location_list, Scale
 from .coordinates import Coordinates, Coordinates_list
 from .shape import Shape, Transformation, Space, Transformation_list
 from .cell import Cell, Cell_group_builder, Cell_group, Cell_map
+
+
+def get_occlusion_count(cell_count, target_entropy):
+    for c in range(cell_count):
+        p = c/cell_count
+        if entropy([p, 1-p])>=target_entropy:
+            return c
+    return 0
 
 
 class World_info(JsonObject):
@@ -282,6 +292,94 @@ class World:
                 continue
             pairs.append((connection, -connection))
         return pairs
+
+    def entropy(self, occlusion_count: int, base: float = math.e):
+        ent = 0
+        cell_count = len(self.cells)
+        probabilities = [occlusion_count/cell_count, (cell_count-occlusion_count)/cell_count]
+        for p in probabilities:
+            if p > 0:
+                ent -= p * math.log(p, base)
+        return ent / math.log(len(probabilities), base)
+
+    def get_occlusion_count(self, target_entropy: float):
+        cell_count = len(self.cells)
+        for c in range(cell_count):
+            if self.entropy(c) >= target_entropy:
+                break
+        return c
+
+    def create_occlusions(self, entropy: float = -1, occlusion_count: int = -1, max_walk_length: int = 1, tries: int = 100, verbose: bool = False):
+        if max_walk_length == 0:
+            raise "walk length cannot be zero"
+
+        if entropy == -1 and occlusion_count == -1:
+            raise "entropy or occlusion count must be specified"
+
+        if occlusion_count == -1:
+            occlusion_count = self.get_occlusion_count(entropy)
+
+        if verbose:
+            print("Creating world with %i occlusions" % occlusion_count)
+
+        class Visited:
+            def __init__(self):
+                self.cells = []
+
+        def is_connected(cells, connection_pattern, cellmap: Cell_map, source: int, destination: int, visited):
+            if cells[destination].occluded:
+                return False
+            if cells[source].occluded:
+                return False
+            curr = cells[source].coordinates
+            for c in connection_pattern:
+                i = cellmap[curr + c]
+                if i >= 0 and not cells[i].occluded and i not in visited.cells:
+                    visited.cells.append(i)
+                    is_connected(cells, connection_pattern, cellmap, i, destination, visited)
+            return True
+
+        for t in range(tries):
+            if verbose:
+                print("Try %i: " % t, end="")
+            walk = 0
+            occlusions = Cell_group_builder()
+            m = Cell_map(self.configuration.cell_coordinates)
+            while len(occlusions) < occlusion_count:
+                if walk == 0:
+                    walk = random.randint(1, max_walk_length)
+                    curr_cell = self.cells.random_cell()
+                else:
+                    alternatives = []
+                    for a in self.configuration.connection_pattern:
+                        i = m[curr_cell.coordinates + a]
+                        if i >= 0:
+                            if i not in occlusions:
+                                alternatives.append(i)
+                    if len(alternatives) == 0:
+                        curr_cell = self.cells.random_cell()
+                        walk = 0
+                    else:
+                        o = random.choice(alternatives)
+                        occlusions.append(o)
+                        curr_cell = self.cells[o]
+                        walk -= 1
+            self.set_occlusions(occlusions)
+            visited = Visited()
+            l = is_connected(self.cells, self.configuration.connection_pattern, m, 0, len(self.cells)-1, visited)
+            if verbose:
+                print("connection finished (%i connected cells) " % len(visited.cells), end="")
+            if l and len(visited.cells) == len(self.cells.free_cells()):
+                if verbose:
+                    print("Success")
+                return occlusions
+            else:
+                if verbose:
+                    print("Fail")
+        self.set_occlusions(Cell_group_builder())
+        return None
+
+
 
 def set_location(
         location_list: Location_list,

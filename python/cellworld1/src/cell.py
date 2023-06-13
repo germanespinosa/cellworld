@@ -1,3 +1,5 @@
+import random
+
 from json_cpp import JsonObject, JsonList
 from .util import *
 from .location import Location
@@ -68,6 +70,9 @@ class Cell_group(JsonList):
         for cell in self:
             cgb.append(cell.id)
         return cgb
+
+    def random_cell(self):
+        return random.choice(self)
 
 
 class Cell_map:

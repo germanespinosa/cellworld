@@ -35,6 +35,7 @@ class Display:
                  background_color="white",
                  habitat_color="white",
                  cell_edge_color="lightgray",
+                 occluded_cell_edge_color="lightgray",
                  habitat_edge_color="gray",
                  animated: bool = False,
                  ax=None,
@@ -65,6 +66,7 @@ class Display:
         self.habitat_edge_color = habitat_edge_color
         self.cell_color = cell_color
         self.cell_edge_color = cell_edge_color
+        self.occluded_cell_edge_color = occluded_cell_edge_color
         self.xcenter = world.implementation.space.center.x
         self.ycenter = world.implementation.space.center.y
         self.outline = outline
@@ -94,7 +96,8 @@ class Display:
         [p.remove() for p in reversed(self.ax.patches)]
         for cell in self.world.cells:
             color = self.occlusion_color if cell.occluded else self.cell_color
-            self.cell_outline_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=self.cell_edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1)))
+            edge_color = self.occluded_cell_edge_color if cell.occluded else self.cell_edge_color
+            self.cell_outline_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size, facecolor=color, edgecolor=edge_color, orientation=self.cells_theta, zorder=-2, linewidth=1)))
             self.cell_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y), self.world.configuration.cell_shape.sides, self.cells_size * self.outline, facecolor=color, orientation=self.cells_theta, zorder=-1, linewidth=1)))
         self.habitat_polygon = self.ax.add_patch(RegularPolygon((self.xcenter, self.ycenter), self.world.implementation.space.shape.sides, self.habitat_size, facecolor=self.habitat_color, edgecolor=self.habitat_edge_color, orientation=self.habitat_theta, zorder=-3))
 

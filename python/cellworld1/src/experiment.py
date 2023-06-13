@@ -7,6 +7,7 @@ from .world import World_implementation, World
 from .cell import Cell_group_builder
 from datetime import datetime
 
+
 class Step(JsonObject):
     def __init__(self,
                  time_stamp: float = 0.0,
