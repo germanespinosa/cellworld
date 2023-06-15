@@ -64,7 +64,7 @@ class Velocities(JsonList):
         if len(self) == 0:
             return filtered
         le = len(self) - window_length
-        for i in range(le):
+        for i in range(len(self)):
             b = i - window_length if i > window_length else 0
             e = i + window_length if i < le else len(self)
             filtered.append(sum(self[b:e])/(e-b))
