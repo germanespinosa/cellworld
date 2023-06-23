@@ -122,7 +122,17 @@ class Trajectories(JsonList):
         except:
             return None
 
-    def get_velocities(self) -> {}:
+    def get_segment(self, start_frame=0, end_frame=None, start_time=0, end_time=None):
+        segment = Trajectories()
+        for step in self:
+            if step.frame < start_frame or (end_frame and step.frame > end_frame):
+                continue
+            if step.time_stamp < start_time or (end_time and step.time_stamp > end_time):
+                continue
+            segment.append(step)
+        return segment
+
+    def get_velocities(self) -> dict:
         velocities = {}
         last_locations = {}
         last_time_stamp = {}
@@ -137,6 +147,14 @@ class Trajectories(JsonList):
             last_locations[s.agent_name] = s.location
             last_time_stamp[s.agent_name] = s.time_stamp
         return velocities
+
+    def get_locations(self) -> dict:
+        locations = {}
+        for s in self:
+            if s.agent_name not in locations:
+                locations[s.agent_name] = Location_list()
+            locations[s.agent_name].append(s.location)
+        return locations
 
     def get_stops_steps(self, distance_threshold: float = 0.01, stop_time: float = 0.5):
         stops = []
@@ -193,6 +211,14 @@ class Trajectories(JsonList):
 
     def get_agent_trajectory(self, agent_name: str):
         return self.where("agent_name", agent_name)
+
+    def split_by_agent(self) -> dict:
+        split = {}
+        for s in self:
+            if s.agent_name not in split:
+                split[s.agent_name] = Trajectories()
+            split[s.agent_name].append(s)
+        return split
 
 
 class Episode(JsonObject):

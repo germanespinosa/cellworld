@@ -1,7 +1,8 @@
 import requests
 from json_cpp import *
+from src import Velocities, Agent_markers
 
-from src import Velocities
+print("e", Agent_markers.icon_folder())
 
 v = Velocities(iterable=range(10))
 

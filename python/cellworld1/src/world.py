@@ -309,7 +309,11 @@ class World:
                 break
         return c
 
-    def create_occlusions(self, entropy: float = -1, occlusion_count: int = -1, max_walk_length: int = 1, tries: int = 100, verbose: bool = False):
+    def create_occlusions(self, entropy: float = -1, occlusion_count: int = -1, max_walk_length: int = 1, tries: int = 100, verbose: bool = False, seed: int = 0, occlude_disconnected: bool = True):
+
+        if seed:
+            random.seed(seed)
+
         if max_walk_length == 0:
             raise "walk length cannot be zero"
 

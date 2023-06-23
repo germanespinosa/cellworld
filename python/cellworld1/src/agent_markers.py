@@ -1,7 +1,24 @@
 from matplotlib.path import Path
+from .location import Location, Location_list
+from .shape import to_radians
 
 
 class Agent_markers:
+
+    @staticmethod
+    def icon_folder() -> str:
+        import pkg_resources
+        path = 'files'  # always use slash
+        filepath = pkg_resources.resource_filename("cellworld", path)
+        return filepath
+
+    @staticmethod
+    def icon_box(location:Location, base_size: float, rotation: float):
+        corners_angles = [to_radians(45+rotation), to_radians(135+rotation), to_radians(225+rotation), to_radians(315+rotation)]
+        corners = Location_list([Location(location.x, location.y).move(ca, base_size) for ca in corners_angles])
+        x = corners.get_x()
+        y = corners.get_y()
+        return [min(x), max(x), min(y), max(y)]
 
     @staticmethod
     def robot(marker_size: float = 1.0) -> Path:
@@ -122,3 +139,5 @@ class Agent_markers:
             Path.CURVE4,  # curve
         ]
         return Path(verts, codes)
+
+

@@ -1,11 +1,11 @@
-from .location import Location
+from .location import Location, Location_list
 from .experiment import Trajectories
 from json_cpp import JsonObject, JsonList
 
 
-class StreamLine(JsonList):
+class StreamLine(Location_list):
     def __init__(self, trajectory: Trajectories = None, streamline_len: int = 100):
-        JsonList.__init__(self, list_type=Location)
+        Location_list.__init__(self)
         if trajectory is None:
             return
         last_step_location = trajectory[0].location

@@ -1,10 +1,5 @@
 import numpy
-from matplotlib.patches import RegularPolygon
-import matplotlib.pyplot as plt
-import matplotlib.colors
-from matplotlib.path import Path
-from matplotlib.transforms import Affine2D
-import matplotlib.colors as mcolors
+import matplotlib
 from .world import *
 from .experiment import *
 from .agent_markers import *
@@ -42,10 +37,10 @@ class Display:
                  habitat_fill: bool = True,
                  occluded_cell_edge_color="lightgray",
                  habitat_edge_color="gray",
-                 cell_outline_zorder: int = 2,
-                 cell_zorder: int = 3,
-                 occluded_cell_zorder: int = 3,
-                 habitat_zorder: int = 1,
+                 cell_outline_zorder: int = -8,
+                 cell_zorder: int = -7,
+                 occluded_cell_zorder: int = -7,
+                 habitat_zorder: int = -9,
                  cell_alpha: int = 1,
                  cell_outline_alpha: int = 1,
                  habitat_alpha: int = 1,
@@ -53,7 +48,7 @@ class Display:
                  ax=None,
                  fig=None):
         if animated:
-            plt.ion()
+            matplotlib.pyplot.ion()
         self.cell_alpha = cell_alpha
         self.show_cell = show_cell
         self.show_occluded_cell = show_occluded_cell
@@ -69,7 +64,7 @@ class Display:
         self.animated = animated
         self.world = world
         if not fig:
-            self.fig = plt.figure(figsize=fig_size)
+            self.fig = matplotlib.pyplot.figure(figsize=fig_size)
         else:
             self.fig = fig
         if not ax:
@@ -115,7 +110,7 @@ class Display:
         self.occluded_cell_zorder = occluded_cell_zorder
         self.habitat_zorder = habitat_zorder
         self._draw_cells__()
-        plt.tight_layout()
+        matplotlib.pyplot.tight_layout()
 
     def _draw_cells__(self):
         [p.remove() for p in reversed(self.ax.patches)]
@@ -124,7 +119,7 @@ class Display:
             edge_color = self.occluded_cell_edge_color if cell.occluded else self.cell_edge_color
             fill = True if cell.occluded else self.cell_fill
             visible = self.show_occluded_cell if cell.occluded else self.show_cell
-            self.cell_outline_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y),
+            self.cell_outline_polygons.append(self.ax.add_patch(matplotlib.patches.RegularPolygon((cell.location.x, cell.location.y),
                                                                                self.world.configuration.cell_shape.sides,
                                                                                self.cells_size,
                                                                                facecolor=color,
@@ -135,7 +130,7 @@ class Display:
                                                                                alpha=self.cell_outline_alpha,
                                                                                fill=fill,
                                                                                visible=visible)))
-            self.cell_polygons.append(self.ax.add_patch(RegularPolygon((cell.location.x, cell.location.y),
+            self.cell_polygons.append(self.ax.add_patch(matplotlib.patches.RegularPolygon((cell.location.x, cell.location.y),
                                                                        self.world.configuration.cell_shape.sides,
                                                                        self.cells_size * self.outline,
                                                                        facecolor=color,
@@ -145,7 +140,7 @@ class Display:
                                                                        alpha=self.cell_alpha,
                                                                        fill=fill,
                                                                        visible=visible)))
-        self.habitat_polygon = self.ax.add_patch(RegularPolygon((self.xcenter, self.ycenter),
+        self.habitat_polygon = self.ax.add_patch(matplotlib.patches.RegularPolygon((self.xcenter, self.ycenter),
                                                                 self.world.implementation.space.shape.sides,
                                                                 self.habitat_size,
                                                                 facecolor=self.habitat_color,
@@ -160,39 +155,59 @@ class Display:
         self.world.set_occlusions(occlusions)
         self._draw_cells__()
 
-    def set_agent_marker(self, agent_name: str, marker: Path):
+    def set_agent_marker(self, agent_name: str, marker: matplotlib.path.Path):
         self.agents_markers[agent_name] = marker
 
-    def add_trajectories(self, trajectories: Trajectories, colors={}, alphas={}, start_frame=0, end_frame=None, zorder=4):
-        agents = trajectories.get_agent_names()
-        for index, agent in enumerate(agents):
-            agent_trajectory = trajectories.get_agent_trajectory(agent)
-            x = []
-            y = []
-            for step in agent_trajectory:
-                if step.frame < start_frame or (end_frame and step.frame > end_frame):
-                    continue
-                x.append(step.location.x)
-                y.append(step.location.y)
-            color = list(matplotlib.colors.cnames.keys())[index]
-            alpha = 0.5
-            if agent in colors:
-                color = colors[agent]
-            if agent in alphas:
-                alpha = alphas[agent]
-            for i in range(len(x)-1):
-                lcolor = None
-                lalpha = None
-                if type(alpha) is list:
-                    lalpha = alpha[i]
-                else:
-                    lalpha = alpha
-                if type(color) is numpy.ndarray:
-                    lcolor = color[i]
-                else:
-                    lcolor = color
-                self.ax.plot([x[i], x[i+1]], [y[i], y[i+1]], color=lcolor, alpha=lalpha, linewidth=3, zorder=zorder)
+    def add_trajectories(self,
+                         trajectories: Trajectories,
+                         colors: dict = {"prey": "blue", "predator": "red"},
+                         alphas: dict = {"prey": 1, "predator": 1},
+                         zorder: int = -6,
+                         auto_alpha: bool = False,
+                         distance_equalization: bool = False) -> dict:
 
+        def get_segments(locations):
+            segments = []
+            previous = locations[0]
+            for l in locations[1:]:
+                segments.append([[previous.x,previous.y],[l.x,l.y]])
+                previous=l
+            return segments
+        lines = {}
+        split_trajectories = trajectories.split_by_agent()
+        for agent in split_trajectories:
+            color = colors[agent]
+            alpha = alphas[agent]
+            if distance_equalization:
+                agent_trajectory = StreamLine(split_trajectories[agent])
+            else:
+                agent_trajectory = split_trajectories[agent].get("location")
+            segments = get_segments(agent_trajectory)
+
+            if auto_alpha:
+                step_alphas = [i/len(segments) for i in range(len(segments))]
+            else:
+                if type(alpha) is list:
+                    if len(alpha) == len(segments):
+                        step_alphas = alpha
+                    else:
+                        print ("wrong size for alpha list, assigning 1")
+                        step_alphas = [1 for i in range(len(segments))]
+                else:
+                    step_alphas = [alpha for i in range(len(segments))]
+
+            if type(color) is list:
+                if len(color) == len(segments):
+                    step_colors = [matplotlib.colors.to_rgb(c) for c in color]
+                else:
+                    print ("wrong size for color list, expected", len(segments), ", received", len(color), "assigning blue")
+                    step_colors = [matplotlib.colors.to_rgb("blue") for i in segments]
+            else:
+                step_colors = [matplotlib.colors.to_rgb(color) for i in segments]
+            color_with_alpha = [c + (a,) for c,a in zip(step_colors, step_alphas)]
+            lc = matplotlib.collections.LineCollection(segments, colors=color_with_alpha, lw=3, zorder=zorder)
+            lines[agent] = self.ax.add_collection(lc)
+        return lines
 
     def cell(self, cell: Cell = None, cell_id: int = -1, coordinates: Coordinates = None, color=None, outline_color=None, edge_color=None, alpha=None):
         if color is None:
@@ -220,7 +235,7 @@ class Display:
         self.cell_outline_polygons[cell.id].set_facecolor(outline_color)
         self.cell_outline_polygons[cell.id].set_alpha(alpha)
 
-    def heatmap(self, values: list, color_map=plt.cm.Reds, value_range: tuple = None) -> None:
+    def heatmap(self, values: list, color_map=matplotlib.pyplot.cm.Reds, value_range: tuple = None) -> None:
         if value_range:
             minv, maxv = value_range
         else:
@@ -234,8 +249,8 @@ class Display:
             if not self.world.cells[cell_id].occluded:
                 self.cell(cell_id=cell_id, color=color)
 
-    def circle(self, location: Location, radius: float, color, alpha: float = 1.0, zorder: int = 4):
-        circle_patch = plt.Circle((location.x, location.y), radius, color=color, alpha=alpha, zorder=zorder)
+    def circle(self, location: Location, radius: float, color, alpha: float = 1.0, zorder: int = -6):
+        circle_patch = matplotlib.pyplot.Circle((location.x, location.y), radius, color=color, alpha=alpha, zorder=zorder)
         return self.ax.add_patch(circle_patch)
 
     def arrow(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", head_width: float = .02, alpha: float = 1.0, line_width: float = 0.001, zorder: int = 4, existing_arrow: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
@@ -252,7 +267,7 @@ class Display:
             new_arrow.animated = self.animated
             return new_arrow
 
-    def line(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", alpha: float = 1.0, line_width: float = 0.001, zorder: int = 4, existing_line: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
+    def line(self, beginning: Location, ending: Location = None, theta: float = 0, dist: float = 0, color="black", alpha: float = 1.0, line_width: float = 0.001, zorder: int = -6, existing_line: matplotlib.patches.FancyArrowPatch = None) -> matplotlib.patches.FancyArrowPatch:
         head_width = 0
         if ending is None:
             ending = beginning.copy().move(theta=theta, dist=dist)
@@ -266,21 +281,29 @@ class Display:
             new_arrow = self.ax.arrow(beginning.x, beginning.y, length.x, length.y, color=color, head_width=0, alpha=alpha, head_length=0, length_includes_head=False, width=line_width, zorder=zorder)
             new_arrow.animated = self.animated
             return new_arrow
-    def set_background(self, background, alpha:float = 1):
+
+    def set_background(self, background, alpha: float = 1):
         self.ax.imshow(background, extent=self.background_extent, alpha=alpha)
         self._draw_cells__()
 
-    def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0, show_trajectory: bool = True, zorder: int = 4, marker: Path=None):
+    def add_icon(self, location: Location, icon_name: str = "", icon_file_path: str = "", rotation: float = 0, size: float = .05, zorder: int = -5, alpha:float = 1):
+        from matplotlib import image
+        from scipy import ndimage
+        if icon_name:
+            icon = image.imread(Agent_markers.icon_folder() + "/" + icon_name + ".png")
+        else:
+            if icon_file_path:
+                icon = image.imread(icon_file_path)
+            else:
+                raise "Either icon_name or icon_file_path must be provided"
+        rotated_img = ndimage.rotate(icon, -rotation)
+        self.ax.imshow(rotated_img, extent=Agent_markers.icon_box(location, size, rotation), alpha=alpha, zorder=zorder)
+
+    def agent(self, step: Step = None, agent_name: str = None, location: Location = None, rotation: float = None, color=None, size: float = 40.0,  zorder: int = -6, marker: matplotlib.path.Path=None):
         if step:
             agent_name = step.agent_name
             location = step.location
             rotation = step.rotation
-
-        # if show_trajectory:
-        #     self.agents_trajectories.append(step)
-        #     x = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("x")
-        #     y = self.agents_trajectories.get_agent_trajectory(agent_name).get("location").get("y")
-        #     self.agents[agent_name], = self.ax.plot(x, y, c=color)
 
         if not marker:
             if agent_name in self.agents_markers:
@@ -294,13 +317,13 @@ class Display:
         if agent_name not in self.agents:
             self.agents[agent_name], = self.ax.plot(location.x, location.y, marker=marker, c=color, markersize=size, zorder=zorder)
 
-        t = Affine2D().rotate_deg_around(0, 0, -rotation)
+        t = matplotlib.transforms.Affine2D().rotate_deg_around(0, 0, -rotation)
         self.agents[agent_name].set_marker(marker.transformed(t))
         self.agents[agent_name].set_xdata(location.x)
         self.agents[agent_name].set_ydata(location.y)
         self.agents[agent_name].set_color(color)
 
-    def plot_clusters(self, clusters, colors: list=["blue", "red"], show_centroids: bool = True, use_alpha: bool = True, zorder: int = 4):
+    def plot_clusters(self, clusters, colors: list=["blue", "red"], show_centroids: bool = True, use_alpha: bool = True, zorder: int = -6):
         for sl in clusters.unclustered:
             self.ax.plot([s.x for s in sl], [s.y for s in sl], c="gray", linewidth=2, alpha=.5)
 
@@ -328,4 +351,86 @@ class Display:
         if self.animated:
             self.fig.canvas.draw()
             self.fig.canvas.flush_events()
-            plt.pause(.001)
+            matplotlib.pyplot.pause(.001)
+
+def LoadVideo(video_path: str) -> list:
+    import cv2
+    video_reader = cv2.VideoCapture(video_path)
+    frames = []
+    while video_reader.isOpened():
+        ret, video_frame = video_reader.read()
+        if video_frame is None:
+            break
+        frames.append(video_frame)
+    return frames
+
+
+def CropVideo(frames: list, crop=(-980, None, None, None, None, None)) -> list:
+    cropped_frames = []
+    for frame in frames:
+        cropped_frames.append(frame[crop[0]:crop[1], crop[2]:crop[3], crop[4]:crop[5]])
+    return cropped_frames
+
+
+def EpisodeRepresentation(episode: Episode,
+                          world: World,
+                          frames: list = None,
+                          time_stamps: list = None,
+                          colors: dict = {"prey": "blue", "predator": "red"},
+                          cols: int = 0,
+                          figsize=(10, 10),
+                          video_path: str = "",
+                          video_frames: list = None,
+                          icons: dict = {"prey": "mouse", "predator": "robot"},
+                          distance_equalization: int = 30,
+                          icon_size: float = .8, **kwargs):
+    split = episode.trajectories.split_by_agent()
+    if video_path:
+        video_frames = CropVideo(LoadVideo(video_path))
+    else:
+        video_frames = None
+
+    selections = frames if frames else time_stamps
+    if cols == 0:
+        cols = len(selections)
+    rows = math.ceil(len(selections)/cols)
+    fig = matplotlib.pyplot.figure(figsize=figsize)
+    axs = fig.subplots(rows, cols)
+    fig.tight_layout()
+    matplotlib.pyplot.subplots_adjust(wspace=0, hspace=0)
+    ps = 0
+    displays = []
+    if frames is None:
+        frames = []
+        pf = 0
+        for ts in time_stamps:
+            for i, step in enumerate(episode.trajectories[pf:]):
+                if step.time_stamp > ts:
+                    frames.append(step.frame)
+                    break
+                pf = i
+            else:
+                frames.append(step.frame)
+    for i, frame in enumerate(frames):
+        ax = axs[int(i/cols), i % cols]
+        if video_frames:
+            displays.append(Display(world, cell_fill=False, background_color="black", habitat_fill=False, show_cell=False, show_occluded_cell=False, ax=ax))
+            displays[-1].background_extent = [0, 1, .0435, .95]
+            displays[-1].set_background(video_frames[frame], 1)
+        else:
+            displays.append(Display(world, cell_fill=True, background_color="black", habitat_fill=True, show_cell=True, show_occluded_cell=True, ax=ax))
+
+        trajectories = episode.trajectories.get_segment(start_frame=ps, end_frame=frame)
+        displays[-1].add_trajectories(trajectories, colors=colors, auto_alpha=True, distance_equalization=distance_equalization)
+        if not video_frames:
+            for agent in split:
+                step = split[agent].get_step_by_frame(frame)
+                if "." in icons[agent]:
+                    displays[-1].add_icon(step.location, icon_file_path=icons[agent], rotation=step.rotation, size=icon_size)
+                else:
+                    displays[-1].add_icon(step.location, icon_name=icons[agent], rotation=step.rotation, size=icon_size)
+        ps = frame
+
+    print (frames)
+
+    return fig, displays

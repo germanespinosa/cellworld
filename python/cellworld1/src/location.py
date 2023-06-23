@@ -1,3 +1,4 @@
+import json_cpp
 from json_cpp import JsonObject, JsonList
 from .util import *
 import math
@@ -83,6 +84,19 @@ class Location_list(JsonList):
         for location in self:
             y.append(location.y)
         return y
+
+    def total_distance(self) -> float:
+        return self.distances()[-1]
+
+    def distance_from_start(self) -> list:
+        ds = JsonList(list_type=float)
+        d = 0
+        ll = self[0]
+        for l in self:
+            d += l.dist(ll)
+            ds.append(d)
+            ll = l
+        return ds
 
 
 def segments_intersect(segment1: tuple, segment2: tuple):
