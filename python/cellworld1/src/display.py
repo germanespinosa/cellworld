@@ -1,5 +1,6 @@
 import numpy
 import matplotlib
+import matplotlib.pyplot
 from .world import *
 from .experiment import *
 from .agent_markers import *
@@ -164,14 +165,16 @@ class Display:
                          alphas: dict = {"prey": 1, "predator": 1},
                          zorder: int = -6,
                          auto_alpha: bool = False,
+                         color_map=matplotlib.pyplot.cm.jet,
+                         color_range: tuple = (None, None),
                          distance_equalization: bool = False) -> dict:
 
         def get_segments(locations):
             segments = []
             previous = locations[0]
             for l in locations[1:]:
-                segments.append([[previous.x,previous.y],[l.x,l.y]])
-                previous=l
+                segments.append([[previous.x, previous.y], [l.x, l.y]])
+                previous = l
             return segments
         lines = {}
         split_trajectories = trajectories.split_by_agent()
@@ -182,29 +185,42 @@ class Display:
                 agent_trajectory = StreamLine(split_trajectories[agent])
             else:
                 agent_trajectory = split_trajectories[agent].get("location")
+
             segments = get_segments(agent_trajectory)
 
             if auto_alpha:
                 step_alphas = [i/len(segments) for i in range(len(segments))]
             else:
-                if type(alpha) is list:
+                if isinstance(alpha, list):
+                    if len(alpha) - 1 == len(segments):
+                        alpha = alpha[1:]
+
                     if len(alpha) == len(segments):
                         step_alphas = alpha
                     else:
-                        print ("wrong size for alpha list, assigning 1")
+                        print("wrong size for alpha list, assigning 1")
                         step_alphas = [1 for i in range(len(segments))]
                 else:
                     step_alphas = [alpha for i in range(len(segments))]
 
-            if type(color) is list:
+            if isinstance(color, list):
+                if len(color) - 1 == len(segments):
+                    color = color[1:]
+
                 if len(color) == len(segments):
-                    step_colors = [matplotlib.colors.to_rgb(c) for c in color]
+                    if type(color[0]) is float or type(color[0]) is int:
+                        min_velocity = min(color) if color_range[0] is None else color_range[0]
+                        max_velocity = max(color) if color_range[1] is None else color_range[1]
+                        color = [min_velocity if c < min_velocity else max_velocity if c > max_velocity else c for c in color]
+                        step_colors = [color_map(c/max_velocity) for c in color]
+                    else:
+                        step_colors = [matplotlib.colors.to_rgb(c) for c in color]
                 else:
-                    print ("wrong size for color list, expected", len(segments), ", received", len(color), "assigning blue")
+                    print("wrong size for color list, expected", len(segments), ", received", len(color), "assigning blue")
                     step_colors = [matplotlib.colors.to_rgb("blue") for i in segments]
             else:
                 step_colors = [matplotlib.colors.to_rgb(color) for i in segments]
-            color_with_alpha = [c + (a,) for c,a in zip(step_colors, step_alphas)]
+            color_with_alpha = [(c[0], c[1], c[2], a) for c, a in zip(step_colors, step_alphas)]
             lc = matplotlib.collections.LineCollection(segments, colors=color_with_alpha, lw=3, zorder=zorder)
             lines[agent] = self.ax.add_collection(lc)
         return lines
