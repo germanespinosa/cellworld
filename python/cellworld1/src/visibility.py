@@ -1,3 +1,4 @@
+from .world import World
 from .location import Location
 from .shape import Polygon_list, Polygon
 from .cell import Cell_group
@@ -9,6 +10,15 @@ class Location_visibility:
 
     def __init__(self, occlusions: Polygon_list):
         self.occlusions = occlusions
+
+    @staticmethod
+    def from_world(world: World):
+        occlusion_locations = world.cells.occluded_cells().get("locations")
+        occlusion_polygons = Polygon_list.get_polygons(occlusion_locations,
+                                                       world.configuration.cell_shape.sides,
+                                                       world.implementation.cell_transformation.size / 2,
+                                                       world.implementation.cell_transformation.rotation)
+        return Location_visibility(occlusion_polygons)
 
     def is_visible(self, src: Location, dst: Location) -> bool:
         theta = src.atan(dst)

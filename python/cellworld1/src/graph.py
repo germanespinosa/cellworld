@@ -1,10 +1,20 @@
 import networkx as nx
 from .cell import Cell_map, Cell_group, Cell, Cell_group_builder
 from .world import World
+from .visibility import Location_visibility
 
 
 class Graph:
 
+    @staticmethod
+    def create_visibility_graph(world: World):
+        graph = Graph()
+        location_visibility = Location_visibility.from_world(world)
+        for src in world.cells:
+            if not src.occluded:
+                for dst in location_visibility.visible_cells(src.location, world.cells):
+                    graph.connect(src, dst)
+        return graph
     @staticmethod
     def create_connection_graph(world: World):
         graph = Graph()
