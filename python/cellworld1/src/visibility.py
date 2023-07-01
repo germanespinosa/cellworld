@@ -13,7 +13,8 @@ class Location_visibility:
 
     @staticmethod
     def from_world(world: World):
-        occlusion_locations = world.cells.occluded_cells().get("locations")
+        occlusions = world.cells.occluded_cells()
+        occlusion_locations = occlusions.get("location")
         occlusion_polygons = Polygon_list.get_polygons(occlusion_locations,
                                                        world.configuration.cell_shape.sides,
                                                        world.implementation.cell_transformation.size / 2,
