@@ -1,4 +1,5 @@
 import networkx as nx
+from .util import normalized_entropy
 from .cell import Cell_map, Cell_group, Cell, Cell_group_builder
 from .world import World
 from .visibility import Location_visibility
@@ -92,3 +93,8 @@ class Graph:
     def vertex_degrees(self, cell: Cell) -> int:
         return len(self[cell])
 
+    def complexity(self):
+        counters = []
+        for c in self._connections:
+            counters.append(len(c))
+        return normalized_entropy(counters)

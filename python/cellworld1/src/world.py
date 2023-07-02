@@ -11,7 +11,7 @@ from .cell import Cell, Cell_group_builder, Cell_group, Cell_map
 def get_occlusion_count(cell_count, target_entropy):
     for c in range(cell_count):
         p = c/cell_count
-        if entropy([p, 1-p])>=target_entropy:
+        if probability_entropy([p, 1-p]) >= target_entropy:
             return c
     return 0
 
