@@ -1,5 +1,5 @@
 def __module_version__():
-	return 0, 0, 274 
+	return 0, 0, 295 
 
 
 def __module_name__():
@@ -19,7 +19,7 @@ def __package_description__():
 
 
 def __install_requires__():
-	return ['numpy', 'matplotlib', 'json-cpp', 'tcp-messages', 'networkx', 'cv'] 
+	return ['numpy', 'scipy', 'matplotlib', 'json-cpp', 'tcp-messages', 'networkx', 'cv'] 
 
 
 def __url__():
@@ -43,7 +43,7 @@ def __package_name__():
 
 
 def __files__():
-	return ['cell.py', 'frame.py', 'graph.py', 'agent_markers.py', 'coordinates.py', 'display.py', 'experiment.py', 'location.py', 'shape.py', 'util.py', 'visibility.py', 'world.py', 'capture.py', 'QuickBundles.py', 'path.py'] 
+	return ['info.py', 'cell.py', 'frame.py', 'graph.py', 'agent_markers.py', 'coordinates.py', 'display.py', 'experiment.py', 'location.py', 'shape.py', 'util.py', 'visibility.py', 'world.py', 'capture.py', 'QuickBundles.py', 'path.py'] 
 
 
 def __additional_files__():

@@ -1,5 +1,5 @@
 import networkx as nx
-from .util import normalized_entropy
+from .info import normalized_entropy, entropy
 from .cell import Cell_map, Cell_group, Cell, Cell_group_builder
 from .world import World
 from .visibility import Location_visibility
@@ -14,12 +14,14 @@ class Graph_builder(JsonList):
 class Graph:
 
     @staticmethod
-    def create_visibility_graph(world: World):
+    def create_visibility_graph(world: World, include_self_reference=False):
         graph = Graph(cells=world.cells)
         location_visibility = Location_visibility.from_world(world)
         for src in world.cells:
             if not src.occluded:
                 for dst in location_visibility.visible_cells(src.location, world.cells):
+                    if dst == src and not include_self_reference:
+                        continue
                     graph.connect(src, dst)
         return graph
 
@@ -76,7 +78,7 @@ class Graph:
         nxgraph = nx.Graph()
         if self.cells:
             for cell in self.cells:
-                nxgraph.add_node(cell.id, pos=(cell.location.x, cell.location.y))
+                nxgraph.add_node(cell.id, pos=(cell.location.x, cell.location.y), color="black" if cell.occluded else "white")
         else:
             nxgraph.add_nodes_from(list(range(len(self._connections))))
         for src, conns in enumerate(self._connections):
@@ -93,8 +95,11 @@ class Graph:
     def vertex_degrees(self, cell: Cell) -> int:
         return len(self[cell])
 
-    def complexity(self):
+    def complexity(self, normalized: bool = False):
         counters = []
         for c in self._connections:
             counters.append(len(c))
-        return normalized_entropy(counters)
+        if normalized:
+            return normalized_entropy(counters)
+        else:
+            return entropy(counters)

@@ -8,43 +8,6 @@ import os
 cellworld_data_base_uri = "https://raw.githubusercontent.com/germanespinosa/cellworld_data/master/"
 cellworld_cache_folder = os.environ.get("CELLWORLD_CACHE")
 
-
-def probability_entropy(prob):
-    from math import log
-    ent = 0
-    for p in prob:
-        ent += p * log(p)
-    return -ent
-
-
-def normalized_entropy(data, labels=None):
-    hist = {}
-    if labels:
-        for l in labels:
-            hist[l] = 0
-    for v in data:
-        if v in hist:
-            hist[v] += 1
-        else:
-            if labels is None:
-                hist[v] = 1
-            else:
-                raise RuntimeError("data with value " + str(v) + " not present in labels")
-
-    data_count = sum(hist.values())
-    data_probability = [l/data_count for l in hist.values()]
-    data_entropy = probability_entropy(data_probability)
-    if data_entropy == 0:
-        return 0
-    labels = list(hist.keys())
-    label_count = len(labels)
-    if label_count == 1:
-        return 0
-    fair_probability = [1/label_count for l in labels]
-    fair_entropy = probability_entropy(fair_probability)
-    return data_entropy / fair_entropy
-
-
 def get_resource(resource_type: str, key0, *argv):
     resource_uri = cellworld_data_base_uri + resource_type + "/" + key0
     file_path = ""
@@ -130,13 +93,13 @@ def angle_difference(a1: float, a2: float) -> float:
     a1 = normalize(a1)
     a2 = normalize(a2)
     if a1 > a2:
-        dif = a1 - a2;
+        dif = a1 - a2
         if dif < math.pi:
             return dif, 1;
         else:
             return a2 + math.pi * 2.0 - a1, -1
     else:
-        dif = a2 - a1;
+        dif = a2 - a1
         if dif < math.pi:
             return dif, -1
         else:

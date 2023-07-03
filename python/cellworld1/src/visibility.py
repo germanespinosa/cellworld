@@ -16,9 +16,9 @@ class Location_visibility:
         occlusions = world.cells.occluded_cells()
         occlusion_locations = occlusions.get("location")
         occlusion_polygons = Polygon_list.get_polygons(occlusion_locations,
-                                                       world.configuration.cell_shape.sides,
-                                                       world.implementation.cell_transformation.size / 2,
-                                                       world.implementation.cell_transformation.rotation)
+                                                       sides=world.configuration.cell_shape.sides,
+                                                       radius=world.implementation.cell_transformation.size / 2,
+                                                       rotation=world.implementation.space.transformation.rotation + world.implementation.cell_transformation.rotation)
         return Location_visibility(occlusion_polygons)
 
     def is_visible(self, src: Location, dst: Location) -> bool:

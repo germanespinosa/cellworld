@@ -125,9 +125,9 @@ class Polygon:
             return False
         for v in self.vertices:
             vertex_distance = src.dist(v)
-            if vertex_distance < dist:
+            if vertex_distance <= dist:
                 theta_vertex = src.atan(v)
-                diff_theta_vertex, direction_vertex = angle_difference(theta, theta_vertex);
+                diff_theta_vertex, direction_vertex = angle_difference(theta, theta_vertex)
                 if direction_center == -direction_vertex:
                     if diff_theta_center + diff_theta_vertex < math.pi:
                         return True
@@ -143,5 +143,5 @@ class Polygon_list(JsonList):
     def get_polygons(centers: Location_list, sides: int, radius: float, rotation: float):
         polygon_list = Polygon_list()
         for center in centers:
-            polygon_list.append(Polygon(center,sides=sides, rotation=rotation, radius=radius))
+            polygon_list.append(Polygon(center, sides=sides, rotation=rotation, radius=radius))
         return polygon_list

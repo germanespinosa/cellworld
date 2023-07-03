@@ -13,4 +13,5 @@ from .visibility import *
 from .frame import *
 from .path import *
 from .QuickBundles import *
+from .info import *
 
