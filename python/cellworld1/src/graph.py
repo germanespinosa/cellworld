@@ -42,7 +42,7 @@ class Graph:
                             graph.connect(src, dst)
         return graph
 
-    def __init__(self, builder:Graph_builder=None, cells:Cell_group=None):
+    def __init__(self, builder: Graph_builder = None, cells: Cell_group = None):
         if builder:
             self._connections = builder
         else:
