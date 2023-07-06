@@ -4,6 +4,41 @@
 using namespace cell_world;
 using namespace std;
 
+TEST_CASE("Dice performance and entropy test")
+{
+    unsigned int sample_count = 100000000;
+    unsigned int sample_max = 10000;
+    Json_unsigned_int_vector samples (sample_count,0);
+    Timer t;
+    for (unsigned int i = 0; i < sample_count; i++){
+        samples[i] = Chance::dice(sample_max);
+    }
+    auto rnps = (float)sample_count/1000000/t.to_seconds();
+    if (rnps < 100) {
+        cout << "mil samples/second: " << rnps << " - WARNING: SLOW GENERATION" << endl;
+    }
+    else {
+        cout << "mil samples/second: " << rnps << endl;
+    }
+    auto e = labels_entropy(samples);
+    CHECK(e >.99 );
+    cout << "entropy: " << e << endl;
+    auto h = histogram(samples);
+    h.save("dice_samples.json");
+}
+
+TEST_CASE("Seed")
+{
+    unsigned int sample_count = 1000000;
+    for (unsigned int i = 0; i < sample_count; i++) {
+        Chance::seed(i);
+        auto a = Chance::dice(10000);
+        Chance::seed(i);
+        auto b = Chance::dice(10000);
+        CHECK(a==b);
+    }
+}
+
 TEST_CASE("Probabilities Pick index")
 {
     CHECK(Chance::pick(vector< unsigned int>{10, 10, 10, 10},0)==0);

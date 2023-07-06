@@ -1,7 +1,8 @@
 #pragma once
 #include <cell_world/core.h>
+// generators available: default, fast, xoroshiro
+#define CELL_WORLD_CHANCE_GENERATOR fast
 #define CELL_WORLD_CHANCE_MAX RAND_MAX
-#define CELL_WORLD_CHANCE rand()
 #define pick_random_index(VECTOR) cell_world::Chance::dice(VECTOR.size())
 #define pick_random(VECTOR) VECTOR[pick_random_index(VECTOR)]
 
@@ -29,8 +30,6 @@ namespace cell_world{
         static bool coin_toss(float, unsigned int);
         static float dice_float (float);
         static float dice_float (float,float);
-    private:
-        static unsigned int random();
     };
 
 }

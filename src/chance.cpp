@@ -8,10 +8,77 @@ using namespace std;
 
 namespace cell_world {
 
-    thread_local unsigned int rseq = 1;
+    //DEFAULT RANDOM NUMBER GENERATOR
+
+    thread_local unsigned int default_seq = 1;
+
+    void default_seed(unsigned int seed){
+        default_seq = seed;
+        srand(default_seq);
+    }
+
+    unsigned int default_rand(){
+        srand(default_seq);
+        default_seq = rand();
+        return default_seq;
+    }
+
+    //XOROSHIRO RANDOM NUMBER GENERATOR
+
+    thread_local uint64_t shuffle_table[2] = {1,1 ^ 0x49616E42};
+
+    void xoroshiro_seed(unsigned int seed)
+    {
+        shuffle_table[0] = seed;
+        shuffle_table[1] = seed ^ 0x49616E42;
+    }
+
+    unsigned int xoroshiro_rand()
+    {
+        uint64_t s1 = shuffle_table[0];
+        uint64_t s0 = shuffle_table[1];
+        uint64_t result = s0 + s1;
+        shuffle_table[0] = s0;
+        s1 ^= s1 << 23;
+        shuffle_table[1] = s1 ^ s0 ^ (s1 >> 18) ^ (s0 >> 5);
+        return result % CELL_WORLD_CHANCE_MAX;
+    }
+
+
+    //FAST RANDOM NUMBER GENERATOR
+
+    thread_local unsigned int fast_rand_high = 1;
+    thread_local unsigned int fast_rand_low = 1 ^ 0x49616E42;
+
+    void fast_seed(unsigned int seed)
+    {
+        fast_rand_high = seed;
+        fast_rand_low = seed ^ 0x49616E42;
+    }
+
+    unsigned int fast_rand()
+    {
+        static const int shift = sizeof(int) / 2;
+        fast_rand_high = (fast_rand_high >> shift) + (fast_rand_high << shift);
+        fast_rand_high += fast_rand_low;
+        fast_rand_low += fast_rand_high;
+        return fast_rand_high % CELL_WORLD_CHANCE_MAX;
+    }
+
+    //
+
+
+#define JOIN(x, y) JOIN_AGAIN(x, y)
+#define JOIN_AGAIN(x, y) x ## y
+#define RANDOM_NUMBER JOIN(CELL_WORLD_CHANCE_GENERATOR, _rand)
+#define RANDOM_SEED JOIN(CELL_WORLD_CHANCE_GENERATOR, _seed)
+
+    unsigned int Chance::dice() {
+        return RANDOM_NUMBER();
+    }
 
     void Chance::seed(unsigned int seed){
-        rseq = seed;
+        RANDOM_SEED(seed);
     }
 
     unsigned int pick(std::vector<unsigned int> _chances, std::vector<float> &values, unsigned int dice) {
@@ -48,13 +115,6 @@ namespace cell_world {
 
     //mutex rmutex;
 
-    unsigned int Chance::dice() {
-        //rmutex.lock();
-        srand(rseq);
-        rseq = CELL_WORLD_CHANCE;
-        //rmutex.unlock();
-        return rseq;
-    }
 
     float Chance::dice_float(float max) {
         return (float) dice() * max / CELL_WORLD_CHANCE_MAX;

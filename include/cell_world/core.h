@@ -9,9 +9,9 @@
 #define SIMILAR(A,B,M) ((A-M < B) && (A+M > B))
 
 namespace cell_world{
-    std::vector<unsigned int> histogram(std::vector<unsigned int>);
-    std::vector<unsigned int> new_index(unsigned int);
-    std::vector<unsigned int> new_index(std::vector<float>, bool);
+    Json_unsigned_int_vector histogram(std::vector<unsigned int>);
+    Json_unsigned_int_vector new_index(unsigned int);
+    Json_unsigned_int_vector new_index(std::vector<float>, bool);
 
     template<typename T>
     T max(const std::vector<T> &values){

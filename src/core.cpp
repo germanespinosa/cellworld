@@ -71,27 +71,27 @@ namespace cell_world {
         return -ent;
     }
 
-    vector<unsigned int> histogram(vector<unsigned int> values) {
+    Json_unsigned_int_vector histogram(vector<unsigned int> values) {
         if (values.empty()) {
-            vector<unsigned int> hist;
+            Json_unsigned_int_vector hist;
             return hist;
         } else {
             int min = values[0];
             int max = values[0];
             for (int v:values) if ( min > v ) min = v; else if ( max < v ) max = v;
-            vector<unsigned int> hist(max - min + 1 );
+            Json_unsigned_int_vector hist(max - min + 1 );
             for (int v:values) hist[v-min]++;
             return hist;
         }
     }
 
-    vector<unsigned int> new_index(unsigned int n) {
-        std::vector<unsigned int> index(n);
+    Json_unsigned_int_vector new_index(unsigned int n) {
+        Json_unsigned_int_vector index(n);
         for(unsigned int i=0;i<n;i++) index[i]=i;
         return index;
     }
 
-    vector<unsigned int> new_index(vector<float>values, bool ascending = true){
+    Json_unsigned_int_vector new_index(vector<float>values, bool ascending = true){
         auto index = new_index(values.size()); // creates an index vector for the options
         for (unsigned int i = 1; i < index.size(); i++) // sort the indexes of the options by expected reward descending
             for (unsigned int j = i; j > 0 && (ascending?values[index[j - 1]] > values[index[j]]:values[index[j - 1]] < values[index[j]]); j--)

@@ -104,15 +104,16 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     #### TESTS
     ####
 
-#    install_git_dependency( Catch
-#            https://github.com/germanespinosa/catch
-#            ADD_SUBDIRECTORY)
-#
-#    test_library(cellworld)
+    install_git_dependency( Catch
+            https://github.com/germanespinosa/catch
+            ADD_SUBDIRECTORY)
 
-    #    test_library(cellworld catchtests/entropy.cpp)
-
-    #test_files(TESTS catchtests/graph.cpp LIBRARIES cellworld)
+    add_catch_test( chance_test
+            TEST_FILES
+            catchtests/chance.cpp
+            LINK_LIBRARIES cellworld
+            INCLUDE_DIRECTORIES
+            include)
 
     ####
     #### LIBRARY INSTALLATION
