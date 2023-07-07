@@ -74,11 +74,12 @@ class Graph:
             pending += [c for c in self._connections[next_id] if not c in visited and not c in pending]
         return False
 
-    def to_nxgraph (self):
+    def to_nxgraph (self, include_occluded=False):
         nxgraph = nx.Graph()
         if self.cells:
             for cell in self.cells:
-                nxgraph.add_node(cell.id, pos=(cell.location.x, cell.location.y), color="black" if cell.occluded else "white")
+                if include_occluded or not cell.occluded:
+                    nxgraph.add_node(cell.id, pos=(cell.location.x, cell.location.y), color="black" if cell.occluded else "white")
         else:
             nxgraph.add_nodes_from(list(range(len(self._connections))))
         for src, conns in enumerate(self._connections):
