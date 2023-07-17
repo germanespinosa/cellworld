@@ -1,11 +1,14 @@
+import math
+
 from scipy.stats import entropy
 
-def probability_entropy(prob):
+
+def probability_entropy(prob, base: float = math.e):
     from math import log
     ent = 0
     for p in prob:
-        if p>0:
-            ent += p * log(p)
+        if p > 0:
+            ent += p * log(p, base)
     return -ent
 
 
@@ -14,7 +17,7 @@ def fair_probability(symbol_count: int):
 
 
 def fair_entropy(symbol_count: int, base: float = 2):
-    return entropy(fair_probability(symbol_count), base=base)
+    return probability_entropy(fair_probability(symbol_count), base=base)
 
 
 def histogram(data, labels=None, closest: bool = False):
@@ -45,11 +48,11 @@ def histogram(data, labels=None, closest: bool = False):
     return list(hist.keys()), list(hist.values())
 
 
-def entropy(data, labels=None):
+def entropy(data, labels=None, base: float = math.e):
     labels, values = histogram(data, labels)
     data_count = sum(values)
     data_probability = [v/data_count for v in values]
-    data_entropy = probability_entropy(data_probability)
+    data_entropy = probability_entropy(data_probability, base)
     return data_entropy
 
 
