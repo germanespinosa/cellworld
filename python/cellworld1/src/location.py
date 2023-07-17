@@ -12,6 +12,21 @@ class Location(JsonObject):
         self.x = float(x)
         self.y = float(y)
 
+    def __iter__(self):
+        yield self.x
+        yield self.y
+
+    def __iter__(self):
+        yield self.x
+        yield self.y
+
+    def __hash__(self):
+        hash((self.x, self.y))
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
+
     def __add__(self, o):
         c = Location()
         c.x = self.x + o.x

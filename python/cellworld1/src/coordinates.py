@@ -9,6 +9,16 @@ class Coordinates(JsonObject):
         self.x = int(x)
         self.y = int(y)
 
+    def __iter__(self):
+        yield self.x
+        yield self.y
+
+    def __hash__(self):
+        hash((self.x, self.y))
+
+    def __eq__(self, other):
+        return self.x == other.x and self.y == other.y
+
     def __add__(self, o):
         c = Coordinates()
         c.x = self.x + o.x
