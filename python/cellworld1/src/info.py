@@ -4,7 +4,8 @@ def probability_entropy(prob):
     from math import log
     ent = 0
     for p in prob:
-        ent += p * log(p)
+        if p>0:
+            ent += p * log(p)
     return -ent
 
 
