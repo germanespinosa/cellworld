@@ -1,7 +1,11 @@
 #pragma once
 #include <cell_world/core.h>
+
+#ifndef CELL_WORLD_CHANCE_GENERATOR
 // generators available: default, fast, xoroshiro
-#define CELL_WORLD_CHANCE_GENERATOR fast
+    #define CELL_WORLD_CHANCE_GENERATOR fast
+#endif
+
 #define CELL_WORLD_CHANCE_MAX RAND_MAX
 #define pick_random_index(VECTOR) cell_world::Chance::dice(VECTOR.size())
 #define pick_random(VECTOR) VECTOR[pick_random_index(VECTOR)]

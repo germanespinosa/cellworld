@@ -1,6 +1,9 @@
 #include<catch.h>
 #include<cell_world.h>
 #include <iostream>
+#include <time.h>
+#include <thread>
+
 using namespace cell_world;
 using namespace std;
 
@@ -30,12 +33,23 @@ TEST_CASE("Dice performance and entropy test")
 TEST_CASE("Seed")
 {
     unsigned int sample_count = 1000000;
+    vector<unsigned int> samples(sample_count);
+    auto t = time(NULL);
+    Chance::seed(t);
     for (unsigned int i = 0; i < sample_count; i++) {
-        Chance::seed(i);
-        auto a = Chance::dice(10000);
-        Chance::seed(i);
-        auto b = Chance::dice(10000);
-        CHECK(a==b);
+        samples[i] = Chance::dice(10000);
+    }
+    vector<thread> threads;
+    for (unsigned int tc = 0; tc < 10; tc++) {
+        threads.emplace_back([t, &samples, sample_count](){
+            Chance::seed(t);
+            for (unsigned int i = 0; i < sample_count; i++) {
+                CHECK(samples[i] == Chance::dice(10000));
+            }
+        });
+    }
+    for (auto &th : threads) {
+        if (th.joinable()) th.join();
     }
 }
 

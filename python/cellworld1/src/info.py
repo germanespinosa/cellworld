@@ -16,7 +16,7 @@ def fair_probability(symbol_count: int):
     return [1 / symbol_count for i in range(symbol_count)]
 
 
-def fair_entropy(symbol_count: int, base: float = 2):
+def fair_entropy(symbol_count: int, base: float = math.e):
     return probability_entropy(fair_probability(symbol_count), base=base)
 
 
@@ -56,17 +56,16 @@ def entropy(data, labels=None, base: float = math.e):
     return data_entropy
 
 
-def normalized_entropy(data, labels=None):
+def normalized_entropy(data, labels=None, base: float = math.e):
     labels, values = histogram(data, labels)
     data_count = sum(values)
     data_probability = [v/data_count for v in values]
-    data_entropy = probability_entropy(data_probability)
+    data_entropy = probability_entropy(data_probability, base=base)
     if data_entropy == 0:
         return 0
     label_count = len(labels)
     if label_count == 1:
         return 0
-    fair_probability = [1/label_count for l in labels]
-    fair_entropy = probability_entropy(fair_probability)
+    fair_entropy = probability_entropy(fair_probability(label_count), base=base)
     return data_entropy / fair_entropy
 
