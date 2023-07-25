@@ -97,10 +97,8 @@ class Graph:
         return len(self[cell])
 
     def complexity(self, normalized: bool = False):
-        counters = []
-        for c in self._connections:
-            counters.append(len(c))
+        counters = [len(c) for c in self._connections if c]
         if normalized:
-            return normalized_entropy(counters)
+            return normalized_entropy(counters, labels=list(range(1, len(self._connections))))
         else:
-            return entropy(counters)
+            return entropy(counters, labels=list(range(1, len(self._connections))))

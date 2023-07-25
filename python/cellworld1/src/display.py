@@ -1,5 +1,6 @@
 import numpy
 import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot
 from .world import *
 from .experiment import *
@@ -111,7 +112,48 @@ class Display:
         self.occluded_cell_zorder = occluded_cell_zorder
         self.habitat_zorder = habitat_zorder
         self._draw_cells__()
+        self.on_cell_click = None
+        self.on_background_click = None
+        self.on_click = None
+        self.on_key_press = None
+        self.track_click = False
         matplotlib.pyplot.tight_layout()
+
+    def __process_click__(self, event):
+        location = Location(event.xdata, event.ydata)
+        cell_id = self.world.cells.find(location)
+        cell = self.world.cells[cell_id]
+        if cell.location.dist(location) < self.world.implementation.cell_transformation.size / 2:
+            if self.on_cell_click:
+                self.on_cell_click(event.button, cell)
+        elif self.on_background_click:
+            self.on_background_click(event.button, location)
+        if self.on_click:
+            self.on_click(event.button)
+
+    def set_key_pressed_event(self, callback):
+        self.on_key_press = callback
+        self.fig.canvas.mpl_connect('key_press_event', self.on_key_press)
+        matplotlib.pyplot.rcParams['keymap.save'].remove('s')
+        matplotlib.pyplot.rcParams['keymap.quit'].remove('q')
+
+    def set_cell_clicked_event(self, callback):
+        if not self.track_click:
+            self.fig.canvas.mpl_connect('button_press_event', self.__process_click__)
+            self.track_click = True
+        self.on_cell_click = callback
+
+    def set_background_clicked_event(self, callback):
+        if not self.track_click:
+            self.fig.canvas.mpl_connect('button_press_event', self.__process_click__)
+            self.track_click = True
+        self.on_background_click = callback
+
+    def set_clicked_event(self, callback):
+        if not self.track_click:
+            self.fig.canvas.mpl_connect('button_press_event', self.__process_click__)
+            self.track_click = True
+        self.on_click = callback
 
     def _draw_cells__(self):
         [p.remove() for p in reversed(self.ax.patches)]
@@ -399,7 +441,7 @@ def EpisodeRepresentation(episode: Episode,
                           video_frames: list = None,
                           icons: dict = {"prey": "mouse", "predator": "robot"},
                           distance_equalization: int = 30,
-                          icon_size: float = .8, **kwargs):
+                          icon_size: float = .065, **kwargs):
     split = episode.trajectories.split_by_agent()
     if video_path:
         video_frames = CropVideo(LoadVideo(video_path))
