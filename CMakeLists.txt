@@ -79,7 +79,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
 
     install_git_dependency( Requests
-            https://github.com/germanespinosa/requests
+            https://github.com/maciverlab/dependency_requests
             PRIVATE
             CMAKE_PROJECT
             IMPORT_TARGETS
