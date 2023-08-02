@@ -105,7 +105,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     ####
 
     install_git_dependency( Catch
-            https://github.com/germanespinosa/catch
+            https://github.com/maciverlab/dependency_catch
             ADD_SUBDIRECTORY)
 
     add_catch_test( chance_test
