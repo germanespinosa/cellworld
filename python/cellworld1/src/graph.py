@@ -18,10 +18,14 @@ class Graph:
         graph = Graph(cells=world.cells)
         location_visibility = Location_visibility.from_world(world)
         for src in world.cells:
-            if not src.occluded:
-                for dst in location_visibility.visible_cells(src.location, world.cells):
-                    if dst == src and not include_self_reference:
-                        continue
+            if src.occluded:
+                continue
+            for dst in world.cells:
+                if dst == src and not include_self_reference:
+                    continue
+                if graph.is_connected(src, dst):
+                    continue
+                if location_visibility.is_visible(src.location, dst.location):
                     graph.connect(src, dst)
         return graph
 
@@ -63,6 +67,10 @@ class Graph:
     def is_connected(self, src: Cell, dst: Cell) -> bool:
         if src.id == dst.id:
             return True
+        if src.id >= len(self._connections):
+            return False
+        if dst.id >= len(self._connections[src.id]):
+            return False
         pending = [src.id]
         visited = []
         while pending:

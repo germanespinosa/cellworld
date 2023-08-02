@@ -1,6 +1,5 @@
 import numpy
 import matplotlib
-matplotlib.use('Agg')
 import matplotlib.pyplot
 from .world import *
 from .experiment import *
