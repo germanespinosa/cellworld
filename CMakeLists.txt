@@ -26,7 +26,7 @@ endif()
 ####
 
 install_git_dependency( Json-cpp
-        https://github.com/germanespinosa/json-cpp
+        https://github.com/cellworld-neuro/json-cpp
         PRIVATE
         CMAKE_PROJECT
         IMPORT_TARGETS
