@@ -71,6 +71,11 @@ namespace cell_world {
         return -ent;
     }
 
+    float fair_entropy(int possible_values, float base){
+        auto fair_probabilities = std::vector<float>(possible_values, float(1)/ float(possible_values));
+        return entropy(fair_probabilities, base);
+    }
+
     Json_unsigned_int_vector histogram(vector<unsigned int> values) {
         if (values.empty()) {
             Json_unsigned_int_vector hist;

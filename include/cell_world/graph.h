@@ -14,7 +14,8 @@ namespace cell_world {
         void connect (const Cell &, const Cell_group &);
         void connect (const Graph &);
         std::vector<Coordinates> get_connectors (const Cell &);
-        float get_entropy();
+        float get_entropy(float base=M_E);
+        float get_degree_complexity(float base=M_E, bool normalized=false);
         Graph invert() const;
         const Cell_group &operator[](const Cell &) const;
         Cell_group &operator[](const Cell &);

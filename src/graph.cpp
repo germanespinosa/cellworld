@@ -12,12 +12,20 @@ namespace cell_world {
     cells(cell_group){
     }
 
-    float Graph::get_entropy() {
+    float Graph::get_entropy(float base) {
         vector<unsigned int> connection_counts(this->size(), 0);
         for (unsigned int i=0; i<this->size(); i++){
             connection_counts[i] = (*this)[i].size();
         }
-        return weights_entropy(connection_counts);
+        return weights_entropy(connection_counts, base);
+    }
+
+    float Graph::get_degree_complexity(float base, bool normalized) {
+        vector<unsigned int> degree_counts(this->size(), 0);
+        for (unsigned int i=0; i<this->size(); i++){
+            degree_counts[(*this)[i].size()] ++;
+        }
+        return weights_entropy(degree_counts, base, normalized);
     }
 
     bool Graph::add(const Cell &cell) {

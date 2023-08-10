@@ -26,7 +26,7 @@ endif()
 ####
 
 install_git_dependency( Json-cpp
-        https://github.com/germanespinosa/json-cpp
+        https://github.com/cellworld-neuro/dependency_json-cpp
         PRIVATE
         CMAKE_PROJECT
         IMPORT_TARGETS
@@ -79,7 +79,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
 
     install_git_dependency( Requests
-            https://github.com/maciverlab/dependency_requests
+            https://github.com/cellworld-neuro/dependency_requests
             PRIVATE
             CMAKE_PROJECT
             IMPORT_TARGETS
@@ -105,7 +105,7 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
     ####
 
     install_git_dependency( Catch
-            https://github.com/maciverlab/dependency_catch
+            https://github.com/cellworld-neuro/dependency_catch
             ADD_SUBDIRECTORY)
 
     add_catch_test( chance_test

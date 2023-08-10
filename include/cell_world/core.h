@@ -42,20 +42,27 @@ namespace cell_world{
     bool folder_exists(const std::string &path);
     bool create_folder(const std::string &path);
 
+
     float entropy(std::vector<float> probabilities, float base = M_E);
 
+    float fair_entropy(int possible_values, float base = M_E);
+
     template<typename T>
-    float weights_entropy(std::vector<T> weights, float base = M_E){
+    float weights_entropy(std::vector<T> weights, float base = M_E, bool normalized=false){
         if (weights.empty()) return 0;
         auto total = sum(weights);
         if (total == 0) return 0;
         std::vector<float> probs(weights.size());
         for (unsigned int i = 0 ; i < weights.size(); i++) probs[i] = (float)weights[i] / total ;
-        return entropy(probs, base);
+        if (normalized) {
+            return entropy(probs, base) / fair_entropy(weights.size(), base);
+        } else {
+            return entropy(probs, base);
+        }
     }
 
     template<typename T>
-    float labels_entropy(std::vector<T> labels, float base = M_E){
+    float labels_entropy(std::vector<T> labels, float base = M_E, bool normalized=false){
         if (labels.empty()) return 0;
         std::unordered_map<T, unsigned int> labels_weight;
         for (auto label:labels) {
@@ -67,7 +74,7 @@ namespace cell_world{
         }
         std::vector<unsigned int> weights;
         for (auto itr = labels_weight.begin(); itr != labels_weight.end(); itr++)  weights.push_back(itr->second);
-        return weights_entropy(weights, base);
+        return weights_entropy(weights, base, normalized);
     }
 
 
