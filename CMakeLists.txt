@@ -63,7 +63,7 @@ set(cellworld_files
         src/experiment.cpp
         )
 
-if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
+if (NOT "${EXCLUDE_RESOURCES}" MATCHES "TRUE")
 
     set(cellworld_files_c ${cellworld_files} src/resources.cpp )
 
@@ -87,7 +87,6 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
             TARGET
                 cellworld )
 
-
     set_target_properties(cellworld
             PROPERTIES
             CXX_STANDARD 20
@@ -100,9 +99,15 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
 
     target_compile_options(cellworld PRIVATE -pthread  -Wextra -pedantic -Wall)
 
-    ####
-    #### TESTS
-    ####
+else()
+    set(cellworld_files_c ${cellworld_files} )
+endif()
+
+####
+#### TESTS
+####
+
+if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
 
     install_git_dependency( Catch
             https://github.com/cellworld-neuro/dependency_catch
@@ -115,62 +120,4 @@ if (NOT "${BUILD_PYTHON_MODULE_ONLY}" MATCHES "TRUE")
             INCLUDE_DIRECTORIES
             include)
 
-    ####
-    #### LIBRARY INSTALLATION
-    ####
-
-    include(GNUInstallDirs)
-
-    install(TARGETS cellworld EXPORT CellworldConfig
-            ARCHIVE  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            LIBRARY  DESTINATION ${CMAKE_INSTALL_LIBDIR}
-            RUNTIME  DESTINATION ${CMAKE_INSTALL_BINDIR})
-
-    install(DIRECTORY include/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
-
-    install(EXPORT CellworldConfig
-            DESTINATION ${CMAKE_INSTALL_DATADIR}/cmake/Cellworld
-            EXPORT_LINK_INTERFACE_LIBRARIES)
-
-    export(TARGETS cellworld FILE CellworldConfig.cmake)
-else()
-    set(cellworld_files_c ${cellworld_files} )
-endif()
-
-####
-#### Python module
-####
-
-if (NOT "${BUILD_AS_DEPENDENCY}" MATCHES "TRUE")
-
-    install_git_dependency( Pybind11
-            https://github.com/pybind/pybind11
-            ADD_SUBDIRECTORY
-            INCLUDE_DIRECTORIES
-            include )
-
-    pybind11_add_module(core src/python.cpp ${cellworld_files})
-
-    target_compile_options(core PRIVATE -Wextra -pedantic -Wall -static)
-
-    target_include_directories(core PRIVATE include )
-
-    target_compile_options(core PRIVATE)
-
-    target_include_directories(core
-            PUBLIC
-            ${PYTHON_INCLUDE_DIRS})
-
-    target_link_libraries(core
-            PRIVATE
-            json-cpp
-            ${PYTHON_LIBRARIES})
-
-    string(TOLOWER ${CMAKE_BUILD_TYPE} LBT)
-
-    add_custom_command(TARGET core POST_BUILD
-            COMMAND "${CMAKE_COMMAND}" -E copy
-            "$<TARGET_FILE:core>"
-            "${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}/$<TARGET_FILE_NAME:core>"
-            COMMENT "core output copied to ${CMAKE_CURRENT_SOURCE_DIR}/python/cellworld2/build-${LBT}")
 endif()
